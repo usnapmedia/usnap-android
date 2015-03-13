@@ -15,3 +15,84 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# For joda-time library
+-dontwarn org.joda.time.**
+-dontnote org.joda.time.**
+
+# For Picasso
+-dontwarn com.squareup.okhttp.**
+
+# For segment.io SDK
+-dontwarn com.actionbarsherlock.app.**
+-dontnote com.actionbarsherlock.app.**
+-dontwarn com.mixpanel.**
+-dontnote com.mixpanel.**
+-dontwarn com.kahuna.sdk.**
+-keep class com.kahuna.sdk.* { *; }
+
+# For Google Maps
+-keep class * extends java.util.ListResourceBundle {
+    protected Object[][] getContents();
+}
+
+-keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
+    public static final *** NULL;
+}
+
+-keepnames @com.google.android.gms.common.annotation.KeepName class *
+-keepclassmembernames class * {
+    @com.google.android.gms.common.annotation.KeepName *;
+}
+
+-keepnames class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
+
+# For Butterknife
+-dontwarn butterknife.internal.**
+-keep class **$$ViewInjector { *; }
+-keepnames class * { @butterknife.InjectView *;}
+
+# For retrofit
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn com.squareup.**
+-dontwarn rx.**
+-dontwarn retrofit.**
+-dontwarn okio.**
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+
+-keep class sun.misc.Unsafe { *; }
+-keepclassmembers class * {
+  public <init>(android.content.Context);
+}
+
+# your package path where your gson models are stored
+-keepclassmembers class com.samsao.app.network.entity.** { *; }
+-keepclassmembers class com.samsao.app.model.entity.** { *; }
+
+# For Realm
+-dontwarn io.realm.**
+-keep class io.realm.* { *; }
+
+# For EventBus
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
+
+# For IcePick
+-dontwarn icepick.**
+-keep class **$$Icicle { *; }
+-keepnames class * { @icepick.Icicle *;}
+
+# For RxJava
+-dontwarn rx.internal.util.**
+
+# For Material Design library
+-dontwarn com.gc.materialdesign.**
