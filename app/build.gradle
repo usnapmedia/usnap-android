@@ -90,4 +90,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
+    compile('com.github.androidsocialnetworks:library:0.3.7@aar') {
+        transitive = true
+    }
 }
