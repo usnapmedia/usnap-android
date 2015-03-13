@@ -3,4 +3,8 @@
 
     <!--Login-->
     <string name="action_login">Login</string>
+
+    <!--Social Networks-->
+    <string name="twitter_api_token" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
+    <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
 </resources>

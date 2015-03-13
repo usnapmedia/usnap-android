@@ -1,12 +1,12 @@
 package com.samsao.snapzi.authentication;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.social.SocialNetworkActivity;
 
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends SocialNetworkActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +17,7 @@ public class LoginActivity extends ActionBarActivity {
             LoginFragment loginFragment = LoginFragment.newInstance();
 
             // Add the fragment to the 'fragment_container' FrameLayout
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.activity_login_fragment_container, loginFragment).commit();
         }
     }
