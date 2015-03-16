@@ -1,15 +1,18 @@
 package com.samsao.snapzi.preferences;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.SocialNetworkFragment;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class PreferencesFragment extends SocialNetworkFragment {
@@ -64,4 +67,17 @@ public class PreferencesFragment extends SocialNetworkFragment {
 //            }
 //        });
 //    }
+
+    @OnClick(R.id.fragment_preferences_logout_btn)
+    public void logout() {
+        logoutFromFacebook();
+        logoutFromTwitter();
+        logoutFromGooglePlus();
+        // TODO instagram
+
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        getActivity().finish();
+    }
 }

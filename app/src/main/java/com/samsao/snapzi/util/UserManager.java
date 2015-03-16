@@ -14,6 +14,31 @@ public class UserManager {
      */
     public static boolean isLogged() {
         // TODO add other social networks
-        return !TextUtils.isEmpty(PreferenceManager.getFacebookAccessToken());
+        return !TextUtils.isEmpty(getFacebookAccessToken());
+    }
+
+    /**
+     * Returns the facebook access token
+     * @return
+     */
+    public static String getFacebookAccessToken() {
+        return PreferenceManager.getFacebookAccessToken();
+    }
+
+    /**
+     * Set the facebook access token in preferences
+     *
+     * @param token
+     */
+    public static void setFacebookAccessToken(String token) {
+        PreferenceManager.setFacebookAccessToken(token);
+    }
+
+    /**
+     * Clear the facebook access token in preferences
+     *
+     */
+    public static void removeFacebookAccessToken() {
+        PreferenceManager.removeFacebookAccessToken();
     }
 }

@@ -109,12 +109,28 @@ public class PreferenceManager {
      * START PUTTING GETTER/SETTER METHODS HERE
      */
 
+    /**
+     * Get facebook access token
+     * @return
+     */
     public static String getFacebookAccessToken() {
         return getString(FACEBOOK_ACCESS_TOKEN_KEY, null);
     }
 
+    /**
+     * Set facebook access token
+     * @param facebookAccessToken
+     */
     public static void setFacebookAccessToken(String facebookAccessToken) {
         SharedPreferences.Editor editor = putString(FACEBOOK_ACCESS_TOKEN_KEY, facebookAccessToken);
+        editor.apply();
+    }
+
+    /**
+     * Remove facebook access token
+     */
+    public static void removeFacebookAccessToken() {
+        SharedPreferences.Editor editor = getEditor().remove(FACEBOOK_ACCESS_TOKEN_KEY);
         editor.apply();
     }
 }

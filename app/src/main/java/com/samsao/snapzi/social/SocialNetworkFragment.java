@@ -8,6 +8,7 @@ import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.UserManager;
 
 /**
  * @author jfcartier
@@ -37,7 +38,9 @@ public class SocialNetworkFragment extends Fragment {
      * Login with Facebook
      */
     protected void loginWithFacebook(OnLoginCompleteListener onLoginCompleteListener) {
-        mSocialNetworkManager.getFacebookSocialNetwork().requestLogin(onLoginCompleteListener);
+        if (!isFacebookConnected()) {
+            mSocialNetworkManager.getFacebookSocialNetwork().requestLogin(onLoginCompleteListener);
+        }
     }
 
     /**
@@ -59,10 +62,22 @@ public class SocialNetworkFragment extends Fragment {
     }
 
     /**
+     * Logout from Facebook
+     */
+    protected void logoutFromFacebook() {
+        if (isFacebookConnected()) {
+            mSocialNetworkManager.getFacebookSocialNetwork().logout();
+        }
+        UserManager.removeFacebookAccessToken();
+    }
+
+    /**
      * Login with Twitter
      */
     protected void loginWithTwitter(OnLoginCompleteListener onLoginCompleteListener) {
-        mSocialNetworkManager.getTwitterSocialNetwork().requestLogin(onLoginCompleteListener);
+        if (!isTwitterConnected()) {
+            mSocialNetworkManager.getTwitterSocialNetwork().requestLogin(onLoginCompleteListener);
+        }
     }
 
     /**
@@ -84,10 +99,21 @@ public class SocialNetworkFragment extends Fragment {
     }
 
     /**
+     * Logout from Twitter
+     */
+    protected void logoutFromTwitter() {
+        if (isTwitterConnected()) {
+            mSocialNetworkManager.getTwitterSocialNetwork().logout();
+        }
+    }
+
+    /**
      * Login with Google+
      */
     protected void loginWithGooglePlus(OnLoginCompleteListener onLoginCompleteListener) {
-        mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(onLoginCompleteListener);
+        if (!isGooglePlusConnected()) {
+            mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(onLoginCompleteListener);
+        }
     }
 
     /**
@@ -106,5 +132,14 @@ public class SocialNetworkFragment extends Fragment {
      */
     protected AccessToken getGooglePlusAccessToken() {
         return mSocialNetworkManager.getGooglePlusSocialNetwork().getAccessToken();
+    }
+
+    /**
+     * Logout from Google+
+     */
+    protected void logoutFromGooglePlus() {
+        if (isGooglePlusConnected()) {
+            mSocialNetworkManager.getGooglePlusSocialNetwork().logout();
+        }
     }
 }
