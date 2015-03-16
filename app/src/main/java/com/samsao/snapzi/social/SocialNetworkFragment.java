@@ -8,6 +8,7 @@ import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 
 /**
@@ -32,6 +33,14 @@ public class SocialNetworkFragment extends Fragment {
                     .build();
             getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
         }
+    }
+
+    /**
+     * Set a callback when the social network manager is initialized
+     * @param onInitializationCompleteListener
+     */
+    public void setSocialNetworkManagerOnInitializationCompleteListener(SocialNetworkManager.OnInitializationCompleteListener onInitializationCompleteListener) {
+        mSocialNetworkManager.setOnInitializationCompleteListener(onInitializationCompleteListener);
     }
 
     /**
@@ -69,6 +78,23 @@ public class SocialNetworkFragment extends Fragment {
             mSocialNetworkManager.getFacebookSocialNetwork().logout();
         }
         UserManager.removeFacebookAccessToken();
+    }
+
+    /**
+     * Set the facebook access token in preferences
+     */
+    protected void setFacebookAccessToken() {
+        AccessToken accessToken = getFacebookAccessToken();
+        if (accessToken != null) {
+            UserManager.setFacebookAccessToken(accessToken.token);
+        }
+    }
+
+    /**
+     * Remove the facebook access token in preferences
+     */
+    protected void removeFacebookAccessToken() {
+        PreferenceManager.removeFacebookAccessToken();
     }
 
     /**

@@ -8,12 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.SocialNetworkFragment;
-import com.samsao.snapzi.util.UserManager;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -64,7 +62,7 @@ public class LoginFragment extends SocialNetworkFragment {
 
                 @Override
                 public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
-                    // TODO
+                    removeFacebookAccessToken();
                     Toast.makeText(getActivity(), "Login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -87,16 +85,6 @@ public class LoginFragment extends SocialNetworkFragment {
     @OnClick(R.id.fragment_login_instagram_btn)
     public void instagramLogin() {
         Toast.makeText(getActivity(), "Instagram TBD", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Set the facebook access token in preferences
-     */
-    protected void setFacebookAccessToken() {
-        AccessToken accessToken = getFacebookAccessToken();
-        if (accessToken != null) {
-            UserManager.setFacebookAccessToken(accessToken.token);
-        }
     }
 
     /**
