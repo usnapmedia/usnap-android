@@ -1,12 +1,11 @@
 package com.samsao.snapzi.preferences;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.authentication.LoginFragment;
+import com.samsao.snapzi.social.SocialNetworkActivity;
 
-public class PreferencesActivity extends ActionBarActivity {
+public class PreferencesActivity extends SocialNetworkActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -185,4 +185,21 @@ public class SocialNetworkFragment extends Fragment {
             mSocialNetworkManager.getGooglePlusSocialNetwork().logout();
         }
     }
+
+    /**
+     * Set the google+ access token in preferences
+     */
+    protected void setGooglePlusAccessToken() {
+        AccessToken accessToken = getGooglePlusAccessToken();
+        if (accessToken != null) {
+            UserManager.setGooglePlusAccessToken(accessToken.token);
+        }
+    }
+
+    /**
+     * Remove the google+ access token in preferences
+     */
+    protected void removeGooglePlusAccessToken() {
+        UserManager.removeFacebookAccessToken();
+    }
 }

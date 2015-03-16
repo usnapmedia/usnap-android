@@ -158,4 +158,29 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = getEditor().remove(TWITTER_ACCESS_TOKEN_KEY);
         editor.apply();
     }
+
+    /**
+     * Get google+ access token
+     * @return
+     */
+    public static String getGooglePlusAccessToken() {
+        return getString(GPLUS_ACCESS_TOKEN_KEY, null);
+    }
+
+    /**
+     * Set google+ access token
+     * @param googlePlusAccessToken
+     */
+    public static void setGooglePlusAccessToken(String googlePlusAccessToken) {
+        SharedPreferences.Editor editor = putString(GPLUS_ACCESS_TOKEN_KEY, googlePlusAccessToken);
+        editor.apply();
+    }
+
+    /**
+     * Remove google+ access token
+     */
+    public static void removeGooglePlusAccessToken() {
+        SharedPreferences.Editor editor = getEditor().remove(GPLUS_ACCESS_TOKEN_KEY);
+        editor.apply();
+    }
 }

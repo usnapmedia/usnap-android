@@ -74,6 +74,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
     protected void initializeSwitches() {
         initializeFacebookSwitch();
         initializeTwitterSwitch();
+        initializeGooglePlusSwitch();
     }
 
     /**
@@ -133,6 +134,37 @@ public class PreferencesFragment extends SocialNetworkFragment {
                     });
                 } else {
                     logoutFromTwitter();
+                }
+            }
+        });
+    }
+
+    /**
+     * Initializes the Google+ switch
+     */
+    protected void initializeGooglePlusSwitch() {
+        mGooglePlusSwitch.setChecked(isGooglePlusConnected());
+        mGooglePlusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    loginWithGooglePlus(new OnLoginCompleteListener() {
+                        @Override
+                        public void onLoginSuccess(int socialNetworkId) {
+                            setGooglePlusAccessToken();
+                            mGooglePlusSwitch.setChecked(true);
+                            Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
+                            removeGooglePlusAccessToken();
+                            mGooglePlusSwitch.setChecked(false);
+                            Toast.makeText(getActivity(), "Google+ login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    logoutFromGooglePlus();
                 }
             }
         });

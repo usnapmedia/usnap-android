@@ -13,7 +13,7 @@ public class UserManager {
      * @return
      */
     public static boolean isLogged() {
-        // TODO add other social networks
+        // TODO get logging with backend
         return !TextUtils.isEmpty(getFacebookAccessToken());
     }
 
@@ -65,5 +65,30 @@ public class UserManager {
      */
     public static void removeTwitterAccessToken() {
         PreferenceManager.removeTwitterAccessToken();
+    }
+
+    /**
+     * Returns the google+ access token
+     * @return
+     */
+    public static String getGooglePlusAccessToken() {
+        return PreferenceManager.getGooglePlusAccessToken();
+    }
+
+    /**
+     * Set the google+ access token in preferences
+     *
+     * @param token
+     */
+    public static void setGooglePlusAccessToken(String token) {
+        PreferenceManager.setGooglePlusAccessToken(token);
+    }
+
+    /**
+     * Clear the google+ access token in preferences
+     *
+     */
+    public static void removeGooglePlusAccessToken() {
+        PreferenceManager.removeGooglePlusAccessToken();
     }
 }
