@@ -108,6 +108,7 @@ public class PreferenceManager {
     /**
      * START PUTTING GETTER/SETTER METHODS HERE
      */
+
     public static String getFacebookAccessToken() {
         return getString(FACEBOOK_ACCESS_TOKEN_KEY, null);
     }
