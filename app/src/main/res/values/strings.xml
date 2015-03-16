@@ -8,4 +8,7 @@
     <string name="facebook_app_id" translatable="false">284759385065022</string>
     <string name="twitter_api_token" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
     <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
+
+    <!--Preferences-->
+    <string name="preferences">Preferences</string>
 </resources>

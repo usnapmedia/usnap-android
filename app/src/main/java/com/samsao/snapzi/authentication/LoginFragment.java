@@ -72,16 +72,16 @@ public class LoginFragment extends SocialNetworkFragment {
 
     @OnClick(R.id.fragment_login_twitter_btn)
     public void twitterLogin() {
-        Toast.makeText(getActivity(), "TBD", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Twitter TBD", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fragment_login_gplus_btn)
     public void gplusLogin() {
-        Toast.makeText(getActivity(), "TBD", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Google+ TBD", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fragment_login_instagram_btn)
     public void instagramLogin() {
-        Toast.makeText(getActivity(), "TBD", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Instagram TBD", Toast.LENGTH_SHORT).show();
     }
 }
