@@ -26,8 +26,8 @@ public class SocialNetworkFragment extends Fragment {
         if (mSocialNetworkManager == null) {
             mSocialNetworkManager = SocialNetworkManager.Builder.from(getActivity())
                     .twitter(getString(R.string.twitter_api_token), getString(R.string.twitter_api_secret))
-//                    .facebook()
-//                    .googlePlus()
+                    .facebook()
+                    .googlePlus()
                     .build();
             getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
         }
@@ -42,6 +42,7 @@ public class SocialNetworkFragment extends Fragment {
 
     /**
      * Is the user logged with Facebook?
+     *
      * @return
      */
     protected boolean isFacebookConnected() {
@@ -50,6 +51,7 @@ public class SocialNetworkFragment extends Fragment {
 
     /**
      * Get Facebook access token
+     *
      * @return
      */
     protected AccessToken getFacebookAccessToken() {
@@ -65,6 +67,7 @@ public class SocialNetworkFragment extends Fragment {
 
     /**
      * Is the user logged with Twitter?
+     *
      * @return
      */
     protected boolean isTwitterConnected() {
@@ -73,6 +76,7 @@ public class SocialNetworkFragment extends Fragment {
 
     /**
      * Get Twitter access token
+     *
      * @return
      */
     protected AccessToken getTwitterAccessToken() {
@@ -88,6 +92,7 @@ public class SocialNetworkFragment extends Fragment {
 
     /**
      * Is the user logged with Google+?
+     *
      * @return
      */
     protected boolean isGooglePlusConnected() {
@@ -96,6 +101,7 @@ public class SocialNetworkFragment extends Fragment {
 
     /**
      * Get Google+ access token
+     *
      * @return
      */
     protected AccessToken getGooglePlusAccessToken() {

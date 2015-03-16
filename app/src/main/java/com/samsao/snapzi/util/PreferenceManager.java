@@ -61,7 +61,7 @@ public class PreferenceManager {
         return getSharedPreferences().getString(key, defValue);
     }
 
-    private static Set<String> getString(String key, Set<String> defValue) {
+    private static Set<String> getSetString(String key, Set<String> defValue) {
         return getSharedPreferences().getStringSet(key, defValue);
     }
 
@@ -108,13 +108,12 @@ public class PreferenceManager {
     /**
      * START PUTTING GETTER/SETTER METHODS HERE
      */
+    public static String getFacebookAccessToken() {
+        return getString(FACEBOOK_ACCESS_TOKEN_KEY, null);
+    }
 
-//    public static Boolean getFirstLogin() {
-//        return getBoolean(FIRST_LOGIN_KEY, true);
-//    }
-//
-//    public static void setFirstLogin(Boolean firstLogin) {
-//        SharedPreferences.Editor editor = putBoolean(FIRST_LOGIN_KEY, firstLogin);
-//        editor.apply();
-//    }
+    public static void setFacebookAccessToken(String facebookAccessToken) {
+        SharedPreferences.Editor editor = putString(FACEBOOK_ACCESS_TOKEN_KEY, facebookAccessToken);
+        editor.apply();
+    }
 }
