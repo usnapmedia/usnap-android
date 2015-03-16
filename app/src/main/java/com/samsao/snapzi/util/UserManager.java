@@ -41,4 +41,29 @@ public class UserManager {
     public static void removeFacebookAccessToken() {
         PreferenceManager.removeFacebookAccessToken();
     }
+
+    /**
+     * Returns the twitter access token
+     * @return
+     */
+    public static String getTwitterAccessToken() {
+        return PreferenceManager.getTwitterAccessToken();
+    }
+
+    /**
+     * Set the twitter access token in preferences
+     *
+     * @param token
+     */
+    public static void setTwitterAccessToken(String token) {
+        PreferenceManager.setTwitterAccessToken(token);
+    }
+
+    /**
+     * Clear the twitter access token in preferences
+     *
+     */
+    public static void removeTwitterAccessToken() {
+        PreferenceManager.removeTwitterAccessToken();
+    }
 }

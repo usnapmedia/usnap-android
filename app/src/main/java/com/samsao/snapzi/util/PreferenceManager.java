@@ -133,4 +133,29 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = getEditor().remove(FACEBOOK_ACCESS_TOKEN_KEY);
         editor.apply();
     }
+
+    /**
+     * Get twitter access token
+     * @return
+     */
+    public static String getTwitterAccessToken() {
+        return getString(TWITTER_ACCESS_TOKEN_KEY, null);
+    }
+
+    /**
+     * Set twitter access token
+     * @param twitterAccessToken
+     */
+    public static void setTwitterAccessToken(String twitterAccessToken) {
+        SharedPreferences.Editor editor = putString(TWITTER_ACCESS_TOKEN_KEY, twitterAccessToken);
+        editor.apply();
+    }
+
+    /**
+     * Remove twitter access token
+     */
+    public static void removeTwitterAccessToken() {
+        SharedPreferences.Editor editor = getEditor().remove(TWITTER_ACCESS_TOKEN_KEY);
+        editor.apply();
+    }
 }

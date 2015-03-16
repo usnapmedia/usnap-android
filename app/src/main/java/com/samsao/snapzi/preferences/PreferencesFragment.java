@@ -68,10 +68,17 @@ public class PreferencesFragment extends SocialNetworkFragment {
         ButterKnife.reset(this);
     }
 
+    /**
+     * Initializes the switches
+     */
     protected void initializeSwitches() {
         initializeFacebookSwitch();
+        initializeTwitterSwitch();
     }
 
+    /**
+     * Initializes the Facebook switch
+     */
     protected void initializeFacebookSwitch() {
         mFacebookSwitch.setChecked(isFacebookConnected());
         mFacebookSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -82,17 +89,50 @@ public class PreferencesFragment extends SocialNetworkFragment {
                         @Override
                         public void onLoginSuccess(int socialNetworkId) {
                             setFacebookAccessToken();
-                            Toast.makeText(getActivity(), "Login success", Toast.LENGTH_SHORT).show();
+                            mFacebookSwitch.setChecked(true);
+                            Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
                             removeFacebookAccessToken();
-                            Toast.makeText(getActivity(), "Login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            mFacebookSwitch.setChecked(false);
+                            Toast.makeText(getActivity(), "Facebook login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
                     logoutFromFacebook();
+                }
+            }
+        });
+    }
+
+    /**
+     * Initializes the Twitter switch
+     */
+    protected void initializeTwitterSwitch() {
+        mTwitterSwitch.setChecked(isTwitterConnected());
+        mTwitterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    loginWithTwitter(new OnLoginCompleteListener() {
+                        @Override
+                        public void onLoginSuccess(int socialNetworkId) {
+                            setTwitterAccessToken();
+                            mTwitterSwitch.setChecked(true);
+                            Toast.makeText(getActivity(), "Twitter login success", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
+                            removeTwitterAccessToken();
+                            mTwitterSwitch.setChecked(false);
+                            Toast.makeText(getActivity(), "Twitter login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    logoutFromTwitter();
                 }
             }
         });

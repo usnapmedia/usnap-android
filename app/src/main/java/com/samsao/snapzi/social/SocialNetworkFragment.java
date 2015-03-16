@@ -8,7 +8,6 @@ import com.androidsocialnetworks.lib.AccessToken;
 import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 
 /**
@@ -94,7 +93,7 @@ public class SocialNetworkFragment extends Fragment {
      * Remove the facebook access token in preferences
      */
     protected void removeFacebookAccessToken() {
-        PreferenceManager.removeFacebookAccessToken();
+        UserManager.removeFacebookAccessToken();
     }
 
     /**
@@ -131,6 +130,24 @@ public class SocialNetworkFragment extends Fragment {
         if (isTwitterConnected()) {
             mSocialNetworkManager.getTwitterSocialNetwork().logout();
         }
+        UserManager.removeTwitterAccessToken();
+    }
+
+    /**
+     * Set the twitter access token in preferences
+     */
+    protected void setTwitterAccessToken() {
+        AccessToken accessToken = getTwitterAccessToken();
+        if (accessToken != null) {
+            UserManager.setTwitterAccessToken(accessToken.token);
+        }
+    }
+
+    /**
+     * Remove the twitter access token in preferences
+     */
+    protected void removeTwitterAccessToken() {
+        UserManager.removeFacebookAccessToken();
     }
 
     /**
