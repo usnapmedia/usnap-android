@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.SocialNetworkActivity;
+import com.samsao.snapzi.social.SocialNetworkFragment;
 
 public class PreferencesActivity extends SocialNetworkActivity {
 
@@ -17,8 +18,8 @@ public class PreferencesActivity extends SocialNetworkActivity {
             PreferencesFragment preferencesFragment = PreferencesFragment.newInstance();
 
             // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.activity_preferences_fragment_container, preferencesFragment).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.activity_preferences_fragment_container, preferencesFragment, SocialNetworkFragment.SOCIAL_NETWORK_TAG).commit();
         }
     }
 }

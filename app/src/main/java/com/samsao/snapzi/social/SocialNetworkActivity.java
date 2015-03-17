@@ -1,7 +1,7 @@
 package com.samsao.snapzi.social;
 
+import android.app.Fragment;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 
 /**
@@ -17,7 +17,7 @@ public class SocialNetworkActivity extends ActionBarActivity {
          * This is required only if you are using Google Plus, the issue is that there SDK
          * require Activity to launch Auth, so library can't receive onActivityResult in fragment
          */
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(SocialNetworkFragment.SOCIAL_NETWORK_TAG);
+        Fragment fragment = getFragmentManager().findFragmentByTag(SocialNetworkFragment.SOCIAL_NETWORK_TAG);
         if (fragment != null) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }

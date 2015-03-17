@@ -1,14 +1,17 @@
 package com.samsao.snapzi.social;
 
 
+import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
-import com.androidsocialnetworks.lib.AccessToken;
-import com.androidsocialnetworks.lib.SocialNetworkManager;
 import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
-import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.UserManager;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 /**
  * @author jfcartier
@@ -16,39 +19,42 @@ import com.samsao.snapzi.util.UserManager;
  */
 public class SocialNetworkFragment extends Fragment {
     public static final String SOCIAL_NETWORK_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.SOCIAL_NETWORK_TAG";
-    private SocialNetworkManager mSocialNetworkManager;
+    private final int TWITTER_REQ_CODE = 140;
+    private TwitterLoginButton mTwitterLoginButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTwitterLoginButton = new TwitterLoginButton(getActivity());
+    }
 
-        mSocialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
-
-        if (mSocialNetworkManager == null) {
-            mSocialNetworkManager = SocialNetworkManager.Builder.from(getActivity())
-                    .twitter(getString(R.string.twitter_api_token), getString(R.string.twitter_api_secret))
-                    .facebook()
-                    .googlePlus()
-                    .build();
-            getFragmentManager().beginTransaction().add(mSocialNetworkManager, SOCIAL_NETWORK_TAG).commit();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case TWITTER_REQ_CODE:
+                mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
-    /**
-     * Set a callback when the social network manager is initialized
-     * @param onInitializationCompleteListener
-     */
-    public void setSocialNetworkManagerOnInitializationCompleteListener(SocialNetworkManager.OnInitializationCompleteListener onInitializationCompleteListener) {
-        mSocialNetworkManager.setOnInitializationCompleteListener(onInitializationCompleteListener);
-    }
+//    /**
+//     * Set a callback when the social network manager is initialized
+//     * @param onInitializationCompleteListener
+//     */
+//    public void setSocialNetworkManagerOnInitializationCompleteListener(SocialNetworkManager.OnInitializationCompleteListener onInitializationCompleteListener) {
+//        mSocialNetworkManager.setOnInitializationCompleteListener(onInitializationCompleteListener);
+//    }
 
     /**
      * Login with Facebook
      */
     protected void loginWithFacebook(OnLoginCompleteListener onLoginCompleteListener) {
-        if (!isFacebookConnected()) {
-            mSocialNetworkManager.getFacebookSocialNetwork().requestLogin(onLoginCompleteListener);
-        }
+//        if (!isFacebookConnected()) {
+//            mSocialNetworkManager.getFacebookSocialNetwork().requestLogin(onLoginCompleteListener);
+//        }
     }
 
     /**
@@ -56,38 +62,38 @@ public class SocialNetworkFragment extends Fragment {
      *
      * @return
      */
-    protected boolean isFacebookConnected() {
-        return mSocialNetworkManager.getFacebookSocialNetwork().isConnected();
-    }
+//    protected boolean isFacebookConnected() {
+//        return mSocialNetworkManager.getFacebookSocialNetwork().isConnected();
+//    }
 
     /**
      * Get Facebook access token
      *
      * @return
      */
-    protected AccessToken getFacebookAccessToken() {
-        return mSocialNetworkManager.getFacebookSocialNetwork().getAccessToken();
-    }
+//    protected AccessToken getFacebookAccessToken() {
+//        return mSocialNetworkManager.getFacebookSocialNetwork().getAccessToken();
+//    }
 
     /**
      * Logout from Facebook
      */
-    protected void logoutFromFacebook() {
-        if (isFacebookConnected()) {
-            mSocialNetworkManager.getFacebookSocialNetwork().logout();
-        }
-        UserManager.removeFacebookAccessToken();
-    }
+//    protected void logoutFromFacebook() {
+//        if (isFacebookConnected()) {
+//            mSocialNetworkManager.getFacebookSocialNetwork().logout();
+//        }
+//        UserManager.removeFacebookAccessToken();
+//    }
 
     /**
      * Set the facebook access token in preferences
      */
-    protected void setFacebookAccessToken() {
-        AccessToken accessToken = getFacebookAccessToken();
-        if (accessToken != null) {
-            UserManager.setFacebookAccessToken(accessToken.token);
-        }
-    }
+//    protected void setFacebookAccessToken() {
+//        AccessToken accessToken = getFacebookAccessToken();
+//        if (accessToken != null) {
+//            UserManager.setFacebookAccessToken(accessToken.token);
+//        }
+//    }
 
     /**
      * Remove the facebook access token in preferences
@@ -99,9 +105,10 @@ public class SocialNetworkFragment extends Fragment {
     /**
      * Login with Twitter
      */
-    protected void loginWithTwitter(OnLoginCompleteListener onLoginCompleteListener) {
+    protected void loginWithTwitter(Callback<TwitterSession> callback) {
         if (!isTwitterConnected()) {
-            mSocialNetworkManager.getTwitterSocialNetwork().requestLogin(onLoginCompleteListener);
+            mTwitterLoginButton.setCallback(callback);
+            mTwitterLoginButton.performClick();
         }
     }
 
@@ -111,7 +118,7 @@ public class SocialNetworkFragment extends Fragment {
      * @return
      */
     protected boolean isTwitterConnected() {
-        return mSocialNetworkManager.getTwitterSocialNetwork().isConnected();
+        return TwitterCore.getInstance().getSessionManager().getActiveSession() != null;
     }
 
     /**
@@ -119,16 +126,16 @@ public class SocialNetworkFragment extends Fragment {
      *
      * @return
      */
-    protected AccessToken getTwitterAccessToken() {
-        return mSocialNetworkManager.getTwitterSocialNetwork().getAccessToken();
-    }
+//    protected AccessToken getTwitterAccessToken() {
+//        return mSocialNetworkManager.getTwitterSocialNetwork().getAccessToken();
+//    }
 
     /**
      * Logout from Twitter
      */
     protected void logoutFromTwitter() {
         if (isTwitterConnected()) {
-            mSocialNetworkManager.getTwitterSocialNetwork().logout();
+            TwitterCore.getInstance().logOut();
         }
         UserManager.removeTwitterAccessToken();
     }
@@ -137,10 +144,7 @@ public class SocialNetworkFragment extends Fragment {
      * Set the twitter access token in preferences
      */
     protected void setTwitterAccessToken() {
-        AccessToken accessToken = getTwitterAccessToken();
-        if (accessToken != null) {
-            UserManager.setTwitterAccessToken(accessToken.token);
-        }
+        UserManager.setTwitterAccessToken(Twitter.getSessionManager().getActiveSession().getAuthToken().token);
     }
 
     /**
@@ -153,48 +157,48 @@ public class SocialNetworkFragment extends Fragment {
     /**
      * Login with Google+
      */
-    protected void loginWithGooglePlus(OnLoginCompleteListener onLoginCompleteListener) {
-        if (!isGooglePlusConnected()) {
-            mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(onLoginCompleteListener);
-        }
-    }
+//    protected void loginWithGooglePlus(OnLoginCompleteListener onLoginCompleteListener) {
+//        if (!isGooglePlusConnected()) {
+//            mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(onLoginCompleteListener);
+//        }
+//    }
 
     /**
      * Is the user logged with Google+?
      *
      * @return
      */
-    protected boolean isGooglePlusConnected() {
-        return mSocialNetworkManager.getGooglePlusSocialNetwork().isConnected();
-    }
+//    protected boolean isGooglePlusConnected() {
+//        return mSocialNetworkManager.getGooglePlusSocialNetwork().isConnected();
+//    }
 
     /**
      * Get Google+ access token
      *
      * @return
      */
-    protected AccessToken getGooglePlusAccessToken() {
-        return mSocialNetworkManager.getGooglePlusSocialNetwork().getAccessToken();
-    }
+//    protected AccessToken getGooglePlusAccessToken() {
+//        return mSocialNetworkManager.getGooglePlusSocialNetwork().getAccessToken();
+//    }
 
     /**
      * Logout from Google+
      */
-    protected void logoutFromGooglePlus() {
-        if (isGooglePlusConnected()) {
-            mSocialNetworkManager.getGooglePlusSocialNetwork().logout();
-        }
-    }
+//    protected void logoutFromGooglePlus() {
+//        if (isGooglePlusConnected()) {
+//            mSocialNetworkManager.getGooglePlusSocialNetwork().logout();
+//        }
+//    }
 
     /**
      * Set the google+ access token in preferences
      */
-    protected void setGooglePlusAccessToken() {
-        AccessToken accessToken = getGooglePlusAccessToken();
-        if (accessToken != null) {
-            UserManager.setGooglePlusAccessToken(accessToken.token);
-        }
-    }
+//    protected void setGooglePlusAccessToken() {
+//        AccessToken accessToken = getGooglePlusAccessToken();
+//        if (accessToken != null) {
+//            UserManager.setGooglePlusAccessToken(accessToken.token);
+//        }
+//    }
 
     /**
      * Remove the google+ access token in preferences

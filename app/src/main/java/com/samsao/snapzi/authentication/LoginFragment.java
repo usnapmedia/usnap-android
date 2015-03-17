@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.SocialNetworkFragment;
@@ -51,25 +50,25 @@ public class LoginFragment extends SocialNetworkFragment {
 
     @OnClick(R.id.fragment_login_fb_btn)
     public void facebookLogin() {
-        if (!isFacebookConnected()) {
-            loginWithFacebook(new OnLoginCompleteListener() {
-                @Override
-                public void onLoginSuccess(int socialNetworkId) {
-                    setFacebookAccessToken();
-                    login();
-                    Toast.makeText(getActivity(), "Login success", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
-                    removeFacebookAccessToken();
-                    Toast.makeText(getActivity(), "Login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            setFacebookAccessToken();
-            login();
-        }
+//        if (!isFacebookConnected()) {
+//            loginWithFacebook(new OnLoginCompleteListener() {
+//                @Override
+//                public void onLoginSuccess(int socialNetworkId) {
+//                    setFacebookAccessToken();
+//                    login();
+//                    Toast.makeText(getActivity(), "Login success", Toast.LENGTH_SHORT).show();
+//                }
+//
+//                @Override
+//                public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
+//                    removeFacebookAccessToken();
+//                    Toast.makeText(getActivity(), "Login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        } else {
+//            setFacebookAccessToken();
+//            login();
+//        }
     }
 
     @OnClick(R.id.fragment_login_twitter_btn)
