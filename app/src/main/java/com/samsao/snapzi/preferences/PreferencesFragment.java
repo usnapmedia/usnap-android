@@ -253,6 +253,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
         logoutFromTwitter();
 //        logoutFromGooglePlus();
         // TODO instagram
+        // TODO logout from backend
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -1,20 +1,14 @@
 package com.samsao.snapzi.social;
 
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
-import android.os.Bundle;
 
-import com.facebook.Session;
 import com.samsao.snapzi.util.UserManager;
-import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
-import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 /**
  * @author jfcartier
@@ -24,40 +18,31 @@ public class SocialNetworkFragment extends Fragment {
     public static final String SOCIAL_NETWORK_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.SOCIAL_NETWORK_TAG";
 
     /**
-     * Request codes
+     * Attached activity providing SimpleFacebook
      */
-    private final int TWITTER_REQ_CODE = 140;
-    private final int FACEBOOK_REQ_CODE = 64206;
+    private FacebookProvider mFacebookProvider;
 
     /**
-     * Twitter login button. We have to use this to login since the login method does not work
+     * Attached activity providing Twitter button
      */
-    private TwitterLoginButton mTwitterLoginButton;
-
-    /**
-     * Facebook utils
-     */
-    private SimpleFacebook mSimpleFacebook;
+    private TwitterProvider mTwitterProvider;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mTwitterLoginButton = new TwitterLoginButton(getActivity());
-        mSimpleFacebook = SimpleFacebook.getInstance(getActivity());
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case TWITTER_REQ_CODE:
-                mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
-                break;
-            case FACEBOOK_REQ_CODE:
-                mSimpleFacebook.onActivityResult(getActivity(), requestCode, resultCode, data);
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-                break;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mFacebookProvider = (FacebookProvider) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement FacebookProvider");
+        }
+        try {
+            mTwitterProvider = (TwitterProvider) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement TwitterProvider");
         }
     }
 
@@ -65,9 +50,7 @@ public class SocialNetworkFragment extends Fragment {
      * Login with Facebook
      */
     protected void loginWithFacebook(OnLoginListener onLoginListener) {
-        if (!isFacebookConnected()) {
-            mSimpleFacebook.login(onLoginListener);
-        }
+        mFacebookProvider.loginWithFacebook(onLoginListener);
     }
 
     /**
@@ -76,44 +59,35 @@ public class SocialNetworkFragment extends Fragment {
      * @return
      */
     protected boolean isFacebookConnected() {
-        return mSimpleFacebook.isLogin();
+        return mFacebookProvider.isFacebookConnected();
     }
 
     /**
      * Logout from Facebook
      */
     protected void logoutFromFacebook(OnLogoutListener onLogoutListener) {
-        if (isFacebookConnected()) {
-            mSimpleFacebook.logout(onLogoutListener);
-        }
-        UserManager.removeFacebookAccessToken();
+        mFacebookProvider.logoutFromFacebook(onLogoutListener);
     }
 
     /**
      * Set the facebook access token in preferences
      */
     protected void setFacebookAccessToken() {
-        Session session = mSimpleFacebook.getSession();
-        if (session != null) {
-            UserManager.setFacebookAccessToken(session.getAccessToken());
-        }
+        mFacebookProvider.setFacebookAccessToken();
     }
 
     /**
      * Remove the facebook access token in preferences
      */
     protected void removeFacebookAccessToken() {
-        UserManager.removeFacebookAccessToken();
+        mFacebookProvider.removeFacebookAccessToken();
     }
 
     /**
      * Login with Twitter
      */
     protected void loginWithTwitter(Callback<TwitterSession> callback) {
-        if (!isTwitterConnected()) {
-            mTwitterLoginButton.setCallback(callback);
-            mTwitterLoginButton.performClick();
-        }
+        mTwitterProvider.loginWithTwitter(callback);
     }
 
     /**
@@ -122,31 +96,28 @@ public class SocialNetworkFragment extends Fragment {
      * @return
      */
     protected boolean isTwitterConnected() {
-        return TwitterCore.getInstance().getSessionManager().getActiveSession() != null;
+        return mTwitterProvider.isTwitterConnected();
     }
 
     /**
      * Logout from Twitter
      */
     protected void logoutFromTwitter() {
-        if (isTwitterConnected()) {
-            TwitterCore.getInstance().logOut();
-        }
-        UserManager.removeTwitterAccessToken();
+        mTwitterProvider.logoutFromTwitter();
     }
 
     /**
      * Set the twitter access token in preferences
      */
     protected void setTwitterAccessToken() {
-        UserManager.setTwitterAccessToken(Twitter.getSessionManager().getActiveSession().getAuthToken().token);
+        mTwitterProvider.setTwitterAccessToken();
     }
 
     /**
      * Remove the twitter access token in preferences
      */
     protected void removeTwitterAccessToken() {
-        UserManager.removeFacebookAccessToken();
+        mTwitterProvider.removeTwitterAccessToken();
     }
 
     /**
