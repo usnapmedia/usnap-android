@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.SocialNetworkFragment;
+import com.sromku.simple.fb.Permission;
+import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -34,6 +37,10 @@ public class PreferencesFragment extends SocialNetworkFragment {
     @InjectView(R.id.fragment_preferences_instagram)
     public Switch mInstagramSwitch;
 
+    /**
+     * Switches onChange listeners
+     */
+    private CompoundButton.OnCheckedChangeListener mFacebookSwitchOnCheckedChangeListener;
     private CompoundButton.OnCheckedChangeListener mTwitterSwitchOnCheckedChangeListener;
 
     /**
@@ -58,12 +65,75 @@ public class PreferencesFragment extends SocialNetworkFragment {
         View view = inflater.inflate(R.layout.fragment_preferences, container, false);
         ButterKnife.inject(this, view);
 
-//        setSocialNetworkManagerOnInitializationCompleteListener(new SocialNetworkManager.OnInitializationCompleteListener() {
-//            @Override
-//            public void onSocialNetworkManagerInitialized() {
-//                initializeSwitches();
-//            }
-//        });
+        mFacebookSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    loginWithFacebook(new OnLoginListener() {
+                        @Override
+                        public void onLogin() {
+                            setFacebookAccessToken();
+                            mFacebookSwitch.setChecked(true);
+                            Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onNotAcceptingPermissions(Permission.Type type) {
+                            removeFacebookAccessToken();
+                            mFacebookSwitch.setOnCheckedChangeListener(null);
+                            mFacebookSwitch.setChecked(false);
+                            mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+                            Toast.makeText(getActivity(), "Facebook login failed: user did not accept permissions", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onThinking() {
+
+                        }
+
+                        @Override
+                        public void onException(Throwable throwable) {
+                            removeFacebookAccessToken();
+                            mFacebookSwitch.setOnCheckedChangeListener(null);
+                            mFacebookSwitch.setChecked(false);
+                            mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+                            Toast.makeText(getActivity(), "Facebook login failed: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFail(String error) {
+                            removeFacebookAccessToken();
+                            mFacebookSwitch.setOnCheckedChangeListener(null);
+                            mFacebookSwitch.setChecked(false);
+                            mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+                            Toast.makeText(getActivity(), "Facebook login failed: " + error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    logoutFromFacebook(new OnLogoutListener() {
+                        @Override
+                        public void onLogout() {
+
+                        }
+
+                        @Override
+                        public void onThinking() {
+
+                        }
+
+                        @Override
+                        public void onException(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onFail(String s) {
+
+                        }
+                    });
+                }
+            }
+        };
 
         mTwitterSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -105,7 +175,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
      * Initializes the switches
      */
     protected void initializeSwitches() {
-//        initializeFacebookSwitch();
+        initializeFacebookSwitch();
         initializeTwitterSwitch();
 //        initializeGooglePlusSwitch();
     }
@@ -113,33 +183,10 @@ public class PreferencesFragment extends SocialNetworkFragment {
     /**
      * Initializes the Facebook switch
      */
-//    protected void initializeFacebookSwitch() {
-//        mFacebookSwitch.setChecked(isFacebookConnected());
-//        mFacebookSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    loginWithFacebook(new OnLoginCompleteListener() {
-//                        @Override
-//                        public void onLoginSuccess(int socialNetworkId) {
-//                            setFacebookAccessToken();
-//                            mFacebookSwitch.setChecked(true);
-//                            Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        @Override
-//                        public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
-//                            removeFacebookAccessToken();
-//                            mFacebookSwitch.setChecked(false);
-//                            Toast.makeText(getActivity(), "Facebook login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                } else {
-//                    logoutFromFacebook();
-//                }
-//            }
-//        });
-//    }
+    protected void initializeFacebookSwitch() {
+        mFacebookSwitch.setChecked(isFacebookConnected());
+        mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+    }
 
     /**
      * Initializes the Twitter switch

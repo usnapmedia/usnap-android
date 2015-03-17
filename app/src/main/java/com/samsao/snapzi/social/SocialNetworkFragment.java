@@ -5,13 +5,19 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.androidsocialnetworks.lib.listener.OnLoginCompleteListener;
 import com.samsao.snapzi.util.UserManager;
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.entities.Account;
+import com.sromku.simple.fb.listeners.OnAccountsListener;
+import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+
+import java.util.List;
 
 /**
  * @author jfcartier
@@ -19,13 +25,28 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
  */
 public class SocialNetworkFragment extends Fragment {
     public static final String SOCIAL_NETWORK_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.SOCIAL_NETWORK_TAG";
+
+    /**
+     * Request codes
+     */
     private final int TWITTER_REQ_CODE = 140;
+    private final int FACEBOOK_REQ_CODE = 64206;
+
+    /**
+     * Twitter login button. We have to use this to login since the login method does not work
+     */
     private TwitterLoginButton mTwitterLoginButton;
+
+    /**
+     * Facebook utils
+     */
+    private SimpleFacebook mSimpleFacebook;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTwitterLoginButton = new TwitterLoginButton(getActivity());
+        mSimpleFacebook = SimpleFacebook.getInstance(getActivity());
     }
 
     @Override
@@ -34,27 +55,21 @@ public class SocialNetworkFragment extends Fragment {
             case TWITTER_REQ_CODE:
                 mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
                 break;
+            case FACEBOOK_REQ_CODE:
+                mSimpleFacebook.onActivityResult(getActivity(), requestCode, resultCode, data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
 
-//    /**
-//     * Set a callback when the social network manager is initialized
-//     * @param onInitializationCompleteListener
-//     */
-//    public void setSocialNetworkManagerOnInitializationCompleteListener(SocialNetworkManager.OnInitializationCompleteListener onInitializationCompleteListener) {
-//        mSocialNetworkManager.setOnInitializationCompleteListener(onInitializationCompleteListener);
-//    }
-
     /**
      * Login with Facebook
      */
-    protected void loginWithFacebook(OnLoginCompleteListener onLoginCompleteListener) {
-//        if (!isFacebookConnected()) {
-//            mSocialNetworkManager.getFacebookSocialNetwork().requestLogin(onLoginCompleteListener);
-//        }
+    protected void loginWithFacebook(OnLoginListener onLoginListener) {
+        if (!isFacebookConnected()) {
+            mSimpleFacebook.login(onLoginListener);
+        }
     }
 
     /**
@@ -62,38 +77,33 @@ public class SocialNetworkFragment extends Fragment {
      *
      * @return
      */
-//    protected boolean isFacebookConnected() {
-//        return mSocialNetworkManager.getFacebookSocialNetwork().isConnected();
-//    }
-
-    /**
-     * Get Facebook access token
-     *
-     * @return
-     */
-//    protected AccessToken getFacebookAccessToken() {
-//        return mSocialNetworkManager.getFacebookSocialNetwork().getAccessToken();
-//    }
+    protected boolean isFacebookConnected() {
+        return mSimpleFacebook.isLogin();
+    }
 
     /**
      * Logout from Facebook
      */
-//    protected void logoutFromFacebook() {
-//        if (isFacebookConnected()) {
-//            mSocialNetworkManager.getFacebookSocialNetwork().logout();
-//        }
-//        UserManager.removeFacebookAccessToken();
-//    }
+    protected void logoutFromFacebook(OnLogoutListener onLogoutListener) {
+        if (isFacebookConnected()) {
+            mSimpleFacebook.logout(onLogoutListener);
+        }
+        UserManager.removeFacebookAccessToken();
+    }
 
     /**
      * Set the facebook access token in preferences
      */
-//    protected void setFacebookAccessToken() {
-//        AccessToken accessToken = getFacebookAccessToken();
-//        if (accessToken != null) {
-//            UserManager.setFacebookAccessToken(accessToken.token);
-//        }
-//    }
+    protected void setFacebookAccessToken() {
+        mSimpleFacebook.getAccounts(new OnAccountsListener() {
+            @Override
+            public void onComplete(List<Account> response) {
+                if (response.size() > 0) {
+                    UserManager.setFacebookAccessToken(response.get(0).getAccessToken());
+                }
+            }
+        });
+    }
 
     /**
      * Remove the facebook access token in preferences
