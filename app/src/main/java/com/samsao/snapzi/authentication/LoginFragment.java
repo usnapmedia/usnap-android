@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.SocialNetworkFragment;
+import com.sromku.simple.fb.Permission;
+import com.sromku.simple.fb.listeners.OnLoginListener;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -50,25 +52,42 @@ public class LoginFragment extends SocialNetworkFragment {
 
     @OnClick(R.id.fragment_login_fb_btn)
     public void facebookLogin() {
-//        if (!isFacebookConnected()) {
-//            loginWithFacebook(new OnLoginCompleteListener() {
-//                @Override
-//                public void onLoginSuccess(int socialNetworkId) {
-//                    setFacebookAccessToken();
-//                    login();
-//                    Toast.makeText(getActivity(), "Login success", Toast.LENGTH_SHORT).show();
-//                }
-//
-//                @Override
-//                public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
-//                    removeFacebookAccessToken();
-//                    Toast.makeText(getActivity(), "Login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//        } else {
-//            setFacebookAccessToken();
-//            login();
-//        }
+        if (!isFacebookConnected()) {
+            loginWithFacebook(new OnLoginListener() {
+                @Override
+                public void onLogin() {
+                    setFacebookAccessToken();
+                    login();
+                    Toast.makeText(getActivity(), "Login success", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNotAcceptingPermissions(Permission.Type type) {
+                    removeFacebookAccessToken();
+                    Toast.makeText(getActivity(), "Login failed: permissions not accepted", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onThinking() {
+
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    removeFacebookAccessToken();
+                    Toast.makeText(getActivity(), "Login failed: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFail(String error) {
+                    removeFacebookAccessToken();
+                    Toast.makeText(getActivity(), "Login failed: " + error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            setFacebookAccessToken();
+            login();
+        }
     }
 
     @OnClick(R.id.fragment_login_twitter_btn)

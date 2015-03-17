@@ -1,5 +1,7 @@
 package com.samsao.snapzi.util;
 
+import android.text.TextUtils;
+
 /**
  * @author jfcartier
  * @since 15-03-16
@@ -12,7 +14,7 @@ public class UserManager {
      */
     public static boolean isLogged() {
         // TODO get logging with backend
-        return true;
+        return !TextUtils.isEmpty(getFacebookAccessToken());
     }
 
     /**

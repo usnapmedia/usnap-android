@@ -5,10 +5,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.facebook.Session;
 import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Account;
-import com.sromku.simple.fb.listeners.OnAccountsListener;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.twitter.sdk.android.Twitter;
@@ -16,8 +15,6 @@ import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-
-import java.util.List;
 
 /**
  * @author jfcartier
@@ -57,6 +54,7 @@ public class SocialNetworkFragment extends Fragment {
                 break;
             case FACEBOOK_REQ_CODE:
                 mSimpleFacebook.onActivityResult(getActivity(), requestCode, resultCode, data);
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
@@ -95,14 +93,10 @@ public class SocialNetworkFragment extends Fragment {
      * Set the facebook access token in preferences
      */
     protected void setFacebookAccessToken() {
-        mSimpleFacebook.getAccounts(new OnAccountsListener() {
-            @Override
-            public void onComplete(List<Account> response) {
-                if (response.size() > 0) {
-                    UserManager.setFacebookAccessToken(response.get(0).getAccessToken());
-                }
-            }
-        });
+        Session session = mSimpleFacebook.getSession();
+        if (session != null) {
+            UserManager.setFacebookAccessToken(session.getAccessToken());
+        }
     }
 
     /**
@@ -130,15 +124,6 @@ public class SocialNetworkFragment extends Fragment {
     protected boolean isTwitterConnected() {
         return TwitterCore.getInstance().getSessionManager().getActiveSession() != null;
     }
-
-    /**
-     * Get Twitter access token
-     *
-     * @return
-     */
-//    protected AccessToken getTwitterAccessToken() {
-//        return mSocialNetworkManager.getTwitterSocialNetwork().getAccessToken();
-//    }
 
     /**
      * Logout from Twitter

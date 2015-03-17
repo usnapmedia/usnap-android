@@ -229,8 +229,28 @@ public class PreferencesFragment extends SocialNetworkFragment {
 
     @OnClick(R.id.fragment_preferences_logout_btn)
     public void logout() {
-//        logoutFromFacebook();
-//        logoutFromTwitter();
+        logoutFromFacebook(new OnLogoutListener() {
+            @Override
+            public void onLogout() {
+
+            }
+
+            @Override
+            public void onThinking() {
+
+            }
+
+            @Override
+            public void onException(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onFail(String s) {
+
+            }
+        });
+        logoutFromTwitter();
 //        logoutFromGooglePlus();
         // TODO instagram
 
