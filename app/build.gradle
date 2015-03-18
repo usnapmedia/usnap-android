@@ -37,6 +37,8 @@ android {
         targetSdkVersion 22
         versionCode System.env.BUILD_NUMBER ? "$System.env.BUILD_NUMBER".toInteger() : 999999
         versionName computeVersionName()
+        buildConfigField "String", "PROD", "\"prod\""
+        buildConfigField "String", "DEV", "\"dev\""
     }
 
     signingConfigs {
@@ -80,6 +82,21 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude '.readme'
+    }
+
+    productFlavors {
+        prod {
+            buildConfigField "String", "ENV", "\"prod\""
+        }
+
+        dev {
+            buildConfigField "String", "ENV", "\"dev\""
+            versionName computeVersionName() + "-DEV"
+        }
+    }
+
+    sourceSets {
+        dev.setRoot('src/dev')
     }
 }
 
