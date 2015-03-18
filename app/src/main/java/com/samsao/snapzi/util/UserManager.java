@@ -1,6 +1,7 @@
 package com.samsao.snapzi.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * @author jfcartier
@@ -32,6 +33,7 @@ public class UserManager {
      */
     public static void setFacebookAccessToken(String token) {
         PreferenceManager.setFacebookAccessToken(token);
+        log();
     }
 
     /**
@@ -40,6 +42,7 @@ public class UserManager {
      */
     public static void removeFacebookAccessToken() {
         PreferenceManager.removeFacebookAccessToken();
+        log();
     }
 
     /**
@@ -57,6 +60,7 @@ public class UserManager {
      */
     public static void setTwitterAccessToken(String token) {
         PreferenceManager.setTwitterAccessToken(token);
+        log();
     }
 
     /**
@@ -65,6 +69,7 @@ public class UserManager {
      */
     public static void removeTwitterAccessToken() {
         PreferenceManager.removeTwitterAccessToken();
+        log();
     }
 
     /**
@@ -82,6 +87,7 @@ public class UserManager {
      */
     public static void setGooglePlusAccessToken(String token) {
         PreferenceManager.setGooglePlusAccessToken(token);
+        log();
     }
 
     /**
@@ -90,5 +96,12 @@ public class UserManager {
      */
     public static void removeGooglePlusAccessToken() {
         PreferenceManager.removeGooglePlusAccessToken();
+        log();
+    }
+
+    public static void log() {
+        Log.i("UserManager", "FB token: " + getFacebookAccessToken());
+        Log.i("UserManager", "Twitter token: " + getTwitterAccessToken());
+        Log.i("UserManager", "Google+ token: " + getGooglePlusAccessToken());
     }
 }

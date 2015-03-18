@@ -4,7 +4,6 @@ package com.samsao.snapzi.social;
 import android.app.Activity;
 import android.app.Fragment;
 
-import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.twitter.sdk.android.core.Callback;
@@ -27,6 +26,11 @@ public class SocialNetworkFragment extends Fragment {
      */
     private TwitterProvider mTwitterProvider;
 
+    /**
+     * Attached activity providing Google+ signin
+     */
+    private GooglePlusProvider mGooglePlusProvider;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -43,6 +47,13 @@ public class SocialNetworkFragment extends Fragment {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
                     + " must implement TwitterProvider");
+        }
+        try {
+            mGooglePlusProvider = (GooglePlusProvider) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement GooglePlusProvider");
         }
     }
 
@@ -123,53 +134,36 @@ public class SocialNetworkFragment extends Fragment {
     /**
      * Login with Google+
      */
-//    protected void loginWithGooglePlus(OnLoginCompleteListener onLoginCompleteListener) {
-//        if (!isGooglePlusConnected()) {
-//            mSocialNetworkManager.getGooglePlusSocialNetwork().requestLogin(onLoginCompleteListener);
-//        }
-//    }
-
-    /**
-     * Is the user logged with Google+?
-     *
-     * @return
-     */
-//    protected boolean isGooglePlusConnected() {
-//        return mSocialNetworkManager.getGooglePlusSocialNetwork().isConnected();
-//    }
-
-    /**
-     * Get Google+ access token
-     *
-     * @return
-     */
-//    protected AccessToken getGooglePlusAccessToken() {
-//        return mSocialNetworkManager.getGooglePlusSocialNetwork().getAccessToken();
-//    }
+    protected void loginWithGooglePlus(OnGooglePlusLoginListener listener) {
+        mGooglePlusProvider.loginWithGooglePlus(listener);
+    }
 
     /**
      * Logout from Google+
      */
-//    protected void logoutFromGooglePlus() {
-//        if (isGooglePlusConnected()) {
-//            mSocialNetworkManager.getGooglePlusSocialNetwork().logout();
-//        }
-//    }
+    protected void logoutFromGooglePlus() {
+        mGooglePlusProvider.logoutFromGooglePlus();
+    }
+
+    /**
+     * Disconnected from Google+
+     */
+    protected void disconnectFromGooglePlus() {
+        mGooglePlusProvider.disconnecttFromGooglePlus();
+    }
+
 
     /**
      * Set the google+ access token in preferences
      */
-//    protected void setGooglePlusAccessToken() {
-//        AccessToken accessToken = getGooglePlusAccessToken();
-//        if (accessToken != null) {
-//            UserManager.setGooglePlusAccessToken(accessToken.token);
-//        }
-//    }
+    protected void setGooglePlusAccessToken() {
+        mGooglePlusProvider.setGooglePlusAccessToken();
+    }
 
     /**
      * Remove the google+ access token in preferences
      */
     protected void removeGooglePlusAccessToken() {
-        UserManager.removeFacebookAccessToken();
+        mGooglePlusProvider.removeGooglePlusAccessToken();
     }
 }

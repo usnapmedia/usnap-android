@@ -122,16 +122,14 @@ public class PreferenceManager {
      * @param facebookAccessToken
      */
     public static void setFacebookAccessToken(String facebookAccessToken) {
-        SharedPreferences.Editor editor = putString(FACEBOOK_ACCESS_TOKEN_KEY, facebookAccessToken);
-        editor.apply();
+        putString(FACEBOOK_ACCESS_TOKEN_KEY, facebookAccessToken).apply();
     }
 
     /**
      * Remove facebook access token
      */
     public static void removeFacebookAccessToken() {
-        SharedPreferences.Editor editor = getEditor().remove(FACEBOOK_ACCESS_TOKEN_KEY);
-        editor.apply();
+        getEditor().remove(FACEBOOK_ACCESS_TOKEN_KEY).apply();
     }
 
     /**
@@ -147,16 +145,14 @@ public class PreferenceManager {
      * @param twitterAccessToken
      */
     public static void setTwitterAccessToken(String twitterAccessToken) {
-        SharedPreferences.Editor editor = putString(TWITTER_ACCESS_TOKEN_KEY, twitterAccessToken);
-        editor.apply();
+        putString(TWITTER_ACCESS_TOKEN_KEY, twitterAccessToken).apply();
     }
 
     /**
      * Remove twitter access token
      */
     public static void removeTwitterAccessToken() {
-        SharedPreferences.Editor editor = getEditor().remove(TWITTER_ACCESS_TOKEN_KEY);
-        editor.apply();
+        getEditor().remove(TWITTER_ACCESS_TOKEN_KEY).apply();
     }
 
     /**
@@ -172,15 +168,13 @@ public class PreferenceManager {
      * @param googlePlusAccessToken
      */
     public static void setGooglePlusAccessToken(String googlePlusAccessToken) {
-        SharedPreferences.Editor editor = putString(GPLUS_ACCESS_TOKEN_KEY, googlePlusAccessToken);
-        editor.apply();
+        putString(GPLUS_ACCESS_TOKEN_KEY, googlePlusAccessToken).apply();
     }
 
     /**
      * Remove google+ access token
      */
     public static void removeGooglePlusAccessToken() {
-        SharedPreferences.Editor editor = getEditor().remove(GPLUS_ACCESS_TOKEN_KEY);
-        editor.apply();
+        getEditor().remove(GPLUS_ACCESS_TOKEN_KEY).apply();
     }
 }
