@@ -95,7 +95,7 @@
 -dontwarn rx.internal.util.**
 
 # For Twitter SDK
--include proguard-com.twitter.sdk.android.twitter.txt
+-include ../proguard-com.twitter.sdk.android.twitter.txt
 
 # For Facebook SDK
 -keep class com.facebook.** { *; }
