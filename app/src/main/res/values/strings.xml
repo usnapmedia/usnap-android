@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">Snapzi</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!--Login-->
+    <string name="action_login">Login</string>
+
+    <!--Social Networks-->
+    <string name="facebook_app_id" translatable="false">284759385065022</string>
+    <string name="facebook_app_namespace" translatable="false">wink-talent</string>
+    <string name="twitter_api_key" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
+    <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
+
+    <!--Preferences-->
+    <string name="preferences">Preferences</string>
 </resources>
