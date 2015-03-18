@@ -40,7 +40,7 @@
 
         <activity
             android:name=".camera.SelectMediaActivity"
-            android:label="@string/action_login" >
+            android:label="@string/action_select_media" >
         </activity>
 
         <meta-data

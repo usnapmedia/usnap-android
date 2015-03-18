@@ -3,11 +3,12 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,6 @@ import android.widget.FrameLayout;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.preferences.PreferencesActivity;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -162,23 +158,10 @@ public class SelectMediaFragment extends Fragment {
 
     private Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
         @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-
-            File pictureFile = CameraUtils.getOutputMediaFile(CameraUtils.MEDIA_TYPE_IMAGE);
-            if (pictureFile == null) {
-                Log.d(LOG_TAG, "Error creating media file, check storage permissions");
-                return;
-            }
-
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(LOG_TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
-            }
+        public void onPictureTaken(byte[] bytes, Camera camera) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            // TODO: fix rotation: http://stackoverflow.com/questions/11674816/android-image-orientation-issue-with-custom-camera-activity
+            // TODO: start modify activity with bitmap
 
             mCameraPreview.getCamera().startPreview();
         }
