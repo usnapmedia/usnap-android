@@ -29,12 +29,12 @@ def computeVersionName() {
 }
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "22"
     defaultConfig {
         applicationId "com.samsao.snapzi"
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode System.env.BUILD_NUMBER ? "$System.env.BUILD_NUMBER".toInteger() : 999999
         versionName computeVersionName()
     }
