@@ -3,6 +3,7 @@ package com.samsao.snapzi.preferences;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.social.OnGooglePlusLoginListener;
 import com.samsao.snapzi.social.SocialNetworkFragment;
+import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
@@ -42,6 +45,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
      */
     private CompoundButton.OnCheckedChangeListener mFacebookSwitchOnCheckedChangeListener;
     private CompoundButton.OnCheckedChangeListener mTwitterSwitchOnCheckedChangeListener;
+    private CompoundButton.OnCheckedChangeListener mGooglePlusSwitchOnCheckedChangeListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -161,6 +165,32 @@ public class PreferencesFragment extends SocialNetworkFragment {
             }
         };
 
+        mGooglePlusSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    loginWithGooglePlus(new OnGooglePlusLoginListener() {
+                        @Override
+                        public void onSuccess() {
+                            setGooglePlusAccessToken();
+                            Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFail() {
+                            removeGooglePlusAccessToken();
+                            mGooglePlusSwitch.setOnCheckedChangeListener(null);
+                            mGooglePlusSwitch.setChecked(false);
+                            mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
+                            Toast.makeText(getActivity(), "Google+ login failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    disconnectFromGooglePlus();
+                }
+            }
+        };
+
         initializeSwitches();
         return view;
     }
@@ -177,7 +207,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
     protected void initializeSwitches() {
         initializeFacebookSwitch();
         initializeTwitterSwitch();
-//        initializeGooglePlusSwitch();
+        initializeGooglePlusSwitch();
     }
 
     /**
@@ -199,33 +229,10 @@ public class PreferencesFragment extends SocialNetworkFragment {
     /**
      * Initializes the Google+ switch
      */
-//    protected void initializeGooglePlusSwitch() {
-//        mGooglePlusSwitch.setChecked(isGooglePlusConnected());
-//        mGooglePlusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    loginWithGooglePlus(new OnLoginCompleteListener() {
-//                        @Override
-//                        public void onLoginSuccess(int socialNetworkId) {
-//                            setGooglePlusAccessToken();
-//                            mGooglePlusSwitch.setChecked(true);
-//                            Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        @Override
-//                        public void onError(int socialNetworkId, String requestId, String errorMessage, Object data) {
-//                            removeGooglePlusAccessToken();
-//                            mGooglePlusSwitch.setChecked(false);
-//                            Toast.makeText(getActivity(), "Google+ login failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                } else {
-//                    logoutFromGooglePlus();
-//                }
-//            }
-//        });
-//    }
+    protected void initializeGooglePlusSwitch() {
+        mGooglePlusSwitch.setChecked(!TextUtils.isEmpty(UserManager.getGooglePlusAccessToken()));
+        mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
+    }
 
     @OnClick(R.id.fragment_preferences_logout_btn)
     public void logout() {
@@ -251,7 +258,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
             }
         });
         logoutFromTwitter();
-//        logoutFromGooglePlus();
+        logoutFromGooglePlus();
         // TODO instagram
         // TODO logout from backend
 

@@ -1,11 +1,16 @@
 package com.samsao.snapzi.social;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.facebook.Session;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
@@ -19,12 +24,15 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import java.io.IOException;
+
 /**
  * @author jfcartier
  * @since 15-03-13
  */
 public class SocialNetworkActivity extends ActionBarActivity implements FacebookProvider,
         TwitterProvider,
+        GooglePlusProvider,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     /**
@@ -32,7 +40,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
      */
     private final int TWITTER_REQ_CODE = 140;
     private final int FACEBOOK_REQ_CODE = 64206;
-    private final int RC_SIGN_IN = 56344;
+    private final int GPLUS_REQ_CODE = 56344;
 
     /**
      * Facebook utils
@@ -71,8 +79,10 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case RC_SIGN_IN:
-                if (!mGoogleApiClient.isConnecting()) {
+            case GPLUS_REQ_CODE:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    mOnGooglePlusLoginListener.onFail();
+                } else if (!mGoogleApiClient.isConnecting()) {
                     mGoogleApiClient.connect();
                 }
                 break;
@@ -111,7 +121,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
         if (result.hasResolution()) {
             try {
                 startIntentSenderForResult(result.getResolution().getIntentSender(),
-                        RC_SIGN_IN, null, 0, 0, 0);
+                        GPLUS_REQ_CODE, null, 0, 0, 0);
             } catch (IntentSender.SendIntentException e) {
                 // The intent was canceled before it was sent.  Return to the default
                 // state and attempt to connect to get an updated ConnectionResult.
@@ -239,48 +249,14 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
     }
 
     /**
-     * Get Google+ access token
-     *
-     * @return
+     * Disconnect from Google+
      */
-    public String getGooglePlusAccessToken() {
-        // TODO
-//        Bundle appActivities = new Bundle();
-//        appActivities.putString(GoogleAuthUtil.KEY_REQUEST_VISIBLE_ACTIVITIES,
-//                "<APP-ACTIVITY1> <APP-ACTIVITY2>");
-//        String scopes = "oauth2:server:client_id:<SERVER-CLIENT-ID>:api_scope:<SCOPE1> <SCOPE2>";
-//        String code = null;
-//        try {
-//            code = GoogleAuthUtil.getToken(
-//                    this,                                              // Context context
-//                    Plus.AccountApi.getAccountName(mGoogleApiClient),  // String accountName
-//                    scopes,                                            // String scope
-//                    appActivities                                      // Bundle bundle
-//            );
-//
-//        } catch (IOException transientEx) {
-//            // network or server error, the call is expected to succeed if you try again later.
-//            // Don't attempt to call again immediately - the request is likely to
-//            // fail, you'll hit quotas or back-off.
-//            ...
-//            return;
-//        } catch (UserRecoverableAuthException e) {
-//            // Requesting an authorization code will always throw
-//            // UserRecoverableAuthException on the first call to GoogleAuthUtil.getToken
-//            // because the user must consent to offline access to their data.  After
-//            // consent is granted control is returned to your activity in onActivityResult
-//            // and the second call to GoogleAuthUtil.getToken will succeed.
-//            startActivityForResult(e.getIntent(), AUTH_CODE_REQUEST_CODE);
-//            return;
-//        } catch (GoogleAuthException authEx) {
-//            // Failure. The call is not expected to ever succeed so it should not be
-//            // retried.
-//            ...
-//            return;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+    public void disconnecttFromGooglePlus() {
+        if (isGooglePlusConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        removeGooglePlusAccessToken();
+        mOnGooglePlusLoginListener = null;
     }
 
     /**
@@ -292,22 +268,49 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
             Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient);
         }
         removeGooglePlusAccessToken();
+        mOnGooglePlusLoginListener = null;
     }
 
     /**
      * Set the google+ access token in preferences
      */
-//    protected void setGooglePlusAccessToken() {
-//        AccessToken accessToken = getGooglePlusAccessToken();
-//        if (accessToken != null) {
-//            UserManager.setGooglePlusAccessToken(accessToken.token);
-//        }
-//    }
+    public void setGooglePlusAccessToken() {
+        new SetGooglePlusAccessTokenTask().execute();
+    }
 
     /**
      * Remove the google+ access token in preferences
      */
     public void removeGooglePlusAccessToken() {
-        UserManager.removeFacebookAccessToken();
+        UserManager.removeGooglePlusAccessToken();
+    }
+
+    /**
+     * Task to set Google+ access token in the background
+     */
+    public class SetGooglePlusAccessTokenTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                UserManager.setGooglePlusAccessToken(GoogleAuthUtil.getToken(SocialNetworkActivity.this,
+                        Plus.AccountApi.getAccountName(mGoogleApiClient),
+                        "oauth2:https://www.googleapis.com/auth/plus.login"));
+            } catch (IOException transientEx) {
+                // network or server error, the call is expected to succeed if you try again later.
+                // Don't attempt to call again immediately - the request is likely to
+                // fail, you'll hit quotas or back-off.
+                return null;
+            } catch (UserRecoverableAuthException e) {
+                // Recover
+                return null;
+            } catch (GoogleAuthException authEx) {
+                // Failure. The call is not expected to ever succeed so it should not be
+                // retried.
+                return null;
+            } catch (Exception e) {
+                return null;
+            }
+            return null;
+        }
     }
 }
