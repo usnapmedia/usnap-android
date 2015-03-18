@@ -22,7 +22,7 @@ import java.util.List;
  * @author vlegault
  * @since 15-03-17
  */
-public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     /**
      * Constants
      */
@@ -46,7 +46,7 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
         public void onCameraPreviewFailed();
     }
 
-    public CameraPreviewSurfaceView(Activity activity) {
+    public CameraPreview(Activity activity, int cameraId) {
         super(activity);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -57,7 +57,7 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_FRONT);
+        mCamera = getCameraInstance(cameraId);
         mLayoutMode = LayoutMode.CenterCrop;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
@@ -256,10 +256,8 @@ public class CameraPreviewSurfaceView extends SurfaceView implements SurfaceHold
 
         Size cameraPictureSize = determinePictureSize(cameraPreviewSize);
         cameraParams.setPictureSize(cameraPictureSize.width, cameraPictureSize.height);
-        if (true) {
-            Log.v(LOG_TAG, "Camera Preview Size - w: " + cameraPreviewSize.width + ", h: " + cameraPreviewSize.height);
-            Log.v(LOG_TAG, "Camera Picture Size - w: " + cameraPictureSize.width + ", h: " + cameraPictureSize.height);
-        }
+        Log.v(LOG_TAG, "Camera Preview Size - w: " + cameraPreviewSize.width + ", h: " + cameraPreviewSize.height);
+        Log.v(LOG_TAG, "Camera Picture Size - w: " + cameraPictureSize.width + ", h: " + cameraPictureSize.height);
 
         mCamera.setParameters(cameraParams);
     }
