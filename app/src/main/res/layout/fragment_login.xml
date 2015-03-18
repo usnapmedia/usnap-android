@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             android:paddingTop="@dimen/activity_vertical_margin"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             tools:context="com.samsao.snapzi.authentication.LoginFragment">
+
+    <Button
+        android:id="@+id/fragment_login_fb_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login with Facebook"/>
+
+    <Button
+        android:id="@+id/fragment_login_twitter_btn"
+        android:layout_marginTop="@dimen/elements_quadruple_vertical_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login with Twitter"/>
+
+    <Button
+        android:id="@+id/fragment_login_gplus_btn"
+        android:layout_marginTop="@dimen/elements_quadruple_vertical_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login with Google+"/>
+
+    <Button
+        android:id="@+id/fragment_login_instagram_btn"
+        android:layout_marginTop="@dimen/elements_quadruple_vertical_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login with Instagram"/>
+
+</LinearLayout>
