@@ -1,10 +1,13 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,11 @@ import android.widget.FrameLayout;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.preferences.PreferencesActivity;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,6 +32,11 @@ import butterknife.InjectView;
  */
 public class SelectMediaFragment extends Fragment {
 
+    /**
+     * Constants
+     */
+    private final String LOG_TAG = getClass().getSimpleName();
+
     private CameraProvider mCameraProvider;
     private CameraPreview mCameraPreview;
 
@@ -32,6 +45,9 @@ public class SelectMediaFragment extends Fragment {
 
     @InjectView(R.id.fragment_select_media_flip_camera_button)
     public Button mFlipCameraButton;
+
+    @InjectView(R.id.fragment_select_media_take_picture_button)
+    public Button mTakePictureButton;
 
     @InjectView(R.id.fragment_select_media_pref_button)
     public Button mPreferenceButton;
@@ -45,6 +61,7 @@ public class SelectMediaFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         setFlipCameraButton();
+        setTakePictureButton();
         setPreferenceButton();
 
         return view;
@@ -74,7 +91,6 @@ public class SelectMediaFragment extends Fragment {
         }
     }
 
-
     private void setFlipCameraButton() {
         // Activate camera flipping function only if more than one camera is available
         if (Camera.getNumberOfCameras() > 1) {
@@ -88,6 +104,21 @@ public class SelectMediaFragment extends Fragment {
         } else {
             mFlipCameraButton.setVisibility(View.GONE);
         }
+    }
+
+    private void setTakePictureButton() {
+        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
+                    @Override
+                    public void onAutoFocus(boolean b, Camera camera) {
+
+                        mCameraPreview.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
+                    }
+                });
+            }
+        });
     }
 
     private void setPreferenceButton() {
@@ -121,4 +152,35 @@ public class SelectMediaFragment extends Fragment {
         mCameraPreviewContainer.removeView(mCameraPreview); // This is necessary.
         mCameraPreview = null;
     }
+
+    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+        public void onShutter() {
+            AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+        }
+    };
+
+    private Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+
+            File pictureFile = CameraUtils.getOutputMediaFile(CameraUtils.MEDIA_TYPE_IMAGE);
+            if (pictureFile == null) {
+                Log.d(LOG_TAG, "Error creating media file, check storage permissions");
+                return;
+            }
+
+            try {
+                FileOutputStream fos = new FileOutputStream(pictureFile);
+                fos.write(data);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                Log.d(LOG_TAG, "File not found: " + e.getMessage());
+            } catch (IOException e) {
+                Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
+            }
+
+            mCameraPreview.getCamera().startPreview();
+        }
+    };
 }
