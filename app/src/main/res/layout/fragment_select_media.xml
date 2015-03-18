@@ -4,8 +4,9 @@
     android:layout_height="match_parent"
     tools:context="com.samsao.snapzi.SelectMediaFragment">
 
-    <android.view.SurfaceView
-        android:id="@+id/fragment_select_media_camera_feed_preview"
+    <fragment
+        android:id="@+id/camera_preview_container"
+        android:name="com.samsao.snapzi.CameraFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
