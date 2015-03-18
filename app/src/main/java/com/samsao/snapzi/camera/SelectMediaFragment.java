@@ -109,7 +109,6 @@ public class SelectMediaFragment extends Fragment {
                 mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean b, Camera camera) {
-
                         mCameraPreview.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
                     }
                 });
@@ -160,7 +159,7 @@ public class SelectMediaFragment extends Fragment {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            // TODO: fix rotation: http://stackoverflow.com/questions/11674816/android-image-orientation-issue-with-custom-camera-activity
+            // TODO: fix bitmap rotation: http://stackoverflow.com/questions/11674816/android-image-orientation-issue-with-custom-camera-activity
             // TODO: start modify activity with bitmap
 
             mCameraPreview.getCamera().startPreview();
