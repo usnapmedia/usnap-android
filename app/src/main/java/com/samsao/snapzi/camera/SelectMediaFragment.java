@@ -1,6 +1,7 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.preferences.PreferencesActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,6 +33,9 @@ public class SelectMediaFragment extends Fragment {
     @InjectView(R.id.fragment_select_media_flip_camera_button)
     public Button mFlipCameraButton;
 
+    @InjectView(R.id.fragment_select_media_pref_button)
+    public Button mPreferenceButton;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,7 +44,8 @@ public class SelectMediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
-        setCameraFlippingOption();
+        setFlipCameraButton();
+        setPreferenceButton();
 
         return view;
     }
@@ -69,7 +75,7 @@ public class SelectMediaFragment extends Fragment {
     }
 
 
-    private void setCameraFlippingOption() {
+    private void setFlipCameraButton() {
         // Activate camera flipping function only if more than one camera is available
         if (Camera.getNumberOfCameras() > 1) {
             mFlipCameraButton.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +88,15 @@ public class SelectMediaFragment extends Fragment {
         } else {
             mFlipCameraButton.setVisibility(View.GONE);
         }
+    }
+
+    private void setPreferenceButton() {
+        mPreferenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), PreferencesActivity.class));
+            }
+        });
     }
 
     public void flipCamera() {
