@@ -1,4 +1,4 @@
-package com.samsao.snapzi;
+package com.samsao.snapzi.camera;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;

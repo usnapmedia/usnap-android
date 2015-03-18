@@ -1,4 +1,4 @@
-package com.samsao.snapzi;
+package com.samsao.snapzi.camera;
 
 import android.app.Activity;
 import android.content.Context;
