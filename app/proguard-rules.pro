@@ -94,5 +94,9 @@
 # For RxJava
 -dontwarn rx.internal.util.**
 
-# For Material Design library
--dontwarn com.gc.materialdesign.**
+# For Twitter SDK
+-include proguard-com.twitter.sdk.android.twitter.txt
+
+# For Facebook SDK
+-keep class com.facebook.** { *; }
+-keepattributes Signature
