@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.os.Build;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -58,7 +57,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mCamera = getCameraInstance(cameraId);
+        mCamera = CameraUtils.getCameraInstance(cameraId);
         mLayoutMode = LayoutMode.CenterCrop;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
@@ -261,30 +260,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Log.v(LOG_TAG, "Camera Picture Size - w: " + cameraPictureSize.width + ", h: " + cameraPictureSize.height);
 
         mCamera.setParameters(cameraParams);
-    }
-
-    /**
-     * Get an instance of the Camera object.
-     */
-    private Camera getCameraInstance(int cameraId) {
-        Camera camera = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD &&
-                cameraId < Camera.getNumberOfCameras()) {
-            try {
-                camera = Camera.open(cameraId);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Camera is not available (in use or does not exist): " + e.getMessage());
-            }
-        } else {
-            try {
-                camera = Camera.open();
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Camera is not available (in use or does not exist): " + e.getMessage());
-            }
-        }
-
-        return camera;
     }
 
     /**

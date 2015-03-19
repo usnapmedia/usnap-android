@@ -14,14 +14,18 @@ import icepick.Icicle;
  */
 public class SelectMediaActivity extends ActionBarActivity implements CameraProvider {
 
+    /**
+     * Constants
+     */
+    private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+
     @Icicle
     public int mCameraId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+        mCameraId = DEFAULT_CAMERA_ID;
         if (savedInstanceState != null) {
             // restore saved state
             Icepick.restoreInstanceState(this, savedInstanceState);

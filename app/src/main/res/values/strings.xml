@@ -12,6 +12,7 @@
 
     <!--Select Media-->
     <string name="action_select_media">Select Media</string>
+    <string name="error_unable_to_open_image">Unable to open image</string>
 
     <!--Preferences-->
     <string name="preferences">Preferences</string>

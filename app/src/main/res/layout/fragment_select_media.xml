@@ -25,7 +25,7 @@
         android:layout_gravity="bottom">
 
         <Button
-            android:id="@+id/fragment_select_media_select_picture_button"
+            android:id="@+id/fragment_select_media_pick_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
