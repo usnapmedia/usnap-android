@@ -10,6 +10,10 @@
     <string name="twitter_api_key" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
     <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
 
+    <!--Select Media-->
+    <string name="action_select_media">Select Media</string>
+
     <!--Preferences-->
     <string name="preferences">Preferences</string>
+
 </resources>

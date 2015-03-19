@@ -23,6 +23,7 @@ import java.util.List;
  * @since 15-03-17
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+
     /**
      * Constants
      */
