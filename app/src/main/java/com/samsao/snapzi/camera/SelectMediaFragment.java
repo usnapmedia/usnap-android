@@ -54,6 +54,12 @@ public class SelectMediaFragment extends Fragment {
     @InjectView(R.id.fragment_select_media_take_picture_button)
     public Button mTakePictureButton;
 
+    @InjectView(R.id.fragment_select_media_trigger_photo_mode_button)
+    public Button mTriggerPhotoModeButton;
+
+    @InjectView(R.id.fragment_select_media_trigger_video_mode_button)
+    public Button mTriggerVideoModeButton;
+
     @InjectView(R.id.fragment_select_media_pref_button)
     public Button mPreferenceButton;
 

@@ -7,7 +7,8 @@
     <FrameLayout
         android:id="@+id/fragment_select_media_camera_preview_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/black" />
 
     <!--Camera top controls-->
     <Button
@@ -28,21 +29,48 @@
             android:id="@+id/fragment_select_media_pick_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="bottom|start"
             android:text="SELECT" />
 
-        <Button
-            android:id="@+id/fragment_select_media_take_picture_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="TAKE" />
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/fragment_select_media_take_picture_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="TAKE" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/fragment_select_media_trigger_photo_mode_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PHOTO" />
+
+                <Button
+                    android:id="@+id/fragment_select_media_trigger_video_mode_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VIDEO" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/fragment_select_media_pref_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_gravity="bottom|end"
             android:text="PREF" />
 
     </FrameLayout>
