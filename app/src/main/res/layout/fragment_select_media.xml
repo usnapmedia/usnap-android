@@ -10,6 +10,12 @@
         android:layout_height="match_parent"
         android:background="@android:color/black" />
 
+    <TextView
+        android:id="@+id/fragment_select_media_current_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark" />
+
     <!--Camera top controls-->
     <Button
         android:id="@+id/fragment_select_media_flip_camera_button"
@@ -26,7 +32,7 @@
         android:layout_gravity="bottom">
 
         <Button
-            android:id="@+id/fragment_select_media_pick_picture_button"
+            android:id="@+id/fragment_select_media_pick_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
@@ -39,7 +45,7 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/fragment_select_media_take_picture_button"
+                android:id="@+id/fragment_select_media_take_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
@@ -39,8 +40,11 @@ public class SelectMediaFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
     private final static int RESULT_LOAD_IMG = 8401;
 
-    private CameraProvider mCameraProvider;
+    private SelectMediaProvider mSelectMediaProvider;
     private CameraPreview mCameraPreview;
+
+    @InjectView(R.id.fragment_select_media_current_mode)
+    public TextView mCurrentModeTextView;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
@@ -48,11 +52,11 @@ public class SelectMediaFragment extends Fragment {
     @InjectView(R.id.fragment_select_media_flip_camera_button)
     public Button mFlipCameraButton;
 
-    @InjectView(R.id.fragment_select_media_pick_picture_button)
-    public Button mPickPictureButton;
+    @InjectView(R.id.fragment_select_media_pick_button)
+    public Button mPickButton;
 
-    @InjectView(R.id.fragment_select_media_take_picture_button)
-    public Button mTakePictureButton;
+    @InjectView(R.id.fragment_select_media_take_button)
+    public Button mTakeButton;
 
     @InjectView(R.id.fragment_select_media_trigger_photo_mode_button)
     public Button mTriggerPhotoModeButton;
@@ -97,10 +101,12 @@ public class SelectMediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
-        setFlipCameraButton();
-        setPickPictureButton();
-        setTakePictureButton();
-        setPreferenceButton();
+        setBaseButtons();
+        if (mSelectMediaProvider.isPhotoModeOn()) {
+            setPhotoMode();
+        } else {
+            setVideoMode();
+        }
 
         return view;
     }
@@ -108,7 +114,7 @@ public class SelectMediaFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        createCameraPreviewSurfaceView(mCameraProvider.getCameraId());
+        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId());
     }
 
     @Override
@@ -122,7 +128,7 @@ public class SelectMediaFragment extends Fragment {
         super.onAttach(activity);
 
         try {
-            mCameraProvider = (CameraProvider) activity;
+            mSelectMediaProvider = (SelectMediaProvider) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -163,6 +169,22 @@ public class SelectMediaFragment extends Fragment {
         }
     }
 
+    private void setPhotoMode() {
+        setFlipCameraButton();
+        setPickPictureButton();
+        setTakePictureButton();
+        mCurrentModeTextView.setText("PHOTO MODE");
+        mSelectMediaProvider.setIsPhotoModeOn(true);
+    }
+
+    private void setVideoMode() {
+        setFlipCameraButton();
+        setPickVideoButton();
+        setTakeVideoButton();
+        mCurrentModeTextView.setText("VIDEO MODE");
+        mSelectMediaProvider.setIsPhotoModeOn(false);
+    }
+
     /**
      * Sets the flip camera button behaviour.
      * Depending on how many camera are available on the current device, this function sets the flip
@@ -188,7 +210,7 @@ public class SelectMediaFragment extends Fragment {
      * Sets a callback function to open the user's image gallery.
      */
     private void setPickPictureButton() {
-        mPickPictureButton.setOnClickListener(new View.OnClickListener() {
+        mPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 releaseCameraPreviewSurfaceView();
@@ -200,12 +222,21 @@ public class SelectMediaFragment extends Fragment {
         });
     }
 
+    private void setPickVideoButton() {
+        mPickButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+            }
+        });
+    }
+
     /**
      * Sets the take picture button behaviour.
      * Sets a callback function to autofocus the camera and then take a picture right afterwards.
      */
     private void setTakePictureButton() {
-        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
+        mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
@@ -218,11 +249,30 @@ public class SelectMediaFragment extends Fragment {
         });
     }
 
-    /**
-     * Sets the set preference button behaviour.
-     * Sets a callback function to open the preference activity.
-     */
-    private void setPreferenceButton() {
+    private void setTakeVideoButton() {
+        mTakeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+            }
+        });
+    }
+
+    private void setBaseButtons() {
+        mTriggerPhotoModeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setPhotoMode();
+            }
+        });
+
+        mTriggerVideoModeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setVideoMode();
+            }
+        });
+
         mPreferenceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,13 +290,13 @@ public class SelectMediaFragment extends Fragment {
     public void flipCamera() {
         releaseCameraPreviewSurfaceView();
 
-        if (mCameraProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            mCameraProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
+        if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
         } else {
-            mCameraProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
+            mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
         }
 
-        createCameraPreviewSurfaceView(mCameraProvider.getCameraId());
+        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId());
     }
 
     /**
