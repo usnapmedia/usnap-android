@@ -80,8 +80,17 @@ android {
     }
 
     packagingOptions {
+        exclude 'android.keystore'
+        exclude 'creativesdk-repo/*'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude '.readme'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 
     productFlavors {
@@ -108,6 +117,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.github.frankiesardo:icepick:2.3.6'
     provided 'com.github.frankiesardo:icepick-processor:2.3.6'
+    compile 'com.adobe.creativesdk:image:4.0.0'
+    compile 'com.adobe.creativesdk.foundation:auth:0.3.94'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }

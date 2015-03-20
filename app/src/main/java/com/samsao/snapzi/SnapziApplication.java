@@ -2,19 +2,25 @@ package com.samsao.snapzi;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.adobe.creativesdk.foundation.AdobeCSDKFoundation;
+import com.adobe.creativesdk.foundation.auth.IAdobeAuthClientCredentials;
+import com.aviary.android.feather.sdk.IAviaryClientCredentials;
 import com.crashlytics.android.Crashlytics;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
  * @author jfcartier
  * @since 15-03-12
  */
-public class SnapziApplication extends Application {
+public class SnapziApplication extends Application implements IAdobeAuthClientCredentials,
+        IAviaryClientCredentials {
 
     /**
      * Static context
@@ -46,6 +52,9 @@ public class SnapziApplication extends Application {
                 .setPermissions(permissions)
                 .build();
         SimpleFacebook.setConfiguration(configuration);
+
+        // enable Adobe creative SDK
+        AdobeCSDKFoundation.initializeCSDKFoundation(getApplicationContext());
     }
 
     /**
@@ -55,5 +64,20 @@ public class SnapziApplication extends Application {
      */
     public static Context getContext() {
         return mContext;
+    }
+
+    @Override
+    public String getClientID() {
+        return getString(R.string.adobe_client_id);
+    }
+
+    @Override
+    public String getClientSecret() {
+        return getString(R.string.adobe_client_secret);
+    }
+
+    @Override
+    public String getBillingKey() {
+        return "";
     }
 }

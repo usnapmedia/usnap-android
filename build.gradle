@@ -16,5 +16,9 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+
+        maven {
+            url "${project.rootDir}/creativesdk-repo" //ADD THE CORRECT LOCATION OF THE CREATIVESDK LIBRARY FILES
+        }
     }
 }

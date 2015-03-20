@@ -10,6 +10,10 @@
     <string name="twitter_api_key" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
     <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
 
+    <!-- Adobe Image Library -->
+    <string name="adobe_client_id" translatable="false">8e5dd74da09343c08f8e03a5c8cf5ff5</string>
+    <string name="adobe_client_secret" translatable="false">07cc0c4a-9903-4c47-8de4-734dacc5e7c2</string>
+
     <!--Select Media-->
     <string name="action_select_media">Select Media</string>
     <string name="error_unable_to_open_image">Unable to open image</string>
