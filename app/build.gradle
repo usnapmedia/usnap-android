@@ -118,7 +118,6 @@ dependencies {
     compile 'com.github.frankiesardo:icepick:2.3.6'
     provided 'com.github.frankiesardo:icepick-processor:2.3.6'
     compile 'com.adobe.creativesdk:image:4.0.0'
-    compile 'com.adobe.creativesdk.foundation:auth:0.3.94'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
