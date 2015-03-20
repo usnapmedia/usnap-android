@@ -48,8 +48,7 @@
                 android:id="@+id/fragment_select_media_take_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="TAKE" />
+                android:layout_gravity="center" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

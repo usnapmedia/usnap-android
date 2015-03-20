@@ -42,6 +42,7 @@ public class SelectMediaFragment extends Fragment {
 
     private SelectMediaProvider mSelectMediaProvider;
     private CameraPreview mCameraPreview;
+    private boolean mIsRecording;
 
     @InjectView(R.id.fragment_select_media_current_mode)
     public TextView mCurrentModeTextView;
@@ -101,20 +102,19 @@ public class SelectMediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
-        setBaseButtons();
-        if (mSelectMediaProvider.isPhotoModeOn()) {
-            setPhotoMode();
-        } else {
-            setVideoMode();
-        }
-
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId());
+
+        setCommonFeatures();
+        if (mSelectMediaProvider.isPhotoModeOn()) {
+            setPhotoFeatures();
+        } else {
+            setVideoFeatures();
+        }
     }
 
     @Override
@@ -169,28 +169,12 @@ public class SelectMediaFragment extends Fragment {
         }
     }
 
-    private void setPhotoMode() {
-        setFlipCameraButton();
-        setPickPictureButton();
-        setTakePictureButton();
-        mCurrentModeTextView.setText("PHOTO MODE");
-        mSelectMediaProvider.setIsPhotoModeOn(true);
-    }
-
-    private void setVideoMode() {
-        setFlipCameraButton();
-        setPickVideoButton();
-        setTakeVideoButton();
-        mCurrentModeTextView.setText("VIDEO MODE");
-        mSelectMediaProvider.setIsPhotoModeOn(false);
-    }
-
     /**
-     * Sets the flip camera button behaviour.
-     * Depending on how many camera are available on the current device, this function sets the flip
-     * camera button visibility and the callback to allow camera flipping (FRONT, BACK).
+     * Sets common features for PHOTO and VIDEO modes.
      */
-    private void setFlipCameraButton() {
+    private void setCommonFeatures() {
+
+        // Sets flip camera button behavior
         // Activate camera flipping function only if more than one camera is available
         if (Camera.getNumberOfCameras() > 1) {
             mFlipCameraButton.setOnClickListener(new View.OnClickListener() {
@@ -203,13 +187,49 @@ public class SelectMediaFragment extends Fragment {
         } else {
             mFlipCameraButton.setVisibility(View.GONE);
         }
+
+        // Sets trigger photo mode button behavior
+        mTriggerPhotoModeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mSelectMediaProvider.isPhotoModeOn()) {
+                    setPhotoFeatures();
+                }
+            }
+        });
+
+        // Sets trigger video mode button behavior
+        mTriggerVideoModeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mSelectMediaProvider.isPhotoModeOn()) {
+                    setVideoFeatures();
+                }
+            }
+        });
+
+        // Sets edit preferences button behavior
+        mPreferenceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                releaseCameraPreviewSurfaceView();
+
+                startActivity(new Intent(getActivity(), PreferencesActivity.class));
+            }
+        });
     }
 
     /**
-     * Sets the pick picture button behaviour.
-     * Sets a callback function to open the user's image gallery.
+     * Sets PHOTO mode features.
      */
-    private void setPickPictureButton() {
+    private void setPhotoFeatures() {
+        // Reset camera
+        mIsRecording = false;
+        releaseCameraPreviewSurfaceView();
+        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.CenterCrop);
+        mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
+
+        // Sets the pick picture button behaviour
         mPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,22 +240,8 @@ public class SelectMediaFragment extends Fragment {
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
             }
         });
-    }
 
-    private void setPickVideoButton() {
-        mPickButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO
-            }
-        });
-    }
-
-    /**
-     * Sets the take picture button behaviour.
-     * Sets a callback function to autofocus the camera and then take a picture right afterwards.
-     */
-    private void setTakePictureButton() {
+        // Sets the take picture button behaviour
         mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,40 +253,70 @@ public class SelectMediaFragment extends Fragment {
                 });
             }
         });
+        mTakeButton.setText("TAKE");
+        mTakeButton.setTextColor(getResources().getColor(android.R.color.black));
+
+        // Update UI
+        mCurrentModeTextView.setText("PHOTO MODE");
+        mSelectMediaProvider.setIsPhotoModeOn(true);
     }
 
-    private void setTakeVideoButton() {
-        mTakeButton.setOnClickListener(new View.OnClickListener() {
+    /**
+     * Sets VIDEO mode features.
+     */
+    private void setVideoFeatures() {
+        // Reset camera
+        mIsRecording = false;
+        releaseCameraPreviewSurfaceView();
+        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.FitParent);
+        mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
+
+        // Sets the pick video button behaviour
+        mPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO
             }
         });
-    }
 
-    private void setBaseButtons() {
-        mTriggerPhotoModeButton.setOnClickListener(new View.OnClickListener() {
+        // Sets the capture video button behaviour
+        mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setPhotoMode();
+                if (mIsRecording) {
+                    // stop recording and release camera
+                    mCameraPreview.stopRecording();
+
+                    // inform the user that recording has stopped
+                    mFlipCameraButton.setVisibility(View.VISIBLE);
+                    mTakeButton.setText("CAPTURE");
+                    mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                    mIsRecording = false;
+                } else {
+                    // initialize video camera
+                    if (mCameraPreview.startRecording()) {
+                        // inform the user that recording has started
+                        mFlipCameraButton.setVisibility(View.GONE);
+                        mTakeButton.setText("STOP");
+                        mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                        mIsRecording = true;
+                    } else {
+                        // prepare didn't work, release the camera
+                        mCameraPreview.stopRecording();
+                        // inform user
+                        Toast.makeText(getActivity(),
+                                "prepare didn't work, release the cameras",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
+        mTakeButton.setText("CAPTURE");
+        mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
 
-        mTriggerVideoModeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setVideoMode();
-            }
-        });
-
-        mPreferenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                releaseCameraPreviewSurfaceView();
-
-                startActivity(new Intent(getActivity(), PreferencesActivity.class));
-            }
-        });
+        // Update UI
+        mCurrentModeTextView.setText("VIDEO MODE");
+        mSelectMediaProvider.setIsPhotoModeOn(false);
     }
 
     /**
@@ -296,7 +332,11 @@ public class SelectMediaFragment extends Fragment {
             mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
         }
 
-        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId());
+        if (mSelectMediaProvider.isPhotoModeOn()) {
+            createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.CenterCrop);
+        } else {
+            createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.FitParent);
+        }
     }
 
     /**
@@ -304,8 +344,8 @@ public class SelectMediaFragment extends Fragment {
      *
      * @param cameraId source camera: FRONT or BACK
      */
-    private void createCameraPreviewSurfaceView(int cameraId) {
-        mCameraPreview = new CameraPreview(getActivity(), cameraId);
+    private void createCameraPreviewSurfaceView(int cameraId, CameraPreview.LayoutMode layoutMode) {
+        mCameraPreview = new CameraPreview(getActivity(), cameraId, layoutMode);
         mCameraPreviewContainer.addView(mCameraPreview);
     }
 
@@ -314,6 +354,7 @@ public class SelectMediaFragment extends Fragment {
      */
     private void releaseCameraPreviewSurfaceView() {
         if (mCameraPreview != null) {
+            mCameraPreview.stopRecording();
             mCameraPreview.releaseCamera();
             mCameraPreviewContainer.removeView(mCameraPreview); // This is necessary.
             mCameraPreview = null;

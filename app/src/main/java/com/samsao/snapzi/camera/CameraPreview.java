@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,6 +38,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private LayoutMode mLayoutMode;
     CameraPreviewCallback mCameraPreviewCallback = null;
 
+    private MediaRecorder mMediaRecorder;
+
     public static enum LayoutMode {
         FitParent,
         CenterCrop
@@ -46,7 +51,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         public void onCameraPreviewFailed();
     }
 
-    public CameraPreview(Activity activity, int cameraId) {
+    public CameraPreview(Activity activity, int cameraId, LayoutMode layoutMode) {
         super(activity);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -58,7 +63,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mCamera = CameraUtils.getCameraInstance(cameraId);
-        mLayoutMode = LayoutMode.CenterCrop;
+        mLayoutMode = layoutMode;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
         mSupportedPreviewSizes = cameraParams.getSupportedPreviewSizes();
@@ -142,14 +147,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         Log.v(LOG_TAG, "Camera Preview Layout Scale Factor: " + previewSizeScale);
 
-        int layoutHeight = (int) (previewSizeHeight * previewSizeScale);
-        int layoutWidth = (int) (previewSizeWidth * previewSizeScale);
+        int layoutHeight = Math.round(previewSizeHeight * previewSizeScale);
+        int layoutWidth = Math.round(previewSizeWidth * previewSizeScale);
         Log.v(LOG_TAG, "Camera Preview Layout Size - w: " + layoutWidth + ", h: " + layoutHeight);
 
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
         if ((layoutWidth != this.getWidth()) || (layoutHeight != this.getHeight())) {
             layoutParams.height = layoutHeight;
             layoutParams.width = layoutWidth;
+            layoutParams.gravity = Gravity.CENTER;
             this.setLayoutParams(layoutParams);
 
             // A call to setLayoutParams will trigger another surfaceChanged invocation.
@@ -160,7 +166,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             return false;
         }
     }
-
 
     /**
      * Gets the optimal device specific camera preview size
@@ -286,5 +291,57 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void setOnPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
         mCameraPreviewCallback = cameraPreviewCallback;
+    }
+
+
+    public boolean startRecording() {
+
+        mMediaRecorder = new MediaRecorder();
+
+        // Step 1: Unlock and set camera to MediaRecorder
+        mCamera.unlock();
+        mMediaRecorder.setCamera(mCamera);
+
+        // Step 2: Set sources
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+
+        // Step 4: Set output file
+        mMediaRecorder.setOutputFile(CameraUtils.getOutputMediaFile(CameraUtils.MEDIA_TYPE_VIDEO).toString());
+
+        // Step 5: Set the preview output
+        mMediaRecorder.setPreviewDisplay(mHolder.getSurface());
+
+        // Step 6: Prepare configured MediaRecorder
+        try {
+            mMediaRecorder.prepare();
+        } catch (IllegalStateException e) {
+            Log.d(LOG_TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
+            stopRecording();
+            return false;
+        } catch (IOException e) {
+            Log.d(LOG_TAG, "IOException preparing MediaRecorder: " + e.getMessage());
+            stopRecording();
+            return false;
+        }
+
+        // Step 7: Start recording
+        mMediaRecorder.start();// Camera is available and unlocked, MediaRecorder is prepared,
+        // now you can start recording
+
+        return true;
+    }
+
+    public void stopRecording() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder.stop();  // stop the recording
+            mMediaRecorder.reset();   // clear recorder configuration
+            mMediaRecorder.release(); // release the recorder object
+            mMediaRecorder = null;
+            mCamera.lock();           // lock camera for later use
+        }
     }
 }
