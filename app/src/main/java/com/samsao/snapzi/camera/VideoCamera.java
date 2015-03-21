@@ -23,6 +23,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
+    private final CameraHelper.LayoutMode DEFAULT_VIDEO_CAMERA_LAYOUT = CameraHelper.LayoutMode.CenterCrop;
 
     private Camera mCamera;
     private int mCameraId;
@@ -38,12 +39,12 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         public void onVideoCameraFailed();
     }
 
-    public VideoCamera(Activity activity, int cameraId, CameraHelper.LayoutMode layoutMode) {
+    public VideoCamera(Activity activity, int cameraId) {
         super(activity);
 
         setSurfaceTextureListener(this);
         mCameraId = cameraId;
-        mLayoutMode = layoutMode;
+        mLayoutMode = DEFAULT_VIDEO_CAMERA_LAYOUT;
 
         // Set a CamcorderProfile to 720p quality or lower of not available
         if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
@@ -63,7 +64,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-        releaseVideoCamera();
+        release();
         return true;
     }
 
@@ -139,7 +140,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
      */
     private void prepareVideoCamera(int width, int height) {
         // Reset camera and media recorder instances
-        releaseVideoCamera();
+        release();
 
         mCamera = CameraHelper.getCameraInstance(mCameraId);
         Camera.Parameters cameraParams = mCamera.getParameters();
@@ -180,17 +181,17 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
             mMediaRecorder.prepare();
         } catch (IllegalStateException e) {
             Log.d(LOG_TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            releaseVideoCamera();
+            release();
         } catch (IOException e) {
             Log.d(LOG_TAG, "IOException preparing MediaRecorder: " + e.getMessage());
-            releaseVideoCamera();
+            release();
         }
     }
 
     /**
      * Release the camera for other applications.
      */
-    public void releaseVideoCamera() {
+    public void release() {
         if (mMediaRecorder != null) {
             // clear recorder configuration
             mMediaRecorder.reset();

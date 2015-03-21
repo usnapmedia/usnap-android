@@ -1,17 +1,12 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.io.IOException;
@@ -22,12 +17,13 @@ import java.util.List;
  * @author vlegault
  * @since 15-03-17
  */
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
 
     /**
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
+    private final CameraHelper.LayoutMode DEFAULT_PHOTO_CAMERA_LAYOUT = CameraHelper.LayoutMode.CenterCrop;
 
     private SurfaceHolder mHolder;
     private Camera mCamera;
@@ -42,7 +38,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         public void onCameraPreviewFailed();
     }
 
-    public CameraPreview(Activity activity, int cameraId, CameraHelper.LayoutMode layoutMode) {
+    public PhotoCamera(Activity activity, int cameraId) {
         super(activity);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -54,7 +50,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mCamera = CameraHelper.getCameraInstance(cameraId);
-        mLayoutMode = layoutMode;
+        mLayoutMode = DEFAULT_PHOTO_CAMERA_LAYOUT;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
         mSupportedPreviewSizes = cameraParams.getSupportedPreviewSizes();
@@ -66,13 +62,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(mHolder);
         } catch (IOException e) {
-            releaseCamera();
+            release();
         }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        releaseCamera();
+        release();
     }
 
     @Override
@@ -211,7 +207,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     /**
      * Release the camera for other applications.
      */
-    public void releaseCamera() {
+    public void release() {
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.release();

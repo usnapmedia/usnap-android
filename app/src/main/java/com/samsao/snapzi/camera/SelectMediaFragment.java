@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ public class SelectMediaFragment extends Fragment {
     private final static int RESULT_LOAD_IMG = 8401;
 
     private SelectMediaProvider mSelectMediaProvider;
-    private CameraPreview mCameraPreview;
+    private PhotoCamera mPhotoCamera;
     private VideoCamera mVideoCamera;
     private boolean mIsRecording;
 
@@ -92,7 +91,7 @@ public class SelectMediaFragment extends Fragment {
             // TODO: fix bitmap rotation: http://stackoverflow.com/questions/11674816/android-image-orientation-issue-with-custom-camera-activity
             startEditImageActivity(image);
 
-            mCameraPreview.getCamera().startPreview(); // TODO: line to be deleted
+            mPhotoCamera.getCamera().startPreview(); // TODO: line to be deleted
         }
     };
 
@@ -231,7 +230,7 @@ public class SelectMediaFragment extends Fragment {
         mIsRecording = false;
         releaseCameraPreviewSurfaceView();
         releaseVideoCamera();
-        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
+        createPhotoCamera(mSelectMediaProvider.getCameraId());
         mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
 
         // Sets the pick picture button behaviour
@@ -250,10 +249,10 @@ public class SelectMediaFragment extends Fragment {
         mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
+                mPhotoCamera.getCamera().autoFocus(new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean b, Camera camera) {
-                        mCameraPreview.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
+                        mPhotoCamera.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
                     }
                 });
             }
@@ -274,7 +273,7 @@ public class SelectMediaFragment extends Fragment {
         mIsRecording = false;
         releaseCameraPreviewSurfaceView();
         releaseVideoCamera();
-        createVideoCamera(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
+        createVideoCamera(mSelectMediaProvider.getCameraId());
         mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
 
         // Sets the pick video button behaviour
@@ -314,41 +313,49 @@ public class SelectMediaFragment extends Fragment {
         }
 
         if (mSelectMediaProvider.isPhotoModeOn()) {
-            createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
+            createPhotoCamera(mSelectMediaProvider.getCameraId());
         } else {
-            createVideoCamera(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
+            createVideoCamera(mSelectMediaProvider.getCameraId());
         }
     }
 
     /**
-     * Initialise camera
+     * Initialise PHOTO camera
      *
      * @param cameraId source camera: FRONT or BACK
      */
-    private void createCameraPreviewSurfaceView(int cameraId, CameraHelper.LayoutMode layoutMode) {
-        mCameraPreview = new CameraPreview(getActivity(), cameraId, layoutMode);
-        mCameraPreviewContainer.addView(mCameraPreview);
+    private void createPhotoCamera(int cameraId) {
+        mPhotoCamera = new PhotoCamera(getActivity(), cameraId);
+        mCameraPreviewContainer.addView(mPhotoCamera);
     }
 
     /**
-     * Release camera
+     * Release PHOTO camera
      */
     private void releaseCameraPreviewSurfaceView() {
-        if (mCameraPreview != null) {
-            mCameraPreview.releaseCamera();
-            mCameraPreviewContainer.removeView(mCameraPreview);
-            mCameraPreview = null;
+        if (mPhotoCamera != null) {
+            mPhotoCamera.release();
+            mCameraPreviewContainer.removeView(mPhotoCamera);
+            mPhotoCamera = null;
         }
     }
 
-    private void createVideoCamera(int cameraId, CameraHelper.LayoutMode layoutMode) {
-        mVideoCamera = new VideoCamera(getActivity(), cameraId, layoutMode);
+    /**
+     * Initialise VIDEO camera
+     *
+     * @param cameraId source camera: FRONT or BACK
+     */
+    private void createVideoCamera(int cameraId) {
+        mVideoCamera = new VideoCamera(getActivity(), cameraId);
         mCameraPreviewContainer.addView(mVideoCamera);
     }
 
+    /**
+     * Release VIDEO camera
+     */
     private void releaseVideoCamera() {
         if (mVideoCamera != null) {
-            mVideoCamera.releaseVideoCamera();
+            mVideoCamera.release();
             mCameraPreviewContainer.removeView(mVideoCamera);
             mVideoCamera = null;
         }
