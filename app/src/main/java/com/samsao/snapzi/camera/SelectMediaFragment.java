@@ -121,7 +121,7 @@ public class SelectMediaFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        releaseCameraPreviewSurfaceView();
+        releasePhotoCamera();
         releaseVideoCamera();
     }
 
@@ -214,7 +214,7 @@ public class SelectMediaFragment extends Fragment {
         mPreferenceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                releaseCameraPreviewSurfaceView();
+                releasePhotoCamera();
                 releaseVideoCamera();
 
                 startActivity(new Intent(getActivity(), PreferencesActivity.class));
@@ -228,7 +228,7 @@ public class SelectMediaFragment extends Fragment {
     private void setPhotoFeatures() {
         // Reset camera
         mIsRecording = false;
-        releaseCameraPreviewSurfaceView();
+        releasePhotoCamera();
         releaseVideoCamera();
         createPhotoCamera(mSelectMediaProvider.getCameraId());
         mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
@@ -237,7 +237,7 @@ public class SelectMediaFragment extends Fragment {
         mPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                releaseCameraPreviewSurfaceView();
+                releasePhotoCamera();
 
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -271,7 +271,7 @@ public class SelectMediaFragment extends Fragment {
     private void setVideoFeatures() {
         // Reset camera
         mIsRecording = false;
-        releaseCameraPreviewSurfaceView();
+        releasePhotoCamera();
         releaseVideoCamera();
         createVideoCamera(mSelectMediaProvider.getCameraId());
         mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
@@ -288,6 +288,32 @@ public class SelectMediaFragment extends Fragment {
         mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mIsRecording) {
+                    // stop recording and release camera
+                    mVideoCamera.stopRecording();
+
+                    // inform the user that recording has stopped
+                    mFlipCameraButton.setVisibility(View.VISIBLE);
+                    mTakeButton.setText("CAPTURE");
+                    mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                    mIsRecording = false;
+                } else {
+                    // initialize video camera
+                    if (mVideoCamera.startRecording()) {
+                        // inform the user that recording has started
+                        mFlipCameraButton.setVisibility(View.GONE);
+                        mTakeButton.setText("STOP");
+                        mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                        mIsRecording = true;
+                    } else {
+                        // prepare didn't work, release the camera
+                        mVideoCamera.stopRecording();
+                        // inform user
+                        Toast.makeText(getActivity(),
+                                "Unable to start recording",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
         mTakeButton.setText("CAPTURE");
@@ -303,7 +329,7 @@ public class SelectMediaFragment extends Fragment {
      * source (FRONT, BACK).
      */
     public void flipCamera() {
-        releaseCameraPreviewSurfaceView();
+        releasePhotoCamera();
         releaseVideoCamera();
 
         if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
@@ -332,7 +358,7 @@ public class SelectMediaFragment extends Fragment {
     /**
      * Release PHOTO camera
      */
-    private void releaseCameraPreviewSurfaceView() {
+    private void releasePhotoCamera() {
         if (mPhotoCamera != null) {
             mPhotoCamera.release();
             mCameraPreviewContainer.removeView(mPhotoCamera);

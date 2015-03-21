@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.TextureView;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import com.samsao.snapzi.R;
 
 import java.io.IOException;
 
@@ -58,7 +61,11 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
         if (!adjustSurfaceLayoutSize(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight, width, height)) {
-            prepareVideoCamera(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight);
+            if (!prepareVideoCamera(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight)) {
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.error_unable_to_start_video_camera),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -70,7 +77,11 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
-        prepareVideoCamera(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight);
+        if (!prepareVideoCamera(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight)) {
+            Toast.makeText(getContext(),
+                    getResources().getString(R.string.error_unable_to_start_video_camera),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -137,8 +148,9 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
      *
      * @param width  width of the rendering surface
      * @param height height of the rendering surface
+     * @return true on success
      */
-    private void prepareVideoCamera(int width, int height) {
+    private boolean prepareVideoCamera(int width, int height) {
         // Reset camera and media recorder instances
         release();
 
@@ -157,6 +169,8 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
             mCamera.setPreviewTexture(getSurfaceTexture());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
+            release();
+            return false;
         }
 
         mCamera.startPreview();
@@ -181,10 +195,53 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
             mMediaRecorder.prepare();
         } catch (IllegalStateException e) {
             Log.d(LOG_TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            release();
+            releaseMediaRecorder();
+            return false;
         } catch (IOException e) {
             Log.d(LOG_TAG, "IOException preparing MediaRecorder: " + e.getMessage());
-            release();
+            releaseMediaRecorder();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Start recording
+     *
+     * @return true on success
+     */
+    public boolean startRecording() {
+        if (mMediaRecorder != null) {
+            try {
+                mMediaRecorder.start();
+                return true;
+            } catch (IllegalStateException exception) {
+                Log.e(LOG_TAG, "Unable to start recording");
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Stop recording
+     */
+    public void stopRecording() {
+        mMediaRecorder.stop();
+        releaseMediaRecorder();
+    }
+
+    private void releaseMediaRecorder() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder.reset();
+            mMediaRecorder.release();
+            mMediaRecorder = null;
+        }
+
+        if (mCamera != null) {
+            mCamera.lock();
         }
     }
 
@@ -192,16 +249,9 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
      * Release the camera for other applications.
      */
     public void release() {
-        if (mMediaRecorder != null) {
-            // clear recorder configuration
-            mMediaRecorder.reset();
-            // release the recorder object
-            mMediaRecorder.release();
-            mMediaRecorder = null;
-        }
+        releaseMediaRecorder();
 
         if (mCamera != null) {
-            mCamera.lock();
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
