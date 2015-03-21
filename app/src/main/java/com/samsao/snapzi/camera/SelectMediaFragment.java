@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class SelectMediaFragment extends Fragment {
 
     private SelectMediaProvider mSelectMediaProvider;
     private CameraPreview mCameraPreview;
+    private VideoCamera mVideoCamera;
     private boolean mIsRecording;
 
     @InjectView(R.id.fragment_select_media_current_mode)
@@ -121,6 +123,7 @@ public class SelectMediaFragment extends Fragment {
     public void onPause() {
         super.onPause();
         releaseCameraPreviewSurfaceView();
+        releaseVideoCamera();
     }
 
     @Override
@@ -213,6 +216,7 @@ public class SelectMediaFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 releaseCameraPreviewSurfaceView();
+                releaseVideoCamera();
 
                 startActivity(new Intent(getActivity(), PreferencesActivity.class));
             }
@@ -226,7 +230,8 @@ public class SelectMediaFragment extends Fragment {
         // Reset camera
         mIsRecording = false;
         releaseCameraPreviewSurfaceView();
-        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.CenterCrop);
+        releaseVideoCamera();
+        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
         mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
 
         // Sets the pick picture button behaviour
@@ -268,7 +273,8 @@ public class SelectMediaFragment extends Fragment {
         // Reset camera
         mIsRecording = false;
         releaseCameraPreviewSurfaceView();
-        createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.FitParent);
+        releaseVideoCamera();
+        createVideoCamera(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
         mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
 
         // Sets the pick video button behaviour
@@ -283,32 +289,6 @@ public class SelectMediaFragment extends Fragment {
         mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mIsRecording) {
-                    // stop recording and release camera
-                    mCameraPreview.stopRecording();
-
-                    // inform the user that recording has stopped
-                    mFlipCameraButton.setVisibility(View.VISIBLE);
-                    mTakeButton.setText("CAPTURE");
-                    mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                    mIsRecording = false;
-                } else {
-                    // initialize video camera
-                    if (mCameraPreview.startRecording()) {
-                        // inform the user that recording has started
-                        mFlipCameraButton.setVisibility(View.GONE);
-                        mTakeButton.setText("STOP");
-                        mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                        mIsRecording = true;
-                    } else {
-                        // prepare didn't work, release the camera
-                        mCameraPreview.stopRecording();
-                        // inform user
-                        Toast.makeText(getActivity(),
-                                "prepare didn't work, release the cameras",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
             }
         });
         mTakeButton.setText("CAPTURE");
@@ -325,6 +305,7 @@ public class SelectMediaFragment extends Fragment {
      */
     public void flipCamera() {
         releaseCameraPreviewSurfaceView();
+        releaseVideoCamera();
 
         if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
@@ -333,9 +314,9 @@ public class SelectMediaFragment extends Fragment {
         }
 
         if (mSelectMediaProvider.isPhotoModeOn()) {
-            createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.CenterCrop);
+            createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
         } else {
-            createCameraPreviewSurfaceView(mSelectMediaProvider.getCameraId(), CameraPreview.LayoutMode.FitParent);
+            createVideoCamera(mSelectMediaProvider.getCameraId(), CameraHelper.LayoutMode.CenterCrop);
         }
     }
 
@@ -344,7 +325,7 @@ public class SelectMediaFragment extends Fragment {
      *
      * @param cameraId source camera: FRONT or BACK
      */
-    private void createCameraPreviewSurfaceView(int cameraId, CameraPreview.LayoutMode layoutMode) {
+    private void createCameraPreviewSurfaceView(int cameraId, CameraHelper.LayoutMode layoutMode) {
         mCameraPreview = new CameraPreview(getActivity(), cameraId, layoutMode);
         mCameraPreviewContainer.addView(mCameraPreview);
     }
@@ -354,10 +335,22 @@ public class SelectMediaFragment extends Fragment {
      */
     private void releaseCameraPreviewSurfaceView() {
         if (mCameraPreview != null) {
-            mCameraPreview.stopRecording();
             mCameraPreview.releaseCamera();
-            mCameraPreviewContainer.removeView(mCameraPreview); // This is necessary.
+            mCameraPreviewContainer.removeView(mCameraPreview);
             mCameraPreview = null;
+        }
+    }
+
+    private void createVideoCamera(int cameraId, CameraHelper.LayoutMode layoutMode) {
+        mVideoCamera = new VideoCamera(getActivity(), cameraId, layoutMode);
+        mCameraPreviewContainer.addView(mVideoCamera);
+    }
+
+    private void releaseVideoCamera() {
+        if (mVideoCamera != null) {
+            mVideoCamera.releaseVideoCamera();
+            mCameraPreviewContainer.removeView(mVideoCamera);
+            mVideoCamera = null;
         }
     }
 

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.media.CamcorderProfile;
-import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -35,15 +33,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private Camera mCamera;
     private List<Size> mSupportedPreviewSizes;
     private List<Size> mSupportedPictureSizes;
-    private LayoutMode mLayoutMode;
+    private CameraHelper.LayoutMode mLayoutMode;
     CameraPreviewCallback mCameraPreviewCallback = null;
-
-    private MediaRecorder mMediaRecorder;
-
-    public static enum LayoutMode {
-        FitParent,
-        CenterCrop
-    }
 
     public interface CameraPreviewCallback {
         public void onCameraPreviewReady();
@@ -51,7 +42,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         public void onCameraPreviewFailed();
     }
 
-    public CameraPreview(Activity activity, int cameraId, LayoutMode layoutMode) {
+    public CameraPreview(Activity activity, int cameraId, CameraHelper.LayoutMode layoutMode) {
         super(activity);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -62,7 +53,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mCamera = CameraUtils.getCameraInstance(cameraId);
+        mCamera = CameraHelper.getCameraInstance(cameraId);
         mLayoutMode = layoutMode;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
@@ -88,7 +79,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         mCamera.stopPreview();
 
-        Size previewSize = getOptimalPreviewSize(width, height);
+        Size previewSize = CameraHelper.getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
         if (!adjustSurfaceLayoutSize(previewSize, width, height)) {
             configureCamera(previewSize);
 
@@ -131,7 +122,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         heightScale = availableHeight / previewSizeHeight;
         widthScale = availableWidth / previewSizeWidth;
 
-        if (mLayoutMode == LayoutMode.FitParent) {
+        if (mLayoutMode == CameraHelper.LayoutMode.FitParent) {
             // Select smaller factor, because the surface cannot be set to the size larger than display metrics.
             if (heightScale < widthScale) {
                 previewSizeScale = heightScale;
@@ -170,37 +161,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     /**
      * Gets the optimal device specific camera preview size
      *
-     * @param reqWidth  requested width
-     * @param reqHeight requested height
-     * @return Camera.Size object that is an element of the list returned from Camera.Parameters.getSupportedPreviewSizes.
-     */
-    private Size getOptimalPreviewSize(int reqWidth, int reqHeight) {
-        float reqRatio, curRatio, deltaRatio;
-        float deltaRatioMin = Float.MAX_VALUE;
-        Size retSize = null;
-
-        if (isPortrait()) {
-            reqRatio = (float) reqHeight / (float) reqWidth;
-        } else {
-            reqRatio = (float) reqWidth / (float) reqHeight;
-        }
-
-        // Adjust surface size with the closest aspect-ratio
-        for (Size size : mSupportedPreviewSizes) {
-            curRatio = (float) size.width / (float) size.height;
-            deltaRatio = Math.abs(reqRatio - curRatio);
-            if (deltaRatio < deltaRatioMin) {
-                deltaRatioMin = deltaRatio;
-                retSize = size;
-            }
-        }
-
-        return retSize;
-    }
-
-    /**
-     * Gets the optimal device specific camera preview size
-     *
      * @param previewSize requested camera preview size
      * @return Camera.Size object that is an element of the list returned from Camera.Parameters.getSupportedPictureSizes.
      */
@@ -232,30 +192,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
      * Sets Camera orientation, preview size and picture size
      */
     private void configureCamera(Size cameraPreviewSize) {
+        int deviceOrientationAngle = CameraHelper.getCurrentOrientationAngle(getContext());
         Camera.Parameters cameraParams = mCamera.getParameters();
-        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int angle;
 
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0: // This is display orientation
-                angle = 90; // This is camera orientation
-                break;
-            case Surface.ROTATION_90:
-                angle = 0;
-                break;
-            case Surface.ROTATION_180:
-                angle = 270;
-                break;
-            case Surface.ROTATION_270:
-                angle = 180;
-                break;
-            default:
-                angle = 90;
-                break;
-        }
-        Log.v(LOG_TAG, "Camera Orientation Angle: " + angle);
-        mCamera.setDisplayOrientation(angle);
+        Log.v(LOG_TAG, "Camera Orientation Angle: " + deviceOrientationAngle);
+        mCamera.setDisplayOrientation(deviceOrientationAngle);
 
         cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
 
@@ -291,57 +232,5 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void setOnPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
         mCameraPreviewCallback = cameraPreviewCallback;
-    }
-
-
-    public boolean startRecording() {
-
-        mMediaRecorder = new MediaRecorder();
-
-        // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
-        mMediaRecorder.setCamera(mCamera);
-
-        // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-
-        // Step 4: Set output file
-        mMediaRecorder.setOutputFile(CameraUtils.getOutputMediaFile(CameraUtils.MEDIA_TYPE_VIDEO).toString());
-
-        // Step 5: Set the preview output
-        mMediaRecorder.setPreviewDisplay(mHolder.getSurface());
-
-        // Step 6: Prepare configured MediaRecorder
-        try {
-            mMediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.d(LOG_TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            stopRecording();
-            return false;
-        } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException preparing MediaRecorder: " + e.getMessage());
-            stopRecording();
-            return false;
-        }
-
-        // Step 7: Start recording
-        mMediaRecorder.start();// Camera is available and unlocked, MediaRecorder is prepared,
-        // now you can start recording
-
-        return true;
-    }
-
-    public void stopRecording() {
-        if (mMediaRecorder != null) {
-            mMediaRecorder.stop();  // stop the recording
-            mMediaRecorder.reset();   // clear recorder configuration
-            mMediaRecorder.release(); // release the recorder object
-            mMediaRecorder = null;
-            mCamera.lock();           // lock camera for later use
-        }
     }
 }
