@@ -2,6 +2,7 @@ package com.samsao.snapzi.camera;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Environment;
@@ -23,7 +24,7 @@ public class CameraHelper {
     /**
      * Constants
      */
-    private static final String LOG_TAG = "CameraUtils";
+    private static final String LOG_TAG = "CameraHelper";
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
@@ -149,6 +150,13 @@ public class CameraHelper {
         }
 
         return mediaFile;
+    }
+
+    /**
+     * Returns true if device orientation is in portrait mode
+     */
+    public static boolean isPortrait(Context context) {
+        return (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     /**

@@ -111,7 +111,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         float previewSizeWidth, previewSizeHeight;
         float heightScale, widthScale, previewSizeScale;
 
-        if (isPortrait()) {
+        if (CameraHelper.isPortrait(getContext())) {
             previewSizeWidth = previewSize.height;
             previewSizeHeight = previewSize.width;
         } else {
@@ -217,13 +217,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.release();
             mCamera = null;
         }
-    }
-
-    /**
-     * Returns true if device orientation is in portrait mode
-     */
-    private boolean isPortrait() {
-        return (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     public Camera getCamera() {

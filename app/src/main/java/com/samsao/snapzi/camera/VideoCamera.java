@@ -1,7 +1,6 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -65,7 +64,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
         releaseVideoCamera();
-        return false;
+        return true;
     }
 
     @Override
@@ -75,7 +74,6 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-        return;
     }
 
     /**
@@ -86,7 +84,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         float previewSizeWidth, previewSizeHeight;
         float heightScale, widthScale, previewSizeScale;
 
-        if (isPortrait()) {
+        if (CameraHelper.isPortrait(getContext())) {
             previewSizeWidth = targetedHeight;
             previewSizeHeight = targetedWidth;
         } else {
@@ -134,15 +132,19 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
     }
 
     /**
-     * Sets Camera orientation, preview size and picture size
+     * Prepare camera to record a video.
+     *
+     * @param width  width of the rendering surface
+     * @param height height of the rendering surface
      */
     private void prepareVideoCamera(int width, int height) {
+        // Reset camera and media recorder instances
         releaseVideoCamera();
 
         mCamera = CameraHelper.getCameraInstance(mCameraId);
-        int deviceOrientationAngle = CameraHelper.getCurrentOrientationAngle(getContext());
         Camera.Parameters cameraParams = mCamera.getParameters();
 
+        int deviceOrientationAngle = CameraHelper.getCurrentOrientationAngle(getContext());
         Log.v(LOG_TAG, "Camera Orientation Angle: " + deviceOrientationAngle);
         mCamera.setDisplayOrientation(deviceOrientationAngle);
 
@@ -185,6 +187,9 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         }
     }
 
+    /**
+     * Release the camera for other applications.
+     */
     public void releaseVideoCamera() {
         if (mMediaRecorder != null) {
             // clear recorder configuration
@@ -200,13 +205,6 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
             mCamera.release();
             mCamera = null;
         }
-    }
-
-    /**
-     * Returns true if device orientation is in portrait mode
-     */
-    private boolean isPortrait() {
-        return (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     public void setOnPreviewReady(VideoCameraCallback videoCameraCallback) {
