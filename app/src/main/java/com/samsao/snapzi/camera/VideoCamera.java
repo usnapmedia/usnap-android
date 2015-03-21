@@ -217,7 +217,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
                 mMediaRecorder.start();
                 return true;
             } catch (IllegalStateException exception) {
-                Log.e(LOG_TAG, "Unable to start recording");
+                Log.e(LOG_TAG, "start() cannot be called before prepare()");
                 return false;
             }
         } else {
@@ -229,7 +229,12 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
      * Stop recording
      */
     public void stopRecording() {
-        mMediaRecorder.stop();
+        try {
+            mMediaRecorder.stop();
+        } catch (IllegalStateException exception) {
+            Log.v(LOG_TAG, "stop() cannot be called before start()");
+        }
+
         releaseMediaRecorder();
     }
 
