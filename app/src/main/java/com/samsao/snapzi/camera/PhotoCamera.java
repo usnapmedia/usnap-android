@@ -1,16 +1,12 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.Log;
-import android.view.Display;
-import android.view.Surface;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.io.IOException;
@@ -21,24 +17,20 @@ import java.util.List;
  * @author vlegault
  * @since 15-03-17
  */
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
 
     /**
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
+    private final CameraHelper.LayoutMode DEFAULT_PHOTO_CAMERA_LAYOUT = CameraHelper.LayoutMode.CenterCrop;
 
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private List<Size> mSupportedPreviewSizes;
     private List<Size> mSupportedPictureSizes;
-    private LayoutMode mLayoutMode;
+    private CameraHelper.LayoutMode mLayoutMode;
     CameraPreviewCallback mCameraPreviewCallback = null;
-
-    public static enum LayoutMode {
-        FitParent,
-        CenterCrop
-    }
 
     public interface CameraPreviewCallback {
         public void onCameraPreviewReady();
@@ -46,7 +38,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         public void onCameraPreviewFailed();
     }
 
-    public CameraPreview(Activity activity, int cameraId) {
+    public PhotoCamera(Activity activity, int cameraId) {
         super(activity);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -57,8 +49,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mCamera = CameraUtils.getCameraInstance(cameraId);
-        mLayoutMode = LayoutMode.CenterCrop;
+        mCamera = CameraHelper.getCameraInstance(cameraId);
+        mLayoutMode = DEFAULT_PHOTO_CAMERA_LAYOUT;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
         mSupportedPreviewSizes = cameraParams.getSupportedPreviewSizes();
@@ -70,20 +62,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(mHolder);
         } catch (IOException e) {
-            releaseCamera();
+            release();
         }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        releaseCamera();
+        release();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         mCamera.stopPreview();
 
-        Size previewSize = getOptimalPreviewSize(width, height);
+        Size previewSize = CameraHelper.getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
         if (!adjustSurfaceLayoutSize(previewSize, width, height)) {
             configureCamera(previewSize);
 
@@ -115,7 +107,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         float previewSizeWidth, previewSizeHeight;
         float heightScale, widthScale, previewSizeScale;
 
-        if (isPortrait()) {
+        if (CameraHelper.isPortrait(getContext())) {
             previewSizeWidth = previewSize.height;
             previewSizeHeight = previewSize.width;
         } else {
@@ -126,7 +118,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         heightScale = availableHeight / previewSizeHeight;
         widthScale = availableWidth / previewSizeWidth;
 
-        if (mLayoutMode == LayoutMode.FitParent) {
+        if (mLayoutMode == CameraHelper.LayoutMode.FitParent) {
             // Select smaller factor, because the surface cannot be set to the size larger than display metrics.
             if (heightScale < widthScale) {
                 previewSizeScale = heightScale;
@@ -142,14 +134,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         Log.v(LOG_TAG, "Camera Preview Layout Scale Factor: " + previewSizeScale);
 
-        int layoutHeight = (int) (previewSizeHeight * previewSizeScale);
-        int layoutWidth = (int) (previewSizeWidth * previewSizeScale);
+        int layoutHeight = Math.round(previewSizeHeight * previewSizeScale);
+        int layoutWidth = Math.round(previewSizeWidth * previewSizeScale);
         Log.v(LOG_TAG, "Camera Preview Layout Size - w: " + layoutWidth + ", h: " + layoutHeight);
 
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
         if ((layoutWidth != this.getWidth()) || (layoutHeight != this.getHeight())) {
             layoutParams.height = layoutHeight;
             layoutParams.width = layoutWidth;
+            layoutParams.gravity = Gravity.CENTER;
             this.setLayoutParams(layoutParams);
 
             // A call to setLayoutParams will trigger another surfaceChanged invocation.
@@ -159,38 +152,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             // Set return value to false since no changes were made to the layout.
             return false;
         }
-    }
-
-
-    /**
-     * Gets the optimal device specific camera preview size
-     *
-     * @param reqWidth  requested width
-     * @param reqHeight requested height
-     * @return Camera.Size object that is an element of the list returned from Camera.Parameters.getSupportedPreviewSizes.
-     */
-    private Size getOptimalPreviewSize(int reqWidth, int reqHeight) {
-        float reqRatio, curRatio, deltaRatio;
-        float deltaRatioMin = Float.MAX_VALUE;
-        Size retSize = null;
-
-        if (isPortrait()) {
-            reqRatio = (float) reqHeight / (float) reqWidth;
-        } else {
-            reqRatio = (float) reqWidth / (float) reqHeight;
-        }
-
-        // Adjust surface size with the closest aspect-ratio
-        for (Size size : mSupportedPreviewSizes) {
-            curRatio = (float) size.width / (float) size.height;
-            deltaRatio = Math.abs(reqRatio - curRatio);
-            if (deltaRatio < deltaRatioMin) {
-                deltaRatioMin = deltaRatio;
-                retSize = size;
-            }
-        }
-
-        return retSize;
     }
 
     /**
@@ -227,30 +188,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
      * Sets Camera orientation, preview size and picture size
      */
     private void configureCamera(Size cameraPreviewSize) {
+        int deviceOrientationAngle = CameraHelper.getCurrentOrientationAngle(getContext());
         Camera.Parameters cameraParams = mCamera.getParameters();
-        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int angle;
 
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0: // This is display orientation
-                angle = 90; // This is camera orientation
-                break;
-            case Surface.ROTATION_90:
-                angle = 0;
-                break;
-            case Surface.ROTATION_180:
-                angle = 270;
-                break;
-            case Surface.ROTATION_270:
-                angle = 180;
-                break;
-            default:
-                angle = 90;
-                break;
-        }
-        Log.v(LOG_TAG, "Camera Orientation Angle: " + angle);
-        mCamera.setDisplayOrientation(angle);
+        Log.v(LOG_TAG, "Camera Orientation Angle: " + deviceOrientationAngle);
+        mCamera.setDisplayOrientation(deviceOrientationAngle);
 
         cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
 
@@ -265,19 +207,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     /**
      * Release the camera for other applications.
      */
-    public void releaseCamera() {
+    public void release() {
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
         }
-    }
-
-    /**
-     * Returns true if device orientation is in portrait mode
-     */
-    private boolean isPortrait() {
-        return (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     public Camera getCamera() {

@@ -13,6 +13,7 @@
     <!--Select Media-->
     <string name="action_select_media">Select Media</string>
     <string name="error_unable_to_open_image">Unable to open image</string>
+    <string name="error_unable_to_start_video_camera">Unable to start video camera</string>
 
     <!--Preferences-->
     <string name="preferences">Preferences</string>
