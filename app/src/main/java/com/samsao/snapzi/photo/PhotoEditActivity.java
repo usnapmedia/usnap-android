@@ -9,8 +9,8 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 
 import com.aviary.android.feather.sdk.AviaryIntent;
-import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
 import com.aviary.android.feather.sdk.internal.filters.ToolLoaderFactory.Tools;
+import com.aviary.android.feather.sdk.internal.headless.utils.MegaPixels;
 
 import java.io.ByteArrayOutputStream;
 
@@ -43,14 +43,17 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
             getFragmentManager().beginTransaction().replace(android.R.id.content, fragment, "TAG").commit();
         }
 
+        Intent serviceIntent = AviaryIntent.createCdsInitIntent(getBaseContext());
+        startService(serviceIntent);
+
         Intent aviaryIntent = new AviaryIntent.Builder(this)
                 .setData(getImageUri()) // input image src
                 .withOutput(Uri.parse("file://" + "wathever.jpg")) // output file
                 .withOutputFormat(Bitmap.CompressFormat.JPEG) // output format
-                .withOutputSize(MegaPixels.Mp5) // output size
+                .withOutputSize(MegaPixels.Mp10) // output size
                 .withOutputQuality(90) // output quality
-                .quickLaunchTool(Tools.LIGHTING.name(), new Bundle())
                 .withVibrationEnabled(false)
+                .withToolList(new Tools[]{Tools.LIGHTING, Tools.DRAW, Tools.TEXT, Tools.CROP, Tools.ORIENTATION})
                 .build();
 
         // start the activity

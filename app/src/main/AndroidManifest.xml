@@ -43,6 +43,12 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
 
+        <provider
+            android:name="com.aviary.android.feather.sdk.internal.cds.AviaryCdsProvider"
+            android:authorities="${applicationId}.AviaryCdsProvider"
+            android:exported="false"
+            android:process=":aviary_cds" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="369cc275b13fc2a69f58dc6067c6ceb6fb776650" />
