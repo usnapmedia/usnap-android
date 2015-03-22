@@ -3,9 +3,6 @@ package com.samsao.snapzi;
 import android.app.Application;
 import android.content.Context;
 
-import com.adobe.creativesdk.foundation.AdobeCSDKFoundation;
-import com.adobe.creativesdk.foundation.auth.IAdobeAuthClientCredentials;
-import com.aviary.android.feather.sdk.IAviaryClientCredentials;
 import com.crashlytics.android.Crashlytics;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
@@ -19,8 +16,7 @@ import io.fabric.sdk.android.Fabric;
  * @author jfcartier
  * @since 15-03-12
  */
-public class SnapziApplication extends Application implements IAdobeAuthClientCredentials,
-        IAviaryClientCredentials {
+public class SnapziApplication extends Application {
 
     /**
      * Static context
@@ -46,15 +42,13 @@ public class SnapziApplication extends Application implements IAdobeAuthClientCr
         Permission[] permissions = new Permission[] {
                 Permission.PUBLIC_PROFILE,
         };
+
         SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
                 .setAppId(getResources().getString(R.string.facebook_app_id))
                 .setNamespace(getResources().getString(R.string.facebook_app_namespace))
                 .setPermissions(permissions)
                 .build();
         SimpleFacebook.setConfiguration(configuration);
-
-        // enable Adobe creative SDK
-        AdobeCSDKFoundation.initializeCSDKFoundation(getApplicationContext());
     }
 
     /**
@@ -64,20 +58,5 @@ public class SnapziApplication extends Application implements IAdobeAuthClientCr
      */
     public static Context getContext() {
         return mContext;
-    }
-
-    @Override
-    public String getClientID() {
-        return getString(R.string.adobe_client_id);
-    }
-
-    @Override
-    public String getClientSecret() {
-        return getString(R.string.adobe_client_secret);
-    }
-
-    @Override
-    public String getBillingKey() {
-        return "";
     }
 }

@@ -279,6 +279,7 @@ public class SelectMediaFragment extends Fragment {
      * @param image bitmap image to edit
      */
     private void startEditImageActivity(Bitmap image) {
+        // TODO save image on disk and send URI instead of bitmap bytes
         Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
         editImageIntent.putExtra(PhotoEditActivity.EXTRA_IMAGE, compressBitmap(image));
         releaseCameraPreviewSurfaceView();

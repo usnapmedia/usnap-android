@@ -117,7 +117,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.github.frankiesardo:icepick:2.3.6'
     provided 'com.github.frankiesardo:icepick-processor:2.3.6'
-    compile 'com.adobe.creativesdk:image:4.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
@@ -125,4 +124,7 @@ dependencies {
         transitive = true;
     }
     compile 'com.facebook.android:facebook-android-sdk:3.21.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'jp.wasabeef:picasso-transformations:1.0.2@aar'
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.2.3@aar'
 }
