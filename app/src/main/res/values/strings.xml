@@ -17,4 +17,7 @@
 
     <!--Preferences-->
     <string name="preferences">Preferences</string>
+
+    <!--Photo edit-->
+    <string name="text_annotation_placeholder">Enter text here</string>
 </resources>
