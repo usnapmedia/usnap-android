@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.samsao.snapzi.util.PhotoUtil;
+import com.samsao.snapzi.util.SaveImageCallback;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -78,9 +79,18 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     /**
      * Save the image to disk
      * @param bitmap
-     * @return
      */
-    public Uri saveBitmap(Bitmap bitmap) {
-        return PhotoUtil.saveBitmap(bitmap);
+    public void saveBitmap(Bitmap bitmap) {
+        PhotoUtil.saveImage(bitmap, new SaveImageCallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 }

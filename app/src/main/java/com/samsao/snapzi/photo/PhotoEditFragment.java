@@ -189,6 +189,6 @@ public class PhotoEditFragment extends Fragment {
         public void setBrightness(int brightness);
         public int getContrast();
         public void setContrast(int contrast);
-        public Uri saveBitmap(Bitmap bitmap);
+        public void saveBitmap(Bitmap bitmap);
     }
 }
