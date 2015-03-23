@@ -93,8 +93,6 @@ public class SelectMediaFragment extends Fragment {
             Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             // TODO: fix bitmap rotation: http://stackoverflow.com/questions/11674816/android-image-orientation-issue-with-custom-camera-activity
             startEditImageActivity(image);
-
-            mPhotoCamera.getCamera().startPreview(); // TODO: line to be deleted
         }
     };
 
@@ -399,7 +397,7 @@ public class SelectMediaFragment extends Fragment {
         // TODO save image on disk and send URI instead of bitmap bytes
         Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
         editImageIntent.putExtra(PhotoEditActivity.EXTRA_IMAGE, compressBitmap(image));
-        releaseCameraPreviewSurfaceView();
+        releasePhotoCamera();
         startActivity(editImageIntent);
         getActivity().finish();
     }
