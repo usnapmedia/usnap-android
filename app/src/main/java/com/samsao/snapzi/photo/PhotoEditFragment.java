@@ -57,7 +57,9 @@ public class PhotoEditFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         // set the view background
-        mImage.setImageDrawable(new BitmapDrawable(getResources(), mListener.getBitmap()));
+        Picasso.with(getActivity()).load(mListener.getImageUri())
+                .noPlaceholder()
+                .into(mImage);
         replaceContainer(getControlsView());
         return view;
     }
@@ -123,8 +125,8 @@ public class PhotoEditFragment extends Fragment {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
                 replaceContainer(getControlsView());
+                mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
             }
         });
         return view;
@@ -136,7 +138,6 @@ public class PhotoEditFragment extends Fragment {
     }
 
     public interface Listener {
-        public Bitmap getBitmap();
         public Uri getImageUri();
         public int getBrightness();
         public void setBrightness(int brightness);

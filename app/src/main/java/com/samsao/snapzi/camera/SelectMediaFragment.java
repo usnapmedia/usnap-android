@@ -24,8 +24,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.PhotoEditActivity;
 import com.samsao.snapzi.preferences.PreferencesActivity;
-
-import java.io.ByteArrayOutputStream;
+import com.samsao.snapzi.util.PhotoUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -394,22 +393,11 @@ public class SelectMediaFragment extends Fragment {
      * @param image bitmap image to edit
      */
     private void startEditImageActivity(Bitmap image) {
-        // TODO save image on disk and send URI instead of bitmap bytes
+        Uri photoUri = PhotoUtil.saveBitmap(image);
         Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
-        editImageIntent.putExtra(PhotoEditActivity.EXTRA_IMAGE, compressBitmap(image));
+        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, photoUri);
         releasePhotoCamera();
         startActivity(editImageIntent);
         getActivity().finish();
-    }
-
-    /**
-     * Compress a bitmap to byte[] so it can be passed in an intent
-     * @param image
-     * @return
-     */
-    private byte[] compressBitmap(Bitmap image) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
     }
 }
