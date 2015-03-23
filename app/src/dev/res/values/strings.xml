@@ -4,4 +4,6 @@
     <string name="facebook_app_namespace" translatable="false">wink-talent</string>
     <string name="twitter_api_key" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
     <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
+    <string name="adobe_client_id" translatable="false">8e5dd74da09343c08f8e03a5c8cf5ff5</string>
+    <string name="adobe_client_secret" translatable="false">07cc0c4a-9903-4c47-8de4-734dacc5e7c2</string>
 </resources>

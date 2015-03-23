@@ -7,3 +7,4 @@
 /build
 .idea/misc.xml
 app/app.iml
+.DS_Store

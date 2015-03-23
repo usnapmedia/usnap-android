@@ -80,8 +80,17 @@ android {
     }
 
     packagingOptions {
+        exclude 'android.keystore'
+        exclude 'creativesdk-repo/*'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude '.readme'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 
     productFlavors {
@@ -115,4 +124,7 @@ dependencies {
         transitive = true;
     }
     compile 'com.facebook.android:facebook-android-sdk:3.21.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'jp.wasabeef:picasso-transformations:1.0.2@aar'
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.2.3@aar'
 }
