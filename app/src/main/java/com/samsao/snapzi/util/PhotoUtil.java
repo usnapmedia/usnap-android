@@ -30,7 +30,6 @@ public class PhotoUtil {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
             fOutputStream.flush();
             fOutputStream.close();
-            bitmap.recycle();
             return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath("image.png"));
         } catch (FileNotFoundException e) {
             Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());

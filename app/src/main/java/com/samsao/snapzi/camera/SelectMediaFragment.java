@@ -398,6 +398,7 @@ public class SelectMediaFragment extends Fragment {
         editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, photoUri);
         releasePhotoCamera();
         startActivity(editImageIntent);
+        image.recycle();
         getActivity().finish();
     }
 }
