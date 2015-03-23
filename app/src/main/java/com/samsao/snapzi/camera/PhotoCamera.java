@@ -188,11 +188,11 @@ public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
      * Sets Camera orientation, preview size and picture size
      */
     private void configureCamera(Size cameraPreviewSize) {
-        int deviceOrientationAngle = CameraHelper.getCurrentOrientationAngle(getContext());
+        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
         Camera.Parameters cameraParams = mCamera.getParameters();
 
-        Log.v(LOG_TAG, "Camera Orientation Angle: " + deviceOrientationAngle);
-        mCamera.setDisplayOrientation(deviceOrientationAngle);
+        Log.v(LOG_TAG, "Camera Orientation Angle: " + cameraCurrentOrientationAngle);
+        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
 
         cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
 

@@ -157,7 +157,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         mCamera = CameraHelper.getCameraInstance(mCameraId);
         Camera.Parameters cameraParams = mCamera.getParameters();
 
-        int deviceOrientationAngle = CameraHelper.getCurrentOrientationAngle(getContext());
+        int deviceOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
         Log.v(LOG_TAG, "Camera Orientation Angle: " + deviceOrientationAngle);
         mCamera.setDisplayOrientation(deviceOrientationAngle);
 

@@ -3,14 +3,11 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,6 +75,7 @@ public class SelectMediaFragment extends Fragment {
      */
     private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
         public void onShutter() {
+            mSelectMediaProvider.setCameraLastOrientationAngleKnown(CameraHelper.getCameraCurrentOrientationAngle(getActivity()));
             AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
             mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
         }
@@ -90,9 +88,24 @@ public class SelectMediaFragment extends Fragment {
     private Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
-            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            // TODO: fix bitmap rotation: http://stackoverflow.com/questions/11674816/android-image-orientation-issue-with-custom-camera-activity
-            startEditImageActivity(image);
+            int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
+            final Bitmap image = PhotoUtil.RotateBitmap(
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
+                    cameraLastOrientationAngleKnown);
+
+            PhotoUtil.saveImage(image, new SaveImageCallback() {
+                @Override
+                public void onSuccess() {
+                    image.recycle();
+                    startEditImageActivity();
+                }
+
+                @Override
+                public void onFailure() {
+                    // FIXME
+                    Toast.makeText(getActivity(), "Error while saving image", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 
@@ -143,33 +156,41 @@ public class SelectMediaFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        try {
-            // When an Image is picked
-            if (requestCode == RESULT_LOAD_IMG
-                    && resultCode == Activity.RESULT_OK
-                    && null != data) {
+        // When an Image is picked
+        if (requestCode == RESULT_LOAD_IMG
+                && resultCode == Activity.RESULT_OK
+                && null != data) {
 
+            try {
                 // Get the Image from data
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                String imagePath = PhotoUtil.getRealPathFromURI(getActivity(), data.getData());
+                final Bitmap image = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(data.getData()));
 
-                Cursor cursor = getActivity().getContentResolver().query(
-                        selectedImage, filePathColumn, null, null, null);
-                cursor.moveToFirst();
+                // Save image in the app sandbox
+                PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
+                    @Override
+                    public void onSuccess() {
+                        image.recycle();
+                        startEditImageActivity();
+                    }
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
-
-                Bitmap image = BitmapFactory.decodeFile(filePath);
-                startEditImageActivity(image);
+                    @Override
+                    public void onFailure() {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.error_unable_to_open_image),
+                                Toast.LENGTH_LONG).show();
+                        Log.e(LOG_TAG, "An error happened while trying to open an image from gallery");
+                    }
+                });
+            } catch (Exception e) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.error_unable_to_open_image),
+                        Toast.LENGTH_LONG).show();
+                Log.e(LOG_TAG, "An error happened while trying to open an image: " + e.getMessage());
             }
-        } catch (Exception e) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.error_unable_to_open_image),
-                    Toast.LENGTH_LONG).show();
-            Log.e(LOG_TAG, "An error happened while trying to open an image: " + e.getMessage());
         }
+
+
     }
 
     /**
@@ -389,26 +410,11 @@ public class SelectMediaFragment extends Fragment {
 
     /**
      * Starts edit image activity.
-     *
-     * @param image bitmap image to edit
      */
-    private void startEditImageActivity(final Bitmap image) {
-        PhotoUtil.saveImage(image, new SaveImageCallback() {
-            @Override
-            public void onSuccess() {
-                Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
-                editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, PhotoUtil.getImageUri());
-                releasePhotoCamera();
-                startActivity(editImageIntent);
-                image.recycle();
-            }
-
-            @Override
-            public void onFailure() {
-                // FIXME
-                Toast.makeText(getActivity(), "Error while saving image", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+    private void startEditImageActivity() {
+        Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
+        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, PhotoUtil.getImageUri());
+        releasePhotoCamera();
+        startActivity(editImageIntent);
     }
 }

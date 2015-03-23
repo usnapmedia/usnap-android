@@ -13,4 +13,8 @@ public interface SelectMediaProvider {
     public int getCameraId();
 
     public void setCameraId(int cameraId);
+
+    public int getCameraLastOrientationAngleKnown();
+
+    public void setCameraLastOrientationAngleKnown(int angle);
 }

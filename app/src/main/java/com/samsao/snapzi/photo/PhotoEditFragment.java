@@ -58,6 +58,7 @@ public class PhotoEditFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         // set the view background
+        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
         Picasso.with(getActivity()).load(mListener.getImageUri())
                 .noPlaceholder()
                 .into(mImage);
@@ -65,7 +66,8 @@ public class PhotoEditFragment extends Fragment {
         return view;
     }
 
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
     }
@@ -86,14 +88,14 @@ public class PhotoEditFragment extends Fragment {
     public View getControlsView() {
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_controls, mContainer, false);
         // set the touch events listeners
-        Button brightnessButton = (Button)view.findViewById(R.id.fragment_photo_edit_controls_brightness_btn);
+        Button brightnessButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_brightness_btn);
         brightnessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 replaceContainer(getBrightnessEditView());
             }
         });
-        Button contrastButton = (Button)view.findViewById(R.id.fragment_photo_edit_controls_contrast_btn);
+        Button contrastButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_contrast_btn);
         contrastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,7 +108,7 @@ public class PhotoEditFragment extends Fragment {
     public View getBrightnessEditView() {
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
         // set the touch events listeners
-        SeekBar seekBar = (SeekBar)view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
         seekBar.setMax(20);
         seekBar.setProgress(mListener.getBrightness());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -114,7 +116,7 @@ public class PhotoEditFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
                 Picasso.with(getActivity()).load(mListener.getImageUri())
                         .noPlaceholder()
-                        .transform(new BrightnessFilterTransformation(getActivity(), (progress - 10)/10.0f))
+                        .transform(new BrightnessFilterTransformation(getActivity(), (progress - 10) / 10.0f))
                         .into(mImage);
                 mListener.setBrightness(progress);
             }
@@ -129,12 +131,12 @@ public class PhotoEditFragment extends Fragment {
 
             }
         });
-        Button doneButton = (Button)view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
+        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 replaceContainer(getControlsView());
-                mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
+                mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
             }
         });
         return view;
@@ -144,7 +146,7 @@ public class PhotoEditFragment extends Fragment {
     public View getContrastEditView() {
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
         // set the touch events listeners
-        SeekBar seekBar = (SeekBar)view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
         seekBar.setMax(40);
         seekBar.setProgress(mListener.getContrast());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -152,7 +154,7 @@ public class PhotoEditFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
                 Picasso.with(getActivity()).load(mListener.getImageUri())
                         .noPlaceholder()
-                        .transform(new ContrastFilterTransformation(getActivity(), progress/10.0f))
+                        .transform(new ContrastFilterTransformation(getActivity(), progress / 10.0f))
                         .into(mImage);
                 mListener.setContrast(progress);
             }
@@ -167,12 +169,12 @@ public class PhotoEditFragment extends Fragment {
 
             }
         });
-        Button doneButton = (Button)view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
+        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 replaceContainer(getControlsView());
-                mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
+                mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
             }
         });
         return view;
@@ -185,10 +187,15 @@ public class PhotoEditFragment extends Fragment {
 
     public interface Listener {
         public Uri getImageUri();
+
         public int getBrightness();
+
         public void setBrightness(int brightness);
+
         public int getContrast();
+
         public void setContrast(int contrast);
+
         public void saveBitmap(Bitmap bitmap);
     }
 }

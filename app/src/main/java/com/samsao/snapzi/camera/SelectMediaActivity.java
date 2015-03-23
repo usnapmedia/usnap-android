@@ -26,12 +26,16 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Icicle
     public int mCameraId;
 
+    @Icicle
+    public int mCameraLastOrientationAngleKnown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mIsPhotoModeOn = DEFAULT_PHOTO_MODE_STATE;
         mCameraId = DEFAULT_CAMERA_ID;
+        mCameraLastOrientationAngleKnown = 0;
         if (savedInstanceState != null) {
             // restore saved state
             Icepick.restoreInstanceState(this, savedInstanceState);
@@ -66,5 +70,15 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Override
     public void setCameraId(int cameraId) {
         mCameraId = cameraId;
+    }
+
+    @Override
+    public int getCameraLastOrientationAngleKnown() {
+        return mCameraLastOrientationAngleKnown;
+    }
+
+    @Override
+    public void setCameraLastOrientationAngleKnown(int angle) {
+        mCameraLastOrientationAngleKnown = angle;
     }
 }

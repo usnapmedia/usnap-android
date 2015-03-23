@@ -160,9 +160,9 @@ public class CameraHelper {
     }
 
     /**
-     * Gets current device orientation angle
+     * Gets camera's current orientation angle
      */
-    public static int getCurrentOrientationAngle(Context context) {
+    public static int getCameraCurrentOrientationAngle(Context context) {
         int angle;
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
