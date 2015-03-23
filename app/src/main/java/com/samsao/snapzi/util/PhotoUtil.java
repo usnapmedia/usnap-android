@@ -128,6 +128,24 @@ public class PhotoUtil {
         }
     }
 
+    /**
+     * Scale bitmap
+     *
+     * @param bitmap original bitmap
+     * @param scaleX
+     * @param scaleY
+     * @return rotated bitmap
+     */
+    public static Bitmap ScaleBitmap(Bitmap bitmap, float scaleX, float scaleY) {
+        if (scaleX != 1 || scaleY != 1) {
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleX, scaleY);
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } else {
+            return bitmap;
+        }
+    }
+
     public static String getRealPathFromURI(Context context, Uri uri) {
         String result;
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);

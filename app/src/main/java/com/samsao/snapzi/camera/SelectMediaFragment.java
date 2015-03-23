@@ -89,21 +89,26 @@ public class SelectMediaFragment extends Fragment {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
             int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
-            final Bitmap image = PhotoUtil.RotateBitmap(
-                    BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
-                    cameraLastOrientationAngleKnown);
+            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            // Adjust bitmap depending on camera ID and orientation
+            if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                image = PhotoUtil.ScaleBitmap(image, -1, 1);
+            }
+            image = PhotoUtil.RotateBitmap(image, cameraLastOrientationAngleKnown);
 
             PhotoUtil.saveImage(image, new SaveImageCallback() {
                 @Override
                 public void onSuccess() {
-                    image.recycle();
                     startEditImageActivity();
                 }
 
                 @Override
                 public void onFailure() {
-                    // FIXME
-                    Toast.makeText(getActivity(), "Error while saving image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.error_unable_to_take_picture),
+                            Toast.LENGTH_LONG).show();
+                    Log.e(LOG_TAG, "An error happened while taking a picture");
                 }
             });
         }
