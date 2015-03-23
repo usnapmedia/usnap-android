@@ -329,9 +329,6 @@ public class SelectMediaFragment extends Fragment {
      * source (FRONT, BACK).
      */
     public void flipCamera() {
-        releasePhotoCamera();
-        releaseVideoCamera();
-
         if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
         } else {
@@ -339,8 +336,10 @@ public class SelectMediaFragment extends Fragment {
         }
 
         if (mSelectMediaProvider.isPhotoModeOn()) {
+            releasePhotoCamera();
             createPhotoCamera(mSelectMediaProvider.getCameraId());
         } else {
+            releaseVideoCamera();
             createVideoCamera(mSelectMediaProvider.getCameraId());
         }
     }
@@ -398,6 +397,5 @@ public class SelectMediaFragment extends Fragment {
         editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, photoUri);
         releasePhotoCamera();
         startActivity(editImageIntent);
-        getActivity().finish();
     }
 }

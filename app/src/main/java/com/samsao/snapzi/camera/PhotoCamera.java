@@ -134,8 +134,8 @@ public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
         }
         Log.v(LOG_TAG, "Camera Preview Layout Scale Factor: " + previewSizeScale);
 
-        int layoutHeight = Math.round(previewSizeHeight * previewSizeScale);
-        int layoutWidth = Math.round(previewSizeWidth * previewSizeScale);
+        int layoutHeight = (int)(previewSizeHeight * previewSizeScale);
+        int layoutWidth = (int)(previewSizeWidth * previewSizeScale);
         Log.v(LOG_TAG, "Camera Preview Layout Size - w: " + layoutWidth + ", h: " + layoutHeight);
 
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
