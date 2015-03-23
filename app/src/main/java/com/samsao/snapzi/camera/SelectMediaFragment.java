@@ -25,6 +25,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.PhotoEditActivity;
 import com.samsao.snapzi.preferences.PreferencesActivity;
 import com.samsao.snapzi.util.PhotoUtil;
+import com.samsao.snapzi.util.SaveImageCallback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -391,11 +392,23 @@ public class SelectMediaFragment extends Fragment {
      *
      * @param image bitmap image to edit
      */
-    private void startEditImageActivity(Bitmap image) {
-        Uri photoUri = PhotoUtil.saveBitmap(image);
-        Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
-        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, photoUri);
-        releasePhotoCamera();
-        startActivity(editImageIntent);
+    private void startEditImageActivity(final Bitmap image) {
+        PhotoUtil.saveImage(image, new SaveImageCallback() {
+            @Override
+            public void onSuccess() {
+                Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
+                editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, PhotoUtil.getImageUri());
+                releasePhotoCamera();
+                startActivity(editImageIntent);
+                image.recycle();
+            }
+
+            @Override
+            public void onFailure() {
+                // FIXME
+                Toast.makeText(getActivity(), "Error while saving image", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
