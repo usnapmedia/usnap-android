@@ -48,7 +48,7 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        setVideoPath(CameraHelper.getVideoMediaFilePath());
+        setVideoPath(mVideoPath);
         setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {

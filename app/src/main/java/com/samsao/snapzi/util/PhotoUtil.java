@@ -145,22 +145,4 @@ public class PhotoUtil {
             return bitmap;
         }
     }
-
-    public static String getRealPathFromURI(Context context, Uri uri) {
-        String result;
-        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-        if (cursor == null) {
-            result = uri.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            if (idx == -1) {
-                result = uri.getPath();
-            } else {
-                result = cursor.getString(idx);
-                cursor.close();
-            }
-        }
-        return result;
-    }
 }

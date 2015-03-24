@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      */
     private final String LOG_TAG = getClass().getSimpleName();
     private final static int RESULT_LOAD_IMG = 8401;
+    private final static int RESULT_LOAD_VID = 8402;
     private final int MAXIMUM_VIDEO_DURATION = 30000; // 30 seconds
     private final int COUNTDOWN_INTERVAL = 500; // half a second
     private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
@@ -179,15 +181,15 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // When an Image is picked
+        // When an image is picked
         if (requestCode == RESULT_LOAD_IMG
                 && resultCode == Activity.RESULT_OK
                 && null != data) {
 
             if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                 try {
-                    // Get the Image from data
-                    String imagePath = PhotoUtil.getRealPathFromURI(getActivity(), data.getData());
+                    // Get the video from data
+                    String imagePath = CameraHelper.getRealPathFromURI(getActivity(), data.getData());
                     final Bitmap image = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(data.getData()));
 
                     // Save image in the app sandbox
@@ -204,6 +206,15 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
                         getResources().getString(R.string.error_not_enough_available_space),
                         Toast.LENGTH_LONG).show();
             }
+        }
+        // When a video is picked
+        else if (requestCode == RESULT_LOAD_VID
+                && resultCode == Activity.RESULT_OK
+                && null != data) {
+
+            // Get the video from data
+            String videoPath = CameraHelper.getRealPathFromURI(getActivity(), data.getData());
+            startEditVideoActivity(videoPath);
         }
     }
 
@@ -350,7 +361,9 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         mPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, RESULT_LOAD_VID);
             }
         });
 

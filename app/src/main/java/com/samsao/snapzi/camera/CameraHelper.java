@@ -3,8 +3,11 @@ package com.samsao.snapzi.camera;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -149,6 +152,27 @@ public class CameraHelper {
         }
 
         return angle;
+    }
+
+    /**
+     * Returns file path from URI.
+     */
+    public static String getRealPathFromURI(Context context, Uri uri) {
+        String result;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor == null) {
+            result = uri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            if (idx == -1) {
+                result = uri.getPath();
+            } else {
+                result = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return result;
     }
 
     /**
