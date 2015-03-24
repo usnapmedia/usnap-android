@@ -70,16 +70,20 @@ public class PhotoEditFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         // TODO check for keyboard dismiss also
+        mTextAnnotation.setTextIsSelectable(false);
         mTextAnnotation.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            KeyboardUtil.hideKeyboard(getActivity());
                             if (!TextUtils.isEmpty(mTextAnnotation.getText())) {
-                                KeyboardUtil.hideKeyboard(getActivity());
                                 mTextAnnotation.setFocusableInTouchMode(false);
-                                mTextAnnotation.setFocusable(false);
                                 mTextAnnotation.clearFocus();
+                                mTextAnnotation.setOnTouchListener(new TextAnnotationTouchListener(mTextAnnotation));
+                            } else {
+                                mTextAnnotation.clearFocus();
+                                mTextAnnotation.setOnTouchListener(null);
                             }
                             return true;
                         }
@@ -139,7 +143,6 @@ public class PhotoEditFragment extends Fragment {
                 replaceContainer(getAddTextAnnotationView());
                 mTextAnnotation.setVisibility(View.VISIBLE);
                 mTextAnnotation.setFocusableInTouchMode(true);
-                mTextAnnotation.setFocusable(true);
                 mTextAnnotation.requestFocus();
                 KeyboardUtil.showKeyboard(getActivity(), mTextAnnotation);
             }
@@ -236,6 +239,7 @@ public class PhotoEditFragment extends Fragment {
                     mTextAnnotation.setVisibility(View.GONE);
                 } else {
                     mTextAnnotation.setFocusableInTouchMode(false);
+                    mTextAnnotation.setOnTouchListener(null);
                 }
             }
         });
