@@ -12,9 +12,11 @@ import android.app.Fragment;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -132,6 +134,27 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
+
+        mCameraPreviewContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Configure camera preview view
+                FrameLayout.LayoutParams cameraPreviewLayoutParams = (FrameLayout.LayoutParams) mCameraPreviewContainer.getLayoutParams();
+                final int mainViewWidth = mCameraPreviewContainer.getWidth();
+                final int mainViewHeight = mCameraPreviewContainer.getHeight();
+                if (mainViewWidth != mainViewHeight) {
+                    cameraPreviewLayoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                    if (mainViewWidth < mainViewHeight) {
+                        cameraPreviewLayoutParams.width = mainViewWidth;
+                        cameraPreviewLayoutParams.height = mainViewWidth;
+                    } else {
+                        cameraPreviewLayoutParams.width = mainViewHeight;
+                        cameraPreviewLayoutParams.height = mainViewHeight;
+                    }
+                    mCameraPreviewContainer.setLayoutParams(cameraPreviewLayoutParams);
+                }
+            }
+        });
 
         return view;
     }
