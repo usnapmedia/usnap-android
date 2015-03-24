@@ -18,6 +18,12 @@
         android:text="CLEAR"/>
 
     <Button
+        android:id="@+id/fragment_photo_edit_draw_color_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="COLOR"/>
+
+    <Button
         android:id="@+id/fragment_photo_edit_draw_done_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

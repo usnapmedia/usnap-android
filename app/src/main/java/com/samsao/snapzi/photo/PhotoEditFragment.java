@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.squareup.picasso.Picasso;
@@ -53,6 +55,9 @@ public class PhotoEditFragment extends Fragment {
     public DrawableView mDrawAnnotation;
 
     private Listener mListener;
+    private MaterialDialog mColorPickerDialog;
+    private DrawableViewConfig mDrawableViewConfig;
+    private ColorPicker mColorPicker;
 
     /**
      * Use this factory method to create a new instance of
@@ -104,14 +109,14 @@ public class PhotoEditFragment extends Fragment {
         Point size = new Point();
         display.getSize(size);
 
-        DrawableViewConfig config = new DrawableViewConfig();
-        config.setStrokeColor(getResources().getColor(android.R.color.holo_red_light));
-        config.setStrokeWidth(20.0f);
-        config.setMinZoom(1.0f);
-        config.setMaxZoom(3.0f);
-        config.setCanvasHeight(size.y);
-        config.setCanvasWidth(size.x);
-        mDrawAnnotation.setConfig(config);
+        mDrawableViewConfig = new DrawableViewConfig();
+        mDrawableViewConfig.setStrokeColor(getResources().getColor(android.R.color.holo_red_light));
+        mDrawableViewConfig.setStrokeWidth(20.0f);
+        mDrawableViewConfig.setMinZoom(1.0f);
+        mDrawableViewConfig.setMaxZoom(3.0f);
+        mDrawableViewConfig.setCanvasHeight(size.y);
+        mDrawableViewConfig.setCanvasWidth(size.x);
+        mDrawAnnotation.setConfig(mDrawableViewConfig);
         mDrawAnnotation.setOnTouchListener(null);
 
         // set the view background
@@ -294,6 +299,13 @@ public class PhotoEditFragment extends Fragment {
                 mDrawAnnotation.clear();
             }
         });
+        Button colorButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_color_btn);
+        colorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getColorPickerDialog().show();
+            }
+        });
         Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_done_btn);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,6 +320,27 @@ public class PhotoEditFragment extends Fragment {
     public void replaceContainer(View view) {
         mContainer.removeAllViews();
         mContainer.addView(view);
+    }
+
+    public MaterialDialog getColorPickerDialog() {
+        if (mColorPickerDialog == null) {
+            mColorPickerDialog = new MaterialDialog.Builder(getActivity())
+                    .customView(R.layout.dialog_color_picker, false)
+                    .positiveText(android.R.string.ok)
+                    .negativeText(android.R.string.cancel)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            mDrawableViewConfig.setStrokeColor(mColorPicker.getColor());
+                        }
+                    })
+                    .build();
+            View view = mColorPickerDialog.getCustomView();
+            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
+            // TODO set the right start color
+            mColorPicker.setOldCenterColor(mColorPicker.getColor());
+        }
+        return mColorPickerDialog;
     }
 
     public interface Listener {
