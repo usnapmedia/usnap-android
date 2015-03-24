@@ -1,6 +1,5 @@
 package com.samsao.snapzi.camera;
 
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -112,6 +111,7 @@ public class CameraHelper {
 
     /**
      * Get video media path.
+     *
      * @return path to video
      */
     public static String getVideoMediaFilePath() {
