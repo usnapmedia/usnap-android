@@ -190,7 +190,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         mMediaRecorder.setProfile(mCameraProfile);
 
         // Set output file
-        mMediaRecorder.setOutputFile(CameraHelper.getOutputMediaFile(CameraHelper.MEDIA_TYPE_VIDEO).toString());
+        mMediaRecorder.setOutputFile(CameraHelper.getVideoMediaFilePath());
 
         // Set maximum duration
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);

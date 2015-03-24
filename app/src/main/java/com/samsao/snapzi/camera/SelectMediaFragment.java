@@ -24,6 +24,7 @@ import com.samsao.snapzi.photo.PhotoEditActivity;
 import com.samsao.snapzi.preferences.PreferencesActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.video.VideoEditActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -135,6 +136,12 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         ButterKnife.inject(this, view);
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override
@@ -333,14 +340,9 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
             public void onFinish() {
                 mVideoCountdown.setText(String.valueOf(0));
 
-                // stop recording and release camera
+                // stop recording and start video edit activity
                 mVideoCamera.stopRecording();
-
-                // inform the user that recording has stopped
-                mFlipCameraButton.setVisibility(View.VISIBLE);
-                mTakeButton.setText("CAPTURE");
-                mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                mIsRecording = false;
+                startEditVideoActivity();
             }
         };
 
@@ -357,15 +359,11 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
             @Override
             public void onClick(View view) {
                 if (mIsRecording) {
-                    // stop recording and release camera
-                    mVideoCamera.stopRecording();
                     mVideoCaptureCountdownTimer.cancel();
 
-                    // inform the user that recording has stopped
-                    mFlipCameraButton.setVisibility(View.VISIBLE);
-                    mTakeButton.setText("CAPTURE");
-                    mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                    mIsRecording = false;
+                    // stop recording and start video edit activity
+                    mVideoCamera.stopRecording();
+                    startEditVideoActivity();
                 } else {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
@@ -471,5 +469,14 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, PhotoUtil.getImageUri());
         releasePhotoCamera();
         startActivity(editImageIntent);
+    }
+
+    /**
+     * Starts edit video activity.
+     */
+    private void startEditVideoActivity() {
+        Intent editVideoIntent = new Intent(getActivity(), VideoEditActivity.class);
+        releaseVideoCamera();
+        startActivity(editVideoIntent);
     }
 }
