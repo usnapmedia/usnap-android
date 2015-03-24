@@ -39,6 +39,8 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      */
     private final String LOG_TAG = getClass().getSimpleName();
     private final static int RESULT_LOAD_IMG = 8401;
+    private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
+    private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
 
     private SelectMediaProvider mSelectMediaProvider;
     private PhotoCamera mPhotoCamera;
@@ -97,7 +99,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
             }
             image = PhotoUtil.RotateBitmap(image, cameraLastOrientationAngleKnown);
 
-            // FIXME: inform user of background picture saving
+            // FIXME: inform user of picture saving in background
             PhotoUtil.saveImage(image, SelectMediaFragment.this);
         }
     };
@@ -168,19 +170,25 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
                 && resultCode == Activity.RESULT_OK
                 && null != data) {
 
-            try {
-                // Get the Image from data
-                String imagePath = PhotoUtil.getRealPathFromURI(getActivity(), data.getData());
-                final Bitmap image = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(data.getData()));
+            if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
+                try {
+                    // Get the Image from data
+                    String imagePath = PhotoUtil.getRealPathFromURI(getActivity(), data.getData());
+                    final Bitmap image = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(data.getData()));
 
-                // Save image in the app sandbox
-                // FIXME: inform user of background picture saving
-                PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), this);
-            } catch (Exception e) {
+                    // Save image in the app sandbox
+                    // FIXME: inform user of picture saving in background
+                    PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), this);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.error_unable_to_open_image),
+                            Toast.LENGTH_LONG).show();
+                    Log.e(LOG_TAG, "An error happened while trying to open an image: " + e.getMessage());
+                }
+            } else {
                 Toast.makeText(getActivity(),
-                        getResources().getString(R.string.error_unable_to_open_image),
+                        getResources().getString(R.string.error_not_enough_available_space),
                         Toast.LENGTH_LONG).show();
-                Log.e(LOG_TAG, "An error happened while trying to open an image: " + e.getMessage());
             }
         }
     }
@@ -279,12 +287,18 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPhotoCamera.getCamera().autoFocus(new Camera.AutoFocusCallback() {
-                    @Override
-                    public void onAutoFocus(boolean b, Camera camera) {
-                        mPhotoCamera.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
-                    }
-                });
+                if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
+                    mPhotoCamera.getCamera().autoFocus(new Camera.AutoFocusCallback() {
+                        @Override
+                        public void onAutoFocus(boolean b, Camera camera) {
+                            mPhotoCamera.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
+                        }
+                    });
+                } else {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.error_not_enough_available_space),
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
         mTakeButton.setText("TAKE");
@@ -324,19 +338,24 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
                     mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                     mIsRecording = false;
                 } else {
-                    // initialize video camera
-                    if (mVideoCamera.startRecording()) {
-                        // inform the user that recording has started
-                        mFlipCameraButton.setVisibility(View.GONE);
-                        mTakeButton.setText("STOP");
-                        mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                        mIsRecording = true;
+                    // Verifying if there's enough space to store the new video
+                    if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
+                        if (mVideoCamera.startRecording()) {
+                            // inform the user that recording has started
+                            mFlipCameraButton.setVisibility(View.GONE);
+                            mTakeButton.setText("STOP");
+                            mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            mIsRecording = true;
+                        } else {
+                            // prepare didn't work, release the camera
+                            mVideoCamera.stopRecording();
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.error_unable_to_start_video_camera),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     } else {
-                        // prepare didn't work, release the camera
-                        mVideoCamera.stopRecording();
-                        // inform user
                         Toast.makeText(getActivity(),
-                                "Unable to start recording",
+                                getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
                     }
                 }

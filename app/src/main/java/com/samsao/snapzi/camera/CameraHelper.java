@@ -187,4 +187,13 @@ public class CameraHelper {
 
         return angle;
     }
+
+    /**
+     * Returns the number of free megabytes on the partition containing this path.
+     */
+    public static long getAvailableDiskSpace(Context context) {
+        long bytesAvailable = context.getFilesDir().getFreeSpace();
+        long megabytesAvailable = bytesAvailable / 1000000;
+        return megabytesAvailable;
+    }
 }
