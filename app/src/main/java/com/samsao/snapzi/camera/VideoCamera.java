@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.PhotoUtil;
 
 import java.io.IOException;
 
@@ -194,6 +195,18 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
         // Set maximum duration
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);
+
+        // Tags the video with deviceOrientationAngle in order to tell the phone how to display it
+        if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            // Dirty fix: setOrientationHint doesn't support negative values
+            if (-deviceOrientationAngle < 0) {
+                mMediaRecorder.setOrientationHint(-deviceOrientationAngle + 360);
+            } else {
+                mMediaRecorder.setOrientationHint(-deviceOrientationAngle);
+            }
+        } else {
+            mMediaRecorder.setOrientationHint(deviceOrientationAngle);
+        }
 
         // Prepare configured MediaRecorder
         try {
