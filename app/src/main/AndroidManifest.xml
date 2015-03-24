@@ -49,6 +49,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
 
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="369cc275b13fc2a69f58dc6067c6ceb6fb776650" />

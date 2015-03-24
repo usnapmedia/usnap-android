@@ -41,12 +41,8 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    private final static int RESULT_LOAD_IMG = 8401;
-    private final static int RESULT_LOAD_VID = 8402;
     private final int MAXIMUM_VIDEO_DURATION = 30000; // 30 seconds
     private final int COUNTDOWN_INTERVAL = 500; // half a second
-    private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
-    private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
 
     private SelectMediaProvider mSelectMediaProvider;
     private PhotoCamera mPhotoCamera;
@@ -178,47 +174,6 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // When an image is picked
-        if (requestCode == RESULT_LOAD_IMG
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
-
-            if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
-                try {
-                    // Get the video from data
-                    String imagePath = CameraHelper.getRealPathFromURI(getActivity(), data.getData());
-                    final Bitmap image = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(data.getData()));
-
-                    // Save image in the app sandbox
-                    // FIXME: inform user of picture saving in background
-                    PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), this);
-                } catch (Exception e) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.error_unable_to_open_image),
-                            Toast.LENGTH_LONG).show();
-                    Log.e(LOG_TAG, "An error happened while trying to open an image: " + e.getMessage());
-                }
-            } else {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.error_not_enough_available_space),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-        // When a video is picked
-        else if (requestCode == RESULT_LOAD_VID
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
-
-            // Get the video from data
-            String videoPath = CameraHelper.getRealPathFromURI(getActivity(), data.getData());
-            startEditVideoActivity(videoPath);
-        }
-    }
-
-    @Override
     public void onSuccess() {
         startEditImageActivity();
     }
@@ -304,7 +259,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+                getActivity().startActivityForResult(galleryIntent, SelectMediaActivity.RESULT_LOAD_IMG);
             }
         });
 
@@ -312,7 +267,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         mTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
+                if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                     mPhotoCamera.getCamera().autoFocus(new Camera.AutoFocusCallback() {
                         @Override
                         public void onAutoFocus(boolean b, Camera camera) {
@@ -363,7 +318,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
             public void onClick(View view) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, RESULT_LOAD_VID);
+                getActivity().startActivityForResult(galleryIntent, SelectMediaActivity.RESULT_LOAD_VID);
             }
         });
 
@@ -379,7 +334,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
                     startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                 } else {
                     // Verifying if there's enough space to store the new video
-                    if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
+                    if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
                         if (mVideoCamera.startRecording()) {
                             // inform the user that recording has started
                             mVideoCaptureCountdownTimer.start();
@@ -477,9 +432,9 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     /**
      * Starts edit image activity.
      */
-    private void startEditImageActivity() {
+    public void startEditImageActivity() {
         Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
-        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, PhotoUtil.getImageUri());
+        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, CameraHelper.getImageUri());
         releasePhotoCamera();
         startActivity(editImageIntent);
     }
@@ -487,7 +442,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     /**
      * Starts edit video activity.
      */
-    private void startEditVideoActivity(String videoPath) {
+    public void startEditVideoActivity(String videoPath) {
         Intent editVideoIntent = new Intent(getActivity(), VideoEditActivity.class);
         editVideoIntent.putExtra(VideoEditActivity.EXTRA_VIDEO_PATH, videoPath);
         releaseVideoCamera();

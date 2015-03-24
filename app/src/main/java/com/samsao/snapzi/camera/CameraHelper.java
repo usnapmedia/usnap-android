@@ -26,7 +26,8 @@ public class CameraHelper {
      * Constants
      */
     private static final String LOG_TAG = "CameraHelper";
-    private final static String VIDEO_FILENAME = "video.mp4";
+    public final static String IMAGE_FILENAME = "image.png";
+    public final static String VIDEO_FILENAME = "video.mp4";
 
     public static enum LayoutMode {
         FitParent,
@@ -107,6 +108,24 @@ public class CameraHelper {
             }
         }
         return optimalSize;
+    }
+
+    /**
+     * Returns the image URI
+     *
+     * @return
+     */
+    public static Uri getImageUri() {
+        return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath(IMAGE_FILENAME));
+    }
+
+    /**
+     * Get image media path.
+     *
+     * @return path to image
+     */
+    public static String getImageMediaFilePath() {
+        return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + IMAGE_FILENAME);
     }
 
     /**

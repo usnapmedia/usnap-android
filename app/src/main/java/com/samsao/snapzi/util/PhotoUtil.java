@@ -4,11 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.camera.CameraHelper;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,7 +20,6 @@ import java.io.IOException;
  */
 public class PhotoUtil {
 
-    private final static String FILENAME = "image.png";
     private final static String LOG_TAG = PhotoUtil.class.getSimpleName();
 
     /**
@@ -31,15 +30,6 @@ public class PhotoUtil {
      */
     public static void saveImage(Bitmap bitmap, SaveImageCallback callback) {
         new SaveBitmapTask(bitmap, callback).execute();
-    }
-
-    /**
-     * Returns the image URI
-     *
-     * @return
-     */
-    public static Uri getImageUri() {
-        return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath(FILENAME));
     }
 
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
@@ -53,7 +43,7 @@ public class PhotoUtil {
 
         protected Boolean doInBackground(Void... nothing) {
             try {
-                FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(CameraHelper.IMAGE_FILENAME, Context.MODE_PRIVATE);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
                 fOutputStream.flush();
                 fOutputStream.close();
