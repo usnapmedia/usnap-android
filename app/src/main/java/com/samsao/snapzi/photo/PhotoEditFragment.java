@@ -4,10 +4,12 @@ package com.samsao.snapzi.photo;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
 import jp.wasabeef.picasso.transformations.gpu.ContrastFilterTransformation;
+import me.panavtec.drawableview.DrawableView;
+import me.panavtec.drawableview.DrawableViewConfig;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +48,9 @@ public class PhotoEditFragment extends Fragment {
 
     @InjectView(R.id.fragment_photo_edit_text_annotation)
     public EditText mTextAnnotation;
+
+    @InjectView(R.id.fragment_photo_edit_draw_annotation)
+    public DrawableView mDrawAnnotation;
 
     private Listener mListener;
 
@@ -91,6 +98,21 @@ public class PhotoEditFragment extends Fragment {
                     }
                 });
 
+
+        // init draw annotation
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        DrawableViewConfig config = new DrawableViewConfig();
+        config.setStrokeColor(getResources().getColor(android.R.color.holo_red_light));
+        config.setStrokeWidth(20.0f);
+        config.setMinZoom(1.0f);
+        config.setMaxZoom(3.0f);
+        config.setCanvasHeight(size.y);
+        config.setCanvasWidth(size.x);
+        mDrawAnnotation.setConfig(config);
+        mDrawAnnotation.setOnTouchListener(null);
 
         // set the view background
         Picasso.with(getActivity()).invalidate(mListener.getImageUri());
@@ -146,6 +168,14 @@ public class PhotoEditFragment extends Fragment {
                 mTextAnnotation.setFocusableInTouchMode(true);
                 mTextAnnotation.requestFocus();
                 KeyboardUtil.showKeyboard(getActivity(), mTextAnnotation);
+            }
+        });
+        Button drawButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_draw_btn);
+        drawButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceContainer(getAddDrawAnnotationView());
+                mDrawAnnotation.setOnTouchListener(mDrawAnnotation);
             }
         });
         return view;
@@ -242,6 +272,34 @@ public class PhotoEditFragment extends Fragment {
                     mTextAnnotation.setFocusableInTouchMode(false);
                     mTextAnnotation.setOnTouchListener(null);
                 }
+            }
+        });
+        return view;
+    }
+
+    public View getAddDrawAnnotationView() {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_draw, mContainer, false);
+        // set the touch events listeners
+        Button undoButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_undo_btn);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawAnnotation.undo();
+            }
+        });
+        Button clearButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_clear_btn);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawAnnotation.clear();
+            }
+        });
+        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_done_btn);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceContainer(getControlsView());
+                mDrawAnnotation.setOnTouchListener(null);
             }
         });
         return view;

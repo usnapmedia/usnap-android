@@ -35,6 +35,12 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+        <me.panavtec.drawableview.DrawableView
+            android:id="@+id/fragment_photo_edit_draw_annotation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="96dp" />
+
     </FrameLayout>
 
 </FrameLayout>

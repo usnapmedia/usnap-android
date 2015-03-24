@@ -109,6 +109,7 @@
     <orderEntry type="library" exported="" name="guava-15.0" level="project" />
     <orderEntry type="library" exported="" name="icepick-processor-2.3.6" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-3.21.1" level="project" />
+    <orderEntry type="library" exported="" name="drawableview-0.5.0" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="answers-1.1.2" level="project" />
