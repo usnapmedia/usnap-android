@@ -36,14 +36,14 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         mIsPhotoModeOn = DEFAULT_PHOTO_MODE_STATE;
         mCameraId = DEFAULT_CAMERA_ID;
         mCameraLastOrientationAngleKnown = 0;
+
         if (savedInstanceState != null) {
             // restore saved state
             Icepick.restoreInstanceState(this, savedInstanceState);
+        } else {
+            SelectMediaFragment selectMediaFragment = SelectMediaFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, selectMediaFragment).commit();
         }
-
-        SelectMediaFragment selectMediaFragment = new SelectMediaFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, selectMediaFragment).commit();
     }
 
     @Override
