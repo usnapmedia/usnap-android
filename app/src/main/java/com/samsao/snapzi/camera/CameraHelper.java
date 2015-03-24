@@ -4,9 +4,7 @@ package com.samsao.snapzi.camera;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -14,10 +12,8 @@ import android.view.WindowManager;
 
 import com.samsao.snapzi.SnapziApplication;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+
 
 /**
  * Created by vlegault on 15-03-19.
@@ -116,7 +112,7 @@ public class CameraHelper {
      * @return path to video
      */
     public static String getVideoMediaFilePath() {
-        return (SnapziApplication.getContext().getFilesDir().getPath() + VIDEO_FILENAME);
+        return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + VIDEO_FILENAME);
     }
 
     /**

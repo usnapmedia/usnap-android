@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.util.PhotoUtil;
 
 import java.io.IOException;
 

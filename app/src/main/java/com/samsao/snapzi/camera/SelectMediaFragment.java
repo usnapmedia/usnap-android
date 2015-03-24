@@ -342,7 +342,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
                 // stop recording and start video edit activity
                 mVideoCamera.stopRecording();
-                startEditVideoActivity();
+                startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
             }
         };
 
@@ -363,7 +363,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
                     // stop recording and start video edit activity
                     mVideoCamera.stopRecording();
-                    startEditVideoActivity();
+                    startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                 } else {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
@@ -474,8 +474,9 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     /**
      * Starts edit video activity.
      */
-    private void startEditVideoActivity() {
+    private void startEditVideoActivity(String videoPath) {
         Intent editVideoIntent = new Intent(getActivity(), VideoEditActivity.class);
+        editVideoIntent.putExtra(VideoEditActivity.EXTRA_VIDEO_PATH, videoPath);
         releaseVideoCamera();
         startActivity(editVideoIntent);
     }

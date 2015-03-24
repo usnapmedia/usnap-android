@@ -1,16 +1,15 @@
 package com.samsao.snapzi.video;
 
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.VideoView;
+import android.widget.FrameLayout;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.camera.CameraHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,8 +17,17 @@ import butterknife.InjectView;
 
 public class VideoEditFragment extends Fragment {
 
+    /**
+     * Constants
+     */
+    private final VideoPreview.LayoutMode DEFAULT_VIDEO_PREVIEW_LAYOUT = VideoPreview.LayoutMode.CenterCrop;
+
+    private VideoPreview mVideoPreview;
+
     @InjectView(R.id.fragment_video_edit_video_preview_container)
-    public VideoView mVideoPreviewContainer;
+    public FrameLayout mVideoPreviewContainer;
+
+    private Listener mListener;
 
 
     /**
@@ -54,20 +62,35 @@ public class VideoEditFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mListener = (Listener) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement VideoEditFragment.Listener");
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mVideoPreviewContainer.setVideoPath(CameraHelper.getVideoMediaFilePath());
-        mVideoPreviewContainer.setOnPreparedListener (new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-            }
-        });
-        mVideoPreviewContainer.start();
+        mVideoPreview = new VideoPreview(getActivity(), DEFAULT_VIDEO_PREVIEW_LAYOUT, mListener.getVideoPath());
+        mVideoPreviewContainer.addView(mVideoPreview);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (mVideoPreview != null) {
+            mVideoPreviewContainer.removeView(mVideoPreview);
+            mVideoPreview = null;
+        }
+    }
+
+    public interface Listener {
+        public String getVideoPath();
     }
 }
