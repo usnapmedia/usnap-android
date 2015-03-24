@@ -132,7 +132,6 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     public void onResume() {
         super.onResume();
 
-        setCommonFeatures();
         if (mSelectMediaProvider.isPhotoModeOn()) {
             setPhotoFeatures();
         } else {
@@ -203,6 +202,10 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      * Sets common features for PHOTO and VIDEO modes.
      */
     private void setCommonFeatures() {
+        // Reset camera
+        mIsRecording = false;
+        releasePhotoCamera();
+        releaseVideoCamera();
 
         // Sets flip camera button behavior
         // Activate camera flipping function only if more than one camera is available
@@ -242,8 +245,11 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         mPreferenceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                releasePhotoCamera();
-                releaseVideoCamera();
+                if (mSelectMediaProvider.isPhotoModeOn()) {
+                    releasePhotoCamera();
+                } else {
+                    releaseVideoCamera();
+                }
 
                 startActivity(new Intent(getActivity(), PreferencesActivity.class));
             }
@@ -254,12 +260,8 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      * Sets PHOTO mode features.
      */
     private void setPhotoFeatures() {
-        // Reset camera
-        mIsRecording = false;
-        releasePhotoCamera();
-        releaseVideoCamera();
+        setCommonFeatures();
         createPhotoCamera(mSelectMediaProvider.getCameraId());
-        mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
 
         // Sets the pick picture button behaviour
         mPickButton.setOnClickListener(new View.OnClickListener() {
@@ -297,12 +299,8 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      * Sets VIDEO mode features.
      */
     private void setVideoFeatures() {
-        // Reset camera
-        mIsRecording = false;
-        releasePhotoCamera();
-        releaseVideoCamera();
+        setCommonFeatures();
         createVideoCamera(mSelectMediaProvider.getCameraId());
-        mFlipCameraButton.setVisibility(View.VISIBLE); // Reset flip button visibility in the case of an orientation change
 
         // Sets the pick video button behaviour
         mPickButton.setOnClickListener(new View.OnClickListener() {
