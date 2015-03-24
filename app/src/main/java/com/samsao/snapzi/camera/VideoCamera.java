@@ -30,6 +30,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
     private Camera mCamera;
     private int mCameraId;
+    private int mMaximumVideoDuration;
     private CameraHelper.LayoutMode mLayoutMode;
     VideoCameraCallback mVideoCameraCallback = null;
 
@@ -42,11 +43,12 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         public void onVideoCameraFailed();
     }
 
-    public VideoCamera(Activity activity, int cameraId) {
+    public VideoCamera(Activity activity, int cameraId, int maximumVideoDuration) {
         super(activity);
 
         setSurfaceTextureListener(this);
         mCameraId = cameraId;
+        mMaximumVideoDuration = maximumVideoDuration;
         mLayoutMode = DEFAULT_VIDEO_CAMERA_LAYOUT;
 
         // Set a CamcorderProfile to 720p quality or lower of not available
@@ -189,6 +191,9 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
         // Set output file
         mMediaRecorder.setOutputFile(CameraHelper.getOutputMediaFile(CameraHelper.MEDIA_TYPE_VIDEO).toString());
+
+        // Set maximum duration
+        mMediaRecorder.setMaxDuration(mMaximumVideoDuration);
 
         // Prepare configured MediaRecorder
         try {

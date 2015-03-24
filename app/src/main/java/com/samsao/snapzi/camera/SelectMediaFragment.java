@@ -9,6 +9,7 @@ import android.hardware.Camera;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,8 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      */
     private final String LOG_TAG = getClass().getSimpleName();
     private final static int RESULT_LOAD_IMG = 8401;
+    private final int MAXIMUM_VIDEO_DURATION = 30000; // 30 seconds
+    private final int COUNTDOWN_INTERVAL = 500; // half a second
     private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     private final int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
 
@@ -46,6 +49,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     private PhotoCamera mPhotoCamera;
     private VideoCamera mVideoCamera;
     private boolean mIsRecording;
+    private CountDownTimer mVideoCaptureCountdownTimer;
 
     @InjectView(R.id.fragment_select_media_current_mode)
     public TextView mCurrentModeTextView;
@@ -58,6 +62,9 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
     @InjectView(R.id.fragment_select_media_pick_button)
     public Button mPickButton;
+
+    @InjectView(R.id.fragment_select_media_video_countdown)
+    public TextView mVideoCountdown;
 
     @InjectView(R.id.fragment_select_media_take_button)
     public Button mTakeButton;
@@ -306,6 +313,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
         // Update UI
         mCurrentModeTextView.setText("PHOTO MODE");
+        mVideoCountdown.setVisibility(View.GONE);
         mSelectMediaProvider.setIsPhotoModeOn(true);
     }
 
@@ -315,6 +323,26 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
     private void setVideoFeatures() {
         setCommonFeatures();
         createVideoCamera(mSelectMediaProvider.getCameraId());
+
+        // Setup video capture countdown
+        mVideoCaptureCountdownTimer = new CountDownTimer(MAXIMUM_VIDEO_DURATION, COUNTDOWN_INTERVAL) {
+            public void onTick(long millisUntilFinished) {
+                mVideoCountdown.setText(String.valueOf((int) Math.ceil((double) millisUntilFinished / 1000.0))); // show elapsed time in seconds
+            }
+
+            public void onFinish() {
+                mVideoCountdown.setText(String.valueOf(0));
+
+                // stop recording and release camera
+                mVideoCamera.stopRecording();
+
+                // inform the user that recording has stopped
+                mFlipCameraButton.setVisibility(View.VISIBLE);
+                mTakeButton.setText("CAPTURE");
+                mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                mIsRecording = false;
+            }
+        };
 
         // Sets the pick video button behaviour
         mPickButton.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +359,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
                 if (mIsRecording) {
                     // stop recording and release camera
                     mVideoCamera.stopRecording();
+                    mVideoCaptureCountdownTimer.cancel();
 
                     // inform the user that recording has stopped
                     mFlipCameraButton.setVisibility(View.VISIBLE);
@@ -342,6 +371,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
                         if (mVideoCamera.startRecording()) {
                             // inform the user that recording has started
+                            mVideoCaptureCountdownTimer.start();
                             mFlipCameraButton.setVisibility(View.GONE);
                             mTakeButton.setText("STOP");
                             mTakeButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
@@ -366,6 +396,8 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
         // Update UI
         mCurrentModeTextView.setText("VIDEO MODE");
+        mVideoCountdown.setText(Integer.toString(MAXIMUM_VIDEO_DURATION / 1000));
+        mVideoCountdown.setVisibility(View.VISIBLE);
         mSelectMediaProvider.setIsPhotoModeOn(false);
     }
 
@@ -416,7 +448,7 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
      * @param cameraId source camera: FRONT or BACK
      */
     private void createVideoCamera(int cameraId) {
-        mVideoCamera = new VideoCamera(getActivity(), cameraId);
+        mVideoCamera = new VideoCamera(getActivity(), cameraId, MAXIMUM_VIDEO_DURATION);
         mCameraPreviewContainer.addView(mVideoCamera);
     }
 
