@@ -6,27 +6,27 @@
               android:orientation="horizontal">
 
     <Button
-        android:id="@+id/fragment_photo_edit_controls_brightness_btn"
+        android:id="@+id/fragment_photo_edit_draw_undo_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BRIGHTNESS"/>
+        android:text="UNDO"/>
 
     <Button
-        android:id="@+id/fragment_photo_edit_controls_contrast_btn"
+        android:id="@+id/fragment_photo_edit_draw_clear_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CONTRAST"/>
+        android:text="CLEAR"/>
 
     <Button
-        android:id="@+id/fragment_photo_edit_controls_text_btn"
+        android:id="@+id/fragment_photo_edit_draw_color_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TEXT"/>
+        android:text="COLOR"/>
 
     <Button
-        android:id="@+id/fragment_photo_edit_controls_draw_btn"
+        android:id="@+id/fragment_photo_edit_draw_done_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DRAW"/>
+        android:text="DONE"/>
 
 </LinearLayout>
