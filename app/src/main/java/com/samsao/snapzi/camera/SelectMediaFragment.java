@@ -32,7 +32,7 @@ import butterknife.InjectView;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaFragment extends Fragment {
+public class SelectMediaFragment extends Fragment implements SaveImageCallback {
 
     /**
      * Constants
@@ -93,24 +93,12 @@ public class SelectMediaFragment extends Fragment {
 
             // Adjust bitmap depending on camera ID and orientation
             if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                image = PhotoUtil.ScaleBitmap(image, -1, 1);
+                image = PhotoUtil.ScaleBitmap(image, -1, 1); // Compensate mirror effect
             }
             image = PhotoUtil.RotateBitmap(image, cameraLastOrientationAngleKnown);
 
-            PhotoUtil.saveImage(image, new SaveImageCallback() {
-                @Override
-                public void onSuccess() {
-                    startEditImageActivity();
-                }
-
-                @Override
-                public void onFailure() {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.error_unable_to_take_picture),
-                            Toast.LENGTH_LONG).show();
-                    Log.e(LOG_TAG, "An error happened while taking a picture");
-                }
-            });
+            // FIXME: inform user of background picture saving
+            PhotoUtil.saveImage(image, SelectMediaFragment.this);
         }
     };
 
@@ -172,21 +160,8 @@ public class SelectMediaFragment extends Fragment {
                 final Bitmap image = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(data.getData()));
 
                 // Save image in the app sandbox
-                PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
-                    @Override
-                    public void onSuccess() {
-                        image.recycle();
-                        startEditImageActivity();
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.error_unable_to_open_image),
-                                Toast.LENGTH_LONG).show();
-                        Log.e(LOG_TAG, "An error happened while trying to open an image from gallery");
-                    }
-                });
+                // FIXME: inform user of background picture saving
+                PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), this);
             } catch (Exception e) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.error_unable_to_open_image),
@@ -194,8 +169,19 @@ public class SelectMediaFragment extends Fragment {
                 Log.e(LOG_TAG, "An error happened while trying to open an image: " + e.getMessage());
             }
         }
+    }
 
+    @Override
+    public void onSuccess() {
+        startEditImageActivity();
+    }
 
+    @Override
+    public void onFailure() {
+        Toast.makeText(getActivity(),
+                getResources().getString(R.string.error_unable_to_take_picture),
+                Toast.LENGTH_LONG).show();
+        Log.e(LOG_TAG, "An error happened while taking a picture");
     }
 
     /**
@@ -372,7 +358,7 @@ public class SelectMediaFragment extends Fragment {
     }
 
     /**
-     * Initialise PHOTO camera
+     * Initialize PHOTO camera
      *
      * @param cameraId source camera: FRONT or BACK
      */
@@ -393,7 +379,7 @@ public class SelectMediaFragment extends Fragment {
     }
 
     /**
-     * Initialise VIDEO camera
+     * Initialize VIDEO camera
      *
      * @param cameraId source camera: FRONT or BACK
      */
