@@ -7,14 +7,20 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.KeyboardUtil;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -32,6 +38,12 @@ public class PhotoEditFragment extends Fragment {
 
     @InjectView(R.id.fragment_photo_edit_container)
     public ViewGroup mContainer;
+
+    @InjectView(R.id.fragment_photo_edit_annotations_container)
+    public ViewGroup mAnnotationsContainer;
+
+    @InjectView(R.id.fragment_photo_edit_text_annotation)
+    public EditText mTextAnnotation;
 
     private Listener mListener;
 
@@ -56,6 +68,29 @@ public class PhotoEditFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_photo_edit, container, false);
         ButterKnife.inject(this, view);
+
+        // TODO check for keyboard dismiss also
+        mTextAnnotation.setTextIsSelectable(false);
+        mTextAnnotation.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            KeyboardUtil.hideKeyboard(getActivity());
+                            if (!TextUtils.isEmpty(mTextAnnotation.getText())) {
+                                mTextAnnotation.setFocusableInTouchMode(false);
+                                mTextAnnotation.clearFocus();
+                                mTextAnnotation.setOnTouchListener(new TextAnnotationTouchListener(mTextAnnotation));
+                            } else {
+                                mTextAnnotation.clearFocus();
+                                mTextAnnotation.setOnTouchListener(null);
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
 
         // set the view background
         Picasso.with(getActivity()).invalidate(mListener.getImageUri());
@@ -100,6 +135,17 @@ public class PhotoEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 replaceContainer(getContrastEditView());
+            }
+        });
+        Button textButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_text_btn);
+        textButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceContainer(getAddTextAnnotationView());
+                mTextAnnotation.setVisibility(View.VISIBLE);
+                mTextAnnotation.setFocusableInTouchMode(true);
+                mTextAnnotation.requestFocus();
+                KeyboardUtil.showKeyboard(getActivity(), mTextAnnotation);
             }
         });
         return view;
@@ -175,6 +221,27 @@ public class PhotoEditFragment extends Fragment {
             public void onClick(View v) {
                 replaceContainer(getControlsView());
                 mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
+            }
+        });
+        return view;
+    }
+
+    public View getAddTextAnnotationView() {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
+        // set the touch events listeners
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
+        seekBar.setVisibility(View.GONE);
+        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceContainer(getControlsView());
+                if (TextUtils.isEmpty(mTextAnnotation.getText())) {
+                    mTextAnnotation.setVisibility(View.GONE);
+                } else {
+                    mTextAnnotation.setFocusableInTouchMode(false);
+                    mTextAnnotation.setOnTouchListener(null);
+                }
             }
         });
         return view;

@@ -18,4 +18,23 @@
                  android:paddingLeft="@dimen/activity_horizontal_margin"
                  android:paddingRight="@dimen/activity_horizontal_margin" />
 
+    <FrameLayout android:id="@+id/fragment_photo_edit_annotations_container"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/fragment_photo_edit_text_annotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/text_annotation_placeholder"
+            android:background="@null"
+            android:textColor="@android:color/white"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
 </FrameLayout>
