@@ -86,7 +86,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
                     // Save image in the app sandbox
                     // FIXME: inform user that the picture is being saved in background
-                    PhotoUtil.saveImage(PhotoUtil.ApplyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
+                    PhotoUtil.saveImage(PhotoUtil.applyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
                         @Override
                         public void onSuccess() {
                             // Start cropping activity

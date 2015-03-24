@@ -37,7 +37,7 @@ import butterknife.InjectView;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaFragment extends Fragment implements SaveImageCallback {
+public class SelectMediaFragment extends Fragment {
 
     /**
      * Constants
@@ -99,16 +99,29 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
             int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
-            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap image = PhotoUtil.getCenterCropBitmapFrom(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)); // Get resulting center cropped photo
 
             // Adjust bitmap depending on camera ID and orientation
             if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                image = PhotoUtil.ScaleBitmap(image, -1, 1); // Compensate mirror effect
+                image = PhotoUtil.scaleBitmap(image, -1, 1); // Compensate mirror effect
             }
-            image = PhotoUtil.RotateBitmap(image, cameraLastOrientationAngleKnown);
+            image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown);
 
             // FIXME: inform user of picture saving in background
-            PhotoUtil.saveImage(image, SelectMediaFragment.this);
+            PhotoUtil.saveImage(image, new SaveImageCallback() {
+                @Override
+                public void onSuccess() {
+                    startEditImageActivity();
+                }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.error_unable_to_take_picture),
+                            Toast.LENGTH_LONG).show();
+                    Log.e(LOG_TAG, "An error happened while taking a picture");
+                }
+            });
         }
     };
 
@@ -135,10 +148,10 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
+        // Configure camera preview view to square dimension as per design
         mCameraPreviewContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                // Configure camera preview view
                 FrameLayout.LayoutParams cameraPreviewLayoutParams = (FrameLayout.LayoutParams) mCameraPreviewContainer.getLayoutParams();
                 final int mainViewWidth = mCameraPreviewContainer.getWidth();
                 final int mainViewHeight = mCameraPreviewContainer.getHeight();
@@ -194,19 +207,6 @@ public class SelectMediaFragment extends Fragment implements SaveImageCallback {
             throw new ClassCastException(activity.toString()
                     + " must implement CameraProvider");
         }
-    }
-
-    @Override
-    public void onSuccess() {
-        startEditImageActivity();
-    }
-
-    @Override
-    public void onFailure() {
-        Toast.makeText(getActivity(),
-                getResources().getString(R.string.error_unable_to_take_picture),
-                Toast.LENGTH_LONG).show();
-        Log.e(LOG_TAG, "An error happened while taking a picture");
     }
 
     /**

@@ -73,7 +73,7 @@ public class PhotoUtil {
      * @param sourceBitmap
      * @return corrected bitmap
      */
-    public static Bitmap ApplyBitmapOrientationCorrection(String sourcePath, Bitmap sourceBitmap) {
+    public static Bitmap applyBitmapOrientationCorrection(String sourcePath, Bitmap sourceBitmap) {
         if (sourcePath == null || sourceBitmap == null) {
             return null;
         }
@@ -85,13 +85,13 @@ public class PhotoUtil {
 
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
-                    return RotateBitmap(sourceBitmap, 90);
+                    return rotateBitmap(sourceBitmap, 90);
                 case ExifInterface.ORIENTATION_ROTATE_180:
-                    return RotateBitmap(sourceBitmap, 180);
+                    return rotateBitmap(sourceBitmap, 180);
                 case ExifInterface.ORIENTATION_ROTATE_270:
-                    return RotateBitmap(sourceBitmap, 270);
+                    return rotateBitmap(sourceBitmap, 270);
                 default:
-                    return RotateBitmap(sourceBitmap, 0);
+                    return rotateBitmap(sourceBitmap, 0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,7 +106,7 @@ public class PhotoUtil {
      * @param angle  angle of rotation
      * @return rotated bitmap
      */
-    public static Bitmap RotateBitmap(Bitmap bitmap, float angle) {
+    public static Bitmap rotateBitmap(Bitmap bitmap, float angle) {
         if (angle != 0) {
             Matrix matrix = new Matrix();
             matrix.postRotate(angle);
@@ -124,7 +124,7 @@ public class PhotoUtil {
      * @param scaleY
      * @return rotated bitmap
      */
-    public static Bitmap ScaleBitmap(Bitmap bitmap, float scaleX, float scaleY) {
+    public static Bitmap scaleBitmap(Bitmap bitmap, float scaleX, float scaleY) {
         if (scaleX != 1 || scaleY != 1) {
             Matrix matrix = new Matrix();
             matrix.postScale(scaleX, scaleY);
@@ -132,5 +132,36 @@ public class PhotoUtil {
         } else {
             return bitmap;
         }
+    }
+
+    /**
+     * Get center cropped bitmap from
+     *
+     * @param sourceBitmap original bitmap
+     * @return rotated bitmap
+     */
+    public static Bitmap getCenterCropBitmapFrom(Bitmap sourceBitmap) {
+        Bitmap outputBitmap;
+
+        if (sourceBitmap.getWidth() >= sourceBitmap.getHeight()) {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    sourceBitmap.getWidth() / 2 - sourceBitmap.getHeight() / 2,
+                    0,
+                    sourceBitmap.getHeight(),
+                    sourceBitmap.getHeight()
+            );
+
+        } else {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    0,
+                    sourceBitmap.getHeight() / 2 - sourceBitmap.getWidth() / 2,
+                    sourceBitmap.getWidth(),
+                    sourceBitmap.getWidth()
+            );
+        }
+
+        return outputBitmap;
     }
 }
