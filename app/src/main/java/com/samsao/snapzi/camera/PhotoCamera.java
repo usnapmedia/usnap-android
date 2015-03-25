@@ -1,13 +1,17 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import com.samsao.snapzi.R;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,15 +21,13 @@ import java.util.List;
  * @author vlegault
  * @since 15-03-17
  */
-public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
+public class PhotoCamera extends TextureView implements TextureView.SurfaceTextureListener {
 
     /**
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    private final CameraHelper.LayoutMode DEFAULT_PHOTO_CAMERA_LAYOUT = CameraHelper.LayoutMode.CenterCrop;
 
-    private SurfaceHolder mHolder;
     private Camera mCamera;
     private List<Size> mSupportedPreviewSizes;
     private List<Size> mSupportedPictureSizes;
@@ -38,19 +40,20 @@ public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
         public void onCameraPreviewFailed();
     }
 
-    public PhotoCamera(Activity activity, int cameraId) {
+
+    /**
+     * PhotoCamera constructor
+     *
+     * @param activity
+     * @param layoutMode FitToCenter or CenterCrop
+     * @param cameraId   Front-facing or back-facing camera
+     */
+    public PhotoCamera(Activity activity, CameraHelper.LayoutMode layoutMode, int cameraId) {
         super(activity);
 
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-
-        // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
+        setSurfaceTextureListener(this);
         mCamera = CameraHelper.getCameraInstance(cameraId);
-        mLayoutMode = DEFAULT_PHOTO_CAMERA_LAYOUT;
+        mLayoutMode = layoutMode;
 
         Camera.Parameters cameraParams = mCamera.getParameters();
         mSupportedPreviewSizes = cameraParams.getSupportedPreviewSizes();
@@ -58,49 +61,93 @@ public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        try {
-            mCamera.setPreviewDisplay(mHolder);
-        } catch (IOException e) {
-            release();
-        }
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+        resizeToFitParentView();
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
         release();
+        return true;
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        mCamera.stopPreview();
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
+        resizeToFitParentView();
+    }
 
-        Size previewSize = CameraHelper.getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
-        if (!adjustSurfaceLayoutSize(previewSize, width, height)) {
-            configureCamera(previewSize);
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+    }
 
-            try {
-                mCamera.startPreview();
+    /**
+     * Resize PhotoCamera view to fit it's parent container
+     */
+    public void resizeToFitParentView() {
+        int parentViewWidth = ((View) getParent()).getWidth();
+        int parentViewHeight = ((View) getParent()).getHeight();
+
+        Size previewSize = CameraHelper.getOptimalPreviewSize(mSupportedPreviewSizes, parentViewWidth, parentViewHeight);
+        if (!adjustSurfaceLayoutSize(previewSize, parentViewWidth, parentViewHeight)) {
+            if (prepareVideoCamera(previewSize)) {
                 if (null != mCameraPreviewCallback) {
                     mCameraPreviewCallback.onCameraPreviewReady();
                 }
-            } catch (Exception e) {
-                // Remove failed size and retry starting preview without
-                mSupportedPreviewSizes.remove(previewSize);
-                if (mSupportedPreviewSizes.size() > 0) { // prevent infinite loop
-                    surfaceChanged(holder, format, width, height);
-                } else {
-                    Log.e(LOG_TAG, "Failed to start camera preview: " + e.getMessage());
-                    if (null != mCameraPreviewCallback) {
-                        mCameraPreviewCallback.onCameraPreviewFailed();
-                    }
+            } else {
+                if (null != mCameraPreviewCallback) {
+                    mCameraPreviewCallback.onCameraPreviewFailed();
                 }
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.error_unable_to_start_video_camera),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
 
     /**
-     * Adjusts SurfaceView dimension to our layout available space.
+     * Prepare camera to record a video.
+     *
+     * @param cameraPreviewSize Size of the preview camera
+     * @return true on success
+     */
+    private boolean prepareVideoCamera(Size cameraPreviewSize) {
+        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
+        Camera.Parameters cameraParams = mCamera.getParameters();
+
+        mCamera.stopPreview();
+
+        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
+        cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
+
+        Size cameraPictureSize = determinePictureSize(cameraPreviewSize);
+        cameraParams.setPictureSize(cameraPictureSize.width, cameraPictureSize.height);
+        mCamera.setParameters(cameraParams);
+
+        try {
+            mCamera.setPreviewTexture(getSurfaceTexture());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
+            release();
+            return false;
+        }
+
+        try {
+            mCamera.startPreview();
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to start camera preview: " + e.getMessage());
+            release();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Adjusts PhotoCamera TextureView dimension to our layout available space.
+     *
+     * @param previewSize     requested camera preview size
+     * @param availableWidth  available width of the parent container
+     * @param availableHeight available heigth of the parent container
      */
     private boolean adjustSurfaceLayoutSize(Size previewSize,
                                             int availableWidth, int availableHeight) {
@@ -134,8 +181,8 @@ public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
         }
         Log.v(LOG_TAG, "Camera Preview Layout Scale Factor: " + previewSizeScale);
 
-        int layoutHeight = (int)(previewSizeHeight * previewSizeScale);
-        int layoutWidth = (int)(previewSizeWidth * previewSizeScale);
+        int layoutHeight = (int) (previewSizeHeight * previewSizeScale);
+        int layoutWidth = (int) (previewSizeWidth * previewSizeScale);
         Log.v(LOG_TAG, "Camera Preview Layout Size - w: " + layoutWidth + ", h: " + layoutHeight);
 
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
@@ -182,26 +229,6 @@ public class PhotoCamera extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         return retSize;
-    }
-
-    /**
-     * Sets Camera orientation, preview size and picture size
-     */
-    private void configureCamera(Size cameraPreviewSize) {
-        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
-        Camera.Parameters cameraParams = mCamera.getParameters();
-
-        Log.v(LOG_TAG, "Camera Orientation Angle: " + cameraCurrentOrientationAngle);
-        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
-
-        cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
-
-        Size cameraPictureSize = determinePictureSize(cameraPreviewSize);
-        cameraParams.setPictureSize(cameraPictureSize.width, cameraPictureSize.height);
-        Log.v(LOG_TAG, "Camera Preview Size - w: " + cameraPreviewSize.width + ", h: " + cameraPreviewSize.height);
-        Log.v(LOG_TAG, "Camera Picture Size - w: " + cameraPictureSize.width + ", h: " + cameraPictureSize.height);
-
-        mCamera.setParameters(cameraParams);
     }
 
     /**

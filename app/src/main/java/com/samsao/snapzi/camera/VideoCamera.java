@@ -26,7 +26,6 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    private final CameraHelper.LayoutMode DEFAULT_VIDEO_CAMERA_LAYOUT = CameraHelper.LayoutMode.CenterCrop;
 
     private Camera mCamera;
     private int mCameraId;
@@ -43,13 +42,13 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         public void onVideoCameraFailed();
     }
 
-    public VideoCamera(Activity activity, int cameraId, int maximumVideoDuration) {
+    public VideoCamera(Activity activity, CameraHelper.LayoutMode layoutMode, int cameraId, int maximumVideoDuration) {
         super(activity);
 
         setSurfaceTextureListener(this);
         mCameraId = cameraId;
         mMaximumVideoDuration = maximumVideoDuration;
-        mLayoutMode = DEFAULT_VIDEO_CAMERA_LAYOUT;
+        mLayoutMode = layoutMode;
 
         // Set a CamcorderProfile to 720p quality or lower of not available
         if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {

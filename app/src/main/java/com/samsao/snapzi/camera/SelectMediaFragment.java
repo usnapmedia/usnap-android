@@ -416,7 +416,7 @@ public class SelectMediaFragment extends Fragment {
      * @param cameraId source camera: FRONT or BACK
      */
     private void createPhotoCamera(int cameraId) {
-        mPhotoCamera = new PhotoCamera(getActivity(), cameraId);
+        mPhotoCamera = new PhotoCamera(getActivity(), CameraHelper.LayoutMode.CenterCrop, cameraId);
         mCameraPreviewContainer.addView(mPhotoCamera);
     }
 
@@ -437,7 +437,7 @@ public class SelectMediaFragment extends Fragment {
      * @param cameraId source camera: FRONT or BACK
      */
     private void createVideoCamera(int cameraId) {
-        mVideoCamera = new VideoCamera(getActivity(), cameraId, MAXIMUM_VIDEO_DURATION);
+        mVideoCamera = new VideoCamera(getActivity(), CameraHelper.LayoutMode.CenterCrop, cameraId, MAXIMUM_VIDEO_DURATION);
         mCameraPreviewContainer.addView(mVideoCamera);
     }
 
