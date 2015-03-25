@@ -1,5 +1,6 @@
 package com.samsao.snapzi.photo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.soundcloud.android.crop.Crop;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -18,6 +20,8 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     private final int INITIAL_BRIGHTNESS = 10;
     // contrast varies from 0 to 4.0, but progress bar from 0 to MAX -> initial contrast is 10 (1.0) and max is 40
     private final int INITIAL_CONTRAST = 10;
+
+    PhotoEditFragment mPhotoEditFragment;
 
     @Icicle
     public int mBrightness;
@@ -40,8 +44,8 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         if (savedInstanceState == null) {
-            PhotoEditFragment fragment = PhotoEditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
+            mPhotoEditFragment = PhotoEditFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, mPhotoEditFragment).commit();
         }
     }
 
@@ -49,6 +53,20 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // When an image as been cropped
+        if (requestCode == Crop.REQUEST_CROP
+                && resultCode == Activity.RESULT_OK
+                && null != data) {
+            if (mPhotoEditFragment != null) {
+                mPhotoEditFragment.refreshImage();
+            }
+        }
     }
 
     @Override
@@ -78,6 +96,7 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     /**
      * Save the image to disk
+     *
      * @param bitmap
      */
     public void saveBitmap(Bitmap bitmap) {

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -24,7 +25,10 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.util.KeyboardUtil;
+import com.soundcloud.android.crop.Crop;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -120,10 +124,7 @@ public class PhotoEditFragment extends Fragment {
         mDrawAnnotation.setOnTouchListener(null);
 
         // set the view background
-        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
-        Picasso.with(getActivity()).load(mListener.getImageUri())
-                .noPlaceholder()
-                .into(mImage);
+        refreshImage();
         replaceContainer(getControlsView());
         return view;
     }
@@ -181,6 +182,17 @@ public class PhotoEditFragment extends Fragment {
             public void onClick(View v) {
                 replaceContainer(getAddDrawAnnotationView());
                 mDrawAnnotation.setOnTouchListener(mDrawAnnotation);
+            }
+        });
+        Button cropButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_crop_btn);
+        cropButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start cropping activity
+                new Crop(CameraHelper.getImageUri())
+                        .output(CameraHelper.getImageUri())
+                        .asSquare()
+                        .start(getActivity());
             }
         });
         return view;
@@ -341,6 +353,49 @@ public class PhotoEditFragment extends Fragment {
             mColorPicker.setOldCenterColor(mColorPicker.getColor());
         }
         return mColorPickerDialog;
+    }
+
+    public void refreshImage() {
+        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
+        Picasso.with(getActivity()).load(mListener.getImageUri())
+                .noPlaceholder()
+                .into(mImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        fitImageToScreen();
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+    }
+
+    public void fitImageToScreen() {
+        if (mImage != null) {
+            int width = ((View) mImage.getParent()).getWidth();
+            int height = ((View) mImage.getParent()).getHeight();
+
+            BitmapDrawable bitmap = (BitmapDrawable) mImage.getDrawable();
+            float bitmapWidth = bitmap.getBitmap().getWidth();
+            float bitmapHeight = bitmap.getBitmap().getHeight();
+
+            float wRatio = width / bitmapWidth;
+            float hRatio = height / bitmapHeight;
+
+            float ratioMultiplier;
+            if (hRatio < wRatio) {
+                ratioMultiplier = hRatio;
+            } else {
+                ratioMultiplier = wRatio;
+            }
+
+            int newBitmapWidth = (int) (bitmapWidth * ratioMultiplier);
+            int newBitmapHeight = (int) (bitmapHeight * ratioMultiplier);
+
+            mImage.setLayoutParams(new FrameLayout.LayoutParams(newBitmapWidth, newBitmapHeight));
+        }
     }
 
     public interface Listener {

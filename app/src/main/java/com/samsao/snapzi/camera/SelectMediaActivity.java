@@ -127,7 +127,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 mSelectMediaFragment.startEditVideoActivity(videoPath);
             }
         }
-        // When an image is cropped
+        // When an image as been cropped
         else if (requestCode == Crop.REQUEST_CROP
                 && resultCode == Activity.RESULT_OK
                 && null != data) {
