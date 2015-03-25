@@ -89,7 +89,7 @@ public class PhotoCamera extends TextureView implements TextureView.SurfaceTextu
 
         Size previewSize = CameraHelper.getOptimalPreviewSize(mSupportedPreviewSizes, parentViewWidth, parentViewHeight);
         if (!adjustSurfaceLayoutSize(previewSize, parentViewWidth, parentViewHeight)) {
-            if (prepareVideoCamera(previewSize)) {
+            if (preparePhotoCamera(previewSize)) {
                 if (null != mCameraPreviewCallback) {
                     mCameraPreviewCallback.onCameraPreviewReady();
                 }
@@ -98,48 +98,10 @@ public class PhotoCamera extends TextureView implements TextureView.SurfaceTextu
                     mCameraPreviewCallback.onCameraPreviewFailed();
                 }
                 Toast.makeText(getContext(),
-                        getResources().getString(R.string.error_unable_to_start_video_camera),
+                        getResources().getString(R.string.error_unable_to_start_photo_camera),
                         Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    /**
-     * Prepare camera to record a video.
-     *
-     * @param cameraPreviewSize Size of the preview camera
-     * @return true on success
-     */
-    private boolean prepareVideoCamera(Size cameraPreviewSize) {
-        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
-        Camera.Parameters cameraParams = mCamera.getParameters();
-
-        mCamera.stopPreview();
-
-        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
-        cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
-
-        Size cameraPictureSize = determinePictureSize(cameraPreviewSize);
-        cameraParams.setPictureSize(cameraPictureSize.width, cameraPictureSize.height);
-        mCamera.setParameters(cameraParams);
-
-        try {
-            mCamera.setPreviewTexture(getSurfaceTexture());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
-            release();
-            return false;
-        }
-
-        try {
-            mCamera.startPreview();
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to start camera preview: " + e.getMessage());
-            release();
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -179,12 +141,9 @@ public class PhotoCamera extends TextureView implements TextureView.SurfaceTextu
                 previewSizeScale = heightScale;
             }
         }
-        Log.v(LOG_TAG, "Camera Preview Layout Scale Factor: " + previewSizeScale);
 
-        int layoutHeight = (int) (previewSizeHeight * previewSizeScale);
-        int layoutWidth = (int) (previewSizeWidth * previewSizeScale);
-        Log.v(LOG_TAG, "Camera Preview Layout Size - w: " + layoutWidth + ", h: " + layoutHeight);
-
+        int layoutHeight = Math.round(previewSizeHeight * previewSizeScale);
+        int layoutWidth = Math.round(previewSizeWidth * previewSizeScale);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
         if ((layoutWidth != this.getWidth()) || (layoutHeight != this.getHeight())) {
             layoutParams.height = layoutHeight;
@@ -202,33 +161,39 @@ public class PhotoCamera extends TextureView implements TextureView.SurfaceTextu
     }
 
     /**
-     * Gets the optimal device specific camera preview size
+     * Prepare camera to take a video.
      *
-     * @param previewSize requested camera preview size
-     * @return Camera.Size object that is an element of the list returned from Camera.Parameters.getSupportedPictureSizes.
+     * @param cameraPreviewSize Size of the preview camera
+     * @return true on success
      */
-    private Size determinePictureSize(Size previewSize) {
-        Size retSize = null;
+    private boolean preparePhotoCamera(Size cameraPreviewSize) {
+        Camera.Parameters cameraParams = mCamera.getParameters();
 
-        if (mSupportedPictureSizes.contains(previewSize)) {
-            retSize = previewSize;
-        } else {
-            Log.v(LOG_TAG, "Same picture size not found.");
+        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
+        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
+        cameraParams.setPreviewSize(cameraPreviewSize.width, cameraPreviewSize.height);
 
-            float reqRatio = (float) previewSize.width / (float) previewSize.height;
-            float curRatio, deltaRatio;
-            float deltaRatioMin = Float.MAX_VALUE;
-            for (Size size : mSupportedPictureSizes) {
-                curRatio = (float) size.width / (float) size.height;
-                deltaRatio = Math.abs(reqRatio - curRatio);
-                if (deltaRatio < deltaRatioMin) {
-                    deltaRatioMin = deltaRatio;
-                    retSize = size;
-                }
-            }
+        Size cameraPictureSize = CameraHelper.determinePictureSize(mSupportedPictureSizes, cameraPreviewSize);
+        cameraParams.setPictureSize(cameraPictureSize.width, cameraPictureSize.height);
+        mCamera.setParameters(cameraParams);
+
+        try {
+            mCamera.setPreviewTexture(getSurfaceTexture());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
+            release();
+            return false;
         }
 
-        return retSize;
+        try {
+            mCamera.startPreview();
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to start camera preview: " + e.getMessage());
+            release();
+            return false;
+        }
+
+        return true;
     }
 
     /**

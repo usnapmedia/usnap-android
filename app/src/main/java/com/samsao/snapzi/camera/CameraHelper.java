@@ -111,6 +111,36 @@ public class CameraHelper {
     }
 
     /**
+     * Gets the optimal device specific camera preview size
+     *
+     * @param previewSize requested camera preview size
+     * @return Camera.Size object that is an element of the list returned from Camera.Parameters.getSupportedPictureSizes.
+     */
+    public static Camera.Size determinePictureSize(List<Camera.Size> supportedPictureSizes, Camera.Size previewSize) {
+        Camera.Size retSize = null;
+
+        if (supportedPictureSizes.contains(previewSize)) {
+            retSize = previewSize;
+        } else {
+            Log.v(LOG_TAG, "Same picture size not found.");
+
+            float reqRatio = (float) previewSize.width / (float) previewSize.height;
+            float curRatio, deltaRatio;
+            float deltaRatioMin = Float.MAX_VALUE;
+            for (Camera.Size size : supportedPictureSizes) {
+                curRatio = (float) size.width / (float) size.height;
+                deltaRatio = Math.abs(reqRatio - curRatio);
+                if (deltaRatio < deltaRatioMin) {
+                    deltaRatioMin = deltaRatio;
+                    retSize = size;
+                }
+            }
+        }
+
+        return retSize;
+    }
+
+    /**
      * Returns the image URI
      *
      * @return

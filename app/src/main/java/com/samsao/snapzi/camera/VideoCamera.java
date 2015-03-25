@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -42,6 +43,15 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         public void onVideoCameraFailed();
     }
 
+
+    /**
+     * VideoCamera constructor
+     *
+     * @param activity
+     * @param layoutMode           FitToCenter or CenterCrop
+     * @param cameraId             Front-facing or back-facing camera
+     * @param maximumVideoDuration Maximum length (in time, for video)
+     */
     public VideoCamera(Activity activity, CameraHelper.LayoutMode layoutMode, int cameraId, int maximumVideoDuration) {
         super(activity);
 
@@ -61,13 +71,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-        if (!adjustSurfaceLayoutSize(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight, width, height)) {
-            if (!prepareVideoCamera(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight)) {
-                Toast.makeText(getContext(),
-                        getResources().getString(R.string.error_unable_to_start_video_camera),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
+        resizeToFitParentView();
     }
 
     @Override
@@ -78,11 +82,7 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
-        if (!prepareVideoCamera(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight)) {
-            Toast.makeText(getContext(),
-                    getResources().getString(R.string.error_unable_to_start_video_camera),
-                    Toast.LENGTH_LONG).show();
-        }
+        resizeToFitParentView();
     }
 
     @Override
@@ -90,19 +90,44 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
     }
 
     /**
-     * Adjusts SurfaceView dimension to our layout available space.
+     * Resize VideoCamera view to fit it's parent container
      */
-    private boolean adjustSurfaceLayoutSize(int targetedWidth, int targetedHeight,
-                                            int availableWidth, int availableHeight) {
+    public void resizeToFitParentView() {
+        int parentViewWidth = ((View) getParent()).getWidth();
+        int parentViewHeight = ((View) getParent()).getHeight();
+
+        if (!adjustSurfaceLayoutSize(parentViewWidth, parentViewHeight)) {
+            if (prepareVideoCamera()) {
+                if (null != mVideoCameraCallback) {
+                    mVideoCameraCallback.onVideoCameraReady();
+                }
+            } else {
+                if (null != mVideoCameraCallback) {
+                    mVideoCameraCallback.onVideoCameraFailed();
+                }
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.error_unable_to_start_video_camera),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     * Adjusts SurfaceView dimension to our layout available space.
+     *
+     * @param availableWidth  available width of the parent container
+     * @param availableHeight available heigth of the parent container
+     */
+    private boolean adjustSurfaceLayoutSize(int availableWidth, int availableHeight) {
         float previewSizeWidth, previewSizeHeight;
         float heightScale, widthScale, previewSizeScale;
 
         if (CameraHelper.isPortrait(getContext())) {
-            previewSizeWidth = targetedHeight;
-            previewSizeHeight = targetedWidth;
+            previewSizeWidth = mCameraProfile.videoFrameHeight;
+            previewSizeHeight = mCameraProfile.videoFrameWidth;
         } else {
-            previewSizeWidth = targetedWidth;
-            previewSizeHeight = targetedHeight;
+            previewSizeWidth = mCameraProfile.videoFrameWidth;
+            previewSizeHeight = mCameraProfile.videoFrameHeight;
         }
 
         heightScale = availableHeight / previewSizeHeight;
@@ -122,12 +147,9 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
                 previewSizeScale = heightScale;
             }
         }
-        Log.v(LOG_TAG, "Camera Preview Layout Scale Factor: " + previewSizeScale);
 
         int layoutHeight = Math.round(previewSizeHeight * previewSizeScale);
         int layoutWidth = Math.round(previewSizeWidth * previewSizeScale);
-        Log.v(LOG_TAG, "Camera Preview Layout Size - w: " + layoutWidth + ", h: " + layoutHeight);
-
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
         if ((layoutWidth != this.getWidth()) || (layoutHeight != this.getHeight())) {
             layoutParams.height = layoutHeight;
@@ -147,25 +169,20 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
     /**
      * Prepare camera to record a video.
      *
-     * @param width  width of the rendering surface
-     * @param height height of the rendering surface
      * @return true on success
      */
-    private boolean prepareVideoCamera(int width, int height) {
+    private boolean prepareVideoCamera() {
         // Reset camera and media recorder instances
         release();
 
         mCamera = CameraHelper.getCameraInstance(mCameraId);
         Camera.Parameters cameraParams = mCamera.getParameters();
 
-        int deviceOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
-        Log.v(LOG_TAG, "Camera Orientation Angle: " + deviceOrientationAngle);
-        mCamera.setDisplayOrientation(deviceOrientationAngle);
-
-        Log.v(LOG_TAG, "Camera Preview Size - w: " + width + ", h: " + height);
-        cameraParams.setPreviewSize(width, height);
-
+        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
+        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
+        cameraParams.setPreviewSize(mCameraProfile.videoFrameWidth, mCameraProfile.videoFrameHeight);
         mCamera.setParameters(cameraParams);
+
         try {
             mCamera.setPreviewTexture(getSurfaceTexture());
         } catch (IOException e) {
@@ -197,24 +214,24 @@ public class VideoCamera extends TextureView implements TextureView.SurfaceTextu
         // Tags the video with deviceOrientationAngle in order to tell the phone how to display it
         if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             // Dirty fix: setOrientationHint doesn't support negative values
-            if (-deviceOrientationAngle < 0) {
-                mMediaRecorder.setOrientationHint(-deviceOrientationAngle + 360);
+            if (-cameraCurrentOrientationAngle < 0) {
+                mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle + 360);
             } else {
-                mMediaRecorder.setOrientationHint(-deviceOrientationAngle);
+                mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle);
             }
         } else {
-            mMediaRecorder.setOrientationHint(deviceOrientationAngle);
+            mMediaRecorder.setOrientationHint(cameraCurrentOrientationAngle);
         }
 
         // Prepare configured MediaRecorder
         try {
             mMediaRecorder.prepare();
         } catch (IllegalStateException e) {
-            Log.d(LOG_TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
+            Log.e(LOG_TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
             releaseMediaRecorder();
             return false;
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException preparing MediaRecorder: " + e.getMessage());
+            Log.e(LOG_TAG, "IOException preparing MediaRecorder: " + e.getMessage());
             releaseMediaRecorder();
             return false;
         }
