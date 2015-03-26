@@ -25,7 +25,7 @@ public class CameraHelper {
     /**
      * Constants
      */
-    private static final String LOG_TAG = "CameraHelper";
+    private final static String LOG_TAG = CameraHelper.class.getSimpleName();
     public final static String IMAGE_FILENAME = "image.png";
     public final static String VIDEO_FILENAME = "video.mp4";
 

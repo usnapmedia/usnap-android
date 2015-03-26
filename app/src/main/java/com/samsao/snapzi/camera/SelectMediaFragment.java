@@ -43,8 +43,6 @@ public class SelectMediaFragment extends Fragment {
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    private final int MAXIMUM_VIDEO_DURATION = 30000; // 30 seconds
-    private final int COUNTDOWN_INTERVAL = 500; // half a second
 
     private SelectMediaProvider mSelectMediaProvider;
     private PhotoCamera mPhotoCamera;
@@ -321,7 +319,7 @@ public class SelectMediaFragment extends Fragment {
         createVideoCamera(mSelectMediaProvider.getCameraId());
 
         // Setup video capture countdown
-        mVideoCaptureCountdownTimer = new CountDownTimer(MAXIMUM_VIDEO_DURATION, COUNTDOWN_INTERVAL) {
+        mVideoCaptureCountdownTimer = new CountDownTimer(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS, SelectMediaActivity.COUNTDOWN_INTERVAL_MS) {
             public void onTick(long millisUntilFinished) {
                 mVideoCountdown.setText(String.valueOf((int) Math.ceil((double) millisUntilFinished / 1000.0))); // show elapsed time in seconds
             }
@@ -385,7 +383,7 @@ public class SelectMediaFragment extends Fragment {
 
         // Update UI
         mCurrentModeTextView.setText("VIDEO MODE");
-        mVideoCountdown.setText(Integer.toString(MAXIMUM_VIDEO_DURATION / 1000));
+        mVideoCountdown.setText(Integer.toString(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS / 1000));
         mVideoCountdown.setVisibility(View.VISIBLE);
         mSelectMediaProvider.setIsPhotoModeOn(false);
     }
@@ -437,7 +435,7 @@ public class SelectMediaFragment extends Fragment {
      * @param cameraId source camera: FRONT or BACK
      */
     private void createVideoCamera(int cameraId) {
-        mVideoCamera = new VideoCamera(getActivity(), CameraHelper.LayoutMode.CenterCrop, cameraId, MAXIMUM_VIDEO_DURATION);
+        mVideoCamera = new VideoCamera(getActivity(), CameraHelper.LayoutMode.CenterCrop, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
         mCameraPreviewContainer.addView(mVideoCamera);
     }
 

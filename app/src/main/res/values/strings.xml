@@ -14,6 +14,7 @@
     <string name="action_select_media">Select Media</string>
     <string name="error_unable_to_take_picture">Unable to take picture</string>
     <string name="error_unable_to_open_image">Unable to open image</string>
+    <string name="error_unable_to_open_video">Unable to open video</string>
     <string name="error_unable_to_start_photo_camera">Unable to start photo camera</string>
     <string name="error_unable_to_start_video_camera">Unable to start video camera</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>

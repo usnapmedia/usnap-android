@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.util.VideoUtil;
 import com.soundcloud.android.crop.Crop;
 
 import icepick.Icepick;
@@ -31,6 +32,8 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     private final String LOG_TAG = getClass().getSimpleName();
     public final static int RESULT_LOAD_IMG = 8401;
     public final static int RESULT_LOAD_VID = 8402;
+    public final static int MAXIMUM_VIDEO_DURATION_MS = 30000; // 30 seconds
+    public final static int COUNTDOWN_INTERVAL_MS = 500; // half a second
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
@@ -120,11 +123,18 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         else if (requestCode == RESULT_LOAD_VID
                 && resultCode == Activity.RESULT_OK
                 && null != data) {
-
             // Get the video from data
-            String videoPath = CameraHelper.getRealPathFromURI(this, data.getData());
-            if (mSelectMediaFragment != null) {
-                mSelectMediaFragment.startEditVideoActivity(videoPath);
+            String sourceVideoPath = CameraHelper.getRealPathFromURI(this, data.getData());
+            String destVideoPath = CameraHelper.getVideoMediaFilePath();
+
+            if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
+                if (mSelectMediaFragment != null) {
+                    mSelectMediaFragment.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                }
+            } else {
+                Toast.makeText(SelectMediaActivity.this,
+                        getResources().getString(R.string.error_unable_to_open_video),
+                        Toast.LENGTH_LONG).show();
             }
         }
         // When an image as been cropped
