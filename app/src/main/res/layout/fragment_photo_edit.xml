@@ -4,42 +4,36 @@
              android:layout_height="match_parent"
              tools:context="com.samsao.snapzi.photo.PhotoEditFragment">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/fragment_cafe_list_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_cafe_list_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:scrollbars="none" />
+
     <ImageView
         android:id="@+id/fragment_photo_edit_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <FrameLayout android:id="@+id/fragment_photo_edit_container"
+    <me.panavtec.drawableview.DrawableView
+        android:id="@+id/fragment_photo_edit_draw_annotation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout android:id="@+id/fragment_photo_edit_text_annotation_container"
                  android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:paddingTop="@dimen/activity_vertical_margin"
-                 android:paddingBottom="@dimen/activity_vertical_margin"
-                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                 android:paddingRight="@dimen/activity_horizontal_margin" />
+                 android:layout_height="match_parent" />
 
-    <FrameLayout android:id="@+id/fragment_photo_edit_annotations_container"
+    <FrameLayout android:id="@+id/fragment_photo_tool_container"
                  android:layout_width="match_parent"
-                 android:layout_height="match_parent">
-
-        <EditText
-            android:id="@+id/fragment_photo_edit_text_annotation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/text_annotation_placeholder"
-            android:background="@null"
-            android:textColor="@android:color/white"
-            android:inputType="text"
-            android:imeOptions="actionDone"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <me.panavtec.drawableview.DrawableView
-            android:id="@+id/fragment_photo_edit_draw_annotation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="96dp" />
-
-    </FrameLayout>
+                 android:layout_height="match_parent" />
 
 </FrameLayout>
