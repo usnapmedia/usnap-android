@@ -9,6 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -134,4 +135,6 @@ dependencies {
     compile 'com.larswerkman:HoloColorPicker:1.5'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.googlecode.mp4parser:isoparser:1.0.5.4'
+    compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
+    apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
 }

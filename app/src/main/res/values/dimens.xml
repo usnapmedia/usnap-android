@@ -15,5 +15,6 @@
 
     <!-- Photo edit -->
     <dimen name="photo_edit_menu_size">64dp</dimen>
+    <dimen name="tool_container_margin_bottom">64dp</dimen> <!-- photo_edit_menu_size + activity_vertical_margin -->
 
 </resources>

@@ -36,7 +36,12 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final MenuItem item = mData.get(position);
         holder.setup(item);
-        holder.itemView.setOnClickListener(item.getOnClickListener());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item.onSelected();
+            }
+        });
     }
 
     @Override

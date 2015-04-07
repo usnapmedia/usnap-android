@@ -3,6 +3,7 @@ package com.samsao.snapzi.photo;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,9 +16,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.tools.FilterTool;
 import com.samsao.snapzi.photo.tools.Tool;
+import com.samsao.snapzi.photo.tools.ToolsFactory;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 
@@ -80,7 +83,7 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 
         // TODO pass the right tools to instanciate
         ArrayList<Tool> tools = new ArrayList<>();
-        tools.add(new FilterTool(this));
+        tools.add(ToolsFactory.getTool(ToolsFactory.TOOL_FILTERS, this));
         setTools(tools);
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -200,43 +203,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 //        return view;
 //    }
 
-//    public View getBrightnessEditView() {
-//        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
-//        // set the touch events listeners
-//        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
-//        seekBar.setMax(20);
-//        seekBar.setProgress(mListener.getBrightness());
-//        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-//                Picasso.with(getActivity()).load(mListener.getImageUri())
-//                        .noPlaceholder()
-//                        .transform(new BrightnessFilterTransformation(getActivity(), (progress - 10) / 10.0f))
-//                        .into(mImage);
-//                mListener.setBrightness(progress);
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-//        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
-//        doneButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                replaceContainer(getControlsView());
-//                mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
-//            }
-//        });
-//        return view;
-//    }
-
 
 //    public View getContrastEditView() {
 //        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
@@ -331,10 +297,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 //        return view;
 //    }
 //
-//    public void replaceContainer(View view) {
-//        mContainer.removeAllViews();
-//        mContainer.addView(view);
-//    }
 
 //    public MaterialDialog getColorPickerDialog() {
 //        if (mColorPickerDialog == null) {
@@ -357,11 +319,30 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 //        return mColorPickerDialog;
 //    }
 
+    /**
+     * Refreshes the image without any transformation
+     */
     public void refreshImage() {
+        refreshImage(null);
+    }
+
+    /**
+     * Refreshes the image
+     * @param transformation
+     */
+    @Override
+    public void refreshImage(Transformation transformation) {
         Picasso.with(getActivity()).invalidate(mListener.getImageUri());
-        Picasso.with(getActivity()).load(mListener.getImageUri())
-                .noPlaceholder()
-                .into(mImage);
+        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder();
+        if (transformation != null) {
+            requestCreator = requestCreator.transform(transformation);
+        }
+        requestCreator.into(mImage);
+    }
+
+    @Override
+    public Context getContext() {
+        return getActivity();
     }
 
 //    public void fitImageToScreen() {
@@ -400,9 +381,13 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         mMenuItemAdapter.setData(items);
     }
 
+    /**
+     * Reset menu to the initial state
+     */
     @Override
     public void resetMenu() {
         mMenuItemAdapter.setData(getMenuItemsForTools());
+        mToolContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -417,17 +402,20 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         return menuItems;
     }
 
+    /**
+     * Replaces the tool container view
+     * @param resId
+     */
+    @Override
+    public View replaceToolContainer(int resId) {
+        mToolContainer.removeAllViews();
+        View view = getActivity().getLayoutInflater().inflate(resId, mToolContainer, true);
+        mToolContainer.setVisibility(View.VISIBLE);
+        return view;
+    }
+
     public interface Listener {
-        public Uri getImageUri();
-
-        public int getBrightness();
-
-        public void setBrightness(int brightness);
-
-        public int getContrast();
-
-        public void setContrast(int contrast);
-
-        public void saveBitmap(Bitmap bitmap);
+        Uri getImageUri();
+        void saveBitmap(Bitmap bitmap);
     }
 }
