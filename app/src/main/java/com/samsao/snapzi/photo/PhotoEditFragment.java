@@ -4,12 +4,10 @@ package com.samsao.snapzi.photo;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
-import com.squareup.picasso.Callback;
+import com.samsao.snapzi.photo.tools.FilterTool;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,9 +32,6 @@ public class PhotoEditFragment extends Fragment {
     @InjectView(R.id.fragment_photo_edit_image)
     public ImageView mImage;
 
-    @InjectView(R.id.fragment_cafe_list_toolbar)
-    public Toolbar mToolbar;
-
     @InjectView(R.id.fragment_cafe_list_recyclerview)
     public RecyclerView mRecyclerView;
 
@@ -47,7 +44,7 @@ public class PhotoEditFragment extends Fragment {
     @InjectView(R.id.fragment_photo_tool_container)
     public FrameLayout mToolContainer;
 
-    private ToolAdapter mToolAdapter;
+    private MenuItemAdapter mMenuItemAdapter;
     private LinearLayoutManager mLayoutManager;
     private Listener mListener;
 //    private MaterialDialog mColorPickerDialog;
@@ -62,6 +59,10 @@ public class PhotoEditFragment extends Fragment {
      */
     public static PhotoEditFragment newInstance() {
         PhotoEditFragment fragment = new PhotoEditFragment();
+        // TODO pass the right tools to instanciate
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(new FilterTool().getMenuItem());
+        fragment.setMenuItemAdapter(new MenuItemAdapter(menuItems));
         return fragment;
     }
 
@@ -78,7 +79,7 @@ public class PhotoEditFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mToolAdapter);
+        mRecyclerView.setAdapter(mMenuItemAdapter);
         refreshImage();
 
 
@@ -118,7 +119,7 @@ public class PhotoEditFragment extends Fragment {
 //        mDrawableViewConfig.setCanvasHeight(size.y);
 //        mDrawableViewConfig.setCanvasWidth(size.x);
 //        mDrawAnnotation.setConfig(mDrawableViewConfig);
-//        mDrawAnnotation.setOnTouchListener(null);
+        mDrawAnnotationContainer.setOnTouchListener(null);
 
         // set the view background
 //        replaceContainer(getControlsView());
@@ -355,43 +356,37 @@ public class PhotoEditFragment extends Fragment {
         Picasso.with(getActivity()).invalidate(mListener.getImageUri());
         Picasso.with(getActivity()).load(mListener.getImageUri())
                 .noPlaceholder()
-                .into(mImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        fitImageToScreen();
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                .into(mImage);
     }
 
-    public void fitImageToScreen() {
-        if (mImage != null) {
-            int width = ((View) mImage.getParent()).getWidth();
-            int height = ((View) mImage.getParent()).getHeight();
+//    public void fitImageToScreen() {
+//        if (mImage != null) {
+//            int width = ((View) mImage.getParent()).getWidth();
+//            int height = ((View) mImage.getParent()).getHeight();
+//
+//            BitmapDrawable bitmap = (BitmapDrawable) mImage.getDrawable();
+//            float bitmapWidth = bitmap.getBitmap().getWidth();
+//            float bitmapHeight = bitmap.getBitmap().getHeight();
+//
+//            float wRatio = width / bitmapWidth;
+//            float hRatio = height / bitmapHeight;
+//
+//            float ratioMultiplier;
+//            if (hRatio < wRatio) {
+//                ratioMultiplier = hRatio;
+//            } else {
+//                ratioMultiplier = wRatio;
+//            }
+//
+//            int newBitmapWidth = (int) (bitmapWidth * ratioMultiplier);
+//            int newBitmapHeight = (int) (bitmapHeight * ratioMultiplier);
+//
+//            mImage.setLayoutParams(new FrameLayout.LayoutParams(newBitmapWidth, newBitmapHeight));
+//        }
+//    }
 
-            BitmapDrawable bitmap = (BitmapDrawable) mImage.getDrawable();
-            float bitmapWidth = bitmap.getBitmap().getWidth();
-            float bitmapHeight = bitmap.getBitmap().getHeight();
-
-            float wRatio = width / bitmapWidth;
-            float hRatio = height / bitmapHeight;
-
-            float ratioMultiplier;
-            if (hRatio < wRatio) {
-                ratioMultiplier = hRatio;
-            } else {
-                ratioMultiplier = wRatio;
-            }
-
-            int newBitmapWidth = (int) (bitmapWidth * ratioMultiplier);
-            int newBitmapHeight = (int) (bitmapHeight * ratioMultiplier);
-
-            mImage.setLayoutParams(new FrameLayout.LayoutParams(newBitmapWidth, newBitmapHeight));
-        }
+    public void setMenuItemAdapter(MenuItemAdapter menuItemAdapter) {
+        mMenuItemAdapter = menuItemAdapter;
     }
 
     public interface Listener {

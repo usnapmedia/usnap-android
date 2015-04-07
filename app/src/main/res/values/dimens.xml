@@ -13,4 +13,7 @@
     <dimen name="elements_double_horizontal_margin">32dp</dimen>
     <dimen name="elements_quadruple_horizontal_margin">64dp</dimen>
 
+    <!-- Photo edit -->
+    <dimen name="photo_edit_menu_size">64dp</dimen>
+
 </resources>

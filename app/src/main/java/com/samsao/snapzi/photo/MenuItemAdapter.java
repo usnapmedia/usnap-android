@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.tools.Tool;
 
 import java.util.ArrayList;
 
@@ -20,11 +19,11 @@ import java.util.ArrayList;
  * @author  jfcartier
  * @since   4/06/2015
  */
-public class ToolAdapter extends RecyclerView.Adapter<ToolAdapter.ViewHolder> {
+public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHolder> {
 
-    protected ArrayList<Tool> mData;
+    protected ArrayList<MenuItem> mData;
 
-    public ToolAdapter(ArrayList<Tool> data) {
+    public MenuItemAdapter(ArrayList<MenuItem> data) {
         mData = data;
     }
 
@@ -35,9 +34,9 @@ public class ToolAdapter extends RecyclerView.Adapter<ToolAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        final Tool tool = mData.get(position);
-        holder.setup(tool);
-        holder.itemView.setOnClickListener(tool.getOnClickListener());
+        final MenuItem item = mData.get(position);
+        holder.setup(item);
+        holder.itemView.setOnClickListener(item.getOnClickListener());
     }
 
     @Override
@@ -55,9 +54,9 @@ public class ToolAdapter extends RecyclerView.Adapter<ToolAdapter.ViewHolder> {
             mImage = (ImageView) view.findViewById(R.id.fragment_photo_edit_tool_image);
         }
 
-        public void setup(Tool tool) {
-            mName.setText(tool.getName());
-            mImage.setImageResource(tool.getImageResource());
+        public void setup(MenuItem item) {
+            mName.setText(item.getName());
+            mImage.setImageResource(item.getImageResource());
         }
     }
 }

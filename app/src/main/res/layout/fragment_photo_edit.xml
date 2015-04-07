@@ -4,36 +4,38 @@
              android:layout_height="match_parent"
              tools:context="com.samsao.snapzi.photo.PhotoEditFragment">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/fragment_cafe_list_toolbar"
+    <ImageView
+        android:id="@+id/fragment_photo_edit_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"/>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_cafe_list_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/photo_edit_menu_size"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:scrollbars="none" />
-
-    <ImageView
-        android:id="@+id/fragment_photo_edit_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:background="@color/white_alpha"
+        android:paddingLeft="@dimen/elements_horizontal_margin"
+        android:paddingRight="@dimen/elements_horizontal_margin"
+        android:scrollbars="none"/>
 
     <me.panavtec.drawableview.DrawableView
         android:id="@+id/fragment_photo_edit_draw_annotation_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
 
-    <FrameLayout android:id="@+id/fragment_photo_edit_text_annotation_container"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent" />
+    <FrameLayout
+        android:id="@+id/fragment_photo_edit_text_annotation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <FrameLayout android:id="@+id/fragment_photo_tool_container"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent" />
+    <FrameLayout
+        android:id="@+id/fragment_photo_tool_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </FrameLayout>

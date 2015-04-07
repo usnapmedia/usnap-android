@@ -23,5 +23,6 @@
     <string name="preferences">Preferences</string>
 
     <!--Photo edit-->
+    <string name="tool_filters_name">Adjust</string>
     <string name="text_annotation_placeholder">Enter text here</string>
 </resources>

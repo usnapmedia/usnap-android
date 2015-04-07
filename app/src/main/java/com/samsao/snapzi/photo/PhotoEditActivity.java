@@ -6,11 +6,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 
+import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.soundcloud.android.crop.Crop;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -20,6 +24,9 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     private final int INITIAL_BRIGHTNESS = 10;
     // contrast varies from 0 to 4.0, but progress bar from 0 to MAX -> initial contrast is 10 (1.0) and max is 40
     private final int INITIAL_CONTRAST = 10;
+
+    @InjectView(R.id.activity_photo_edit_toolbar)
+    public Toolbar mToolbar;
 
     PhotoEditFragment mPhotoEditFragment;
 
@@ -33,6 +40,9 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photo_edit);
+        ButterKnife.inject(this);
+        setupToolbar();
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -45,7 +55,7 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
         if (savedInstanceState == null) {
             mPhotoEditFragment = PhotoEditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, mPhotoEditFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.activity_photo_edit_content, mPhotoEditFragment).commit();
         }
     }
 
@@ -67,6 +77,14 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
                 mPhotoEditFragment.refreshImage();
             }
         }
+    }
+
+    public void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
