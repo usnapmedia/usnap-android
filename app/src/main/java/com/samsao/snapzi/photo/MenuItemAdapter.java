@@ -44,6 +44,11 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
         return mData.size();
     }
 
+    public void setData(ArrayList<MenuItem> data) {
+        mData = data;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mName;
         private ImageView mImage;

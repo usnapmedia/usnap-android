@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.tools.FilterTool;
+import com.samsao.snapzi.photo.tools.Tool;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import me.panavtec.drawableview.DrawableView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhotoEditFragment extends Fragment {
+public class PhotoEditFragment extends Fragment implements MenuContainer {
 
     @InjectView(R.id.fragment_photo_edit_image)
     public ImageView mImage;
@@ -47,6 +48,10 @@ public class PhotoEditFragment extends Fragment {
     private MenuItemAdapter mMenuItemAdapter;
     private LinearLayoutManager mLayoutManager;
     private Listener mListener;
+
+    // TODO move them to activity
+    private ArrayList<Tool> mTools;
+
 //    private MaterialDialog mColorPickerDialog;
 //    private DrawableViewConfig mDrawableViewConfig;
 //    private ColorPicker mColorPicker;
@@ -59,10 +64,6 @@ public class PhotoEditFragment extends Fragment {
      */
     public static PhotoEditFragment newInstance() {
         PhotoEditFragment fragment = new PhotoEditFragment();
-        // TODO pass the right tools to instanciate
-        ArrayList<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new FilterTool().getMenuItem());
-        fragment.setMenuItemAdapter(new MenuItemAdapter(menuItems));
         return fragment;
     }
 
@@ -77,11 +78,15 @@ public class PhotoEditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo_edit, container, false);
         ButterKnife.inject(this, view);
 
+        // TODO pass the right tools to instanciate
+        ArrayList<Tool> tools = new ArrayList<>();
+        tools.add(new FilterTool(this));
+        setTools(tools);
+
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mMenuItemAdapter);
         refreshImage();
-
 
         // TODO check for keyboard dismiss also
 //        mTextAnnotation.setTextIsSelectable(false);
@@ -385,8 +390,31 @@ public class PhotoEditFragment extends Fragment {
 //        }
 //    }
 
-    public void setMenuItemAdapter(MenuItemAdapter menuItemAdapter) {
-        mMenuItemAdapter = menuItemAdapter;
+    public void setTools(ArrayList<Tool> tools) {
+        mTools = tools;
+        mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
+    }
+
+    @Override
+    public void setMenuItems(ArrayList<MenuItem> items) {
+        mMenuItemAdapter.setData(items);
+    }
+
+    @Override
+    public void resetMenu() {
+        mMenuItemAdapter.setData(getMenuItemsForTools());
+    }
+
+    /**
+     * Get the menu items associated with current tools
+     * @return
+     */
+    private ArrayList<MenuItem> getMenuItemsForTools() {
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
+        for (Tool tool : mTools) {
+            menuItems.add(tool.getMenuItem());
+        }
+        return menuItems;
     }
 
     public interface Listener {

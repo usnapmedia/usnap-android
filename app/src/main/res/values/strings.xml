@@ -23,6 +23,8 @@
     <string name="preferences">Preferences</string>
 
     <!--Photo edit-->
-    <string name="tool_filters_name">Adjust</string>
+    <string name="tool_filters_name">adjust</string>
+    <string name="tool_filters_filter_brightness_name">brightness</string>
+    <string name="tool_filters_filter_contrast_name">contrasr</string>
     <string name="text_annotation_placeholder">Enter text here</string>
 </resources>
