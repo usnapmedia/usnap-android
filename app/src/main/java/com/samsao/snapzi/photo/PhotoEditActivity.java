@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.*;
+import android.view.MenuItem;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.PhotoUtil;
@@ -26,8 +28,8 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     @InjectView(R.id.activity_photo_edit_toolbar)
     public Toolbar mToolbar;
 
-    PhotoEditFragment mPhotoEditFragment;
-
+    private Menu mMenu;
+    private PhotoEditFragment mPhotoEditFragment;
 
     @Icicle
     public int mContrast;
@@ -75,12 +77,72 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mMenu = menu;
+        getMenuInflater().inflate(R.menu.activity_photo_edit, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.activity_photo_edit_next:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsNextSelected();
+                }
+                return true;
+            case R.id.activity_photo_edit_clear:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsClearSelected();
+                }
+                return true;
+            case R.id.activity_photo_edit_undo:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsUndoSelected();
+                }
+                return true;
+            case R.id.activity_photo_edit_done:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsDoneSelected();
+                }
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    /**
+     * Show the edit menu
+     * @param showClear
+     * @param showUndo
+     */
+    public void showEditMenu(boolean showClear, boolean showUndo) {
+        getMenuInflater().inflate(R.menu.activity_photo_edit_edit, mMenu);
+        if (!showClear) {
+            MenuItem item = mMenu.findItem(R.id.activity_photo_edit_clear);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        }
+        if (!showUndo) {
+            MenuItem item = mMenu.findItem(R.id.activity_photo_edit_undo);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        }
+        getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override

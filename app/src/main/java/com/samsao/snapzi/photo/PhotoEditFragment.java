@@ -414,6 +414,34 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         return view;
     }
 
+    /**
+     * When options item NEXT is selected
+     */
+    public void onOptionsNextSelected() {
+
+    }
+
+    /**
+     * When options item DONE is selected
+     */
+    public void onOptionsDoneSelected() {
+
+    }
+
+    /**
+     * When options item CLEAR is selected
+     */
+    public void onOptionsClearSelected() {
+
+    }
+
+    /**
+     * When options item UNDO is selected
+     */
+    public void onOptionsUndoSelected() {
+
+    }
+
     public interface Listener {
         Uri getImageUri();
         void saveBitmap(Bitmap bitmap);
