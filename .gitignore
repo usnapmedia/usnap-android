@@ -6,5 +6,6 @@
 .DS_Store
 /build
 .idea/misc.xml
+.idea/gradle.xml
 app/app.iml
-.DS_Store
+snapzi-android.iml
