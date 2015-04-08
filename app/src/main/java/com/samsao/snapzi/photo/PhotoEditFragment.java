@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -98,8 +99,11 @@ public class PhotoEditFragment extends Fragment {
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.set((int)getResources().getDimension(R.dimen.elements_horizontal_margin), 0, (int)getResources().getDimension(R.dimen.elements_horizontal_margin), 0);
-                super.getItemOffsets(outRect, view, parent, state);
+                if(parent.getChildAdapterPosition(view) != 0) {
+                    outRect.left = (int) getResources().getDimension(R.dimen.elements_horizontal_margin);
+                } else {
+                    super.getItemOffsets(outRect, view, parent, state);
+                }
             }
         });
         mRecyclerView.setHasFixedSize(true);
@@ -325,19 +329,26 @@ public class PhotoEditFragment extends Fragment {
         return view;
     }
 
-    public void setCurrentTool(Tool currentTool, boolean enableClear, boolean enableUndo) throws UnsupportedOperationException {
+    /**
+     * Set the current tool
+     * @param currentTool
+     * @throws UnsupportedOperationException
+     */
+    public void setCurrentTool(Tool currentTool) throws UnsupportedOperationException {
         if (currentTool == null) {
             throw new UnsupportedOperationException("Use resetCurrentTool to remove the current tool");
         }
-        mCurrentTool.unselect();
         mCurrentTool = currentTool;
-        mListener.showEditMenu(enableClear, enableUndo);
+        mListener.showEditMenu(mCurrentTool.getClearEnabled(), mCurrentTool.getUndoEnabled());
     }
 
     /**
      * Reset current tool
      */
     public void resetCurrentTool() {
+        if (mCurrentTool != null) {
+            mCurrentTool.unselect();
+        }
         mCurrentTool = null;
         resetMenu();
         mListener.resetMenu();
@@ -349,6 +360,45 @@ public class PhotoEditFragment extends Fragment {
      */
     public DrawableView getDrawAnnotationContainer() {
         return mDrawAnnotationContainer;
+    }
+
+    /**
+     * Returns the TextAnnotationContainer
+     * @return
+     */
+    public FrameLayout getTextAnnotationContainer() {
+        return mTextAnnotationContainer;
+    }
+
+    /**
+     * Disable touch event on text annotation container
+     */
+    public void disableTextAnnotationContainerTouchEvent() {
+        mTextAnnotationContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
+        for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
+            mTextAnnotationContainer.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return false;
+                }
+            });
+        }
+    }
+
+    /**
+     * Enable touch event on text annotation container
+     */
+    public void enableTextAnnotationContainerTouchEvent() {
+        mTextAnnotationContainer.setOnTouchListener(null);
+        for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
+            mTextAnnotationContainer.getChildAt(i).setOnTouchListener(null);
+        }
     }
 
     /**

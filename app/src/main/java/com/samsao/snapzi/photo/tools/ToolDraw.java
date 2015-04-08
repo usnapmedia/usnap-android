@@ -61,11 +61,13 @@ public class ToolDraw extends Tool implements Parcelable {
     public void select() {
         super.select();
         mToolFragment.getDrawAnnotationContainer().setOnTouchListener(mToolFragment.getDrawAnnotationContainer());
+        mToolFragment.disableTextAnnotationContainerTouchEvent();
     }
 
     @Override
     public void unselect() {
         mToolFragment.getDrawAnnotationContainer().setOnTouchListener(null);
+        mToolFragment.enableTextAnnotationContainerTouchEvent();
     }
 
     @Override

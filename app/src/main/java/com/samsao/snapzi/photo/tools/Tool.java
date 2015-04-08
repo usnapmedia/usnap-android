@@ -51,7 +51,7 @@ public abstract class Tool implements Parcelable {
      * Select this tool
      */
     public void select() {
-        mToolFragment.setCurrentTool(this, getClearEnabled(), getUndoEnabled());
+        mToolFragment.setCurrentTool(this);
         setOptionsMenuItems();
     }
 
