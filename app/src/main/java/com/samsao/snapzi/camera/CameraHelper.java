@@ -29,10 +29,6 @@ public class CameraHelper {
     public final static String IMAGE_FILENAME = "image.png";
     public final static String VIDEO_FILENAME = "video.mp4";
 
-    public static enum LayoutMode {
-        FitParent,
-        CenterCrop
-    }
 
     /**
      * Get an instance of the Camera object.
@@ -64,14 +60,14 @@ public class CameraHelper {
      * be lenient with the aspect ratio.
      *
      * @param sizes  Supported camera preview sizes.
-     * @param width  The width of the view.
-     * @param height The height of the view.
+     * @param targetWidth
+     * @param targetHeight
      * @return Best match camera preview size to fit in the view.
      */
-    public static Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int width, int height) {
+    public static Camera.Size getOptimalPictureSize(List<Camera.Size> sizes, int targetWidth, int targetHeight) {
         // Use a very small tolerance because we want an exact match.
         final double ASPECT_TOLERANCE = 0.1;
-        double targetRatio = (double) width / height;
+        double targetRatio = (double) targetWidth / (double) targetHeight;
         if (sizes == null)
             return null;
 
@@ -80,9 +76,6 @@ public class CameraHelper {
         // Start with max value and refine as we iterate over available preview sizes. This is the
         // minimum difference between view and camera height.
         double minDiff = Double.MAX_VALUE;
-
-        // Target view height
-        int targetHeight = height;
 
         // Try to find a preview size that matches aspect ratio and the target view size.
         // Iterate over all available sizes and pick the largest size that can fit in the view and

@@ -6,10 +6,6 @@ package com.samsao.snapzi.camera;
  */
 public interface SelectMediaProvider {
 
-    public boolean isPhotoModeOn();
-
-    public void setIsPhotoModeOn(boolean state);
-
     public int getCameraId();
 
     public void setCameraId(int cameraId);

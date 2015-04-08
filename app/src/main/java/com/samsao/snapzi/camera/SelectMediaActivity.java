@@ -11,10 +11,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.MediaUtil;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.VideoUtil;
-import com.soundcloud.android.crop.Crop;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -30,19 +37,14 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    public final static int RESULT_LOAD_IMG = 8401;
-    public final static int RESULT_LOAD_VID = 8402;
+    public final static int RESULT_MEDIA_LOADED_FROM_GALLERY = 8401;
     public final static int MAXIMUM_VIDEO_DURATION_MS = 30000; // 30 seconds
     public final static int COUNTDOWN_INTERVAL_MS = 500; // half a second
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
-    private final boolean DEFAULT_PHOTO_MODE_STATE = true;
 
     SelectMediaFragment mSelectMediaFragment;
-
-    @Icicle
-    public boolean mIsPhotoModeOn;
 
     @Icicle
     public int mCameraId;
@@ -54,7 +56,6 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mIsPhotoModeOn = DEFAULT_PHOTO_MODE_STATE;
         mCameraId = DEFAULT_CAMERA_ID;
         mCameraLastOrientationAngleKnown = 0;
 
@@ -78,12 +79,13 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         super.onActivityResult(requestCode, resultCode, data);
 
         // When an image is picked
-        if (requestCode == RESULT_LOAD_IMG
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
+        if (requestCode == RESULT_MEDIA_LOADED_FROM_GALLERY
+                && null != data
+                && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Image
+                && resultCode == Activity.RESULT_OK) {
             if (CameraHelper.getAvailableDiskSpace(this) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                 try {
-                    // Get the video from data
+                    // Get the image from data
                     String imagePath = CameraHelper.getRealPathFromURI(this, data.getData());
                     final Bitmap image = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
 
@@ -92,11 +94,9 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                     PhotoUtil.saveImage(PhotoUtil.applyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
                         @Override
                         public void onSuccess() {
-                            // Start cropping activity
-                            new Crop(CameraHelper.getImageUri())
-                                    .output(CameraHelper.getImageUri())
-                                    .asSquare()
-                                    .start(SelectMediaActivity.this);
+                            if (mSelectMediaFragment != null) {
+                                mSelectMediaFragment.startEditImageActivity();
+                            }
                         }
 
                         @Override
@@ -120,52 +120,45 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             }
         }
         // When a video is picked
-        else if (requestCode == RESULT_LOAD_VID
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
+        else if (requestCode == RESULT_MEDIA_LOADED_FROM_GALLERY
+                && null != data
+                && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Video
+                && resultCode == Activity.RESULT_OK) {
             // Get the video from data
             String sourceVideoPath = CameraHelper.getRealPathFromURI(this, data.getData());
             String destVideoPath = CameraHelper.getVideoMediaFilePath();
 
-            if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
-                if (mSelectMediaFragment != null) {
-                    mSelectMediaFragment.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
-                }
-            } else {
+            // If non-local video select an other one
+            if(sourceVideoPath.contains("https://")){
                 Toast.makeText(SelectMediaActivity.this,
-                        getResources().getString(R.string.error_unable_to_open_video),
+                        getResources().getString(R.string.error_please_select_a_local_video),
                         Toast.LENGTH_LONG).show();
-            }
-        }
-        // When an image as been cropped
-        else if (requestCode == Crop.REQUEST_CROP
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
-            if (mSelectMediaFragment != null) {
-                mSelectMediaFragment.startEditImageActivity();
-            }
-        }
-        // On an image cropped error
-        else if (requestCode == Crop.REQUEST_CROP) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.error_unable_to_open_image),
-                    Toast.LENGTH_LONG).show();
-            if (Crop.getError(data) != null) {
-                Log.e(LOG_TAG, "An error happened while returning from crop activity: " + Crop.getError(data).getMessage());
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("video/*, image/*");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(intent, SelectMediaActivity.RESULT_MEDIA_LOADED_FROM_GALLERY);
             } else {
-                Log.e(LOG_TAG, "An error happened while returning from crop activity.");
+                if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
+                    if (mSelectMediaFragment != null) {
+                        mSelectMediaFragment.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    }
+                } else {
+                    Toast.makeText(SelectMediaActivity.this,
+                            getResources().getString(R.string.error_unable_to_open_video),
+                            Toast.LENGTH_LONG).show();
+                }
             }
         }
-    }
-
-    @Override
-    public boolean isPhotoModeOn() {
-        return mIsPhotoModeOn;
-    }
-
-    @Override
-    public void setIsPhotoModeOn(boolean state) {
-        mIsPhotoModeOn = state;
+        // When an unsupported media is picked
+        else if (requestCode == RESULT_MEDIA_LOADED_FROM_GALLERY
+                && null != data
+                && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Unsupported
+                && resultCode == Activity.RESULT_OK) {
+            Toast.makeText(SelectMediaActivity.this,
+                    getResources().getString(R.string.error_unsupported_format),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

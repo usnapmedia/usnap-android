@@ -15,8 +15,10 @@
     <string name="error_unable_to_take_picture">Unable to take picture</string>
     <string name="error_unable_to_open_image">Unable to open image</string>
     <string name="error_unable_to_open_video">Unable to open video</string>
-    <string name="error_unable_to_start_photo_camera">Unable to start photo camera</string>
-    <string name="error_unable_to_start_video_camera">Unable to start video camera</string>
+    <string name="error_please_select_a_local_video">Please select a local video</string>
+    <string name="error_unsupported_format">Unsupported format</string>
+    <string name="error_unable_to_launch_camera">Unable to launch camera</string>
+    <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
 
     <!--Preferences-->

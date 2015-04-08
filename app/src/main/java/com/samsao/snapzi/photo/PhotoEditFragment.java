@@ -191,7 +191,6 @@ public class PhotoEditFragment extends Fragment {
                 // Start cropping activity
                 new Crop(CameraHelper.getImageUri())
                         .output(CameraHelper.getImageUri())
-                        .asSquare()
                         .start(getActivity());
             }
         });
