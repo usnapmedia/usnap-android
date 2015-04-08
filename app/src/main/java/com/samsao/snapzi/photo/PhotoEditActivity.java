@@ -21,16 +21,12 @@ import icepick.Icicle;
 
 public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFragment.Listener {
     public static final String EXTRA_URI = "com.samsao.snapzi.photo.PhotoEditActivity.EXTRA_URI";
-    // contrast varies from 0 to 4.0, but progress bar from 0 to MAX -> initial contrast is 10 (1.0) and max is 40
-    private final int INITIAL_CONTRAST = 10;
 
     @InjectView(R.id.activity_photo_edit_toolbar)
     public Toolbar mToolbar;
 
     private PhotoEditFragment mPhotoEditFragment;
 
-    @Icicle
-    public int mContrast;
     @Icicle
     public Uri mImageUri;
     @Icicle
@@ -48,7 +44,6 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         if (intent != null) {
             mImageUri = intent.getParcelableExtra(EXTRA_URI);
         }
-        mContrast = INITIAL_CONTRAST;
         // restore saved state
         Icepick.restoreInstanceState(this, savedInstanceState);
 

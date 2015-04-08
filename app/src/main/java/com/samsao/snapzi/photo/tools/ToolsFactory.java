@@ -10,6 +10,7 @@ public class ToolsFactory {
 
     public static final int TOOL_FILTERS = 0;
     public static final int TOOL_OPTION_BRIGHTNESS = 0;
+    public static final int TOOL_OPTION_CONSTRAST = 1;
 
     public static Tool getTool(int type, MenuContainer menuContainer) {
         Tool tool = null;
@@ -18,6 +19,7 @@ public class ToolsFactory {
                 ToolFilters toolFilters = new ToolFilters();
                 toolFilters.setMenuContainer(menuContainer);
                 toolFilters.addOption(ToolsFactory.getToolOption(TOOL_OPTION_BRIGHTNESS, toolFilters));
+                toolFilters.addOption(ToolsFactory.getToolOption(TOOL_OPTION_CONSTRAST, toolFilters));
                 tool = toolFilters;
                 break;
         }
@@ -29,6 +31,9 @@ public class ToolsFactory {
         switch (type) {
             case TOOL_OPTION_BRIGHTNESS:
                 toolOption = new ToolBrightness().setTool(tool);
+                break;
+            case TOOL_OPTION_CONSTRAST:
+                toolOption = new ToolContrast().setTool(tool);
                 break;
         }
         return toolOption;
