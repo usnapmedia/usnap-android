@@ -1,5 +1,6 @@
 package com.samsao.snapzi.photo.tools;
 
+import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -23,10 +24,13 @@ import com.samsao.snapzi.util.StringUtil;
  * @since 15-04-06
  */
 @ParcelablePlease(allFields = false)
-public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback {
+public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback, ToolOptionTextTypeFace.ToolCallback {
 
     public ToolText() {
         super();
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName("futura.ttc").setTool(this));
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName("georgia.ttf").setTool(this));
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName("impact.ttf").setTool(this));
         addOption(new ToolOptionTextColor().setTool(this));
     }
 
@@ -177,5 +181,10 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public void onColorSelected(int color) {
         mToolFragment.getTextAnnotation().setTextColor(color);
+    }
+
+    @Override
+    public void setTypeFace(Typeface font) {
+        mToolFragment.getTextAnnotation().setTypeface(font);
     }
 }
