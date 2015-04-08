@@ -17,12 +17,10 @@ import me.panavtec.drawableview.DrawableViewConfig;
  * @since 15-04-06
  */
 @ParcelablePlease(allFields = false)
-public class ToolDraw extends Tool implements Parcelable {
+public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback {
 
     @ParcelableThisPlease
     public DrawableViewConfig mDrawableViewConfig;
-
-
 
     public ToolDraw() {
         super();
@@ -140,4 +138,9 @@ public class ToolDraw extends Tool implements Parcelable {
             return new ToolDraw[size];
         }
     };
+
+    @Override
+    public void onColorSelected(int color) {
+        setStrokeColor(color);
+    }
 }

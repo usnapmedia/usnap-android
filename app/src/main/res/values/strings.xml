@@ -25,6 +25,7 @@
     <!--Photo edit-->
     <string name="tool_filters_name">adjust</string>
     <string name="tool_draw_name">draw</string>
+    <string name="tool_text_name">type</string>
     <string name="tool_option_brightness_name">brightness</string>
     <string name="tool_option_contrast_name">contrast</string>
     <string name="tool_option_color_name">color</string>

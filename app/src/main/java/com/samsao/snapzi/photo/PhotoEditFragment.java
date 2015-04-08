@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.tools.Tool;
 import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
+import com.samsao.snapzi.photo.tools.ToolText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
 
 /**
@@ -52,6 +55,10 @@ public class PhotoEditFragment extends Fragment {
 
     @InjectView(R.id.fragment_photo_tool_container)
     public FrameLayout mToolContainer;
+
+    @InjectView(R.id.fragment_photo_edit_text_annotation_container_text)
+    @Optional
+    public EditText mTextAnnotation;
 
     private MenuItemAdapter mMenuItemAdapter;
     private LinearLayoutManager mLayoutManager;
@@ -86,6 +93,7 @@ public class PhotoEditFragment extends Fragment {
         // TODO pass the right tools to instanciate
         mTools = new ArrayList<>();
         mTools.add(new ToolFilters().setToolFragment(this));
+        mTools.add(new ToolText().setToolFragment(this));
         // special case for draw tool since we need to get the canvas height and width
         final ToolDraw toolDraw = new ToolDraw();
         toolDraw.setToolFragment(this);
@@ -120,30 +128,6 @@ public class PhotoEditFragment extends Fragment {
 
             }
         });
-
-        // TODO check for keyboard dismiss also
-//        mTextAnnotation.setTextIsSelectable(false);
-//        mTextAnnotation.setOnEditorActionListener(
-//                new EditText.OnEditorActionListener() {
-//                    @Override
-//                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                            KeyboardUtil.hideKeyboard(getActivity());
-//                            if (!TextUtils.isEmpty(mTextAnnotation.getText())) {
-//                                mTextAnnotation.setFocusableInTouchMode(false);
-//                                mTextAnnotation.clearFocus();
-//                                mTextAnnotation.setOnTouchListener(new TextAnnotationTouchListener(mTextAnnotation));
-//                            } else {
-//                                mTextAnnotation.clearFocus();
-//                                mTextAnnotation.setOnTouchListener(null);
-//                            }
-//                            return true;
-//                        }
-//                        return false;
-//                    }
-//                });
-
-
         mDrawAnnotationContainer.setOnTouchListener(null);
         return view;
     }
@@ -166,37 +150,6 @@ public class PhotoEditFragment extends Fragment {
                     + " must implement PhotoEditFragment.Listener");
         }
     }
-
-//    public View getAddTextAnnotationView() {
-//        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
-//        // set the touch events listeners
-//        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
-//        seekBar.setVisibility(View.GONE);
-//        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
-//        doneButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                replaceContainer(getControlsView());
-//                if (TextUtils.isEmpty(mTextAnnotation.getText())) {
-//                    mTextAnnotation.setVisibility(View.GONE);
-//                } else {
-//                    mTextAnnotation.setFocusableInTouchMode(false);
-//                    mTextAnnotation.setOnTouchListener(null);
-//                }
-//            }
-//        });
-//        return view;
-//    }
-
-//        Button colorButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_color_btn);
-//        colorButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getColorPickerDialog().show();
-//            }
-//        });
-//    }
-//
 
     /**
      * Refreshes the image without any transformation
@@ -304,20 +257,16 @@ public class PhotoEditFragment extends Fragment {
         mListener.resetMenu();
     }
 
+    public EditText getTextAnnotation() {
+        return mTextAnnotation;
+    }
+
     /**
      * Returns the DrawAnnotationContainer
      * @return
      */
     public DrawableView getDrawAnnotationContainer() {
         return mDrawAnnotationContainer;
-    }
-
-    /**
-     * Returns the TextAnnotationContainer
-     * @return
-     */
-    public FrameLayout getTextAnnotationContainer() {
-        return mTextAnnotationContainer;
     }
 
     /**
@@ -349,6 +298,14 @@ public class PhotoEditFragment extends Fragment {
         for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
             mTextAnnotationContainer.getChildAt(i).setOnTouchListener(null);
         }
+    }
+
+    /**
+     * Get the text annotation container
+     * @return
+     */
+    public FrameLayout getTextAnnotationContainer() {
+        return mTextAnnotationContainer;
     }
 
     /**

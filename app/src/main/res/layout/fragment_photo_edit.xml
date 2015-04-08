@@ -19,7 +19,22 @@
     <FrameLayout
         android:id="@+id/fragment_photo_edit_text_annotation_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/fragment_photo_edit_text_annotation_container_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/text_annotation_placeholder"
+            android:background="@null"
+            android:inputType="textFilter"
+            android:imeOptions="actionDone"
+            android:textIsSelectable="false"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>|
 
     <FrameLayout
         android:id="@+id/fragment_photo_tool_container"
