@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -275,11 +276,11 @@ public class SelectMediaFragment extends Fragment {
                     if (mCameraPreview != null) {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                    mIsCapturingMedia = mIsCapturingVideo = false;
 
                     if (isVideoCaptureSuccessful) {
                         startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                        mIsCapturingMedia = mIsCapturingVideo = false;
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -309,11 +310,11 @@ public class SelectMediaFragment extends Fragment {
                 if (mCameraPreview != null) {
                     isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                 }
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                mIsCapturingMedia = mIsCapturingVideo = false;
 
                 if (isVideoCaptureSuccessful) {
                     startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                    mIsCapturingMedia = mIsCapturingVideo = false;
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),
@@ -374,7 +375,7 @@ public class SelectMediaFragment extends Fragment {
     private void triggerCapturingMediaState(boolean isCapturingMedia) {
         if (isCapturingMedia) {
             mIsCapturingMedia = true;
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+            lockScreenOrientation();
 
             // inform the user that recording has started
             mFlashSetupButton.setVisibility(View.GONE);
@@ -407,6 +408,28 @@ public class SelectMediaFragment extends Fragment {
         } else {
             mVideoCaptureCountdownTimer.cancel();
             triggerCapturingMediaState(isCapturingVideo);
+        }
+    }
+
+    private void lockScreenOrientation() {
+        int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+
+        switch (getResources().getConfiguration().orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                if (rotation == android.view.Surface.ROTATION_90 || rotation == android.view.Surface.ROTATION_180) {
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                } else {
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+                break;
+
+            case Configuration.ORIENTATION_LANDSCAPE:
+                if (rotation == android.view.Surface.ROTATION_0 || rotation == android.view.Surface.ROTATION_90) {
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                } else {
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                }
+                break;
         }
     }
 
