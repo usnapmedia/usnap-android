@@ -45,8 +45,7 @@ public class SelectMediaFragment extends Fragment {
 
     private SelectMediaProvider mSelectMediaProvider;
     private CameraPreview mCameraPreview;
-    private boolean mIsRecording;
-    private boolean mIsTakingPicture;
+    private boolean mIsCapturingMedia, mIsCapturingVideo;
     private CountDownTimer mVideoCaptureCountdownTimer;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
@@ -219,17 +218,20 @@ public class SelectMediaFragment extends Fragment {
         mCaptureMediaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
-                    mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
-                        @Override
-                        public void onAutoFocus(boolean b, Camera camera) {
-                            mCameraPreview.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
-                        }
-                    });
-                } else {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.error_not_enough_available_space),
-                            Toast.LENGTH_LONG).show();
+                if (!mIsCapturingMedia) {
+                    if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
+                        triggerCapturingMediaState(true);
+                        mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
+                            @Override
+                            public void onAutoFocus(boolean b, Camera camera) {
+                                mCameraPreview.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.error_not_enough_available_space),
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -237,11 +239,11 @@ public class SelectMediaFragment extends Fragment {
         mCaptureMediaButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (!mIsRecording) {
+                if (!mIsCapturingMedia) {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
                         if (mCameraPreview.startRecording()) {
-                            triggerVideoRecording(true);
+                            triggerCapturingVideo(true);
                         } else {
                             // prepare didn't work, release the camera
                             mCameraPreview.stopRecording();
@@ -265,13 +267,15 @@ public class SelectMediaFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // If releasing capture media button while capturing video, then stop recording video
-                if (mIsRecording && event.getAction() == MotionEvent.ACTION_UP) {
-                    mIsRecording = false;
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-
+                if (mIsCapturingVideo && event.getAction() == MotionEvent.ACTION_UP) {
                     // stop recording and start video edit activity
-                    mCameraPreview.stopRecording();
-                    triggerVideoRecording(false);
+                    mVideoCaptureCountdownTimer.cancel();
+                    if (mCameraPreview != null) {
+                        mCameraPreview.stopRecording();
+                    }
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                    mIsCapturingMedia = mIsCapturingVideo = false;
+
                     startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                     return true;
                 } else {
@@ -290,9 +294,11 @@ public class SelectMediaFragment extends Fragment {
                 mVideoCountdown.setText(String.valueOf(0));
 
                 // stop recording and start video edit activity
-                mCameraPreview.stopRecording();
-                mIsRecording = false;
+                if (mCameraPreview != null) {
+                    mCameraPreview.stopRecording();
+                }
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                mIsCapturingMedia = mIsCapturingVideo = false;
 
                 startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
             }
@@ -314,10 +320,9 @@ public class SelectMediaFragment extends Fragment {
         initializeCamera(mSelectMediaProvider.getCameraId());
     }
 
-    private void triggerVideoRecording(boolean isRecording) {
-        mIsRecording = isRecording;
-
-        if (mIsRecording) {
+    private void triggerCapturingMediaState(boolean isCapturingMedia) {
+        if (isCapturingMedia) {
+            mIsCapturingMedia = true;
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
             // inform the user that recording has started
@@ -326,7 +331,7 @@ public class SelectMediaFragment extends Fragment {
             mPickFromGalleryButton.setVisibility(View.GONE);
             mPreferenceButton.setVisibility(View.GONE);
             mVideoCountdown.setVisibility(View.VISIBLE);
-            mVideoCaptureCountdownTimer.start();
+
         } else {
             // inform the user that recording has stopped
             mFlashSetupButton.setVisibility(View.VISIBLE);
@@ -334,9 +339,21 @@ public class SelectMediaFragment extends Fragment {
             mPickFromGalleryButton.setVisibility(View.VISIBLE);
             mPreferenceButton.setVisibility(View.VISIBLE);
             mVideoCountdown.setVisibility(View.GONE);
-            mVideoCaptureCountdownTimer.cancel();
 
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            mIsCapturingMedia = mIsCapturingVideo = false;
+        }
+    }
+
+    private void triggerCapturingVideo(boolean isCapturingVideo) {
+        mIsCapturingVideo = isCapturingVideo;
+
+        if (isCapturingVideo) {
+            triggerCapturingMediaState(isCapturingVideo);
+            mVideoCaptureCountdownTimer.start();
+        } else {
+            mVideoCaptureCountdownTimer.cancel();
+            triggerCapturingMediaState(isCapturingVideo);
         }
     }
 
@@ -346,9 +363,9 @@ public class SelectMediaFragment extends Fragment {
      * @param cameraId source camera: FRONT or BACK
      */
     private void initializeCamera(int cameraId) {
-        triggerVideoRecording(false);
         mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.FitParent, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
         mCameraPreviewContainer.addView(mCameraPreview);
+        triggerCapturingMediaState(false);
     }
 
     /**
