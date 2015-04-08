@@ -103,7 +103,11 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
                 }
                 return true;
             case android.R.id.home:
-                finish();
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsHomeSelected();
+                } else {
+                    finish();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -129,12 +133,13 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     /**
      * Show the edit menu
+     * @param showDone
      * @param showClear
      * @param showUndo
      */
     @Override
-    public void showEditMenu(boolean showClear, boolean showUndo) {
-        mMenuState = new MenuStateEdit().setShowClear(showClear).setShowUndo(showUndo);
+    public void showEditMenu(boolean showDone, boolean showClear, boolean showUndo) {
+        mMenuState = new MenuStateEdit().setShowDone(showDone).setShowClear(showClear).setShowUndo(showUndo);
         invalidateOptionsMenu();
     }
 

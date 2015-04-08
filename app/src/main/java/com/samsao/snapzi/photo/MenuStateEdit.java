@@ -14,12 +14,20 @@ import com.samsao.snapzi.R;
  */
 @ParcelablePlease
 public class MenuStateEdit extends MenuState implements Parcelable {
+
+    public boolean mShowDone = false;
     public boolean mShowClear = false;
     public boolean mShowUndo = false;
 
     @Override
     public void onCreateOptionsMenu(MenuInflater menuInflater, Menu menu) {
         menuInflater.inflate(R.menu.activity_photo_edit_edit, menu);
+        if (!mShowDone) {
+            android.view.MenuItem item = menu.findItem(R.id.activity_photo_edit_done);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        }
         if (!mShowClear) {
             android.view.MenuItem item = menu.findItem(R.id.activity_photo_edit_clear);
             if (item != null) {
@@ -32,6 +40,11 @@ public class MenuStateEdit extends MenuState implements Parcelable {
                 item.setVisible(false);
             }
         }
+    }
+
+    public MenuStateEdit setShowDone(boolean showDone) {
+        mShowDone = showDone;
+        return this;
     }
 
     public MenuStateEdit setShowClear(boolean showClear) {

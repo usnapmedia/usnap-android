@@ -7,7 +7,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
 /**
@@ -34,24 +33,33 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         return this;
     }
 
+    /**
+     * Select this tool option
+     */
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
-            @Override
-            public String getName() {
-                return StringUtil.getString(R.string.tool_option_color_name);
-            }
+    public void select() {
+        // color picker option cannot be selected
+        getColorPickerDialog().show();
+    }
 
-            @Override
-            public int getImageResource() {
-                return 0;
-            }
+    @Override
+    public void onSelected() {
 
-            @Override
-            public void onSelected() {
-                getColorPickerDialog().show();
-            }
-        };
+    }
+
+    @Override
+    public void onUnselected() {
+
+    }
+
+    @Override
+    public String getName() {
+        return StringUtil.getString(R.string.tool_option_color_name);
+    }
+
+    @Override
+    public int getImageResource() {
+        return 0;
     }
 
     /**
@@ -60,7 +68,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
      */
     public MaterialDialog getColorPickerDialog() {
         if (mColorPickerDialog == null) {
-            mColorPickerDialog = new MaterialDialog.Builder(getTool().getToolFragment().getActivity())
+            mColorPickerDialog = new MaterialDialog.Builder(mTool.getToolFragment().getActivity())
                     .customView(R.layout.dialog_color_picker, false)
                     .positiveText(android.R.string.ok)
                     .negativeText(android.R.string.cancel)

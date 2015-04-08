@@ -8,7 +8,6 @@ import android.widget.SeekBar;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
 import jp.wasabeef.picasso.transformations.gpu.ContrastFilterTransformation;
@@ -17,7 +16,7 @@ import jp.wasabeef.picasso.transformations.gpu.ContrastFilterTransformation;
  * @author jfcartier
  * @since 15-04-07
  */
-@ParcelablePlease(allFields = false)
+@ParcelablePlease
 public class ToolOptionContrast extends ToolOption implements Parcelable {
 
     @ParcelableThisPlease
@@ -30,43 +29,45 @@ public class ToolOptionContrast extends ToolOption implements Parcelable {
     }
 
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
+    public void onSelected() {
+        mTool.getToolFragment().showEditOptionsMenu(true, false, false);
+        View view = mTool.getToolFragment().showToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_tool_seekbar);
+        seekBar.setMax(40);
+        seekBar.setProgress(mConstrast);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public String getName() {
-                return StringUtil.getString(R.string.tool_option_contrast_name);
+            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
+                mTool.getToolFragment().refreshImage(new ContrastFilterTransformation(mTool.getToolFragment().getActivity(), progress / 10.0f));
+                mConstrast = progress;
             }
 
             @Override
-            public int getImageResource() {
-                return 0;
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
             }
 
             @Override
-            public void onSelected() {
-                View view = getTool().getToolFragment().replaceToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
-                SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_tool_seekbar);
-                seekBar.setMax(40);
-                seekBar.setProgress(mConstrast);
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-                        getTool().getToolFragment().refreshImage(new ContrastFilterTransformation(getTool().getToolFragment().getActivity(), progress / 10.0f));
-                        mConstrast = progress;
-                    }
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
             }
-        };
+        });
+    }
+
+    @Override
+    public void onUnselected() {
+        mTool.getToolFragment().showEditOptionsMenu(false, false, false);
+        mTool.getToolFragment().hideToolContainer();
+    }
+
+    @Override
+    public String getName() {
+        return StringUtil.getString(R.string.tool_option_contrast_name);
+    }
+
+    @Override
+    public int getImageResource() {
+        return 0;
     }
 
 

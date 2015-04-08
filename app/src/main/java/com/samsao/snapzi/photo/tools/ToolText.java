@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.photo.PhotoEditFragment;
 import com.samsao.snapzi.photo.util.TextAnnotationTouchListener;
 import com.samsao.snapzi.util.KeyboardUtil;
@@ -35,23 +34,13 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     }
 
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
-            @Override
-            public String getName() {
-                return StringUtil.getString(R.string.tool_text_name);
-            }
+    public String getName() {
+        return StringUtil.getString(R.string.tool_text_name);
+    }
 
-            @Override
-            public int getImageResource() {
-                return 0;
-            }
-
-            @Override
-            public void onSelected() {
-                select();
-            }
-        };
+    @Override
+    public int getImageResource() {
+        return 0;
     }
 
     @Override
@@ -90,8 +79,19 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     }
 
     @Override
-    public void select() {
-        super.select();
+    public void onOptionsDoneSelected() {
+        mToolFragment.resetCurrentTool();
+        mToolFragment.resetOptionsMenu();
+    }
+
+    @Override
+    public void onOptionsHomeSelected() {
+        onOptionsDoneSelected();
+    }
+
+    @Override
+    public void onSelected() {
+        mToolFragment.showEditOptionsMenu(true, true, false);
         mToolFragment.enableTextAnnotationContainerTouchEvent();
         // lock the text if the user presses anywhere on the screen
         mToolFragment.getTextAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
@@ -114,7 +114,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     }
 
     @Override
-    public void unselect() {
+    public void onUnselected() {
         KeyboardUtil.hideKeyboard(mToolFragment.getActivity()); // in case the keyboard is still shown
         mToolFragment.disableTextAnnotationContainerTouchEvent();
         if (!TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
@@ -144,16 +144,6 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
         mToolFragment.getTextAnnotation().setFocusableInTouchMode(true);
         mToolFragment.getTextAnnotation().requestFocus();
         KeyboardUtil.showKeyboard(mToolFragment.getActivity(), mToolFragment.getTextAnnotation());
-    }
-
-    @Override
-    public boolean getClearEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean getUndoEnabled() {
-        return false;
     }
 
     @Override

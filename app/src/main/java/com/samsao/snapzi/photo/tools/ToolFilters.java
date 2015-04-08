@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
 /**
@@ -22,23 +21,13 @@ public class ToolFilters extends Tool implements Parcelable {
     }
 
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
-            @Override
-            public String getName() {
-                return StringUtil.getString(R.string.tool_filters_name);
-            }
+    public String getName() {
+        return StringUtil.getString(R.string.tool_filters_name);
+    }
 
-            @Override
-            public int getImageResource() {
-                return 0;
-            }
-
-            @Override
-            public void onSelected() {
-                select();
-            }
-        };
+    @Override
+    public int getImageResource() {
+        return 0;
     }
 
     @Override
@@ -51,19 +40,36 @@ public class ToolFilters extends Tool implements Parcelable {
 
     }
 
+    /**
+     * When options item DONE is selected
+     */
     @Override
-    public void unselect() {
+    public void onOptionsDoneSelected() {
+        mToolFragment.saveImage();
+        selectOption(null);
+    }
 
+    /**
+     * When options item HOME is selected
+     */
+    @Override
+    public void onOptionsHomeSelected() {
+        if (hasOptionSelected()) {
+            selectOption(null);
+        } else {
+            mToolFragment.resetCurrentTool();
+            mToolFragment.resetOptionsMenu();
+        }
     }
 
     @Override
-    public boolean getClearEnabled() {
-        return false;
+    public void onSelected() {
+        mToolFragment.showEditOptionsMenu(false, false, false);
     }
 
     @Override
-    public boolean getUndoEnabled() {
-        return false;
+    public void onUnselected() {
+
     }
 
     @Override

@@ -20,6 +20,18 @@ public abstract class Tool implements Parcelable {
     public ArrayList<ToolOption> mOptions;
 
     /**
+     * Selected option
+     */
+    @ParcelableThisPlease
+    public ToolOption mCurrentOption;
+
+    /**
+     * is the tool selected?
+     */
+    @ParcelableThisPlease
+    public boolean mIsSelected;
+
+    /**
      * Associated Fragment
      */
     protected PhotoEditFragment mToolFragment;
@@ -29,13 +41,49 @@ public abstract class Tool implements Parcelable {
      */
     protected Tool() {
         mOptions = new ArrayList<>();
+        mCurrentOption = null;
+        mIsSelected = false;
     }
 
     /**
-     * Returns the menu item for this tool
+     * Return the menu item for this tool
      * @return
      */
-    public abstract MenuItem getMenuItem();
+    public MenuItem getMenuItem() {
+        return new MenuItem() {
+            @Override
+            public String getName() {
+                return Tool.this.getName();
+            }
+
+            @Override
+            public int getImageResource() {
+                return Tool.this.getImageResource();
+            }
+
+            @Override
+            public void onSelected() {
+                select();
+            }
+
+            @Override
+            public boolean isSelected() {
+                return mIsSelected;
+            }
+        };
+    }
+
+    /**
+     * Return the name of this tool
+     * @return
+     */
+    public abstract String getName();
+
+    /**
+     * Return the image resource of this tool
+     * @return
+     */
+    public abstract int getImageResource();
 
     /**
      * When options item CLEAR is selected
@@ -48,29 +96,46 @@ public abstract class Tool implements Parcelable {
     public abstract void onOptionsUndoSelected();
 
     /**
+     * When options item DONE is selected
+     */
+    public abstract void onOptionsDoneSelected();
+
+    /**
+     * When options item HOME is selected
+     */
+    public abstract void onOptionsHomeSelected();
+
+    /**
      * Select this tool
      */
     public void select() {
-        mToolFragment.setCurrentTool(this);
-        setOptionsMenuItems();
+        if (!mIsSelected) {
+            mIsSelected = true;
+            mToolFragment.setCurrentTool(this);
+            setOptionsMenuItems();
+            onSelected();
+        }
     }
+
+    /**
+     * What to do when selected
+     */
+    public abstract void onSelected();
 
     /**
      * Unselect this tool
      */
-    public abstract void unselect();
+    public void unselect() {
+        if (mIsSelected) {
+            mIsSelected = false;
+            onUnselected();
+        }
+    }
 
     /**
-     * Check if CLEAR option is available for this tool
-     * @return
+     * What to do when unselected
      */
-    public abstract boolean getClearEnabled();
-
-    /**
-     * Check if UNDO option is available for this tool
-     * @return
-     */
-    public abstract boolean getUndoEnabled();
+    public abstract void onUnselected();
 
     /**
      * Set the options as menu items
@@ -92,7 +157,34 @@ public abstract class Tool implements Parcelable {
         return this;
     }
 
+    /**
+     * Select an option
+     * @param toolOption
+     */
+    public void selectOption(ToolOption toolOption) {
+        mCurrentOption = toolOption;
+        for (ToolOption option : mOptions) {
+            option.unselect();
+        }
+        if (toolOption != null) {
+            toolOption.select();
+        }
+    }
+
+    /**
+     * Add an option to the options list
+     * @param option
+     */
     public void addOption(ToolOption option) {
         mOptions.add(option);
     }
+
+    /**
+     * Check if there's an option selected
+     * @return
+     */
+    public boolean hasOptionSelected() {
+        return mCurrentOption != null;
+    }
+
 }

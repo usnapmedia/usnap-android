@@ -5,13 +5,12 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
-import com.samsao.snapzi.photo.MenuItem;
 
 /**
  * @author jfcartier
  * @since 15-04-07
  */
-@ParcelablePlease(allFields = false)
+@ParcelablePlease
 public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
 
     public static final float STROKE_WIDTH_SMALL = 10.0f;
@@ -27,23 +26,23 @@ public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
     }
 
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
-            @Override
-            public String getName() {
-                return Integer.toString((int)mStrokeWidth/10);
-            }
+    public void onSelected() {
+        ((ToolDraw)mTool).setStrokeWidth(mStrokeWidth);
+    }
 
-            @Override
-            public int getImageResource() {
-                return 0;
-            }
+    @Override
+    public void onUnselected() {
 
-            @Override
-            public void onSelected() {
-                ((ToolDraw)getTool()).setStrokeWidth(mStrokeWidth);
-            }
-        };
+    }
+
+    @Override
+    public String getName() {
+        return Integer.toString((int)mStrokeWidth/10);
+    }
+
+    @Override
+    public int getImageResource() {
+        return 0;
     }
 
     public float getStrokeWidth() {

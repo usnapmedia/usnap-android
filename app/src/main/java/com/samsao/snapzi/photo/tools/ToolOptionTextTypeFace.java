@@ -4,10 +4,10 @@ import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.SnapziApplication;
-import com.samsao.snapzi.photo.MenuItem;
 
 import java.util.Locale;
 
@@ -15,11 +15,12 @@ import java.util.Locale;
  * @author jfcartier
  * @since 15-04-07
  */
-@ParcelablePlease(allFields = false)
+@ParcelablePlease(ignorePrivateFields = true)
 public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
 
     @ParcelableThisPlease
     public String mTypeFaceName;
+    @ParcelableNoThanks
     private ToolCallback mToolCallback;
 
     @Override
@@ -34,31 +35,31 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
     }
 
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
-            @Override
-            public String getName() {
-                // remove the file type and replace "_" with spaces
-                String name = mTypeFaceName;
-                int index = mTypeFaceName.indexOf('.');
-                if (index > 0) {
-                    name = mTypeFaceName.substring(0, index);
-                }
-                name.replaceAll("_", " ");
-                return name.toLowerCase(Locale.US);
-            }
+    public void onSelected() {
+        Typeface font = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/" + mTypeFaceName);
+        mToolCallback.setTypeFace(font);
+    }
 
-            @Override
-            public int getImageResource() {
-                return 0;
-            }
+    @Override
+    public void onUnselected() {
 
-            @Override
-            public void onSelected() {
-                Typeface font = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/" + mTypeFaceName);
-                mToolCallback.setTypeFace(font);
-            }
-        };
+    }
+
+    @Override
+    public String getName() {
+        // remove the file type and replace "_" with spaces
+        String name = mTypeFaceName;
+        int index = mTypeFaceName.indexOf('.');
+        if (index > 0) {
+            name = mTypeFaceName.substring(0, index);
+        }
+        name.replaceAll("_", " ");
+        return name.toLowerCase(Locale.US);
+    }
+
+    @Override
+    public int getImageResource() {
+        return 0;
     }
 
     public ToolOptionTextTypeFace setTypeFaceName(String typeFaceName) {

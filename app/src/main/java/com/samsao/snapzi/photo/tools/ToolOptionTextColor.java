@@ -10,7 +10,7 @@ import com.samsao.snapzi.SnapziApplication;
  * @author jfcartier
  * @since 15-04-07
  */
-@ParcelablePlease(allFields = false)
+@ParcelablePlease
 public class ToolOptionTextColor extends ToolOptionColorPicker implements Parcelable {
 
     public final static int DEFAULT_COLOR = SnapziApplication.getContext().getResources().getColor(android.R.color.white);

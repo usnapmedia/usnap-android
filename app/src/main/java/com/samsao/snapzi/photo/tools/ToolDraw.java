@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.photo.PhotoEditFragment;
 import com.samsao.snapzi.util.StringUtil;
 
@@ -38,46 +37,26 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
     }
 
     @Override
-    public MenuItem getMenuItem() {
-        return new MenuItem() {
-            @Override
-            public String getName() {
-                return StringUtil.getString(R.string.tool_draw_name);
-            }
-
-            @Override
-            public int getImageResource() {
-                return 0;
-            }
-
-            @Override
-            public void onSelected() {
-                select();
-            }
-        };
+    public String getName() {
+        return StringUtil.getString(R.string.tool_draw_name);
     }
 
     @Override
-    public void select() {
-        super.select();
+    public int getImageResource() {
+        return 0;
+    }
+
+    @Override
+    public void onSelected() {
+        mToolFragment.showEditOptionsMenu(true, true, true);
         mToolFragment.getDrawAnnotationContainer().setOnTouchListener(mToolFragment.getDrawAnnotationContainer());
         mToolFragment.disableTextAnnotationContainerTouchEvent();
     }
 
     @Override
-    public void unselect() {
+    public void onUnselected() {
         mToolFragment.getDrawAnnotationContainer().setOnTouchListener(null);
         mToolFragment.enableTextAnnotationContainerTouchEvent();
-    }
-
-    @Override
-    public boolean getClearEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean getUndoEnabled() {
-        return true;
     }
 
     @Override
@@ -115,6 +94,17 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public void onOptionsUndoSelected() {
         mToolFragment.getDrawAnnotationContainer().undo();
+    }
+
+    @Override
+    public void onOptionsDoneSelected() {
+        mToolFragment.resetCurrentTool();
+        mToolFragment.resetOptionsMenu();
+    }
+
+    @Override
+    public void onOptionsHomeSelected() {
+        onOptionsDoneSelected();
     }
 
     @Override

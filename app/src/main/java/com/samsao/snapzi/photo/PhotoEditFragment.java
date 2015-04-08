@@ -207,7 +207,6 @@ public class PhotoEditFragment extends Fragment {
      */
     public void resetMenu() {
         mMenuItemAdapter.setData(getMenuItemsForTools());
-        mToolContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -226,11 +225,19 @@ public class PhotoEditFragment extends Fragment {
      * Replaces the tool container view
      * @param resId
      */
-    public View replaceToolContainer(int resId) {
+    public View showToolContainer(int resId) {
         mToolContainer.removeAllViews();
         View view = getActivity().getLayoutInflater().inflate(resId, mToolContainer, true);
         mToolContainer.setVisibility(View.VISIBLE);
         return view;
+    }
+
+    /**
+     * Hide tool container
+     */
+    public void hideToolContainer() {
+        mToolContainer.removeAllViews();
+        mToolContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -243,7 +250,16 @@ public class PhotoEditFragment extends Fragment {
             throw new UnsupportedOperationException("Use resetCurrentTool to remove the current tool");
         }
         mCurrentTool = currentTool;
-        mListener.showEditMenu(mCurrentTool.getClearEnabled(), mCurrentTool.getUndoEnabled());
+    }
+
+    /**
+     * This method shows the edit options menu
+     * @param showDone
+     * @param showClear
+     * @param showUndo
+     */
+    public void showEditOptionsMenu(boolean showDone, boolean showClear, boolean showUndo) {
+        mListener.showEditMenu(showDone, showClear, showUndo);
     }
 
     /**
@@ -255,9 +271,18 @@ public class PhotoEditFragment extends Fragment {
         }
         mCurrentTool = null;
         resetMenu();
-        mListener.resetMenu();
     }
 
+    /**
+     * This method resets the options menu
+     */
+    public void resetOptionsMenu() {
+        mListener.resetMenu();
+    }
+    /**
+     * Returns the text annotation EditText
+     * @return
+     */
     public EditText getTextAnnotation() {
         return mTextAnnotation;
     }
@@ -321,7 +346,9 @@ public class PhotoEditFragment extends Fragment {
      * When options item DONE is selected
      */
     public void onOptionsDoneSelected() {
-        resetCurrentTool();
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsDoneSelected();
+        }
     }
 
     /**
@@ -342,10 +369,28 @@ public class PhotoEditFragment extends Fragment {
         }
     }
 
+    /**
+     * When options item HOME is selected
+     */
+    public void onOptionsHomeSelected() {
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsHomeSelected();
+        } else {
+            getActivity().finish();
+        }
+    }
+
+    /**
+     * Save the current image
+     */
+    public void saveImage() {
+        mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
+    }
+
     public interface Listener {
         Uri getImageUri();
         void saveBitmap(Bitmap bitmap);
         void resetMenu();
-        void showEditMenu(boolean showClear, boolean showUndo);
+        void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
     }
 }
