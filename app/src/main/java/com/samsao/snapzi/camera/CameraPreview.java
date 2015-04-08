@@ -279,15 +279,23 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     /**
      * Stop video recording
+     *
+     * @return true on success
      */
-    public void stopRecording() {
+    public boolean stopRecording() {
+        boolean isVideoCaptureSuccessful = false;
+
         try {
             mMediaRecorder.stop();
+            isVideoCaptureSuccessful = true;
         } catch (IllegalStateException exception) {
-            Log.v(LOG_TAG, "stop() cannot be called before start()");
+            Log.e(LOG_TAG, "stop() cannot be called before start()");
+        } catch(RuntimeException stopException){
+            Log.e(LOG_TAG, "no valid audio/video data has been received when stop() is called.");
         }
 
         releaseMediaRecorder();
+        return isVideoCaptureSuccessful;
     }
 
     /**

@@ -268,15 +268,26 @@ public class SelectMediaFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 // If releasing capture media button while capturing video, then stop recording video
                 if (mIsCapturingVideo && event.getAction() == MotionEvent.ACTION_UP) {
+                    boolean isVideoCaptureSuccessful = false;
+
                     // stop recording and start video edit activity
                     mVideoCaptureCountdownTimer.cancel();
                     if (mCameraPreview != null) {
-                        mCameraPreview.stopRecording();
+                        isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
                     getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     mIsCapturingMedia = mIsCapturingVideo = false;
 
-                    startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    if (isVideoCaptureSuccessful) {
+                        startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    } else {
+                        // Video capture didn't work
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.error_video_capture_failed),
+                                Toast.LENGTH_LONG).show();
+                        triggerCapturingVideo(false);
+                    }
+
                     return true;
                 } else {
                     return false;
@@ -291,16 +302,25 @@ public class SelectMediaFragment extends Fragment {
             }
 
             public void onFinish() {
+                boolean isVideoCaptureSuccessful = false;
                 mVideoCountdown.setText(String.valueOf(0));
 
                 // stop recording and start video edit activity
                 if (mCameraPreview != null) {
-                    mCameraPreview.stopRecording();
+                    isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                 }
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 mIsCapturingMedia = mIsCapturingVideo = false;
 
-                startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                if (isVideoCaptureSuccessful) {
+                    startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                } else {
+                    // Video capture didn't work
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.error_video_capture_failed),
+                            Toast.LENGTH_LONG).show();
+                    triggerCapturingVideo(false);
+                }
             }
         };
     }

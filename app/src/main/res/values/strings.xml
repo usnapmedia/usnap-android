@@ -19,6 +19,7 @@
     <string name="error_unsupported_format">Unsupported format</string>
     <string name="error_unable_to_launch_camera">Unable to launch camera</string>
     <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
+    <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
 
     <!--Preferences-->
