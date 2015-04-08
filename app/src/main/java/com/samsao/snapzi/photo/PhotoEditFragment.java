@@ -24,6 +24,7 @@ import com.samsao.snapzi.photo.tools.Tool;
 import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
 import com.samsao.snapzi.photo.tools.ToolText;
+import com.samsao.snapzi.photo.util.TextAnnotationEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -58,7 +59,7 @@ public class PhotoEditFragment extends Fragment {
 
     @InjectView(R.id.fragment_photo_edit_text_annotation_container_text)
     @Optional
-    public EditText mTextAnnotation;
+    public TextAnnotationEditText mTextAnnotation;
 
     private MenuItemAdapter mMenuItemAdapter;
     private LinearLayoutManager mLayoutManager;

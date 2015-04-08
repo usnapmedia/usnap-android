@@ -58,8 +58,13 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
                 new EditText.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
-                            lockText();
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            if (!TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
+                                lockText();
+                                return false;
+                            } else {
+                                return true;
+                            }
                         }
                         return false;
                     }
