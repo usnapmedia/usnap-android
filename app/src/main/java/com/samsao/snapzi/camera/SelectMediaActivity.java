@@ -11,10 +11,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.photo.PhotoEditActivity;
 import com.samsao.snapzi.util.MediaUtil;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.VideoUtil;
+import com.samsao.snapzi.video.VideoEditActivity;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -30,7 +32,8 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    public final static int RESULT_MEDIA_LOADED_FROM_GALLERY = 8401;
+    public final static int RESULT_IMAGE_LOADED_FROM_GALLERY = 8401;
+    public final static int RESULT_VIDEO_LOADED_FROM_GALLERY = 8402;
     public final static int MAXIMUM_VIDEO_DURATION_MS = 30000; // 30 seconds
     public final static int COUNTDOWN_INTERVAL_MS = 500; // half a second
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
@@ -77,7 +80,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         super.onActivityResult(requestCode, resultCode, data);
 
         // When an image is picked
-        if (requestCode == RESULT_MEDIA_LOADED_FROM_GALLERY
+        if (requestCode == RESULT_IMAGE_LOADED_FROM_GALLERY
                 && null != data
                 && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Image
                 && resultCode == Activity.RESULT_OK) {
@@ -92,9 +95,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                     PhotoUtil.saveImage(PhotoUtil.applyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
                         @Override
                         public void onSuccess() {
-                            if (mSelectMediaFragment != null) {
-                                mSelectMediaFragment.startEditImageActivity();
-                            }
+                            startEditImageActivity();
                         }
 
                         @Override
@@ -118,7 +119,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             }
         }
         // When a video is picked
-        else if (requestCode == RESULT_MEDIA_LOADED_FROM_GALLERY
+        else if (requestCode == RESULT_VIDEO_LOADED_FROM_GALLERY
                 && null != data
                 && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Video
                 && resultCode == Activity.RESULT_OK) {
@@ -133,29 +134,18 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                         Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("video/*, image/*");
+                intent.setType("video/*");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(intent, SelectMediaActivity.RESULT_MEDIA_LOADED_FROM_GALLERY);
+                startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             } else {
                 if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
-                    if (mSelectMediaFragment != null) {
-                        mSelectMediaFragment.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
-                    }
+                    startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                 } else {
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_video),
                             Toast.LENGTH_LONG).show();
                 }
             }
-        }
-        // When an unsupported media is picked
-        else if (requestCode == RESULT_MEDIA_LOADED_FROM_GALLERY
-                && null != data
-                && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Unsupported
-                && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(SelectMediaActivity.this,
-                    getResources().getString(R.string.error_unsupported_format),
-                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -187,5 +177,27 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Override
     public void setCameraLastOrientationAngleKnown(int angle) {
         mCameraLastOrientationAngleKnown = angle;
+    }
+
+    @Override
+    public void startEditImageActivity() {
+        Intent editImageIntent = new Intent(this, PhotoEditActivity.class);
+        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, CameraHelper.getImageUri());
+        if (mSelectMediaFragment != null) {
+            mSelectMediaFragment.releaseCamera();
+        }
+
+        startActivity(editImageIntent);
+    }
+
+    @Override
+    public void startEditVideoActivity(String videoPath) {
+        Intent editVideoIntent = new Intent(this, VideoEditActivity.class);
+        editVideoIntent.putExtra(VideoEditActivity.EXTRA_VIDEO_PATH, videoPath);
+        if (mSelectMediaFragment != null) {
+            mSelectMediaFragment.releaseCamera();
+        }
+
+        startActivity(editVideoIntent);
     }
 }

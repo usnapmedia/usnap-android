@@ -17,4 +17,8 @@ public interface SelectMediaProvider {
     public int getCameraLastOrientationAngleKnown();
 
     public void setCameraLastOrientationAngleKnown(int angle);
+
+    public void startEditImageActivity();
+
+    public void startEditVideoActivity(String videoPath);
 }

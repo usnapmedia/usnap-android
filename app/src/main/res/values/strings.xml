@@ -12,6 +12,10 @@
 
     <!--Select Media-->
     <string name="action_select_media">Select Media</string>
+    <string name="action_select_media_type_title">Select Media Type</string>
+    <string name="action_select_media_type_text">Please select a type of media to pick from gallery:</string>
+    <string name="action_select_media_type_pick_image">Pick image</string>
+    <string name="action_select_media_type_pick_video">Pick video</string>
     <string name="error_unable_to_take_picture">Unable to take picture</string>
     <string name="error_unable_to_open_image">Unable to open image</string>
     <string name="error_unable_to_open_video">Unable to open video</string>

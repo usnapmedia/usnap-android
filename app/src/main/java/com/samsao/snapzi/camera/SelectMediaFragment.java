@@ -1,6 +1,7 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,12 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.PhotoEditActivity;
 import com.samsao.snapzi.preferences.PreferencesActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.WindowUtil;
-import com.samsao.snapzi.video.VideoEditActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,6 +46,7 @@ public class SelectMediaFragment extends Fragment {
     private CameraPreview mCameraPreview;
     private boolean mIsCapturingMedia, mIsCapturingVideo;
     private CountDownTimer mVideoCaptureCountdownTimer;
+    private Dialog mPickMediaDialog;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
@@ -101,7 +101,7 @@ public class SelectMediaFragment extends Fragment {
             PhotoUtil.saveImage(image, new SaveImageCallback() {
                 @Override
                 public void onSuccess() {
-                    startEditImageActivity();
+                    mSelectMediaProvider.startEditImageActivity();
                 }
 
                 @Override
@@ -161,6 +161,12 @@ public class SelectMediaFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        dismissPickMediaDialog();
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -204,12 +210,7 @@ public class SelectMediaFragment extends Fragment {
         mPickFromGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                releaseCamera();
-
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("video/*, image/*");
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_MEDIA_LOADED_FROM_GALLERY);
+                showPickMediaDialog();
             }
         });
 
@@ -277,7 +278,7 @@ public class SelectMediaFragment extends Fragment {
                     }
 
                     if (isVideoCaptureSuccessful) {
-                        startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                        mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -309,7 +310,7 @@ public class SelectMediaFragment extends Fragment {
                 }
 
                 if (isVideoCaptureSuccessful) {
-                    startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),
@@ -467,7 +468,7 @@ public class SelectMediaFragment extends Fragment {
     /**
      * Release camera
      */
-    private void releaseCamera() {
+    public void releaseCamera() {
         if (mCameraPreview != null) {
             mCameraPreview.release();
             mCameraPreviewContainer.removeView(mCameraPreview);
@@ -476,22 +477,63 @@ public class SelectMediaFragment extends Fragment {
     }
 
     /**
-     * Starts edit image activity.
+     * Show pick media dialog
      */
-    public void startEditImageActivity() {
-        Intent editImageIntent = new Intent(getActivity(), PhotoEditActivity.class);
-        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, CameraHelper.getImageUri());
-        releaseCamera();
-        startActivity(editImageIntent);
+    public void showPickMediaDialog() {
+        if (mPickMediaDialog == null) {
+            mPickMediaDialog = createPickMediaDialog();
+        }
+        mPickMediaDialog.show();
     }
 
     /**
-     * Starts edit video activity.
+     * Hide pick media dialog
      */
-    public void startEditVideoActivity(String videoPath) {
-        Intent editVideoIntent = new Intent(getActivity(), VideoEditActivity.class);
-        editVideoIntent.putExtra(VideoEditActivity.EXTRA_VIDEO_PATH, videoPath);
-        releaseCamera();
-        startActivity(editVideoIntent);
+    public void dismissPickMediaDialog() {
+        if (mPickMediaDialog != null) {
+            mPickMediaDialog.dismiss();
+            mPickMediaDialog = null;
+        }
+    }
+
+    /**
+     * Create a dialog that asks what kind kind of media to pick from gallery.
+     *
+     * @return pick media dialog
+     */
+    private Dialog createPickMediaDialog() {
+        final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog);
+        dialog.setTitle(R.string.action_select_media_type_title);
+        dialog.setContentView(R.layout.dialog_select_media_type);
+
+        Button pickImageButton = (Button) dialog.findViewById(R.id.dialog_select_media_type_pick_image);
+        pickImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                releaseCamera();
+                dismissPickMediaDialog();
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_IMAGE_LOADED_FROM_GALLERY);
+            }
+        });
+
+        Button pickVideoButton = (Button) dialog.findViewById(R.id.dialog_select_media_type_pick_video);
+        pickVideoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                releaseCamera();
+                dismissPickMediaDialog();
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("video/*");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
+            }
+        });
+
+        return dialog;
     }
 }
