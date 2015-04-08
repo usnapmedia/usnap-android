@@ -34,7 +34,7 @@ public class ToolOptionContrast extends ToolOption implements Parcelable {
         return new MenuItem() {
             @Override
             public String getName() {
-                return StringUtil.getString(R.string.tool_filters_filter_contrast_name);
+                return StringUtil.getString(R.string.tool_option_contrast_name);
             }
 
             @Override

@@ -61,9 +61,6 @@ public class PhotoEditFragment extends Fragment {
     private ArrayList<Tool> mTools;
     private Tool mCurrentTool;
 
-//    private MaterialDialog mColorPickerDialog;
-//    private ColorPicker mColorPicker;
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -191,23 +188,6 @@ public class PhotoEditFragment extends Fragment {
 //        return view;
 //    }
 
-//    public View getAddDrawAnnotationView() {
-//        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_draw, mContainer, false);
-//        // set the touch events listeners
-//        Button undoButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_undo_btn);
-//        undoButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mDrawAnnotation.undo();
-//            }
-//        });
-//        Button clearButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_clear_btn);
-//        clearButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mDrawAnnotation.clear();
-//            }
-//        });
 //        Button colorButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_color_btn);
 //        colorButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -215,38 +195,8 @@ public class PhotoEditFragment extends Fragment {
 //                getColorPickerDialog().show();
 //            }
 //        });
-//        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_done_btn);
-//        doneButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                replaceContainer(getControlsView());
-//                mDrawAnnotation.setOnTouchListener(null);
-//            }
-//        });
-//        return view;
 //    }
 //
-
-//    public MaterialDialog getColorPickerDialog() {
-//        if (mColorPickerDialog == null) {
-//            mColorPickerDialog = new MaterialDialog.Builder(getActivity())
-//                    .customView(R.layout.dialog_color_picker, false)
-//                    .positiveText(android.R.string.ok)
-//                    .negativeText(android.R.string.cancel)
-//                    .callback(new MaterialDialog.ButtonCallback() {
-//                        @Override
-//                        public void onPositive(MaterialDialog dialog) {
-//                            mDrawableViewConfig.setStrokeColor(mColorPicker.getColor());
-//                        }
-//                    })
-//                    .build();
-//            View view = mColorPickerDialog.getCustomView();
-//            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
-//            // TODO set the right start color
-//            mColorPicker.setOldCenterColor(mColorPicker.getColor());
-//        }
-//        return mColorPickerDialog;
-//    }
 
     /**
      * Refreshes the image without any transformation

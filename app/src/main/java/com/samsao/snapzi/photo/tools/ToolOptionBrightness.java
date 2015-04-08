@@ -34,7 +34,7 @@ public class ToolOptionBrightness extends ToolOption implements Parcelable {
         return new MenuItem() {
             @Override
             public String getName() {
-                return StringUtil.getString(R.string.tool_filters_filter_brightness_name);
+                return StringUtil.getString(R.string.tool_option_brightness_name);
             }
 
             @Override

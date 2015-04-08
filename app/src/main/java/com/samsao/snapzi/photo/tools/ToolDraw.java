@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.photo.PhotoEditFragment;
 import com.samsao.snapzi.util.StringUtil;
@@ -23,10 +22,12 @@ public class ToolDraw extends Tool implements Parcelable {
     @ParcelableThisPlease
     public DrawableViewConfig mDrawableViewConfig;
 
+
+
     public ToolDraw() {
         super();
         mDrawableViewConfig = new DrawableViewConfig();
-        mDrawableViewConfig.setStrokeColor(SnapziApplication.getContext().getResources().getColor(android.R.color.holo_red_light));
+        mDrawableViewConfig.setStrokeColor(ToolOptionStrokeColor.DEFAULT_COLOR);
         mDrawableViewConfig.setStrokeWidth(20.0f);
         mDrawableViewConfig.setMinZoom(1.0f);
         mDrawableViewConfig.setMaxZoom(3.0f);
@@ -35,6 +36,7 @@ public class ToolDraw extends Tool implements Parcelable {
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_SMALL).setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_MEDIUM).setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_LARGE).setTool(this));
+        addOption(new ToolOptionStrokeColor().setTool(this));
     }
 
     @Override
@@ -116,7 +118,6 @@ public class ToolDraw extends Tool implements Parcelable {
     public void onOptionsUndoSelected() {
         mToolFragment.getDrawAnnotationContainer().undo();
     }
-
 
     @Override
     public int describeContents() {
