@@ -245,7 +245,7 @@ public class SelectMediaFragment extends Fragment {
                         if (mCameraPreview.startRecording()) {
                             triggerCapturingVideo(true);
                         } else {
-                            // prepare didn't work, release the camera
+                            // Start recording didn't work, release the camera
                             mCameraPreview.stopRecording();
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.error_unable_to_start_video_recording),
@@ -325,6 +325,37 @@ public class SelectMediaFragment extends Fragment {
         };
     }
 
+    private void setCameraFlashMode(String flashMode) {
+        if (mCameraPreview.setFlashMode(flashMode)) {
+            mSelectMediaProvider.setCameraFlashMode(flashMode);
+            updateFlashButton(mSelectMediaProvider.getCameraFlashMode());
+        }
+    }
+
+    private void triggerCameraFlash() {
+        if (mCameraPreview.isFlashAvailable()) {
+            mSelectMediaProvider.setCameraFlashMode(mCameraPreview.triggerNextFlashMode());
+            updateFlashButton(mSelectMediaProvider.getCameraFlashMode());
+        }
+    }
+
+    private void updateFlashButton(String flashMode) {
+        switch (flashMode) {
+            case Camera.Parameters.FLASH_MODE_AUTO:
+                mFlashSetupButton.setText("AUTO");
+                break;
+            case Camera.Parameters.FLASH_MODE_OFF:
+                mFlashSetupButton.setText("OFF");
+                break;
+            case Camera.Parameters.FLASH_MODE_ON:
+                mFlashSetupButton.setText("ON");
+                break;
+            default:
+                mFlashSetupButton.setText("FLASH");
+                break;
+        }
+    }
+
     /**
      * If more the one camera is available on the current device, this function switches the camera
      * source (FRONT, BACK).
@@ -354,7 +385,9 @@ public class SelectMediaFragment extends Fragment {
 
         } else {
             // inform the user that recording has stopped
-            mFlashSetupButton.setVisibility(View.VISIBLE);
+            if (mCameraPreview.isFlashAvailable()) {
+                mFlashSetupButton.setVisibility(View.VISIBLE);
+            }
             mFlipCameraButton.setVisibility(View.VISIBLE);
             mPickFromGalleryButton.setVisibility(View.VISIBLE);
             mPreferenceButton.setVisibility(View.VISIBLE);
@@ -384,7 +417,31 @@ public class SelectMediaFragment extends Fragment {
      */
     private void initializeCamera(int cameraId) {
         mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.FitParent, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
+        mCameraPreview.setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
+            @Override
+            public void onCameraPreviewReady() {
+                // Camera flash setup button
+                if (mCameraPreview.isFlashAvailable()) {
+                    mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            triggerCameraFlash();
+                        }
+                    });
+                    setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
+                    mFlashSetupButton.setVisibility(View.VISIBLE);
+                } else {
+                    mFlashSetupButton.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCameraPreviewFailed() {
+                //FIXME
+            }
+        });
         mCameraPreviewContainer.addView(mCameraPreview);
+
         triggerCapturingMediaState(false);
     }
 

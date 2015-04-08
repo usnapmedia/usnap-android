@@ -22,8 +22,7 @@
         android:id="@+id/fragment_select_media_flash_setup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="FLASH"
+        android:layout_gravity="start"
         android:visibility="gone" />
 
     <Button

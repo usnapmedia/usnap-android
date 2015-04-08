@@ -10,6 +10,10 @@ public interface SelectMediaProvider {
 
     public void setCameraId(int cameraId);
 
+    public String getCameraFlashMode();
+
+    public void setCameraFlashMode(String cameraFlashMode);
+
     public int getCameraLastOrientationAngleKnown();
 
     public void setCameraLastOrientationAngleKnown(int angle);

@@ -16,13 +16,6 @@ import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.VideoUtil;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -43,11 +36,15 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
 
     SelectMediaFragment mSelectMediaFragment;
 
     @Icicle
     public int mCameraId;
+
+    @Icicle
+    public String mCameraFlashMode;
 
     @Icicle
     public int mCameraLastOrientationAngleKnown;
@@ -57,6 +54,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         super.onCreate(savedInstanceState);
 
         mCameraId = DEFAULT_CAMERA_ID;
+        mCameraFlashMode = DEFAULT_CAMERA_FLASH_MODE;
         mCameraLastOrientationAngleKnown = 0;
 
         if (savedInstanceState != null) {
@@ -129,7 +127,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             String destVideoPath = CameraHelper.getVideoMediaFilePath();
 
             // If non-local video select an other one
-            if(sourceVideoPath.contains("https://")){
+            if (sourceVideoPath.contains("https://")) {
                 Toast.makeText(SelectMediaActivity.this,
                         getResources().getString(R.string.error_please_select_a_local_video),
                         Toast.LENGTH_LONG).show();
@@ -169,6 +167,16 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Override
     public void setCameraId(int cameraId) {
         mCameraId = cameraId;
+    }
+
+    @Override
+    public String getCameraFlashMode() {
+        return mCameraFlashMode;
+    }
+
+    @Override
+    public void setCameraFlashMode(String cameraFlashMode) {
+        mCameraFlashMode = cameraFlashMode;
     }
 
     @Override

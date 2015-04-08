@@ -33,6 +33,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     private LayoutMode mLayoutMode;
     private int mCameraId;
     private Camera mCamera;
+    private boolean mIsFlashAvailable;
     CameraPreviewCallback mCameraPreviewCallback = null;
 
     private int mMaximumVideoDuration;
@@ -64,6 +65,15 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         setSurfaceTextureListener(this);
         mLayoutMode = layoutMode;
         mCameraId = cameraId;
+
+        Camera camera = CameraHelper.getCameraInstance(mCameraId);
+        List<String> supportedFlashModes = camera.getParameters().getSupportedFlashModes();
+        camera.release();
+        if (supportedFlashModes != null && supportedFlashModes.size() > 0) {
+            mIsFlashAvailable = true;
+        } else {
+            mIsFlashAvailable = false;
+        }
 
         mMaximumVideoDuration = maximumVideoDuration;
         // Set a CamcorderProfile to 720p quality or lower of not available
@@ -290,7 +300,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             isVideoCaptureSuccessful = true;
         } catch (IllegalStateException exception) {
             Log.e(LOG_TAG, "stop() cannot be called before start()");
-        } catch(RuntimeException stopException){
+        } catch (RuntimeException stopException) {
             Log.e(LOG_TAG, "no valid audio/video data has been received when stop() is called.");
         }
 
@@ -328,7 +338,78 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return mCamera;
     }
 
-    public void setOnPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
+    public boolean isFlashAvailable() {
+        return mIsFlashAvailable;
+    }
+
+    public boolean setFlashMode(String flashMode){
+        boolean success = false;
+        if (mIsFlashAvailable && mCamera != null) {
+            List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
+            if (supportedFlashModes != null) {
+                Camera.Parameters cameraParams = mCamera.getParameters();
+                cameraParams.setFlashMode(flashMode);
+                mCamera.setParameters(cameraParams);
+                success = true;
+            }
+        }
+
+        return success;
+    }
+
+    public String triggerNextFlashMode() {
+        String newFlashMode;
+        if (mIsFlashAvailable && mCamera != null) {
+            List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
+            if (supportedFlashModes != null) {
+                String currentFlashMode = mCamera.getParameters().getFlashMode();
+                switch (currentFlashMode) {
+                    case Camera.Parameters.FLASH_MODE_AUTO:
+                        if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
+                            newFlashMode = Camera.Parameters.FLASH_MODE_OFF;
+                        } else if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_ON)) {
+                            newFlashMode = Camera.Parameters.FLASH_MODE_ON;
+                        } else {
+                            newFlashMode = currentFlashMode;
+                        }
+                        break;
+                    case Camera.Parameters.FLASH_MODE_OFF:
+                        if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_ON)) {
+                            newFlashMode = Camera.Parameters.FLASH_MODE_ON;
+                        } else if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
+                            newFlashMode = Camera.Parameters.FLASH_MODE_AUTO;
+                        } else {
+                            newFlashMode = currentFlashMode;
+                        }
+                        break;
+                    case Camera.Parameters.FLASH_MODE_ON:
+                        if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
+                            newFlashMode = Camera.Parameters.FLASH_MODE_AUTO;
+                        } else if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
+                            newFlashMode = Camera.Parameters.FLASH_MODE_OFF;
+                        } else {
+                            newFlashMode = currentFlashMode;
+                        }
+                        break;
+                    default:
+                        newFlashMode = currentFlashMode;
+                        break;
+                }
+
+                Camera.Parameters cameraParams = mCamera.getParameters();
+                cameraParams.setFlashMode(newFlashMode);
+                mCamera.setParameters(cameraParams);
+            } else {
+                newFlashMode = null;
+            }
+        } else {
+            newFlashMode = null;
+        }
+
+        return newFlashMode;
+    }
+
+    public void setOnCameraPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
         mCameraPreviewCallback = cameraPreviewCallback;
     }
 }
