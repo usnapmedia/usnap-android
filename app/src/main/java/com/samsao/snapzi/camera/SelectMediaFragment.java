@@ -3,6 +3,7 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -237,6 +238,7 @@ public class SelectMediaFragment extends Fragment {
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
                         if (mCameraPreview.startRecording()) {
                             mIsRecording = true;
+                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
                             // inform the user that recording has started
                             mFlipCameraButton.setVisibility(View.GONE);
@@ -270,6 +272,7 @@ public class SelectMediaFragment extends Fragment {
 
                     // stop recording and start video edit activity
                     mCameraPreview.stopRecording();
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
                     return true;
                 } else {
@@ -289,6 +292,7 @@ public class SelectMediaFragment extends Fragment {
 
                 // stop recording and start video edit activity
                 mCameraPreview.stopRecording();
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
             }
         };
