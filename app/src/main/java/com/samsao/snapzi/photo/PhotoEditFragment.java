@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.tools.Tool;
@@ -54,6 +55,7 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 
     // TODO move them to activity
     private ArrayList<Tool> mTools;
+    private Tool mCurrentTool;
 
 //    private MaterialDialog mColorPickerDialog;
 //    private DrawableViewConfig mDrawableViewConfig;
@@ -384,7 +386,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
     /**
      * Reset menu to the initial state
      */
-    @Override
     public void resetMenu() {
         mMenuItemAdapter.setData(getMenuItemsForTools());
         mToolContainer.setVisibility(View.GONE);
@@ -414,36 +415,64 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         return view;
     }
 
+    public Tool getCurrentTool() {
+        return mCurrentTool;
+    }
+
+    public void setCurrentTool(Tool currentTool, boolean enableClear, boolean enableUndo) throws UnsupportedOperationException {
+        if (currentTool == null) {
+            throw new UnsupportedOperationException("Use resetCurrentTool to remove the current tool");
+        }
+        mCurrentTool = currentTool;
+        mListener.showEditMenu(enableClear, enableUndo);
+    }
+
+    /**
+     * Reset current tool
+     */
+    public void resetCurrentTool() {
+        mCurrentTool = null;
+        resetMenu();
+        mListener.resetMenu();
+    }
+
     /**
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-
+        // TODO
+        Toast.makeText(getActivity(), "TODO: go to share activity", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * When options item DONE is selected
      */
     public void onOptionsDoneSelected() {
-
+        resetCurrentTool();
     }
 
     /**
      * When options item CLEAR is selected
      */
     public void onOptionsClearSelected() {
-
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsClearSelected();
+        }
     }
 
     /**
      * When options item UNDO is selected
      */
     public void onOptionsUndoSelected() {
-
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsUndoSelected();
+        }
     }
 
     public interface Listener {
         Uri getImageUri();
         void saveBitmap(Bitmap bitmap);
+        void resetMenu();
+        void showEditMenu(boolean showClear, boolean showUndo);
     }
 }

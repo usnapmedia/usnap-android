@@ -1,9 +1,9 @@
 package com.samsao.snapzi.photo.tools;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
@@ -15,13 +15,7 @@ import java.util.ArrayList;
  * @since 15-04-06
  */
 @ParcelablePlease(allFields = false)
-public class ToolFilters extends Tool {
-
-    /**
-     * List of filters. Filters are also tools.
-     */
-    @ParcelableThisPlease
-    public ArrayList<Tool> mTools;
+public class ToolFilters extends Tool implements Parcelable {
 
     @Override
     public MenuItem getMenuItem() {
@@ -38,18 +32,26 @@ public class ToolFilters extends Tool {
 
             @Override
             public void onSelected() {
+                mMenuContainer.setCurrentTool(ToolFilters.this, false, false);
                 ArrayList<MenuItem> items = new ArrayList<>();
-                for (Tool tool : mTools) {
-                    items.add(tool.getMenuItem());
+                for (ToolOption option : mOptions) {
+                    items.add(option.getMenuItem());
                 }
                 mMenuContainer.setMenuItems(items);
             }
         };
     }
 
-    public void setTools(ArrayList<Tool> tools) {
-        mTools = tools;
+    @Override
+    public void onOptionsClearSelected() {
+
     }
+
+    @Override
+    public void onOptionsUndoSelected() {
+
+    }
+
 
     @Override
     public int describeContents() {

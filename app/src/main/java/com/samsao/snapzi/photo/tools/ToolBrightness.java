@@ -18,7 +18,7 @@ import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
  * @since 15-04-07
  */
 @ParcelablePlease(allFields = false)
-public class ToolBrightness extends Tool implements Parcelable {
+public class ToolBrightness extends ToolOption implements Parcelable {
 
     @ParcelableThisPlease
     public int mBrightness;
@@ -44,14 +44,14 @@ public class ToolBrightness extends Tool implements Parcelable {
 
             @Override
             public void onSelected() {
-                View view = mMenuContainer.replaceToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
+                View view = getTool().getMenuContainer().replaceToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
                 SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_tool_seekbar);
                 seekBar.setMax(20);
                 seekBar.setProgress(mBrightness);
                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-                        mMenuContainer.refreshImage(new BrightnessFilterTransformation(mMenuContainer.getContext(), (progress - 10) / 10.0f));
+                        getTool().getMenuContainer().refreshImage(new BrightnessFilterTransformation(getTool().getMenuContainer().getContext(), (progress - 10) / 10.0f));
                         mBrightness = progress;
                     }
 

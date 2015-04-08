@@ -2,8 +2,6 @@ package com.samsao.snapzi.photo.tools;
 
 import com.samsao.snapzi.photo.MenuContainer;
 
-import java.util.ArrayList;
-
 /**
  * @author jfcartier
  * @since 15-04-07
@@ -11,7 +9,7 @@ import java.util.ArrayList;
 public class ToolsFactory {
 
     public static final int TOOL_FILTERS = 0;
-    public static final int TOOL_BRIGHTNESS = 1;
+    public static final int TOOL_OPTION_BRIGHTNESS = 0;
 
     public static Tool getTool(int type, MenuContainer menuContainer) {
         Tool tool = null;
@@ -19,15 +17,20 @@ public class ToolsFactory {
             case TOOL_FILTERS:
                 ToolFilters toolFilters = new ToolFilters();
                 toolFilters.setMenuContainer(menuContainer);
-                ArrayList<Tool> tools = new ArrayList<>();
-                tools.add(ToolsFactory.getTool(TOOL_BRIGHTNESS, menuContainer));
-                toolFilters.setTools(tools);
+                toolFilters.addOption(ToolsFactory.getToolOption(TOOL_OPTION_BRIGHTNESS, toolFilters));
                 tool = toolFilters;
-                break;
-            case TOOL_BRIGHTNESS:
-                tool = new ToolBrightness().setMenuContainer(menuContainer);
                 break;
         }
         return tool;
+    }
+
+    public static ToolOption getToolOption(int type, Tool tool) {
+        ToolOption toolOption = null;
+        switch (type) {
+            case TOOL_OPTION_BRIGHTNESS:
+                toolOption = new ToolBrightness().setTool(tool);
+                break;
+        }
+        return toolOption;
     }
 }

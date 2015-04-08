@@ -7,8 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.*;
-import android.view.MenuItem;
+import android.view.Menu;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.PhotoUtil;
@@ -28,13 +27,14 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     @InjectView(R.id.activity_photo_edit_toolbar)
     public Toolbar mToolbar;
 
-    private Menu mMenu;
     private PhotoEditFragment mPhotoEditFragment;
 
     @Icicle
     public int mContrast;
     @Icicle
     public Uri mImageUri;
+    @Icicle
+    public MenuState mMenuState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,7 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         ButterKnife.inject(this);
         setupToolbar();
 
+        mMenuState = new MenuStateView();
         Intent intent = getIntent();
         if (intent != null) {
             mImageUri = intent.getParcelableExtra(EXTRA_URI);
@@ -79,8 +80,7 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        mMenu = menu;
-        getMenuInflater().inflate(R.menu.activity_photo_edit, menu);
+        mMenuState.onCreateOptionsMenu(getMenuInflater(), menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -124,25 +124,23 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     }
 
     /**
+     * Reset menu
+     */
+    @Override
+    public void resetMenu() {
+        mMenuState = new MenuStateView();
+        getSupportActionBar().invalidateOptionsMenu();
+    }
+
+    /**
      * Show the edit menu
      * @param showClear
      * @param showUndo
      */
+    @Override
     public void showEditMenu(boolean showClear, boolean showUndo) {
-        getMenuInflater().inflate(R.menu.activity_photo_edit_edit, mMenu);
-        if (!showClear) {
-            MenuItem item = mMenu.findItem(R.id.activity_photo_edit_clear);
-            if (item != null) {
-                item.setVisible(false);
-            }
-        }
-        if (!showUndo) {
-            MenuItem item = mMenu.findItem(R.id.activity_photo_edit_undo);
-            if (item != null) {
-                item.setVisible(false);
-            }
-        }
-        getSupportActionBar().invalidateOptionsMenu();
+        mMenuState = new MenuStateEdit().setShowClear(showClear).setShowUndo(showUndo);
+        invalidateOptionsMenu();
     }
 
     @Override
