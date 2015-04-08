@@ -11,22 +11,22 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
-import jp.wasabeef.picasso.transformations.gpu.ContrastFilterTransformation;
+import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
 
 /**
  * @author jfcartier
  * @since 15-04-07
  */
 @ParcelablePlease(allFields = false)
-public class ToolContrast extends ToolOption implements Parcelable {
+public class ToolOptionBrightness extends ToolOption implements Parcelable {
 
     @ParcelableThisPlease
-    public int mConstrast;
+    public int mBrightness;
 
-    public ToolContrast() {
+    public ToolOptionBrightness() {
         super();
-        // contrast varies from 0 to 4.0, but progress bar from 0 to MAX -> initial contrast is 10 (1.0) and max is 40
-        mConstrast = 10;
+        // brightness varies from -1.0 to 1.0, but progress bar from 0 to MAX -> initial brightness is 10 (0.0) and max is 20
+        mBrightness = 10;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ToolContrast extends ToolOption implements Parcelable {
         return new MenuItem() {
             @Override
             public String getName() {
-                return StringUtil.getString(R.string.tool_filters_filter_contrast_name);
+                return StringUtil.getString(R.string.tool_filters_filter_brightness_name);
             }
 
             @Override
@@ -44,15 +44,15 @@ public class ToolContrast extends ToolOption implements Parcelable {
 
             @Override
             public void onSelected() {
-                View view = getTool().getMenuContainer().replaceToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
+                View view = getTool().getToolFragment().replaceToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
                 SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_tool_seekbar);
-                seekBar.setMax(40);
-                seekBar.setProgress(mConstrast);
+                seekBar.setMax(20);
+                seekBar.setProgress(mBrightness);
                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-                        getTool().getMenuContainer().refreshImage(new ContrastFilterTransformation(getTool().getMenuContainer().getContext(), progress / 10.0f));
-                        mConstrast = progress;
+                        getTool().getToolFragment().refreshImage(new BrightnessFilterTransformation(getTool().getToolFragment().getActivity(), (progress - 10) / 10.0f));
+                        mBrightness = progress;
                     }
 
                     @Override
@@ -69,7 +69,6 @@ public class ToolContrast extends ToolOption implements Parcelable {
         };
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -77,18 +76,18 @@ public class ToolContrast extends ToolOption implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ToolContrastParcelablePlease.writeToParcel(this, dest, flags);
+        ToolOptionBrightnessParcelablePlease.writeToParcel(this, dest, flags);
     }
 
-    public static final Creator<ToolContrast> CREATOR = new Creator<ToolContrast>() {
-        public ToolContrast createFromParcel(Parcel source) {
-            ToolContrast target = new ToolContrast();
-            ToolContrastParcelablePlease.readFromParcel(target, source);
+    public static final Creator<ToolOptionBrightness> CREATOR = new Creator<ToolOptionBrightness>() {
+        public ToolOptionBrightness createFromParcel(Parcel source) {
+            ToolOptionBrightness target = new ToolOptionBrightness();
+            ToolOptionBrightnessParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
-        public ToolContrast[] newArray(int size) {
-            return new ToolContrast[size];
+        public ToolOptionBrightness[] newArray(int size) {
+            return new ToolOptionBrightness[size];
         }
     };
 }

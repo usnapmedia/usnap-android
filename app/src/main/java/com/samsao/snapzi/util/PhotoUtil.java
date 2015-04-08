@@ -32,6 +32,9 @@ public class PhotoUtil {
         new SaveBitmapTask(bitmap, callback).execute();
     }
 
+    /**
+     * Background task to save an image
+     */
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
         private Bitmap mBitmap;
         private SaveImageCallback mCallback;

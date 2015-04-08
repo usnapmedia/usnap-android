@@ -3,8 +3,8 @@ package com.samsao.snapzi.photo.tools;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
-import com.samsao.snapzi.photo.MenuContainer;
 import com.samsao.snapzi.photo.MenuItem;
+import com.samsao.snapzi.photo.PhotoEditFragment;
 
 import java.util.ArrayList;
 
@@ -20,39 +20,79 @@ public abstract class Tool implements Parcelable {
     public ArrayList<ToolOption> mOptions;
 
     /**
-     * Menu container
+     * Associated Fragment
      */
-    protected MenuContainer mMenuContainer;
+    protected PhotoEditFragment mToolFragment;
+
+    /**
+     * Constructor
+     */
+    protected Tool() {
+        mOptions = new ArrayList<>();
+    }
 
     /**
      * Returns the menu item for this tool
-      * @return
+     * @return
      */
     public abstract MenuItem getMenuItem();
+
+    /**
+     * When options item CLEAR is selected
+     */
     public abstract void onOptionsClearSelected();
+
+    /**
+     * When options item UNDO is selected
+     */
     public abstract void onOptionsUndoSelected();
 
-    public MenuContainer getMenuContainer() {
-        return mMenuContainer;
+    /**
+     * Select this tool
+     */
+    public void select() {
+        mToolFragment.setCurrentTool(this, getClearEnabled(), getUndoEnabled());
+        setOptionsMenuItems();
     }
 
-    public Tool setMenuContainer(MenuContainer menuContainer) {
-        mMenuContainer = menuContainer;
+    /**
+     * Unselect this tool
+     */
+    public abstract void unselect();
+
+    /**
+     * Check if CLEAR option is available for this tool
+     * @return
+     */
+    public abstract boolean getClearEnabled();
+
+    /**
+     * Check if UNDO option is available for this tool
+     * @return
+     */
+    public abstract boolean getUndoEnabled();
+
+    /**
+     * Set the options as menu items
+     */
+    public void setOptionsMenuItems() {
+        ArrayList<MenuItem> items = new ArrayList<>();
+        for (ToolOption option : mOptions) {
+            items.add(option.getMenuItem());
+        }
+        mToolFragment.setMenuItems(items);
+    }
+
+    public PhotoEditFragment getToolFragment() {
+        return mToolFragment;
+    }
+
+    public Tool setToolFragment(PhotoEditFragment toolFragment) {
+        mToolFragment = toolFragment;
         return this;
     }
 
-    public ArrayList<ToolOption> getOptions() {
-        return mOptions;
-    }
-
-    public void setOptions(ArrayList<ToolOption> options) {
-        mOptions = options;
-    }
-
     public void addOption(ToolOption option) {
-        if (mOptions == null) {
-            mOptions = new ArrayList<>();
-        }
         mOptions.add(option);
     }
 }

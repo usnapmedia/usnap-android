@@ -3,8 +3,9 @@ package com.samsao.snapzi.photo;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,9 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.tools.Tool;
-import com.samsao.snapzi.photo.tools.ToolsFactory;
+import com.samsao.snapzi.photo.tools.ToolDraw;
+import com.samsao.snapzi.photo.tools.ToolFilters;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -32,7 +35,7 @@ import me.panavtec.drawableview.DrawableView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhotoEditFragment extends Fragment implements MenuContainer {
+public class PhotoEditFragment extends Fragment {
 
     @InjectView(R.id.fragment_photo_edit_image)
     public ImageView mImage;
@@ -58,7 +61,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
     private Tool mCurrentTool;
 
 //    private MaterialDialog mColorPickerDialog;
-//    private DrawableViewConfig mDrawableViewConfig;
 //    private ColorPicker mColorPicker;
 
     /**
@@ -84,14 +86,39 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         ButterKnife.inject(this, view);
 
         // TODO pass the right tools to instanciate
-        ArrayList<Tool> tools = new ArrayList<>();
-        tools.add(ToolsFactory.getTool(ToolsFactory.TOOL_FILTERS, this));
-        setTools(tools);
+        mTools = new ArrayList<>();
+        mTools.add(new ToolFilters().setToolFragment(this));
+        // special case for draw tool since we need to get the canvas height and width
+        final ToolDraw toolDraw = new ToolDraw();
+        toolDraw.setToolFragment(this);
+        mTools.add(toolDraw);
+        mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.set((int)getResources().getDimension(R.dimen.elements_horizontal_margin), 0, (int)getResources().getDimension(R.dimen.elements_horizontal_margin), 0);
+                super.getItemOffsets(outRect, view, parent, state);
+            }
+        });
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mMenuItemAdapter);
-        refreshImage();
+
+        // load the image
+        Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder().into(mImage, new Callback() {
+            @Override
+            public void onSuccess() {
+                Bitmap bitmap = ((BitmapDrawable)mImage.getDrawable()).getBitmap();
+                toolDraw.setCanvasHeight(bitmap.getHeight()).setCanvasWidth(bitmap.getWidth());
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
 
         // TODO check for keyboard dismiss also
 //        mTextAnnotation.setTextIsSelectable(false);
@@ -116,23 +143,7 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 //                });
 
 
-        // init draw annotation
-//        Display display = getActivity().getWindowManager().getDefaultDisplay();
-//        Point size = new Point();
-//        display.getSize(size);
-
-//        mDrawableViewConfig = new DrawableViewConfig();
-//        mDrawableViewConfig.setStrokeColor(getResources().getColor(android.R.color.holo_red_light));
-//        mDrawableViewConfig.setStrokeWidth(20.0f);
-//        mDrawableViewConfig.setMinZoom(1.0f);
-//        mDrawableViewConfig.setMaxZoom(3.0f);
-//        mDrawableViewConfig.setCanvasHeight(size.y);
-//        mDrawableViewConfig.setCanvasWidth(size.x);
-//        mDrawAnnotation.setConfig(mDrawableViewConfig);
         mDrawAnnotationContainer.setOnTouchListener(null);
-
-        // set the view background
-//        replaceContainer(getControlsView());
         return view;
     }
 
@@ -244,7 +255,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
      * Refreshes the image
      * @param transformation
      */
-    @Override
     public void refreshImage(Transformation transformation) {
         Picasso.with(getActivity()).invalidate(mListener.getImageUri());
         RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder();
@@ -252,11 +262,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
             requestCreator = requestCreator.transform(transformation);
         }
         requestCreator.into(mImage);
-    }
-
-    @Override
-    public Context getContext() {
-        return getActivity();
     }
 
 //    public void fitImageToScreen() {
@@ -285,12 +290,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
 //        }
 //    }
 
-    public void setTools(ArrayList<Tool> tools) {
-        mTools = tools;
-        mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
-    }
-
-    @Override
     public void setMenuItems(ArrayList<MenuItem> items) {
         mMenuItemAdapter.setData(items);
     }
@@ -319,7 +318,6 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
      * Replaces the tool container view
      * @param resId
      */
-    @Override
     public View replaceToolContainer(int resId) {
         mToolContainer.removeAllViews();
         View view = getActivity().getLayoutInflater().inflate(resId, mToolContainer, true);
@@ -327,14 +325,11 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         return view;
     }
 
-    public Tool getCurrentTool() {
-        return mCurrentTool;
-    }
-
     public void setCurrentTool(Tool currentTool, boolean enableClear, boolean enableUndo) throws UnsupportedOperationException {
         if (currentTool == null) {
             throw new UnsupportedOperationException("Use resetCurrentTool to remove the current tool");
         }
+        mCurrentTool.unselect();
         mCurrentTool = currentTool;
         mListener.showEditMenu(enableClear, enableUndo);
     }
@@ -346,6 +341,14 @@ public class PhotoEditFragment extends Fragment implements MenuContainer {
         mCurrentTool = null;
         resetMenu();
         mListener.resetMenu();
+    }
+
+    /**
+     * Returns the DrawAnnotationContainer
+     * @return
+     */
+    public DrawableView getDrawAnnotationContainer() {
+        return mDrawAnnotationContainer;
     }
 
     /**

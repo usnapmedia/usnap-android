@@ -8,14 +8,18 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
-import java.util.ArrayList;
-
 /**
  * @author jfcartier
  * @since 15-04-06
  */
 @ParcelablePlease(allFields = false)
 public class ToolFilters extends Tool implements Parcelable {
+
+    public ToolFilters() {
+        super();
+        addOption(new ToolOptionBrightness().setTool(this));
+        addOption(new ToolOptionContrast().setTool(this));
+    }
 
     @Override
     public MenuItem getMenuItem() {
@@ -32,12 +36,7 @@ public class ToolFilters extends Tool implements Parcelable {
 
             @Override
             public void onSelected() {
-                mMenuContainer.setCurrentTool(ToolFilters.this, false, false);
-                ArrayList<MenuItem> items = new ArrayList<>();
-                for (ToolOption option : mOptions) {
-                    items.add(option.getMenuItem());
-                }
-                mMenuContainer.setMenuItems(items);
+                select();
             }
         };
     }
@@ -52,6 +51,20 @@ public class ToolFilters extends Tool implements Parcelable {
 
     }
 
+    @Override
+    public void unselect() {
+
+    }
+
+    @Override
+    public boolean getClearEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean getUndoEnabled() {
+        return false;
+    }
 
     @Override
     public int describeContents() {
