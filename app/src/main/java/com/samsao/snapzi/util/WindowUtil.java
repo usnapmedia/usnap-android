@@ -12,10 +12,19 @@ public class WindowUtil {
 
     private final static String LOG_TAG = WindowUtil.class.getSimpleName();
 
+
+    /**
+     * Unlocks passed activity screen orientation.
+     * @param activity
+     */
     public static void unlockScreenOrientation(Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 
+    /**
+     * Locks passed activity screen orientation.
+     * @param activity
+     */
     public static void lockScreenOrientation(Activity activity) {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
 

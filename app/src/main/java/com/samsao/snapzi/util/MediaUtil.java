@@ -18,6 +18,12 @@ public class MediaUtil {
     }
 
 
+    /**
+     * Gets media type from media's URI
+     * @param context
+     * @param mediaUri
+     * @return
+     */
     public static MediaType getMediaTypeFromUri(Context context, Uri mediaUri) {
         String mediaType = context.getContentResolver().getType(mediaUri);
 

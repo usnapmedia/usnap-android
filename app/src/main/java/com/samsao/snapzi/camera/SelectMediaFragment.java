@@ -3,8 +3,6 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -323,6 +321,11 @@ public class SelectMediaFragment extends Fragment {
         };
     }
 
+    /**
+     * Set Camera flash mode (if mode available on current device).
+     *
+     * @param flashMode
+     */
     private void setCameraFlashMode(String flashMode) {
         if (mCameraPreview.setFlashMode(flashMode)) {
             mSelectMediaProvider.setCameraFlashMode(flashMode);
@@ -330,13 +333,21 @@ public class SelectMediaFragment extends Fragment {
         }
     }
 
-    private void triggerCameraFlash() {
+    /**
+     * Sets next available Camera flash mode.
+     */
+    private void setNextAvailableCameraFlashMode() {
         if (mCameraPreview.isFlashAvailable()) {
             mSelectMediaProvider.setCameraFlashMode(mCameraPreview.triggerNextFlashMode());
             updateFlashButton(mSelectMediaProvider.getCameraFlashMode());
         }
     }
 
+    /**
+     * Update flash button design accordingly to the passed flash mode.
+     *
+     * @param flashMode
+     */
     private void updateFlashButton(String flashMode) {
         switch (flashMode) {
             case Camera.Parameters.FLASH_MODE_AUTO:
@@ -369,6 +380,11 @@ public class SelectMediaFragment extends Fragment {
         initializeCamera(mSelectMediaProvider.getCameraId());
     }
 
+    /**
+     * Updates camera controls accordingly to camera capturing state.
+     *
+     * @param isCapturingMedia
+     */
     private void triggerCapturingMediaState(boolean isCapturingMedia) {
         if (isCapturingMedia) {
             mIsCapturingMedia = true;
@@ -396,6 +412,11 @@ public class SelectMediaFragment extends Fragment {
         }
     }
 
+    /**
+     * Updates camera controls accordingly to camera video capturing state.
+     *
+     * @param isCapturingVideo
+     */
     private void triggerCapturingVideo(boolean isCapturingVideo) {
         mIsCapturingVideo = isCapturingVideo;
 
@@ -423,7 +444,7 @@ public class SelectMediaFragment extends Fragment {
                     mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            triggerCameraFlash();
+                            setNextAvailableCameraFlashMode();
                         }
                     });
                     setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
