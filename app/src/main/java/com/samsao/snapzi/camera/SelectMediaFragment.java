@@ -27,6 +27,7 @@ import com.samsao.snapzi.photo.PhotoEditActivity;
 import com.samsao.snapzi.preferences.PreferencesActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.util.WindowUtil;
 import com.samsao.snapzi.video.VideoEditActivity;
 
 import butterknife.ButterKnife;
@@ -243,14 +244,14 @@ public class SelectMediaFragment extends Fragment {
                 if (!mIsCapturingMedia) {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
-                        if (mCameraPreview.startRecording()) {
-                            triggerCapturingVideo(true);
-                        } else {
+                        triggerCapturingVideo(true);
+                        if (!mCameraPreview.startRecording()) {
                             // Start recording didn't work, release the camera
                             mCameraPreview.stopRecording();
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.error_unable_to_start_video_recording),
                                     Toast.LENGTH_LONG).show();
+                            triggerCapturingVideo(false);
                         }
                     } else {
                         Toast.makeText(getActivity(),
@@ -279,8 +280,6 @@ public class SelectMediaFragment extends Fragment {
 
                     if (isVideoCaptureSuccessful) {
                         startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
-                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                        mIsCapturingMedia = mIsCapturingVideo = false;
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -313,8 +312,6 @@ public class SelectMediaFragment extends Fragment {
 
                 if (isVideoCaptureSuccessful) {
                     startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                    mIsCapturingMedia = mIsCapturingVideo = false;
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),
@@ -375,7 +372,7 @@ public class SelectMediaFragment extends Fragment {
     private void triggerCapturingMediaState(boolean isCapturingMedia) {
         if (isCapturingMedia) {
             mIsCapturingMedia = true;
-            lockScreenOrientation();
+            WindowUtil.lockScreenOrientation(getActivity());
 
             // inform the user that recording has started
             mFlashSetupButton.setVisibility(View.GONE);
@@ -394,7 +391,7 @@ public class SelectMediaFragment extends Fragment {
             mPreferenceButton.setVisibility(View.VISIBLE);
             mVideoCountdown.setVisibility(View.GONE);
 
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            WindowUtil.unlockScreenOrientation(getActivity());
             mIsCapturingMedia = mIsCapturingVideo = false;
         }
     }
@@ -408,28 +405,6 @@ public class SelectMediaFragment extends Fragment {
         } else {
             mVideoCaptureCountdownTimer.cancel();
             triggerCapturingMediaState(isCapturingVideo);
-        }
-    }
-
-    private void lockScreenOrientation() {
-        int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
-
-        switch (getResources().getConfiguration().orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                if (rotation == android.view.Surface.ROTATION_90 || rotation == android.view.Surface.ROTATION_180) {
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-                } else {
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                }
-                break;
-
-            case Configuration.ORIENTATION_LANDSCAPE:
-                if (rotation == android.view.Surface.ROTATION_0 || rotation == android.view.Surface.ROTATION_90) {
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                } else {
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                }
-                break;
         }
     }
 
