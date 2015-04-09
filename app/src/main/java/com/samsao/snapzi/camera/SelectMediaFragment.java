@@ -214,6 +214,7 @@ public class SelectMediaFragment extends Fragment {
         mCaptureMediaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                WindowUtil.lockScreenOrientation(getActivity());
                 if (!mIsCapturingMedia) {
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                         triggerCapturingMediaState(true);
@@ -224,6 +225,7 @@ public class SelectMediaFragment extends Fragment {
                             }
                         });
                     } else {
+                        WindowUtil.unlockScreenOrientation(getActivity());
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
@@ -235,6 +237,7 @@ public class SelectMediaFragment extends Fragment {
         mCaptureMediaButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                WindowUtil.lockScreenOrientation(getActivity());
                 if (!mIsCapturingMedia) {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
@@ -243,11 +246,13 @@ public class SelectMediaFragment extends Fragment {
                         } else {
                             // Start recording didn't work, release the camera
                             mCameraPreview.stopRecording();
+                            WindowUtil.unlockScreenOrientation(getActivity());
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.error_unable_to_start_video_recording),
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {
+                        WindowUtil.unlockScreenOrientation(getActivity());
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
@@ -416,9 +421,9 @@ public class SelectMediaFragment extends Fragment {
         mIsCapturingVideo = isCapturingVideo;
 
         if (isCapturingVideo) {
+            mVideoCaptureCountdownTimer.start();
             triggerCapturingMediaState(isCapturingVideo);
             mVideoCountdown.setVisibility(View.VISIBLE);
-            mVideoCaptureCountdownTimer.start();
         } else {
             mVideoCaptureCountdownTimer.cancel();
             triggerCapturingMediaState(isCapturingVideo);
