@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -214,8 +215,8 @@ public class SelectMediaFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!mIsCapturingMedia) {
-                    triggerCapturingMediaState(true);
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
+                        triggerCapturingMediaState(true);
                         mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
                             @Override
                             public void onAutoFocus(boolean b, Camera camera) {
@@ -226,7 +227,6 @@ public class SelectMediaFragment extends Fragment {
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
-                        triggerCapturingMediaState(false);
                     }
                 }
             }
@@ -238,14 +238,14 @@ public class SelectMediaFragment extends Fragment {
                 if (!mIsCapturingMedia) {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
-                        triggerCapturingVideo(true);
-                        if (!mCameraPreview.startRecording()) {
+                        if (mCameraPreview.startRecording()) {
+                            triggerCapturingVideo(true);
+                        } else {
                             // Start recording didn't work, release the camera
                             mCameraPreview.stopRecording();
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.error_unable_to_start_video_recording),
                                     Toast.LENGTH_LONG).show();
-                            triggerCapturingVideo(false);
                         }
                     } else {
                         Toast.makeText(getActivity(),
@@ -267,10 +267,10 @@ public class SelectMediaFragment extends Fragment {
                     boolean isVideoCaptureSuccessful = false;
 
                     // stop recording and start video edit activity
-                    mVideoCaptureCountdownTimer.cancel();
                     if (mCameraPreview != null) {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
+                    triggerCapturingVideo(false);
 
                     if (isVideoCaptureSuccessful) {
                         mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
@@ -281,7 +281,6 @@ public class SelectMediaFragment extends Fragment {
                                 Toast.LENGTH_LONG).show();
                         triggerCapturingVideo(false);
                     }
-
                     return true;
                 } else {
                     return false;
@@ -387,12 +386,7 @@ public class SelectMediaFragment extends Fragment {
             WindowUtil.lockScreenOrientation(getActivity());
 
             // inform the user that recording has started
-            mFlashSetupButton.setVisibility(View.GONE);
-            mFlipCameraButton.setVisibility(View.GONE);
-            mPickFromGalleryButton.setVisibility(View.GONE);
-            mPreferenceButton.setVisibility(View.GONE);
-            mVideoCountdown.setVisibility(View.VISIBLE);
-
+            hideAllSettingsButtons();
         } else {
             // inform the user that recording has stopped
             if (mCameraPreview.isFlashAvailable()) {
@@ -414,9 +408,27 @@ public class SelectMediaFragment extends Fragment {
     }
 
     /**
-     * Hide all buttons.
+     * Updates camera controls accordingly to camera video capturing state.
+     *
+     * @param isCapturingVideo
      */
-    public void hideAllButtons() {
+    private void triggerCapturingVideo(boolean isCapturingVideo) {
+        mIsCapturingVideo = isCapturingVideo;
+
+        if (isCapturingVideo) {
+            triggerCapturingMediaState(isCapturingVideo);
+            mVideoCountdown.setVisibility(View.VISIBLE);
+            mVideoCaptureCountdownTimer.start();
+        } else {
+            mVideoCaptureCountdownTimer.cancel();
+            triggerCapturingMediaState(isCapturingVideo);
+        }
+    }
+
+    /**
+     * Hide all setting buttons.
+     */
+    public void hideAllSettingsButtons() {
         if (mFlashSetupButton != null) {
             mFlashSetupButton.setVisibility(View.GONE);
         }
@@ -432,6 +444,13 @@ public class SelectMediaFragment extends Fragment {
         if (mPreferenceButton != null) {
             mPreferenceButton.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Hide all buttons.
+     */
+    public void hideAllButtons() {
+        hideAllSettingsButtons();
 
         if (mVideoCountdown != null) {
             mVideoCountdown.setVisibility(View.GONE);
@@ -439,23 +458,6 @@ public class SelectMediaFragment extends Fragment {
 
         if (mCaptureMediaButton != null) {
             mCaptureMediaButton.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * Updates camera controls accordingly to camera video capturing state.
-     *
-     * @param isCapturingVideo
-     */
-    private void triggerCapturingVideo(boolean isCapturingVideo) {
-        mIsCapturingVideo = isCapturingVideo;
-
-        if (isCapturingVideo) {
-            triggerCapturingMediaState(isCapturingVideo);
-            mVideoCaptureCountdownTimer.start();
-        } else {
-            mVideoCaptureCountdownTimer.cancel();
-            triggerCapturingMediaState(isCapturingVideo);
         }
     }
 
