@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.util.ColorUtil;
 
 import java.util.ArrayList;
 
@@ -66,6 +68,11 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
 
         public void setup(MenuItem item) {
             mName.setText(item.getName());
+            if (item.isSelected()) {
+                mName.setTextColor(ColorUtil.getPrimaryColor());
+            } else {
+                mName.setTextColor(SnapziApplication.getContext().getResources().getColor(android.R.color.white));
+            }
             mImage.setImageResource(item.getImageResource());
         }
     }
