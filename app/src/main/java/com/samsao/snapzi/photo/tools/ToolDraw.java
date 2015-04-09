@@ -3,6 +3,7 @@ package com.samsao.snapzi.photo.tools;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
@@ -18,6 +19,8 @@ import me.panavtec.drawableview.DrawableViewConfig;
 @ParcelablePlease(allFields = false)
 public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback {
 
+    @ParcelableNoThanks
+    private final int DEFAULT_OPTION_INDEX = 1;
     @ParcelableThisPlease
     public DrawableViewConfig mDrawableViewConfig;
 
@@ -48,6 +51,7 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onSelected() {
+        mOptions.get(DEFAULT_OPTION_INDEX).select();
         mToolFragment.showEditOptionsMenu(true, true, true);
         mToolFragment.getDrawAnnotationContainer().setOnTouchListener(mToolFragment.getDrawAnnotationContainer());
         mToolFragment.disableTextAnnotationContainerTouchEvent();

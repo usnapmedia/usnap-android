@@ -18,6 +18,8 @@ import java.util.Locale;
 @ParcelablePlease(ignorePrivateFields = true)
 public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
 
+    public final static String DEFAULT_TYPEFACE_NAME = "roboto.ttf";
+
     @ParcelableThisPlease
     public String mTypeFaceName;
     @ParcelableNoThanks
@@ -36,8 +38,12 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
 
     @Override
     public void onSelected() {
-        Typeface font = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/" + mTypeFaceName);
-        mToolCallback.setTypeFace(font);
+        if (mTypeFaceName != DEFAULT_TYPEFACE_NAME) {
+            Typeface font = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/" + mTypeFaceName);
+            mToolCallback.setTypeFace(font);
+        } else {
+            mToolCallback.setTypeFace(Typeface.DEFAULT);
+        }
     }
 
     @Override

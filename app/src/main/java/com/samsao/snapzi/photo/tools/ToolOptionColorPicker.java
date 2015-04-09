@@ -37,9 +37,10 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
      * Select this tool option
      */
     @Override
-    public void select() {
+    public ToolOption select() {
         // color picker option cannot be selected
         getColorPickerDialog().show();
+        return this;
     }
 
     @Override

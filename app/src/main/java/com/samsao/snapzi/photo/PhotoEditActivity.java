@@ -114,6 +114,15 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mPhotoEditFragment != null) {
+            mPhotoEditFragment.onOptionsHomeSelected();
+        } else {
+            finish();
+        }
+    }
+
     public void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);

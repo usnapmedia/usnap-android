@@ -108,13 +108,14 @@ public abstract class Tool implements Parcelable {
     /**
      * Select this tool
      */
-    public void select() {
+    public Tool select() {
         if (!mIsSelected) {
             mIsSelected = true;
             mToolFragment.setCurrentTool(this);
             setOptionsMenuItems();
             onSelected();
         }
+        return this;
     }
 
     /**
@@ -125,11 +126,13 @@ public abstract class Tool implements Parcelable {
     /**
      * Unselect this tool
      */
-    public void unselect() {
+    public Tool unselect() {
         if (mIsSelected) {
             mIsSelected = false;
+            selectOption(null);
             onUnselected();
         }
+        return this;
     }
 
     /**

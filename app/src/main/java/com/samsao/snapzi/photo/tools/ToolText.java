@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.photo.PhotoEditFragment;
@@ -25,8 +26,12 @@ import com.samsao.snapzi.util.StringUtil;
 @ParcelablePlease(allFields = false)
 public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback, ToolOptionTextTypeFace.ToolCallback {
 
+    @ParcelableNoThanks
+    private final int DEFAULT_OPTION_INDEX = 0;
+
     public ToolText() {
         super();
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.DEFAULT_TYPEFACE_NAME).setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("futura.ttc").setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("georgia.ttf").setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("impact.ttf").setTool(this));
@@ -91,6 +96,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onSelected() {
+        mOptions.get(DEFAULT_OPTION_INDEX).select();
         mToolFragment.showEditOptionsMenu(true, true, false);
         mToolFragment.enableTextAnnotationContainerTouchEvent();
         // lock the text if the user presses anywhere on the screen

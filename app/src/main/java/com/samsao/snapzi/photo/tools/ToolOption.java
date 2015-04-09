@@ -19,11 +19,12 @@ public abstract class ToolOption implements Parcelable {
     /**
      * Select this tool option
      */
-    public void select() {
+    public ToolOption select() {
         if (!mIsSelected) {
             mIsSelected = true;
             onSelected();
         }
+        return this;
     }
 
     /**
@@ -34,11 +35,12 @@ public abstract class ToolOption implements Parcelable {
     /**
      * Unselect this tool option
      */
-    public void unselect() {
+    public ToolOption unselect() {
         if (mIsSelected) {
             mIsSelected = false;
             onUnselected();
         }
+        return this;
     }
 
     /**
