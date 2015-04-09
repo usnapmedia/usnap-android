@@ -67,21 +67,27 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mCameraId = cameraId;
 
         Camera camera = CameraHelper.getCameraInstance(mCameraId);
-        List<String> supportedFlashModes = camera.getParameters().getSupportedFlashModes();
-        camera.release();
-        if (supportedFlashModes != null && supportedFlashModes.size() > 0) {
-            mIsFlashAvailable = true;
-        } else {
-            mIsFlashAvailable = false;
-        }
+        if (camera != null) {
+            List<String> supportedFlashModes = camera.getParameters().getSupportedFlashModes();
+            camera.release();
+            if (supportedFlashModes != null && supportedFlashModes.size() > 0) {
+                mIsFlashAvailable = true;
+            } else {
+                mIsFlashAvailable = false;
+            }
 
-        mMaximumVideoDuration = maximumVideoDuration;
-        // Set a CamcorderProfile to 720p quality or lower of not available
-        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
-            mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+            mMaximumVideoDuration = maximumVideoDuration;
+            // Set a CamcorderProfile to 720p quality or lower of not available
+            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+                mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
 
+            } else {
+                mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+            }
         } else {
-            mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+            Toast.makeText(getContext(),
+                    getResources().getString(R.string.error_unable_to_launch_camera),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -342,7 +348,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return mIsFlashAvailable;
     }
 
-    public boolean setFlashMode(String flashMode){
+    public boolean setFlashMode(String flashMode) {
         boolean success = false;
         if (mIsFlashAvailable && mCamera != null) {
             List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();

@@ -65,7 +65,9 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         if (savedInstanceState != null) {
             // restore saved state
             Icepick.restoreInstanceState(this, savedInstanceState);
-        } else {
+        }
+
+        if (mSelectMediaFragment == null) {
             mSelectMediaFragment = SelectMediaFragment.newInstance();
             getFragmentManager().beginTransaction().replace(android.R.id.content, mSelectMediaFragment).commit();
         }
@@ -184,10 +186,16 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 @Override
                 public void onFailure() {
                     Log.e(LOG_TAG, "An error happened while saving image");
+                    dismissSavingImageProgressDialog();
+
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_image),
                             Toast.LENGTH_LONG).show();
-                    dismissSavingImageProgressDialog();
+
+                    // Restart camera preview
+                    if (mSelectMediaFragment != null) {
+                        mSelectMediaFragment.initializeCamera(mCameraId);
+                    }
                 }
             });
         } else {
@@ -227,8 +235,12 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         if (mSavingImageProgressDialog == null) {
             mSavingImageProgressDialog = createSavingImageProgressDialog();
         }
-        if (!mSavingImageProgressDialog.isShowing()) {
-            mSavingImageProgressDialog.show();
+        mSavingImageProgressDialog.show();
+
+        // Stop camera preview
+        if (mSelectMediaFragment != null) {
+            mSelectMediaFragment.releaseCamera();
+            mSelectMediaFragment.hideButtons();
         }
     }
 
@@ -236,7 +248,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
      * Hide SavingImageProgressDialog
      */
     public void dismissSavingImageProgressDialog() {
-        if (mSavingImageProgressDialog != null && mSavingImageProgressDialog.isShowing()) {
+        if (mSavingImageProgressDialog != null) {
             mSavingImageProgressDialog.dismiss();
             mSavingImageProgressDialog = null;
         }
@@ -255,6 +267,11 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             @Override
             public void onCancel(DialogInterface dialog) {
                 PhotoUtil.cancelSaveImage();
+
+                // Restart camera preview
+                if (mSelectMediaFragment != null) {
+                    mSelectMediaFragment.initializeCamera(mCameraId);
+                }
             }
         });
 
