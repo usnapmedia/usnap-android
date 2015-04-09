@@ -1,9 +1,10 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -42,6 +43,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
 
     SelectMediaFragment mSelectMediaFragment;
+    Dialog mSavingImageProgressDialog;
 
     @Icicle
     public int mCameraId;
@@ -70,6 +72,20 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (PhotoUtil.isSaveImageInProgress()) {
+            showSavingImageProgressDialog();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dismissSavingImageProgressDialog();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
@@ -85,33 +101,8 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Image
                 && resultCode == Activity.RESULT_OK) {
             if (CameraHelper.getAvailableDiskSpace(this) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
-                try {
-                    // Get the image from data
-                    String imagePath = CameraHelper.getRealPathFromURI(this, data.getData());
-                    final Bitmap image = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
-
-                    // Save image in the app sandbox
-                    // FIXME: inform user that the picture is being saved in background
-                    PhotoUtil.saveImage(PhotoUtil.applyBitmapOrientationCorrection(imagePath, image), new SaveImageCallback() {
-                        @Override
-                        public void onSuccess() {
-                            startEditImageActivity();
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            Toast.makeText(SelectMediaActivity.this,
-                                    getResources().getString(R.string.error_unable_to_open_image),
-                                    Toast.LENGTH_LONG).show();
-                            Log.e(LOG_TAG, "An error happened while saving image for crop activity");
-                        }
-                    });
-                } catch (Exception e) {
-                    Toast.makeText(this,
-                            getResources().getString(R.string.error_unable_to_open_image),
-                            Toast.LENGTH_LONG).show();
-                    Log.e(LOG_TAG, "An error happened while preparing image for crop activity: " + e.getMessage());
-                }
+                Bitmap correctedImageBitmap = PhotoUtil.applyBitmapOrientationCorrection(this, data.getData());
+                saveImageAndStartEditActivity(correctedImageBitmap);
             } else {
                 Toast.makeText(this,
                         getResources().getString(R.string.error_not_enough_available_space),
@@ -180,6 +171,34 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     }
 
     @Override
+    public void saveImageAndStartEditActivity(Bitmap bitmap) {
+        if (bitmap != null) {
+            showSavingImageProgressDialog();
+            PhotoUtil.saveImage(bitmap, new SaveImageCallback() {
+                @Override
+                public void onSuccess() {
+                    startEditImageActivity();
+                    dismissSavingImageProgressDialog();
+                }
+
+                @Override
+                public void onFailure() {
+                    Log.e(LOG_TAG, "An error happened while saving image");
+                    Toast.makeText(SelectMediaActivity.this,
+                            getResources().getString(R.string.error_unable_to_open_image),
+                            Toast.LENGTH_LONG).show();
+                    dismissSavingImageProgressDialog();
+                }
+            });
+        } else {
+            Log.e(LOG_TAG, "bitmap is null");
+            Toast.makeText(SelectMediaActivity.this,
+                    getResources().getString(R.string.error_unable_to_open_image),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public void startEditImageActivity() {
         Intent editImageIntent = new Intent(this, PhotoEditActivity.class);
         editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, CameraHelper.getImageUri());
@@ -199,5 +218,46 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         }
 
         startActivity(editVideoIntent);
+    }
+
+    /**
+     * Show SavingImageProgressDialog
+     */
+    public void showSavingImageProgressDialog() {
+        if (mSavingImageProgressDialog == null) {
+            mSavingImageProgressDialog = createSavingImageProgressDialog();
+        }
+        if (!mSavingImageProgressDialog.isShowing()) {
+            mSavingImageProgressDialog.show();
+        }
+    }
+
+    /**
+     * Hide SavingImageProgressDialog
+     */
+    public void dismissSavingImageProgressDialog() {
+        if (mSavingImageProgressDialog != null && mSavingImageProgressDialog.isShowing()) {
+            mSavingImageProgressDialog.dismiss();
+            mSavingImageProgressDialog = null;
+        }
+    }
+
+    /**
+     * Create a SavingImageProgressDialog.
+     *
+     * @return saving image progress dialog
+     */
+    private Dialog createSavingImageProgressDialog() {
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_Holo_Light_Dialog);
+        dialog.setTitle(R.string.action_processing_image_title);
+        dialog.setContentView(R.layout.dialog_processing_image);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                PhotoUtil.cancelSaveImage();
+            }
+        });
+
+        return dialog;
     }
 }

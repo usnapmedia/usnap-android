@@ -89,29 +89,9 @@ public class SelectMediaFragment extends Fragment {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
             int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
-            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting center cropped photo
-
-            // Adjust bitmap depending on camera ID and orientation
-            if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                image = PhotoUtil.scaleBitmap(image, -1, 1); // Compensate mirror effect
-            }
-            image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown);
-
-            // FIXME: inform user of picture saving in background
-            PhotoUtil.saveImage(image, new SaveImageCallback() {
-                @Override
-                public void onSuccess() {
-                    mSelectMediaProvider.startEditImageActivity();
-                }
-
-                @Override
-                public void onFailure() {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.error_unable_to_take_picture),
-                            Toast.LENGTH_LONG).show();
-                    Log.e(LOG_TAG, "An error happened while taking a picture");
-                }
-            });
+            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting image
+            image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown); // Add rotation correction to bitmap
+            mSelectMediaProvider.saveImageAndStartEditActivity(image);
         }
     };
 

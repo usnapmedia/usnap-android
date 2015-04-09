@@ -2,8 +2,10 @@ package com.samsao.snapzi.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -21,6 +23,7 @@ import java.io.IOException;
 public class PhotoUtil {
 
     private final static String LOG_TAG = PhotoUtil.class.getSimpleName();
+    private static SaveBitmapTask mSaveBitmapTask;
 
     /**
      * Save an image to disk
@@ -29,7 +32,23 @@ public class PhotoUtil {
      * @param callback
      */
     public static void saveImage(Bitmap bitmap, SaveImageCallback callback) {
-        new SaveBitmapTask(bitmap, callback).execute();
+        mSaveBitmapTask = new SaveBitmapTask(bitmap, callback);
+        mSaveBitmapTask.execute();
+    }
+
+    public static boolean isSaveImageInProgress() {
+        if (mSaveBitmapTask != null && mSaveBitmapTask.getStatus() == AsyncTask.Status.RUNNING) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static void cancelSaveImage() {
+        if (mSaveBitmapTask != null) {
+            mSaveBitmapTask.cancel(true);
+            mSaveBitmapTask = null;
+        }
     }
 
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
@@ -63,17 +82,28 @@ public class PhotoUtil {
             } else {
                 mCallback.onFailure();
             }
+
+            mSaveBitmapTask = null;
         }
     }
 
     /**
      * Correct bitmap orientation on some devices (i.e. Samsung)
      *
-     * @param sourcePath
-     * @param sourceBitmap
+     * @param context
+     * @param sourceUri
      * @return corrected bitmap
      */
-    public static Bitmap applyBitmapOrientationCorrection(String sourcePath, Bitmap sourceBitmap) {
+    public static Bitmap applyBitmapOrientationCorrection(Context context, Uri sourceUri) {
+        String sourcePath = CameraHelper.getRealPathFromURI(context, sourceUri);
+        final Bitmap sourceBitmap;
+        try {
+            sourceBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(sourceUri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         if (sourcePath == null || sourceBitmap == null) {
             return null;
         }
