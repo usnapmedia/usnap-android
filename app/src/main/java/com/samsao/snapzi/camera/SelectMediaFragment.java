@@ -115,7 +115,6 @@ public class SelectMediaFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
-        setupButtons();
 
         return view;
     }
@@ -134,7 +133,7 @@ public class SelectMediaFragment extends Fragment {
         if (!PhotoUtil.isSaveImageInProgress()) {
             initializeCamera(mSelectMediaProvider.getCameraId());
         } else {
-            hideButtons();
+            hideAllButtons();
         }
     }
 
@@ -167,6 +166,20 @@ public class SelectMediaFragment extends Fragment {
      * Setup view's buttons listener to their corresponding behavior.
      */
     private void setupButtons() {
+        // Camera flash setup button
+        if (mCameraPreview.isFlashAvailable()) {
+            mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setNextAvailableCameraFlashMode();
+                }
+            });
+            setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
+            mFlashSetupButton.setVisibility(View.VISIBLE);
+        } else {
+            mFlashSetupButton.setVisibility(View.GONE);
+        }
+
         // Camera flip button
         // Activate camera flipping function only if more than one camera is available
         if (Camera.getNumberOfCameras() > 1) {
@@ -201,8 +214,8 @@ public class SelectMediaFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!mIsCapturingMedia) {
+                    triggerCapturingMediaState(true);
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
-                        triggerCapturingMediaState(true);
                         mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
                             @Override
                             public void onAutoFocus(boolean b, Camera camera) {
@@ -213,6 +226,7 @@ public class SelectMediaFragment extends Fragment {
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
+                        triggerCapturingMediaState(false);
                     }
                 }
             }
@@ -402,7 +416,7 @@ public class SelectMediaFragment extends Fragment {
     /**
      * Hide all buttons.
      */
-    public void hideButtons() {
+    public void hideAllButtons() {
         if (mFlashSetupButton != null) {
             mFlashSetupButton.setVisibility(View.GONE);
         }
@@ -456,19 +470,7 @@ public class SelectMediaFragment extends Fragment {
             mCameraPreview.setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
                 @Override
                 public void onCameraPreviewReady() {
-                    // Camera flash setup button
-                    if (mCameraPreview.isFlashAvailable()) {
-                        mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                setNextAvailableCameraFlashMode();
-                            }
-                        });
-                        setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
-                        mFlashSetupButton.setVisibility(View.VISIBLE);
-                    } else {
-                        mFlashSetupButton.setVisibility(View.GONE);
-                    }
+                    setupButtons();
                 }
 
                 @Override
@@ -486,6 +488,28 @@ public class SelectMediaFragment extends Fragment {
      * Release camera
      */
     public void releaseCamera() {
+        if (mFlashSetupButton != null) {
+            mFlashSetupButton.setOnClickListener(null);
+        }
+
+        if (mFlipCameraButton != null) {
+            mFlipCameraButton.setOnClickListener(null);
+        }
+
+        if (mPickFromGalleryButton != null) {
+            mPickFromGalleryButton.setOnClickListener(null);
+        }
+
+        if (mPreferenceButton != null) {
+            mPreferenceButton.setOnClickListener(null);
+        }
+
+        if (mCaptureMediaButton != null) {
+            mCaptureMediaButton.setOnClickListener(null);
+            mCaptureMediaButton.setOnLongClickListener(null);
+            mCaptureMediaButton.setOnTouchListener(null);
+        }
+
         if (mCameraPreview != null) {
             mCameraPreview.release();
             if (mCameraPreviewContainer != null) {

@@ -239,8 +239,9 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
         // Stop camera preview
         if (mSelectMediaFragment != null) {
+            mSelectMediaFragment.dismissPickMediaDialog();
             mSelectMediaFragment.releaseCamera();
-            mSelectMediaFragment.hideButtons();
+            mSelectMediaFragment.hideAllButtons();
         }
     }
 
