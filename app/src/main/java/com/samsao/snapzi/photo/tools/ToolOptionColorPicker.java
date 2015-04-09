@@ -7,6 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.photo.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
 /**
@@ -34,13 +35,32 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
     }
 
     /**
-     * Select this tool option
+     * We need to override this method because this option can't be selected
+     * @return
      */
     @Override
-    public ToolOption select() {
-        // color picker option cannot be selected
-        getColorPickerDialog().show();
-        return this;
+    public MenuItem getMenuItem() {
+        return new MenuItem() {
+            @Override
+            public String getName() {
+                return ToolOptionColorPicker.this.getName();
+            }
+
+            @Override
+            public int getImageResource() {
+                return ToolOptionColorPicker.this.getImageResource();
+            }
+
+            @Override
+            public void onSelected() {
+                getColorPickerDialog().show();
+            }
+
+            @Override
+            public boolean isSelected() {
+                return mIsSelected;
+            }
+        };
     }
 
     @Override
