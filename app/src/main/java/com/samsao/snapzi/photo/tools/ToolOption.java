@@ -22,6 +22,7 @@ public abstract class ToolOption implements Parcelable {
     public ToolOption select() {
         if (!mIsSelected) {
             mIsSelected = true;
+            mTool.getToolFragment().notifyMenuItemAdapterDataSetChanged();
             onSelected();
         }
         return this;
@@ -38,6 +39,7 @@ public abstract class ToolOption implements Parcelable {
     public ToolOption unselect() {
         if (mIsSelected) {
             mIsSelected = false;
+            mTool.getToolFragment().notifyMenuItemAdapterDataSetChanged();
             onUnselected();
         }
         return this;

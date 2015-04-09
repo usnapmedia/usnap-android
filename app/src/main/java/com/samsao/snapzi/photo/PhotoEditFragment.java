@@ -387,6 +387,13 @@ public class PhotoEditFragment extends Fragment {
         mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
     }
 
+    /**
+     * Notify the menu item adapter that data set changed
+     */
+    public void notifyMenuItemAdapterDataSetChanged() {
+        mMenuItemAdapter.notifyDataSetChanged();
+    }
+
     public interface Listener {
         Uri getImageUri();
         void saveBitmap(Bitmap bitmap);

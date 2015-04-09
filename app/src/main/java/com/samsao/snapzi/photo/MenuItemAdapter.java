@@ -41,7 +41,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 item.onSelected();
-                notifyDataSetChanged();
             }
         });
     }
