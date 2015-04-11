@@ -10,9 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.photo.tools.Tool;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.soundcloud.android.crop.Crop;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,6 +34,10 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     public Uri mImageUri;
     @Icicle
     public MenuState mMenuState;
+    @Icicle
+    public ArrayList<Tool> mTools;
+    @Icicle
+    public Tool mCurrentTool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +168,22 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     public Toolbar getToolbar() {
         return mToolbar;
+    }
+
+    public ArrayList<Tool> getTools() {
+        return mTools;
+    }
+
+    public void setTools(ArrayList<Tool> tools) {
+        mTools = tools;
+    }
+
+    public Tool getCurrentTool() {
+        return mCurrentTool;
+    }
+
+    public void setCurrentTool(Tool currentTool) {
+        mCurrentTool = currentTool;
     }
 
     /**

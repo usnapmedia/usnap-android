@@ -72,10 +72,6 @@ public class PhotoEditFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private Listener mListener;
 
-    // TODO move them to activity
-    private ArrayList<Tool> mTools;
-    private Tool mCurrentTool;
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -99,14 +95,15 @@ public class PhotoEditFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         // TODO read the value from gradle to know what tools to instantiate
-        mTools = new ArrayList<>();
-        mTools.add(new ToolFilters().setToolFragment(this));
-        mTools.add(new ToolText().setToolFragment(this));
+        ArrayList<Tool> tools = new ArrayList<>();
+        tools.add(new ToolFilters().setToolFragment(this));
+        tools.add(new ToolText().setToolFragment(this));
         // special case for draw tool since we need to get the canvas height and width
         final ToolDraw toolDraw = new ToolDraw();
         toolDraw.setToolFragment(this);
-        mTools.add(toolDraw);
-        mTools.add(new ToolCrop().setToolFragment(this));
+        tools.add(toolDraw);
+        tools.add(new ToolCrop().setToolFragment(this));
+        mListener.setTools(tools);
         mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -147,10 +144,10 @@ public class PhotoEditFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-        for (Tool tool : mTools) {
+        for (Tool tool : mListener.getTools()) {
             tool.destroy();
         }
-        mTools.clear();
+        mListener.getTools().clear();
     }
 
     @Override
@@ -230,7 +227,7 @@ public class PhotoEditFragment extends Fragment {
      */
     private ArrayList<MenuItem> getMenuItemsForTools() {
         ArrayList<MenuItem> menuItems = new ArrayList<>();
-        for (Tool tool : mTools) {
+        for (Tool tool : mListener.getTools()) {
             menuItems.add(tool.getMenuItem());
         }
         return menuItems;
@@ -264,7 +261,7 @@ public class PhotoEditFragment extends Fragment {
         if (currentTool == null) {
             throw new UnsupportedOperationException("Use resetCurrentTool to remove the current tool");
         }
-        mCurrentTool = currentTool;
+        mListener.setCurrentTool(currentTool);
     }
 
     /**
@@ -281,10 +278,11 @@ public class PhotoEditFragment extends Fragment {
      * Reset current tool
      */
     public void resetCurrentTool() {
-        if (mCurrentTool != null) {
-            mCurrentTool.unselect();
+        Tool currentTool = mListener.getCurrentTool();
+        if (currentTool != null) {
+            currentTool.unselect();
         }
-        mCurrentTool = null;
+        mListener.setCurrentTool(null);
         resetMenu();
     }
 
@@ -361,8 +359,8 @@ public class PhotoEditFragment extends Fragment {
      * When options item DONE is selected
      */
     public void onOptionsDoneSelected() {
-        if (mCurrentTool != null) {
-            mCurrentTool.onOptionsDoneSelected();
+        if (mListener.getCurrentTool() != null) {
+            mListener.getCurrentTool().onOptionsDoneSelected();
         }
     }
 
@@ -370,8 +368,8 @@ public class PhotoEditFragment extends Fragment {
      * When options item CLEAR is selected
      */
     public void onOptionsClearSelected() {
-        if (mCurrentTool != null) {
-            mCurrentTool.onOptionsClearSelected();
+        if (mListener.getCurrentTool() != null) {
+            mListener.getCurrentTool().onOptionsClearSelected();
         }
     }
 
@@ -379,8 +377,8 @@ public class PhotoEditFragment extends Fragment {
      * When options item UNDO is selected
      */
     public void onOptionsUndoSelected() {
-        if (mCurrentTool != null) {
-            mCurrentTool.onOptionsUndoSelected();
+        if (mListener.getCurrentTool() != null) {
+            mListener.getCurrentTool().onOptionsUndoSelected();
         }
     }
 
@@ -388,8 +386,8 @@ public class PhotoEditFragment extends Fragment {
      * When options item HOME is selected
      */
     public void onOptionsHomeSelected() {
-        if (mCurrentTool != null) {
-            mCurrentTool.onOptionsHomeSelected();
+        if (mListener.getCurrentTool() != null) {
+            mListener.getCurrentTool().onOptionsHomeSelected();
         } else {
             getActivity().finish();
         }
@@ -486,5 +484,9 @@ public class PhotoEditFragment extends Fragment {
         void resetMenu();
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
         Toolbar getToolbar();
+        ArrayList<Tool> getTools();
+        void setTools(ArrayList<Tool> tools);
+        Tool getCurrentTool();
+        void setCurrentTool(Tool currentTool);
     }
 }
