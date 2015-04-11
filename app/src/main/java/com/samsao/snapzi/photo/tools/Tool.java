@@ -190,4 +190,13 @@ public abstract class Tool implements Parcelable {
         return mCurrentOption != null;
     }
 
+    /**
+     * A Tool must be destroyed to avoid memory leaks
+     */
+    public void destroy() {
+        for (ToolOption option : mOptions) {
+            option.destroy();
+        }
+        mToolFragment = null;
+    }
 }

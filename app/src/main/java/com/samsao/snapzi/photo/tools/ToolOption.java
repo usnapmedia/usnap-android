@@ -99,4 +99,11 @@ public abstract class ToolOption implements Parcelable {
         mTool = tool;
         return this;
     }
+
+    /**
+     * A ToolOption must be destroyed to avoid memory leaks
+     */
+    public void destroy() {
+        mTool = null;
+    }
 }

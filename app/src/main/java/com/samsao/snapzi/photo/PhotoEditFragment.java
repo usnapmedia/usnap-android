@@ -137,6 +137,10 @@ public class PhotoEditFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+        for (Tool tool : mTools) {
+            tool.destroy();
+        }
+        mTools.clear();
     }
 
     @Override
