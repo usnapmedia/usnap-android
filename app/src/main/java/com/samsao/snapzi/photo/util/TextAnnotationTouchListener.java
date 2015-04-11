@@ -9,9 +9,12 @@ import android.view.View;
  */
 public class TextAnnotationTouchListener implements View.OnTouchListener {
 
-    public TextAnnotationTouchListener(View view) {
+    private Callback mCallback;
+
+    public TextAnnotationTouchListener(View view, Callback callback) {
         super();
         mView = view;
+        mCallback = callback;
     }
 
     private float aPosX;
@@ -29,6 +32,7 @@ public class TextAnnotationTouchListener implements View.OnTouchListener {
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                mCallback.hideOverlays();
                 // from http://android-developers.blogspot.com/2010/06/making-sense-of-multitouch.html
                 // Save the ID of this pointer
                 mActivePointerId = event.getPointerId(0);
@@ -104,9 +108,15 @@ public class TextAnnotationTouchListener implements View.OnTouchListener {
     }
 
     private void reset() {
+        mCallback.showOverlays();
         aPosX = 0;
         aPosY = 0;
         aLastTouchX = 0;
         aLastTouchY = 0;
+    }
+
+    public interface Callback {
+        void hideOverlays();
+        void showOverlays();
     }
 }

@@ -27,6 +27,7 @@ public class ToolOptionBrightness extends ToolOption implements Parcelable {
 
     @Override
     public void onSelected() {
+        mTool.getToolFragment().hideMenu();
         mTool.getToolFragment().showEditOptionsMenu(true, false, false);
         View view = mTool.getToolFragment().showToolContainer(R.layout.fragment_photo_edit_tool_seekbar);
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_tool_seekbar);
@@ -53,6 +54,7 @@ public class ToolOptionBrightness extends ToolOption implements Parcelable {
 
     @Override
     public void onUnselected() {
+        mTool.getToolFragment().showMenu();
         mTool.getToolFragment().showEditOptionsMenu(false, false, false);
         mTool.getToolFragment().hideToolContainer();
     }

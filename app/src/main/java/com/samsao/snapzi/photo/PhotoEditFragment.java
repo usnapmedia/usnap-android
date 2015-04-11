@@ -1,6 +1,7 @@
 package com.samsao.snapzi.photo;
 
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -10,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,11 +23,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.photo.tools.Tool;
+import com.samsao.snapzi.photo.tools.ToolCrop;
 import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
 import com.samsao.snapzi.photo.tools.ToolText;
 import com.samsao.snapzi.photo.util.TextAnnotationEditText;
+import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -41,6 +47,8 @@ import me.panavtec.drawableview.DrawableView;
  * A simple {@link Fragment} subclass.
  */
 public class PhotoEditFragment extends Fragment {
+
+    private final int ANIMATION_DURATION = 300;
 
     @InjectView(R.id.fragment_photo_edit_image)
     public ImageView mImage;
@@ -91,7 +99,7 @@ public class PhotoEditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo_edit, container, false);
         ButterKnife.inject(this, view);
 
-        // TODO pass the right tools to instanciate
+        // TODO read the value from gradle to know what tools to instantiate
         mTools = new ArrayList<>();
         mTools.add(new ToolFilters().setToolFragment(this));
         mTools.add(new ToolText().setToolFragment(this));
@@ -99,13 +107,14 @@ public class PhotoEditFragment extends Fragment {
         final ToolDraw toolDraw = new ToolDraw();
         toolDraw.setToolFragment(this);
         mTools.add(toolDraw);
+        mTools.add(new ToolCrop().setToolFragment(this));
         mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                if(parent.getChildAdapterPosition(view) != 0) {
+                if (parent.getChildAdapterPosition(view) != 0) {
                     outRect.left = (int) getResources().getDimension(R.dimen.elements_horizontal_margin);
                 } else {
                     super.getItemOffsets(outRect, view, parent, state);
@@ -120,7 +129,7 @@ public class PhotoEditFragment extends Fragment {
         Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder().into(mImage, new Callback() {
             @Override
             public void onSuccess() {
-                Bitmap bitmap = ((BitmapDrawable)mImage.getDrawable()).getBitmap();
+                Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
                 toolDraw.setCanvasHeight(bitmap.getHeight()).setCanvasWidth(bitmap.getWidth());
             }
 
@@ -129,7 +138,31 @@ public class PhotoEditFragment extends Fragment {
 
             }
         });
+
+        // disable the touch listener on the draw view so it does not take draw events
         mDrawAnnotationContainer.setOnTouchListener(null);
+
+        mRecyclerView.animate().setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Log.i("animation", "start transY: " + Float.toString(mRecyclerView.getTranslationY()));
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.i("animation", "end transY: " + Float.toString(mRecyclerView.getTranslationY()));
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         return view;
     }
 
@@ -176,6 +209,7 @@ public class PhotoEditFragment extends Fragment {
         requestCreator.into(mImage);
     }
 
+    // FIXME I don't think we need this anymore
 //    public void fitImageToScreen() {
 //        if (mImage != null) {
 //            int width = ((View) mImage.getParent()).getWidth();
@@ -388,7 +422,7 @@ public class PhotoEditFragment extends Fragment {
      * Save the current image
      */
     public void saveImage() {
-        mListener.saveBitmap(((BitmapDrawable)mImage.getDrawable()).getBitmap());
+        mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
     }
 
     /**
@@ -398,10 +432,78 @@ public class PhotoEditFragment extends Fragment {
         mMenuItemAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Start cropping activity
+     */
+    public void startCropActivity() {
+        new Crop(CameraHelper.getImageUri())
+                .output(CameraHelper.getImageUri())
+                .start(getActivity());
+    }
+
+    /**
+     * Hide the tools menu
+     */
+    public void hideMenu() {
+        if (mRecyclerView.getTranslationY() == 0) {
+            mRecyclerView.animate().translationYBy(mRecyclerView.getMeasuredHeight()).setDuration(ANIMATION_DURATION);
+        } else {
+            mRecyclerView.animate().cancel();
+            mRecyclerView.animate().translationYBy(-mRecyclerView.getTranslationY()).setDuration(ANIMATION_DURATION);
+        }
+    }
+
+    /**
+     * Hide the toolbar
+     */
+    public void hideToolbar() {
+        Toolbar toolbar = mListener.getToolbar();
+        if (toolbar.getTranslationY() == 0) {
+            toolbar.animate().translationYBy(-toolbar.getMeasuredHeight()).setDuration(ANIMATION_DURATION);
+        } else {
+            toolbar.animate().cancel();
+            toolbar.animate().translationYBy(-toolbar.getTranslationY()).setDuration(ANIMATION_DURATION);
+        }
+    }
+
+    /**
+     * Show the tools menu
+     */
+    public void showMenu() {
+        mRecyclerView.animate().cancel();
+        mRecyclerView.animate().translationYBy(-mRecyclerView.getTranslationY()).setDuration(ANIMATION_DURATION);
+    }
+
+    /**
+     * Show the toolbar
+     */
+    public void showToolbar() {
+        Toolbar toolbar = mListener.getToolbar();
+        toolbar.animate().cancel();
+        toolbar.animate().translationYBy(-toolbar.getTranslationY()).setDuration(ANIMATION_DURATION);
+    }
+
+    /**
+     * Hide all the overlays, that is the menu and the toolbar
+     */
+    public void hideOverlays() {
+        hideMenu();
+        hideToolbar();
+    }
+
+    /**
+     * Show all the overlays, that is the menu and the toolbar
+     */
+    public void showOverlays() {
+        showMenu();
+        showToolbar();
+    }
+
     public interface Listener {
         Uri getImageUri();
         void saveBitmap(Bitmap bitmap);
         void resetMenu();
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
+        Toolbar getToolbar();
     }
 }

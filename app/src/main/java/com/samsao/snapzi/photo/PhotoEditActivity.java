@@ -61,15 +61,17 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // When an image as been cropped
-        if (requestCode == Crop.REQUEST_CROP
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
-            if (mPhotoEditFragment != null) {
-                mPhotoEditFragment.refreshImage();
-            }
+        switch(requestCode) {
+            case Crop.REQUEST_CROP:
+                if (resultCode == Activity.RESULT_OK && null != data) {
+                    if (mPhotoEditFragment != null) {
+                        mPhotoEditFragment.refreshImage();
+                    }
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
@@ -155,6 +157,10 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     @Override
     public Uri getImageUri() {
         return mImageUri;
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 
     /**

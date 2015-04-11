@@ -24,7 +24,9 @@ import com.samsao.snapzi.util.StringUtil;
  * @since 15-04-06
  */
 @ParcelablePlease(allFields = false)
-public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback, ToolOptionTextTypeFace.ToolCallback {
+public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback,
+        ToolOptionTextTypeFace.ToolCallback,
+        TextAnnotationTouchListener.Callback {
 
     @ParcelableNoThanks
     private final int DEFAULT_OPTION_INDEX = 0;
@@ -140,7 +142,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     protected void lockText() {
         mToolFragment.getTextAnnotation().setFocusableInTouchMode(false);
         mToolFragment.getTextAnnotation().clearFocus();
-        mToolFragment.getTextAnnotation().setOnTouchListener(new TextAnnotationTouchListener(mToolFragment.getTextAnnotation()));
+        mToolFragment.getTextAnnotation().setOnTouchListener(new TextAnnotationTouchListener(mToolFragment.getTextAnnotation(), this));
     }
 
     /**
@@ -182,5 +184,19 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public void setTypeFace(Typeface font) {
         mToolFragment.getTextAnnotation().setTypeface(font);
+        // if the editText has focus, show the keyboard
+        if (mToolFragment.getTextAnnotation().hasFocus()) {
+            KeyboardUtil.showKeyboard(mToolFragment.getActivity(), mToolFragment.getTextAnnotation());
+        }
+    }
+
+    @Override
+    public void hideOverlays() {
+        mToolFragment.hideOverlays();
+    }
+
+    @Override
+    public void showOverlays() {
+        mToolFragment.showOverlays();
     }
 }
