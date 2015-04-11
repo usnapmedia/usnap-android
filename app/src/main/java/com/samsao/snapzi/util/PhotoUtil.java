@@ -51,6 +51,9 @@ public class PhotoUtil {
         }
     }
 
+    /**
+     * Background task to save an image
+     */
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
         private Bitmap mBitmap;
         private SaveImageCallback mCallback;

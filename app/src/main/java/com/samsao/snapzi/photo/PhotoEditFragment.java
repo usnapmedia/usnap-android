@@ -4,64 +4,77 @@ package com.samsao.snapzi.photo;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Display;
-import android.view.KeyEvent;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.camera.CameraHelper;
-import com.samsao.snapzi.util.KeyboardUtil;
+import com.samsao.snapzi.photo.tools.Tool;
+import com.samsao.snapzi.photo.tools.ToolCrop;
+import com.samsao.snapzi.photo.tools.ToolDraw;
+import com.samsao.snapzi.photo.tools.ToolFilters;
+import com.samsao.snapzi.photo.tools.ToolText;
+import com.samsao.snapzi.photo.util.TextAnnotationEditText;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Transformation;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
-import jp.wasabeef.picasso.transformations.gpu.ContrastFilterTransformation;
+import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
-import me.panavtec.drawableview.DrawableViewConfig;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PhotoEditFragment extends Fragment {
 
+    private final int ANIMATION_DURATION = 300;
+
     @InjectView(R.id.fragment_photo_edit_image)
     public ImageView mImage;
 
-    @InjectView(R.id.fragment_photo_edit_container)
-    public ViewGroup mContainer;
+    @InjectView(R.id.fragment_cafe_list_recyclerview)
+    public RecyclerView mRecyclerView;
 
-    @InjectView(R.id.fragment_photo_edit_annotations_container)
-    public ViewGroup mAnnotationsContainer;
+    @InjectView(R.id.fragment_photo_edit_text_annotation_container)
+    public FrameLayout mTextAnnotationContainer;
 
-    @InjectView(R.id.fragment_photo_edit_text_annotation)
-    public EditText mTextAnnotation;
+    @InjectView(R.id.fragment_photo_edit_draw_annotation_container)
+    public DrawableView mDrawAnnotationContainer;
 
-    @InjectView(R.id.fragment_photo_edit_draw_annotation)
-    public DrawableView mDrawAnnotation;
+    @InjectView(R.id.fragment_photo_tool_container)
+    public FrameLayout mToolContainer;
 
+    @InjectView(R.id.fragment_photo_edit_text_annotation_container_text)
+    @Optional
+    public TextAnnotationEditText mTextAnnotation;
+
+    private MenuItemAdapter mMenuItemAdapter;
+    private LinearLayoutManager mLayoutManager;
     private Listener mListener;
-    private MaterialDialog mColorPickerDialog;
-    private DrawableViewConfig mDrawableViewConfig;
-    private ColorPicker mColorPicker;
+
+    // TODO move them to activity
+    private ArrayList<Tool> mTools;
+    private Tool mCurrentTool;
 
     /**
      * Use this factory method to create a new instance of
@@ -85,47 +98,48 @@ public class PhotoEditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo_edit, container, false);
         ButterKnife.inject(this, view);
 
-        // TODO check for keyboard dismiss also
-        mTextAnnotation.setTextIsSelectable(false);
-        mTextAnnotation.setOnEditorActionListener(
-                new EditText.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            KeyboardUtil.hideKeyboard(getActivity());
-                            if (!TextUtils.isEmpty(mTextAnnotation.getText())) {
-                                mTextAnnotation.setFocusableInTouchMode(false);
-                                mTextAnnotation.clearFocus();
-                                mTextAnnotation.setOnTouchListener(new TextAnnotationTouchListener(mTextAnnotation));
-                            } else {
-                                mTextAnnotation.clearFocus();
-                                mTextAnnotation.setOnTouchListener(null);
-                            }
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+        // TODO read the value from gradle to know what tools to instantiate
+        mTools = new ArrayList<>();
+        mTools.add(new ToolFilters().setToolFragment(this));
+        mTools.add(new ToolText().setToolFragment(this));
+        // special case for draw tool since we need to get the canvas height and width
+        final ToolDraw toolDraw = new ToolDraw();
+        toolDraw.setToolFragment(this);
+        mTools.add(toolDraw);
+        mTools.add(new ToolCrop().setToolFragment(this));
+        mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
 
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) != 0) {
+                    outRect.left = (int) getResources().getDimension(R.dimen.elements_horizontal_margin);
+                } else {
+                    super.getItemOffsets(outRect, view, parent, state);
+                }
+            }
+        });
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mMenuItemAdapter);
 
-        // init draw annotation
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
+        // load the image
+        Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder().into(mImage, new Callback() {
+            @Override
+            public void onSuccess() {
+                Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
+                toolDraw.setCanvasHeight(bitmap.getHeight()).setCanvasWidth(bitmap.getWidth());
+            }
 
-        mDrawableViewConfig = new DrawableViewConfig();
-        mDrawableViewConfig.setStrokeColor(getResources().getColor(android.R.color.holo_red_light));
-        mDrawableViewConfig.setStrokeWidth(20.0f);
-        mDrawableViewConfig.setMinZoom(1.0f);
-        mDrawableViewConfig.setMaxZoom(3.0f);
-        mDrawableViewConfig.setCanvasHeight(size.y);
-        mDrawableViewConfig.setCanvasWidth(size.x);
-        mDrawAnnotation.setConfig(mDrawableViewConfig);
-        mDrawAnnotation.setOnTouchListener(null);
+            @Override
+            public void onError() {
 
-        // set the view background
-        refreshImage();
-        replaceContainer(getControlsView());
+            }
+        });
+
+        // disable the touch listener on the draw view so it does not take draw events
+        mDrawAnnotationContainer.setOnTouchListener(null);
         return view;
     }
 
@@ -133,6 +147,10 @@ public class PhotoEditFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+        for (Tool tool : mTools) {
+            tool.destroy();
+        }
+        mTools.clear();
     }
 
     @Override
@@ -148,266 +166,325 @@ public class PhotoEditFragment extends Fragment {
         }
     }
 
-    public View getControlsView() {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_controls, mContainer, false);
-        // set the touch events listeners
-        Button brightnessButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_brightness_btn);
-        brightnessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getBrightnessEditView());
-            }
-        });
-        Button contrastButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_contrast_btn);
-        contrastButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getContrastEditView());
-            }
-        });
-        Button textButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_text_btn);
-        textButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getAddTextAnnotationView());
-                mTextAnnotation.setVisibility(View.VISIBLE);
-                mTextAnnotation.setFocusableInTouchMode(true);
-                mTextAnnotation.requestFocus();
-                KeyboardUtil.showKeyboard(getActivity(), mTextAnnotation);
-            }
-        });
-        Button drawButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_draw_btn);
-        drawButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getAddDrawAnnotationView());
-                mDrawAnnotation.setOnTouchListener(mDrawAnnotation);
-            }
-        });
-        Button cropButton = (Button) view.findViewById(R.id.fragment_photo_edit_controls_crop_btn);
-        cropButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start cropping activity
-                new Crop(CameraHelper.getImageUri())
-                        .output(CameraHelper.getImageUri())
-                        .start(getActivity());
-            }
-        });
-        return view;
-    }
-
-    public View getBrightnessEditView() {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
-        // set the touch events listeners
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
-        seekBar.setMax(20);
-        seekBar.setProgress(mListener.getBrightness());
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-                Picasso.with(getActivity()).load(mListener.getImageUri())
-                        .noPlaceholder()
-                        .transform(new BrightnessFilterTransformation(getActivity(), (progress - 10) / 10.0f))
-                        .into(mImage);
-                mListener.setBrightness(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getControlsView());
-                mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
-            }
-        });
-        return view;
-    }
-
-
-    public View getContrastEditView() {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
-        // set the touch events listeners
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
-        seekBar.setMax(40);
-        seekBar.setProgress(mListener.getContrast());
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
-                Picasso.with(getActivity()).load(mListener.getImageUri())
-                        .noPlaceholder()
-                        .transform(new ContrastFilterTransformation(getActivity(), progress / 10.0f))
-                        .into(mImage);
-                mListener.setContrast(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getControlsView());
-                mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
-            }
-        });
-        return view;
-    }
-
-    public View getAddTextAnnotationView() {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_brigthness, mContainer, false);
-        // set the touch events listeners
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.fragment_photo_edit_brightness_seekbar);
-        seekBar.setVisibility(View.GONE);
-        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_brightness_done_btn);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getControlsView());
-                if (TextUtils.isEmpty(mTextAnnotation.getText())) {
-                    mTextAnnotation.setVisibility(View.GONE);
-                } else {
-                    mTextAnnotation.setFocusableInTouchMode(false);
-                    mTextAnnotation.setOnTouchListener(null);
-                }
-            }
-        });
-        return view;
-    }
-
-    public View getAddDrawAnnotationView() {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_photo_edit_draw, mContainer, false);
-        // set the touch events listeners
-        Button undoButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_undo_btn);
-        undoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawAnnotation.undo();
-            }
-        });
-        Button clearButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_clear_btn);
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawAnnotation.clear();
-            }
-        });
-        Button colorButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_color_btn);
-        colorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getColorPickerDialog().show();
-            }
-        });
-        Button doneButton = (Button) view.findViewById(R.id.fragment_photo_edit_draw_done_btn);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceContainer(getControlsView());
-                mDrawAnnotation.setOnTouchListener(null);
-            }
-        });
-        return view;
-    }
-
-    public void replaceContainer(View view) {
-        mContainer.removeAllViews();
-        mContainer.addView(view);
-    }
-
-    public MaterialDialog getColorPickerDialog() {
-        if (mColorPickerDialog == null) {
-            mColorPickerDialog = new MaterialDialog.Builder(getActivity())
-                    .customView(R.layout.dialog_color_picker, false)
-                    .positiveText(android.R.string.ok)
-                    .negativeText(android.R.string.cancel)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            mDrawableViewConfig.setStrokeColor(mColorPicker.getColor());
-                        }
-                    })
-                    .build();
-            View view = mColorPickerDialog.getCustomView();
-            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
-            // TODO set the right start color
-            mColorPicker.setOldCenterColor(mColorPicker.getColor());
-        }
-        return mColorPickerDialog;
-    }
-
+    /**
+     * Refreshes the image without any transformation
+     */
     public void refreshImage() {
-        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
-        Picasso.with(getActivity()).load(mListener.getImageUri())
-                .noPlaceholder()
-                .into(mImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        fitImageToScreen();
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+        refreshImage(null);
     }
 
-    public void fitImageToScreen() {
-        if (mImage != null) {
-            int width = ((View) mImage.getParent()).getWidth();
-            int height = ((View) mImage.getParent()).getHeight();
-
-            BitmapDrawable bitmap = (BitmapDrawable) mImage.getDrawable();
-            float bitmapWidth = bitmap.getBitmap().getWidth();
-            float bitmapHeight = bitmap.getBitmap().getHeight();
-
-            float wRatio = width / bitmapWidth;
-            float hRatio = height / bitmapHeight;
-
-            float ratioMultiplier;
-            if (hRatio < wRatio) {
-                ratioMultiplier = hRatio;
-            } else {
-                ratioMultiplier = wRatio;
-            }
-
-            int newBitmapWidth = (int) (bitmapWidth * ratioMultiplier);
-            int newBitmapHeight = (int) (bitmapHeight * ratioMultiplier);
-
-            mImage.setLayoutParams(new FrameLayout.LayoutParams(newBitmapWidth, newBitmapHeight));
+    /**
+     * Refreshes the image
+     * @param transformation
+     */
+    public void refreshImage(Transformation transformation) {
+        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
+        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder();
+        if (transformation != null) {
+            requestCreator = requestCreator.transform(transformation);
         }
+        requestCreator.into(mImage);
+    }
+
+    // FIXME I don't think we need this anymore
+//    public void fitImageToScreen() {
+//        if (mImage != null) {
+//            int width = ((View) mImage.getParent()).getWidth();
+//            int height = ((View) mImage.getParent()).getHeight();
+//
+//            BitmapDrawable bitmap = (BitmapDrawable) mImage.getDrawable();
+//            float bitmapWidth = bitmap.getBitmap().getWidth();
+//            float bitmapHeight = bitmap.getBitmap().getHeight();
+//
+//            float wRatio = width / bitmapWidth;
+//            float hRatio = height / bitmapHeight;
+//
+//            float ratioMultiplier;
+//            if (hRatio < wRatio) {
+//                ratioMultiplier = hRatio;
+//            } else {
+//                ratioMultiplier = wRatio;
+//            }
+//
+//            int newBitmapWidth = (int) (bitmapWidth * ratioMultiplier);
+//            int newBitmapHeight = (int) (bitmapHeight * ratioMultiplier);
+//
+//            mImage.setLayoutParams(new FrameLayout.LayoutParams(newBitmapWidth, newBitmapHeight));
+//        }
+//    }
+
+    public void setMenuItems(ArrayList<MenuItem> items) {
+        mMenuItemAdapter.setData(items);
+    }
+
+    /**
+     * Reset menu to the initial state
+     */
+    public void resetMenu() {
+        mMenuItemAdapter.setData(getMenuItemsForTools());
+    }
+
+    /**
+     * Get the menu items associated with current tools
+     * @return
+     */
+    private ArrayList<MenuItem> getMenuItemsForTools() {
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
+        for (Tool tool : mTools) {
+            menuItems.add(tool.getMenuItem());
+        }
+        return menuItems;
+    }
+
+    /**
+     * Replaces the tool container view
+     * @param resId
+     */
+    public View showToolContainer(int resId) {
+        mToolContainer.removeAllViews();
+        View view = getActivity().getLayoutInflater().inflate(resId, mToolContainer, true);
+        mToolContainer.setVisibility(View.VISIBLE);
+        return view;
+    }
+
+    /**
+     * Hide tool container
+     */
+    public void hideToolContainer() {
+        mToolContainer.removeAllViews();
+        mToolContainer.setVisibility(View.GONE);
+    }
+
+    /**
+     * Set the current tool
+     * @param currentTool
+     * @throws UnsupportedOperationException
+     */
+    public void setCurrentTool(Tool currentTool) throws UnsupportedOperationException {
+        if (currentTool == null) {
+            throw new UnsupportedOperationException("Use resetCurrentTool to remove the current tool");
+        }
+        mCurrentTool = currentTool;
+    }
+
+    /**
+     * This method shows the edit options menu
+     * @param showDone
+     * @param showClear
+     * @param showUndo
+     */
+    public void showEditOptionsMenu(boolean showDone, boolean showClear, boolean showUndo) {
+        mListener.showEditMenu(showDone, showClear, showUndo);
+    }
+
+    /**
+     * Reset current tool
+     */
+    public void resetCurrentTool() {
+        if (mCurrentTool != null) {
+            mCurrentTool.unselect();
+        }
+        mCurrentTool = null;
+        resetMenu();
+    }
+
+    /**
+     * This method resets the options menu
+     */
+    public void resetOptionsMenu() {
+        mListener.resetMenu();
+    }
+    /**
+     * Returns the text annotation EditText
+     * @return
+     */
+    public EditText getTextAnnotation() {
+        return mTextAnnotation;
+    }
+
+    /**
+     * Returns the DrawAnnotationContainer
+     * @return
+     */
+    public DrawableView getDrawAnnotationContainer() {
+        return mDrawAnnotationContainer;
+    }
+
+    /**
+     * Disable touch event on text annotation container
+     */
+    public void disableTextAnnotationContainerTouchEvent() {
+        mTextAnnotationContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
+        for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
+            mTextAnnotationContainer.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return false;
+                }
+            });
+        }
+    }
+
+    /**
+     * Enable touch event on text annotation container
+     */
+    public void enableTextAnnotationContainerTouchEvent() {
+        mTextAnnotationContainer.setOnTouchListener(null);
+        for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
+            mTextAnnotationContainer.getChildAt(i).setOnTouchListener(null);
+        }
+    }
+
+    /**
+     * Get the text annotation container
+     * @return
+     */
+    public FrameLayout getTextAnnotationContainer() {
+        return mTextAnnotationContainer;
+    }
+
+    /**
+     * When options item NEXT is selected
+     */
+    public void onOptionsNextSelected() {
+        // TODO
+        Toast.makeText(getActivity(), "TODO: go to share activity", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * When options item DONE is selected
+     */
+    public void onOptionsDoneSelected() {
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsDoneSelected();
+        }
+    }
+
+    /**
+     * When options item CLEAR is selected
+     */
+    public void onOptionsClearSelected() {
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsClearSelected();
+        }
+    }
+
+    /**
+     * When options item UNDO is selected
+     */
+    public void onOptionsUndoSelected() {
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsUndoSelected();
+        }
+    }
+
+    /**
+     * When options item HOME is selected
+     */
+    public void onOptionsHomeSelected() {
+        if (mCurrentTool != null) {
+            mCurrentTool.onOptionsHomeSelected();
+        } else {
+            getActivity().finish();
+        }
+    }
+
+    /**
+     * Save the current image
+     */
+    public void saveImage() {
+        mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
+    }
+
+    /**
+     * Notify the menu item adapter that data set changed
+     */
+    public void notifyMenuItemAdapterDataSetChanged() {
+        mMenuItemAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Start cropping activity
+     */
+    public void startCropActivity() {
+        new Crop(CameraHelper.getImageUri())
+                .output(CameraHelper.getImageUri())
+                .start(getActivity());
+    }
+
+    /**
+     * Hide the tools menu
+     */
+    public void hideMenu() {
+        float transY = mRecyclerView.getMeasuredHeight();
+        if (mRecyclerView.getTranslationY() != 0) {
+            mRecyclerView.animate().cancel();
+            transY = -mRecyclerView.getTranslationY();
+        }
+        mRecyclerView.animate().translationYBy(transY)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setDuration(ANIMATION_DURATION);
+    }
+
+    /**
+     * Hide the toolbar
+     */
+    public void hideToolbar() {
+        Toolbar toolbar = mListener.getToolbar();
+        float transY = -toolbar.getMeasuredHeight();
+        if (toolbar.getTranslationY() != 0) {
+            toolbar.animate().cancel();
+            transY = -toolbar.getTranslationY();
+        }
+        toolbar.animate().translationYBy(transY)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setDuration(ANIMATION_DURATION);
+    }
+
+    /**
+     * Show the tools menu
+     */
+    public void showMenu() {
+        mRecyclerView.animate().cancel();
+        mRecyclerView.animate().translationYBy(-mRecyclerView.getTranslationY()).setDuration(ANIMATION_DURATION);
+    }
+
+    /**
+     * Show the toolbar
+     */
+    public void showToolbar() {
+        Toolbar toolbar = mListener.getToolbar();
+        toolbar.animate().cancel();
+        toolbar.animate().translationYBy(-toolbar.getTranslationY()).setDuration(ANIMATION_DURATION);
+    }
+
+    /**
+     * Hide all the overlays, that is the menu and the toolbar
+     */
+    public void hideOverlays() {
+        hideMenu();
+        hideToolbar();
+    }
+
+    /**
+     * Show all the overlays, that is the menu and the toolbar
+     */
+    public void showOverlays() {
+        showMenu();
+        showToolbar();
     }
 
     public interface Listener {
-        public Uri getImageUri();
-
-        public int getBrightness();
-
-        public void setBrightness(int brightness);
-
-        public int getContrast();
-
-        public void setContrast(int contrast);
-
-        public void saveBitmap(Bitmap bitmap);
+        Uri getImageUri();
+        void saveBitmap(Bitmap bitmap);
+        void resetMenu();
+        void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
+        Toolbar getToolbar();
     }
 }
