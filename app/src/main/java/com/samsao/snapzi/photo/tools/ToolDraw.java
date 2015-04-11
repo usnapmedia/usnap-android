@@ -2,6 +2,8 @@ package com.samsao.snapzi.photo.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
@@ -53,7 +55,21 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
     public void onSelected() {
         mOptions.get(DEFAULT_OPTION_INDEX).select();
         mToolFragment.showEditOptionsMenu(true, true, true);
-        mToolFragment.getDrawAnnotationContainer().setOnTouchListener(mToolFragment.getDrawAnnotationContainer());
+//        mToolFragment.getDrawAnnotationContainer().setOnTouchListener(mToolFragment.getDrawAnnotationContainer());
+        mToolFragment.getDrawAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mToolFragment.hideOverlays();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mToolFragment.showOverlays();
+                        break;
+                }
+                return mToolFragment.getDrawAnnotationContainer().onTouch(v, event);
+            }
+        });
         mToolFragment.disableTextAnnotationContainerTouchEvent();
     }
 

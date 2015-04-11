@@ -1,7 +1,6 @@
 package com.samsao.snapzi.photo;
 
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -12,11 +11,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -141,28 +140,6 @@ public class PhotoEditFragment extends Fragment {
 
         // disable the touch listener on the draw view so it does not take draw events
         mDrawAnnotationContainer.setOnTouchListener(null);
-
-        mRecyclerView.animate().setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                Log.i("animation", "start transY: " + Float.toString(mRecyclerView.getTranslationY()));
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                Log.i("animation", "end transY: " + Float.toString(mRecyclerView.getTranslationY()));
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
         return view;
     }
 
@@ -445,12 +422,14 @@ public class PhotoEditFragment extends Fragment {
      * Hide the tools menu
      */
     public void hideMenu() {
-        if (mRecyclerView.getTranslationY() == 0) {
-            mRecyclerView.animate().translationYBy(mRecyclerView.getMeasuredHeight()).setDuration(ANIMATION_DURATION);
-        } else {
+        float transY = mRecyclerView.getMeasuredHeight();
+        if (mRecyclerView.getTranslationY() != 0) {
             mRecyclerView.animate().cancel();
-            mRecyclerView.animate().translationYBy(-mRecyclerView.getTranslationY()).setDuration(ANIMATION_DURATION);
+            transY = -mRecyclerView.getTranslationY();
         }
+        mRecyclerView.animate().translationYBy(transY)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setDuration(ANIMATION_DURATION);
     }
 
     /**
@@ -458,12 +437,14 @@ public class PhotoEditFragment extends Fragment {
      */
     public void hideToolbar() {
         Toolbar toolbar = mListener.getToolbar();
-        if (toolbar.getTranslationY() == 0) {
-            toolbar.animate().translationYBy(-toolbar.getMeasuredHeight()).setDuration(ANIMATION_DURATION);
-        } else {
+        float transY = -toolbar.getMeasuredHeight();
+        if (toolbar.getTranslationY() != 0) {
             toolbar.animate().cancel();
-            toolbar.animate().translationYBy(-toolbar.getTranslationY()).setDuration(ANIMATION_DURATION);
+            transY = -toolbar.getTranslationY();
         }
+        toolbar.animate().translationYBy(transY)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setDuration(ANIMATION_DURATION);
     }
 
     /**
