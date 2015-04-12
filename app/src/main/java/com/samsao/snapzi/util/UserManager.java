@@ -1,7 +1,6 @@
 package com.samsao.snapzi.util;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * @author jfcartier
@@ -9,21 +8,27 @@ import android.util.Log;
  */
 public class UserManager {
 
+    // TODO inject me
+    private PreferenceManager mPreferenceManager;
+
+    public UserManager(PreferenceManager preferenceManager) {
+        mPreferenceManager = preferenceManager;
+    }
+
     /**
      * Check if the user is logged
      * @return
      */
-    public static boolean isLogged() {
-        // TODO get logging with backend
-        return !TextUtils.isEmpty(getFacebookAccessToken());
+    public boolean isLogged() {
+        return !TextUtils.isEmpty(getUsername());
     }
 
     /**
      * Returns the facebook access token
      * @return
      */
-    public static String getFacebookAccessToken() {
-        return PreferenceManager.getFacebookAccessToken();
+    public String getFacebookAccessToken() {
+        return mPreferenceManager.getFacebookAccessToken();
     }
 
     /**
@@ -31,26 +36,24 @@ public class UserManager {
      *
      * @param token
      */
-    public static void setFacebookAccessToken(String token) {
-        PreferenceManager.setFacebookAccessToken(token);
-        log();
+    public void setFacebookAccessToken(String token) {
+        mPreferenceManager.setFacebookAccessToken(token);
     }
 
     /**
      * Clear the facebook access token in preferences
      *
      */
-    public static void removeFacebookAccessToken() {
-        PreferenceManager.removeFacebookAccessToken();
-        log();
+    public void removeFacebookAccessToken() {
+        mPreferenceManager.removeFacebookAccessToken();
     }
 
     /**
      * Returns the twitter access token
      * @return
      */
-    public static String getTwitterAccessToken() {
-        return PreferenceManager.getTwitterAccessToken();
+    public String getTwitterAccessToken() {
+        return mPreferenceManager.getTwitterAccessToken();
     }
 
     /**
@@ -58,26 +61,24 @@ public class UserManager {
      *
      * @param token
      */
-    public static void setTwitterAccessToken(String token) {
-        PreferenceManager.setTwitterAccessToken(token);
-        log();
+    public void setTwitterAccessToken(String token) {
+        mPreferenceManager.setTwitterAccessToken(token);
     }
 
     /**
      * Clear the twitter access token in preferences
      *
      */
-    public static void removeTwitterAccessToken() {
-        PreferenceManager.removeTwitterAccessToken();
-        log();
+    public void removeTwitterAccessToken() {
+        mPreferenceManager.removeTwitterAccessToken();
     }
 
     /**
      * Returns the google+ access token
      * @return
      */
-    public static String getGooglePlusAccessToken() {
-        return PreferenceManager.getGooglePlusAccessToken();
+    public String getGooglePlusAccessToken() {
+        return mPreferenceManager.getGooglePlusAccessToken();
     }
 
     /**
@@ -85,23 +86,77 @@ public class UserManager {
      *
      * @param token
      */
-    public static void setGooglePlusAccessToken(String token) {
-        PreferenceManager.setGooglePlusAccessToken(token);
-        log();
+    public void setGooglePlusAccessToken(String token) {
+        mPreferenceManager.setGooglePlusAccessToken(token);
     }
 
     /**
      * Clear the google+ access token in preferences
      *
      */
-    public static void removeGooglePlusAccessToken() {
-        PreferenceManager.removeGooglePlusAccessToken();
-        log();
+    public void removeGooglePlusAccessToken() {
+        mPreferenceManager.removeGooglePlusAccessToken();
     }
 
-    public static void log() {
-        Log.i("UserManager", "FB token: " + getFacebookAccessToken());
-        Log.i("UserManager", "Twitter token: " + getTwitterAccessToken());
-        Log.i("UserManager", "Google+ token: " + getGooglePlusAccessToken());
+    /**
+     * Returns the username
+     * @return
+     */
+    public String getUsername() {
+        return mPreferenceManager.getUsername();
+    }
+
+    /**
+     * Set the username in preferences
+     *
+     * @param username
+     */
+    public void setUsername(String username) {
+        mPreferenceManager.setUsername(username);
+    }
+
+    /**
+     * Clear the username in preferences
+     *
+     */
+    private void removeUsername() {
+        mPreferenceManager.removeUsername();
+    }
+
+    /**
+     * Returns the password
+     * @return
+     */
+    public String getPassword() {
+        return mPreferenceManager.getPassword();
+    }
+
+    /**
+     * Set the password in preferences
+     *
+     * @param password
+     */
+    public void setPassword(String password) {
+        mPreferenceManager.setPassword(password);
+    }
+
+    /**
+     * Clear the password in preferences
+     *
+     */
+    private void removePassword() {
+        mPreferenceManager.removePassword();
+    }
+
+    /**
+     * Logs the user out
+     */
+    public void logout() {
+        removeUsername();
+        removePassword();
+        removeFacebookAccessToken();
+        removeGooglePlusAccessToken();
+        removeTwitterAccessToken();
+        // TODO check if we need to call the backend
     }
 }
