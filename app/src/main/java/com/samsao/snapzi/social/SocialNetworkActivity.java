@@ -14,6 +14,7 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.listeners.OnLoginListener;
@@ -61,6 +62,9 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
      * Listener to send Google+ login callbacks
      */
     private OnGooglePlusLoginListener mOnGooglePlusLoginListener;
+    
+    // TODO inject me
+    private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +171,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
         if (isFacebookConnected()) {
             mSimpleFacebook.logout(onLogoutListener);
         }
-        UserManager.removeFacebookAccessToken();
+        mUserManager.removeFacebookAccessToken();
     }
 
     /**
@@ -176,7 +180,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
     public void setFacebookAccessToken() {
         Session session = mSimpleFacebook.getSession();
         if (session != null) {
-            UserManager.setFacebookAccessToken(session.getAccessToken());
+            mUserManager.setFacebookAccessToken(session.getAccessToken());
         }
     }
 
@@ -184,7 +188,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
      * Remove the facebook access token in preferences
      */
     public void removeFacebookAccessToken() {
-        UserManager.removeFacebookAccessToken();
+        mUserManager.removeFacebookAccessToken();
     }
 
     /**
@@ -213,21 +217,21 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
         if (isTwitterConnected()) {
             TwitterCore.getInstance().logOut();
         }
-        UserManager.removeTwitterAccessToken();
+        mUserManager.removeTwitterAccessToken();
     }
 
     /**
      * Set the twitter access token in preferences
      */
     public void setTwitterAccessToken() {
-        UserManager.setTwitterAccessToken(Twitter.getSessionManager().getActiveSession().getAuthToken().token);
+        mUserManager.setTwitterAccessToken(Twitter.getSessionManager().getActiveSession().getAuthToken().token);
     }
 
     /**
      * Remove the twitter access token in preferences
      */
     public void removeTwitterAccessToken() {
-        UserManager.removeFacebookAccessToken();
+        mUserManager.removeFacebookAccessToken();
     }
 
     /**
@@ -282,7 +286,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
      * Remove the google+ access token in preferences
      */
     public void removeGooglePlusAccessToken() {
-        UserManager.removeGooglePlusAccessToken();
+        mUserManager.removeGooglePlusAccessToken();
     }
 
     /**
@@ -292,7 +296,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                UserManager.setGooglePlusAccessToken(GoogleAuthUtil.getToken(SocialNetworkActivity.this,
+                mUserManager.setGooglePlusAccessToken(GoogleAuthUtil.getToken(SocialNetworkActivity.this,
                         Plus.AccountApi.getAccountName(mGoogleApiClient),
                         "oauth2:https://www.googleapis.com/auth/plus.login"));
             } catch (IOException transientEx) {

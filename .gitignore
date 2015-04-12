@@ -1,10 +1,7 @@
 .gradle
 /local.properties
-/.idea/misc.xml
-/.idea/workspace.xml
-/.idea/libraries
+.idea/
 .DS_Store
 /build
-.idea/misc.xml
 app/app.iml
-.DS_Store
+snapzi-android.iml

@@ -3,6 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="font_size_medium">14sp</dimen>
+    <dimen name="font_size_large">18sp</dimen>
+    <dimen name="font_size_extra_large">22sp</dimen>
+
     <dimen name="elements_quarter_vertical_margin">3dp</dimen>
     <dimen name="elements_half_vertical_margin">6dp</dimen>
     <dimen name="elements_vertical_margin">12dp</dimen>
@@ -12,5 +16,9 @@
     <dimen name="elements_horizontal_margin">16dp</dimen>
     <dimen name="elements_double_horizontal_margin">32dp</dimen>
     <dimen name="elements_quadruple_horizontal_margin">64dp</dimen>
+
+    <!-- Photo edit -->
+    <dimen name="photo_edit_menu_size">108dp</dimen>
+    <dimen name="photo_edit_menu_image_size">64dp</dimen>
 
 </resources>

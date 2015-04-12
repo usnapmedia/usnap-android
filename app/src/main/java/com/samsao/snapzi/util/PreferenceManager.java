@@ -20,88 +20,92 @@ public class PreferenceManager {
     /**
      * Constants
      */
-    private static final String PREFERENCES_FILE_KEY = "com.samsao.snapzi.PREFERENCE_FILE_KEY";
-    private static final String FACEBOOK_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.FACEBOOK_ACCESS_TOKEN_KEY";
-    private static final String TWITTER_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.TWITTER_ACCESS_TOKEN_KEY";
-    private static final String GPLUS_ACCESS_TOKEN_KEY = "com.samsao.snapzi..preference.GPLUS_ACCESS_TOKEN_KEY";
+    private final String PREFERENCES_FILE_KEY = "com.samsao.snapzi.PREFERENCE_FILE_KEY";
+    private final String FACEBOOK_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.FACEBOOK_ACCESS_TOKEN_KEY";
+    private final String TWITTER_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.TWITTER_ACCESS_TOKEN_KEY";
+    private final String GPLUS_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.GPLUS_ACCESS_TOKEN_KEY";
+    private final String USERNAME_KEY = "com.samsao.snapzi.preference.USERNAME_KEY";
+    private final String PASSWORD_KEY = "com.samsao.snapzi.preference.PASSWORD_KEY";
 
-    private static SharedPreferences getSharedPreferences() {
-        return SnapziApplication.getContext().getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
+    private SharedPreferences mSharedPreferences;
+
+    public PreferenceManager() {
+        mSharedPreferences = SnapziApplication.getContext().getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
     }
 
-    private static SharedPreferences.Editor getEditor() {
-        return getSharedPreferences().edit();
+    private SharedPreferences.Editor getEditor() {
+        return mSharedPreferences.edit();
     }
 
-    private static boolean contains(String key) {
-        return getSharedPreferences().contains(key);
+    private boolean contains(String key) {
+        return mSharedPreferences.contains(key);
     }
 
-    private static Map<String, ?> getAll() {
-        return getSharedPreferences().getAll();
+    private Map<String, ?> getAll() {
+        return mSharedPreferences.getAll();
     }
 
-    private static boolean getBoolean(String key, boolean defValue) {
-        return getSharedPreferences().getBoolean(key, defValue);
+    private boolean getBoolean(String key, boolean defValue) {
+        return mSharedPreferences.getBoolean(key, defValue);
     }
 
-    private static float getFloat(String key, float defValue) {
-        return getSharedPreferences().getFloat(key, defValue);
+    private float getFloat(String key, float defValue) {
+        return mSharedPreferences.getFloat(key, defValue);
     }
 
-    private static int getInt(String key, int defValue) {
-        return getSharedPreferences().getInt(key, defValue);
+    private int getInt(String key, int defValue) {
+        return mSharedPreferences.getInt(key, defValue);
     }
 
-    private static long getLong(String key, long defValue) {
-        return getSharedPreferences().getLong(key, defValue);
+    private long getLong(String key, long defValue) {
+        return mSharedPreferences.getLong(key, defValue);
     }
 
-    private static String getString(String key, String defValue) {
-        return getSharedPreferences().getString(key, defValue);
+    private String getString(String key, String defValue) {
+        return mSharedPreferences.getString(key, defValue);
     }
 
-    private static Set<String> getSetString(String key, Set<String> defValue) {
-        return getSharedPreferences().getStringSet(key, defValue);
+    private Set<String> getSetString(String key, Set<String> defValue) {
+        return mSharedPreferences.getStringSet(key, defValue);
     }
 
-    public static void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
+    public void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
-    public static void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
+    public void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-    public static void clear() {
+    public void clear() {
         getEditor().clear().apply();
     }
 
-    private static SharedPreferences.Editor putBoolean(String key, boolean value) {
+    private SharedPreferences.Editor putBoolean(String key, boolean value) {
         return getEditor().putBoolean(key, value);
     }
 
-    private static SharedPreferences.Editor putFloat(String key, float value) {
+    private SharedPreferences.Editor putFloat(String key, float value) {
         return getEditor().putFloat(key, value);
     }
 
-    private static SharedPreferences.Editor putInt(String key, int value) {
+    private SharedPreferences.Editor putInt(String key, int value) {
         return getEditor().putInt(key, value);
     }
 
-    private static SharedPreferences.Editor putLong(String key, long value) {
+    private SharedPreferences.Editor putLong(String key, long value) {
         return getEditor().putLong(key, value);
     }
 
-    private static SharedPreferences.Editor putString(String key, String value) {
+    private SharedPreferences.Editor putString(String key, String value) {
         return getEditor().putString(key, value);
     }
 
-    private static SharedPreferences.Editor putStringSet(String key, Set<String> value) {
+    private SharedPreferences.Editor putStringSet(String key, Set<String> value) {
         return getEditor().putStringSet(key, value);
     }
 
-    public static SharedPreferences.Editor remove(String key) {
+    public SharedPreferences.Editor remove(String key) {
         return getEditor().remove(key);
     }
 
@@ -113,7 +117,7 @@ public class PreferenceManager {
      * Get facebook access token
      * @return
      */
-    public static String getFacebookAccessToken() {
+    public String getFacebookAccessToken() {
         return getString(FACEBOOK_ACCESS_TOKEN_KEY, null);
     }
 
@@ -121,14 +125,14 @@ public class PreferenceManager {
      * Set facebook access token
      * @param facebookAccessToken
      */
-    public static void setFacebookAccessToken(String facebookAccessToken) {
+    public void setFacebookAccessToken(String facebookAccessToken) {
         putString(FACEBOOK_ACCESS_TOKEN_KEY, facebookAccessToken).apply();
     }
 
     /**
      * Remove facebook access token
      */
-    public static void removeFacebookAccessToken() {
+    public void removeFacebookAccessToken() {
         getEditor().remove(FACEBOOK_ACCESS_TOKEN_KEY).apply();
     }
 
@@ -136,7 +140,7 @@ public class PreferenceManager {
      * Get twitter access token
      * @return
      */
-    public static String getTwitterAccessToken() {
+    public String getTwitterAccessToken() {
         return getString(TWITTER_ACCESS_TOKEN_KEY, null);
     }
 
@@ -144,14 +148,14 @@ public class PreferenceManager {
      * Set twitter access token
      * @param twitterAccessToken
      */
-    public static void setTwitterAccessToken(String twitterAccessToken) {
+    public void setTwitterAccessToken(String twitterAccessToken) {
         putString(TWITTER_ACCESS_TOKEN_KEY, twitterAccessToken).apply();
     }
 
     /**
      * Remove twitter access token
      */
-    public static void removeTwitterAccessToken() {
+    public void removeTwitterAccessToken() {
         getEditor().remove(TWITTER_ACCESS_TOKEN_KEY).apply();
     }
 
@@ -159,7 +163,7 @@ public class PreferenceManager {
      * Get google+ access token
      * @return
      */
-    public static String getGooglePlusAccessToken() {
+    public String getGooglePlusAccessToken() {
         return getString(GPLUS_ACCESS_TOKEN_KEY, null);
     }
 
@@ -167,14 +171,60 @@ public class PreferenceManager {
      * Set google+ access token
      * @param googlePlusAccessToken
      */
-    public static void setGooglePlusAccessToken(String googlePlusAccessToken) {
+    public void setGooglePlusAccessToken(String googlePlusAccessToken) {
         putString(GPLUS_ACCESS_TOKEN_KEY, googlePlusAccessToken).apply();
     }
 
     /**
      * Remove google+ access token
      */
-    public static void removeGooglePlusAccessToken() {
+    public void removeGooglePlusAccessToken() {
         getEditor().remove(GPLUS_ACCESS_TOKEN_KEY).apply();
+    }
+
+    /**
+     * Get username
+     * @return
+     */
+    public String getUsername() {
+        return getString(USERNAME_KEY, null);
+    }
+
+    /**
+     * Set username
+     * @param username
+     */
+    public void setUsername(String username) {
+        putString(USERNAME_KEY, username).apply();
+    }
+
+    /**
+     * Remove username
+     */
+    public void removeUsername() {
+        getEditor().remove(USERNAME_KEY).apply();
+    }
+
+    /**
+     * Get password
+     * @return
+     */
+    public String getPassword() {
+        return getString(PASSWORD_KEY, null);
+    }
+
+    /**
+     * Set password
+     * @param password
+     */
+    public void setPassword(String password) {
+        putString(PASSWORD_KEY, password).apply();
+    }
+
+    /**
+     * Remove password
+     */
+    public void removePassword() {
+        getEditor().remove(PASSWORD_KEY).apply();
     }
 }

@@ -6,46 +6,57 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
+import com.samsao.snapzi.R;
+import com.samsao.snapzi.photo.tools.Tool;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.soundcloud.android.crop.Crop;
 
+import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
 public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFragment.Listener {
     public static final String EXTRA_URI = "com.samsao.snapzi.photo.PhotoEditActivity.EXTRA_URI";
-    // brightness varies from -1.0 to 1.0, but progress bar from 0 to MAX -> initial brightness is 10 (0.0) and max is 20
-    private final int INITIAL_BRIGHTNESS = 10;
-    // contrast varies from 0 to 4.0, but progress bar from 0 to MAX -> initial contrast is 10 (1.0) and max is 40
-    private final int INITIAL_CONTRAST = 10;
 
-    PhotoEditFragment mPhotoEditFragment;
+    @InjectView(R.id.activity_photo_edit_toolbar)
+    public Toolbar mToolbar;
 
-    @Icicle
-    public int mBrightness;
-    @Icicle
-    public int mContrast;
+    private PhotoEditFragment mPhotoEditFragment;
+
     @Icicle
     public Uri mImageUri;
+    @Icicle
+    public MenuState mMenuState;
+    @Icicle
+    public ArrayList<Tool> mTools;
+    @Icicle
+    public Tool mCurrentTool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photo_edit);
+        ButterKnife.inject(this);
+        setupToolbar();
 
+        mMenuState = new MenuStateView();
         Intent intent = getIntent();
         if (intent != null) {
             mImageUri = intent.getParcelableExtra(EXTRA_URI);
         }
-        mBrightness = INITIAL_BRIGHTNESS;
-        mContrast = INITIAL_CONTRAST;
         // restore saved state
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         if (savedInstanceState == null) {
             mPhotoEditFragment = PhotoEditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, mPhotoEditFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.activity_photo_edit_content, mPhotoEditFragment).commit();
         }
     }
 
@@ -57,41 +68,122 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // When an image as been cropped
-        if (requestCode == Crop.REQUEST_CROP
-                && resultCode == Activity.RESULT_OK
-                && null != data) {
-            if (mPhotoEditFragment != null) {
-                mPhotoEditFragment.refreshImage();
-            }
+        switch(requestCode) {
+            case Crop.REQUEST_CROP:
+                if (resultCode == Activity.RESULT_OK && null != data) {
+                    if (mPhotoEditFragment != null) {
+                        mPhotoEditFragment.refreshImage();
+                    }
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
     @Override
-    public int getBrightness() {
-        return mBrightness;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mMenuState.onCreateOptionsMenu(getMenuInflater(), menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public void setBrightness(int brightness) {
-        mBrightness = brightness;
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.activity_photo_edit_next:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsNextSelected();
+                }
+                return true;
+            case R.id.activity_photo_edit_clear:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsClearSelected();
+                }
+                return true;
+            case R.id.activity_photo_edit_undo:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsUndoSelected();
+                }
+                return true;
+            case R.id.activity_photo_edit_done:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsDoneSelected();
+                }
+                return true;
+            case android.R.id.home:
+                if (mPhotoEditFragment != null) {
+                    mPhotoEditFragment.onOptionsHomeSelected();
+                } else {
+                    finish();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
-    public int getContrast() {
-        return mContrast;
+    public void onBackPressed() {
+        if (mPhotoEditFragment != null) {
+            mPhotoEditFragment.onOptionsHomeSelected();
+        } else {
+            finish();
+        }
     }
 
+    public void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    /**
+     * Reset menu
+     */
     @Override
-    public void setContrast(int contrast) {
-        mContrast = contrast;
+    public void resetMenu() {
+        mMenuState = new MenuStateView();
+        getSupportActionBar().invalidateOptionsMenu();
+    }
+
+    /**
+     * Show the edit menu
+     * @param showDone
+     * @param showClear
+     * @param showUndo
+     */
+    @Override
+    public void showEditMenu(boolean showDone, boolean showClear, boolean showUndo) {
+        mMenuState = new MenuStateEdit().setShowDone(showDone).setShowClear(showClear).setShowUndo(showUndo);
+        invalidateOptionsMenu();
     }
 
     @Override
     public Uri getImageUri() {
         return mImageUri;
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
+
+    public ArrayList<Tool> getTools() {
+        return mTools;
+    }
+
+    public void setTools(ArrayList<Tool> tools) {
+        mTools = tools;
+    }
+
+    public Tool getCurrentTool() {
+        return mCurrentTool;
+    }
+
+    public void setCurrentTool(Tool currentTool) {
+        mCurrentTool = currentTool;
     }
 
     /**

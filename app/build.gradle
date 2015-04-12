@@ -9,6 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -68,6 +69,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             ext.betaDistributionGroupAliases="snapzi-android"
+            shrinkResources true
         }
         debugRelease.initWith(buildTypes.release)
         debugRelease {
@@ -88,6 +90,8 @@ android {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 
     dexOptions {
@@ -112,10 +116,11 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services-identity:6.5.87'
-    compile 'com.google.android.gms:play-services-plus:6.5.87'
+    compile 'com.android.support:support-v13:22.0.0'
+    compile 'com.google.android.gms:play-services-identity:7.0.0'
+    compile 'com.google.android.gms:play-services-plus:7.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.github.Todd-Davies:ProgressWheel:1.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.github.frankiesardo:icepick:2.3.6'
     provided 'com.github.frankiesardo:icepick-processor:2.3.6'
@@ -132,6 +137,18 @@ dependencies {
     compile 'me.panavtec:drawableview:0.5.0'
     compile 'com.afollestad:material-dialogs:0.6.5.2'
     compile 'com.larswerkman:HoloColorPicker:1.5'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.retrofit:converter-jackson:1.9.0'
+    compile 'com.squareup.retrofit:retrofit-mock:1.9.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.googlecode.mp4parser:isoparser:1.0.5.4'
+compile 'com.github.Todd-Davies:ProgressWheel:1.0'
+    compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
+    apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
+    compile 'com.jakewharton.timber:timber:2.7.1'
 }

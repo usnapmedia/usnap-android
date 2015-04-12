@@ -15,6 +15,7 @@ import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.social.OnGooglePlusLoginListener;
 import com.samsao.snapzi.social.SocialNetworkFragment;
+import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.listeners.OnLoginListener;
@@ -46,6 +47,9 @@ public class PreferencesFragment extends SocialNetworkFragment {
     private CompoundButton.OnCheckedChangeListener mFacebookSwitchOnCheckedChangeListener;
     private CompoundButton.OnCheckedChangeListener mTwitterSwitchOnCheckedChangeListener;
     private CompoundButton.OnCheckedChangeListener mGooglePlusSwitchOnCheckedChangeListener;
+
+    // TODO inject me
+    private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     /**
      * Use this factory method to create a new instance of
@@ -230,7 +234,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
      * Initializes the Google+ switch
      */
     protected void initializeGooglePlusSwitch() {
-        mGooglePlusSwitch.setChecked(!TextUtils.isEmpty(UserManager.getGooglePlusAccessToken()));
+        mGooglePlusSwitch.setChecked(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()));
         mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
     }
 
