@@ -2,6 +2,7 @@ package com.samsao.snapzi.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.camera.CameraHelper;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,8 +22,8 @@ import java.io.IOException;
  */
 public class PhotoUtil {
 
-    private final static String FILENAME = "image.png";
     private final static String LOG_TAG = PhotoUtil.class.getSimpleName();
+    private static SaveBitmapTask mSaveBitmapTask;
 
     /**
      * Save an image to disk
@@ -30,18 +32,28 @@ public class PhotoUtil {
      * @param callback
      */
     public static void saveImage(Bitmap bitmap, SaveImageCallback callback) {
-        new SaveBitmapTask(bitmap, callback).execute();
+        mSaveBitmapTask = new SaveBitmapTask(bitmap, callback);
+        mSaveBitmapTask.execute();
+    }
+
+    public static boolean isSaveImageInProgress() {
+        if (mSaveBitmapTask != null && mSaveBitmapTask.getStatus() == AsyncTask.Status.RUNNING) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static void cancelSaveImage() {
+        if (mSaveBitmapTask != null) {
+            mSaveBitmapTask.cancel(true);
+            mSaveBitmapTask = null;
+        }
     }
 
     /**
-     * Returns the image URI
-     *
-     * @return
+     * Background task to save an image
      */
-    public static Uri getImageUri() {
-        return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath(FILENAME));
-    }
-
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
         private Bitmap mBitmap;
         private SaveImageCallback mCallback;
@@ -53,7 +65,7 @@ public class PhotoUtil {
 
         protected Boolean doInBackground(Void... nothing) {
             try {
-                FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(CameraHelper.IMAGE_FILENAME, Context.MODE_PRIVATE);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
                 fOutputStream.flush();
                 fOutputStream.close();
@@ -73,17 +85,28 @@ public class PhotoUtil {
             } else {
                 mCallback.onFailure();
             }
+
+            mSaveBitmapTask = null;
         }
     }
 
     /**
      * Correct bitmap orientation on some devices (i.e. Samsung)
      *
-     * @param sourcePath
-     * @param sourceBitmap
+     * @param context
+     * @param sourceUri
      * @return corrected bitmap
      */
-    public static Bitmap ApplyBitmapOrientationCorrection(String sourcePath, Bitmap sourceBitmap) {
+    public static Bitmap applyBitmapOrientationCorrection(Context context, Uri sourceUri) {
+        String sourcePath = CameraHelper.getRealPathFromURI(context, sourceUri);
+        final Bitmap sourceBitmap;
+        try {
+            sourceBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(sourceUri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         if (sourcePath == null || sourceBitmap == null) {
             return null;
         }
@@ -95,13 +118,13 @@ public class PhotoUtil {
 
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
-                    return RotateBitmap(sourceBitmap, 90);
+                    return rotateBitmap(sourceBitmap, 90);
                 case ExifInterface.ORIENTATION_ROTATE_180:
-                    return RotateBitmap(sourceBitmap, 180);
+                    return rotateBitmap(sourceBitmap, 180);
                 case ExifInterface.ORIENTATION_ROTATE_270:
-                    return RotateBitmap(sourceBitmap, 270);
+                    return rotateBitmap(sourceBitmap, 270);
                 default:
-                    return RotateBitmap(sourceBitmap, 0);
+                    return rotateBitmap(sourceBitmap, 0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,7 +139,7 @@ public class PhotoUtil {
      * @param angle  angle of rotation
      * @return rotated bitmap
      */
-    public static Bitmap RotateBitmap(Bitmap bitmap, float angle) {
+    public static Bitmap rotateBitmap(Bitmap bitmap, float angle) {
         if (angle != 0) {
             Matrix matrix = new Matrix();
             matrix.postRotate(angle);
@@ -134,7 +157,7 @@ public class PhotoUtil {
      * @param scaleY
      * @return rotated bitmap
      */
-    public static Bitmap ScaleBitmap(Bitmap bitmap, float scaleX, float scaleY) {
+    public static Bitmap scaleBitmap(Bitmap bitmap, float scaleX, float scaleY) {
         if (scaleX != 1 || scaleY != 1) {
             Matrix matrix = new Matrix();
             matrix.postScale(scaleX, scaleY);
@@ -142,5 +165,36 @@ public class PhotoUtil {
         } else {
             return bitmap;
         }
+    }
+
+    /**
+     * Get center cropped bitmap from
+     *
+     * @param sourceBitmap original bitmap
+     * @return rotated bitmap
+     */
+    public static Bitmap getCenterCropBitmapFrom(Bitmap sourceBitmap) {
+        Bitmap outputBitmap;
+
+        if (sourceBitmap.getWidth() >= sourceBitmap.getHeight()) {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    sourceBitmap.getWidth() / 2 - sourceBitmap.getHeight() / 2,
+                    0,
+                    sourceBitmap.getHeight(),
+                    sourceBitmap.getHeight()
+            );
+
+        } else {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    0,
+                    sourceBitmap.getHeight() / 2 - sourceBitmap.getWidth() / 2,
+                    sourceBitmap.getWidth(),
+                    sourceBitmap.getWidth()
+            );
+        }
+
+        return outputBitmap;
     }
 }

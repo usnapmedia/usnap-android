@@ -40,8 +40,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
             android:name=".photo.PhotoEditActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:label="@string/app_name">
         </activity>
         <activity
             android:name=".video.VideoEditActivity"
@@ -49,6 +48,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
 
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="369cc275b13fc2a69f58dc6067c6ceb6fb776650" />

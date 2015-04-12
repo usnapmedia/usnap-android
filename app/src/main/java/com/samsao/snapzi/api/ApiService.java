@@ -4,25 +4,36 @@
 
 package com.samsao.snapzi.api;
 
+import android.text.TextUtils;
+import android.util.Base64;
+
+import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.util.UserManager;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 
 import retrofit.Callback;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Client;
+import retrofit.client.OkClient;
 import retrofit.converter.JacksonConverter;
+import timber.log.Timber;
 
 /**
  * @author jfcartier
  * @since 2014-05-29
  */
 @SuppressWarnings("FieldCanBeLocal")
-public final class ApiService {
+public class ApiService {
 
     /**
      * Constants
@@ -38,14 +49,27 @@ public final class ApiService {
 
     /**
      * Service to communicate with the API
+     * TODO inject me
      */
     private SnapziApi mApiService;
+
+    /**
+     * Client
+     * TODO inject me
+     */
+    private Client mClient;
+
+    /**
+     * UserManager
+     * TODO inject me
+     */
+    private UserManager mUserManager;
 
     /**
      * Constructor
      */
     public ApiService() {
-        this(SnapziApplication.getContext().getString(R.string.api_endpoint));
+        this(SnapziApplication.getContext().getString(R.string.api_endpoint), new OkClient(new OkHttpClient()));
     }
 
     /**
@@ -53,13 +77,31 @@ public final class ApiService {
      *
      * @param endpoint
      */
-    public ApiService(String endpoint) {
+    public ApiService(String endpoint, Client client) {
+        mClient = client;
+
         RestAdapter restAdapter = new RestAdapter.Builder()
+                .setClient(client)
                 .setEndpoint(endpoint)
                 .setConverter(new JacksonConverter())
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        if (mUserManager.isLogged()) {
+                            try {
+                                request.addHeader("Authorization", getAuthenticationHeader());
+                            } catch (UnauthorizedException exception) {
+                                Timber.e(exception, "Unauthorized");
+                            }
+                        }
+                    }
+                })
                 .build();
 
         mApiService = restAdapter.create(SnapziApi.class);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     /**
@@ -89,6 +131,15 @@ public final class ApiService {
             }
         }
         return ERROR_UNKNOWN;
+    }
+
+    private String getAuthenticationHeader() throws UnauthorizedException {
+        String username = mUserManager.getUsername();
+        String password = mUserManager.getPassword();
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+            throw new UnauthorizedException("Not logged in.");
+        }
+        return Base64.encodeToString(new String("Basic " + username + ":" + password).getBytes(Charset.forName("UTF-8")), Base64.DEFAULT);
     }
 
     /**

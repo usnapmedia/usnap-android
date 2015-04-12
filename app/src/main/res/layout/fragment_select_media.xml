@@ -11,19 +11,20 @@
         android:background="@android:color/black" />
 
     <TextView
-        android:id="@+id/fragment_select_media_current_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_red_dark" />
-
-    <TextView
         android:id="@+id/fragment_select_media_video_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:textColor="@android:color/holo_red_dark"/>
+        android:textColor="@android:color/holo_red_dark" />
 
     <!--Camera top controls-->
+    <Button
+        android:id="@+id/fragment_select_media_flash_setup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/fragment_select_media_flip_camera_button"
         android:layout_width="wrap_content"
@@ -39,44 +40,17 @@
         android:layout_gravity="bottom">
 
         <Button
-            android:id="@+id/fragment_select_media_pick_button"
+            android:id="@+id/fragment_select_media_pick_from_gallery_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:text="SELECT" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/fragment_select_media_capture_media_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/fragment_select_media_take_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/fragment_select_media_trigger_photo_mode_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PHOTO" />
-
-                <Button
-                    android:id="@+id/fragment_select_media_trigger_video_mode_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="VIDEO" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+            android:layout_gravity="center" />
 
         <Button
             android:id="@+id/fragment_select_media_pref_button"

@@ -12,14 +12,36 @@
 
     <!--Select Media-->
     <string name="action_select_media">Select Media</string>
+    <string name="action_select_media_type_title">Select Media Type</string>
+    <string name="action_select_media_type_text">Please select a type of media to pick from gallery:</string>
+    <string name="action_select_media_type_pick_image">Pick image</string>
+    <string name="action_select_media_type_pick_video">Pick video</string>
     <string name="error_unable_to_take_picture">Unable to take picture</string>
     <string name="error_unable_to_open_image">Unable to open image</string>
-    <string name="error_unable_to_start_video_camera">Unable to start video camera</string>
+    <string name="error_unable_to_open_video">Unable to open video</string>
+    <string name="error_please_select_a_local_video">Please select a local video</string>
+    <string name="error_unsupported_format">Unsupported format</string>
+    <string name="error_unable_to_launch_camera">Unable to launch camera</string>
+    <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
+    <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
+    <string name="action_processing_image_title">Processing Image</string>
+    <string name="action_processing_image_text">Processing image...</string>
 
     <!--Preferences-->
     <string name="preferences">Preferences</string>
 
     <!--Photo edit-->
+    <string name="tool_filters_name">adjust</string>
+    <string name="tool_draw_name">draw</string>
+    <string name="tool_text_name">type</string>
+    <string name="tool_crop_name">crop</string>
+    <string name="tool_option_brightness_name">brightness</string>
+    <string name="tool_option_contrast_name">contrast</string>
+    <string name="tool_option_color_name">color</string>
+    <string name="action_next">Next</string>
+    <string name="action_done">Done</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_undo">Undo</string>
     <string name="text_annotation_placeholder">Enter text here</string>
 </resources>

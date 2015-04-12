@@ -25,13 +25,10 @@ public class CameraHelper {
     /**
      * Constants
      */
-    private static final String LOG_TAG = "CameraHelper";
-    private final static String VIDEO_FILENAME = "video.mp4";
+    private final static String LOG_TAG = CameraHelper.class.getSimpleName();
+    public final static String IMAGE_FILENAME = "image.png";
+    public final static String VIDEO_FILENAME = "video.mp4";
 
-    public static enum LayoutMode {
-        FitParent,
-        CenterCrop
-    }
 
     /**
      * Get an instance of the Camera object.
@@ -63,14 +60,14 @@ public class CameraHelper {
      * be lenient with the aspect ratio.
      *
      * @param sizes  Supported camera preview sizes.
-     * @param width  The width of the view.
-     * @param height The height of the view.
+     * @param targetWidth
+     * @param targetHeight
      * @return Best match camera preview size to fit in the view.
      */
-    public static Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int width, int height) {
+    public static Camera.Size getOptimalPictureSize(List<Camera.Size> sizes, int targetWidth, int targetHeight) {
         // Use a very small tolerance because we want an exact match.
         final double ASPECT_TOLERANCE = 0.1;
-        double targetRatio = (double) width / height;
+        double targetRatio = (double) targetWidth / (double) targetHeight;
         if (sizes == null)
             return null;
 
@@ -79,9 +76,6 @@ public class CameraHelper {
         // Start with max value and refine as we iterate over available preview sizes. This is the
         // minimum difference between view and camera height.
         double minDiff = Double.MAX_VALUE;
-
-        // Target view height
-        int targetHeight = height;
 
         // Try to find a preview size that matches aspect ratio and the target view size.
         // Iterate over all available sizes and pick the largest size that can fit in the view and
@@ -107,6 +101,54 @@ public class CameraHelper {
             }
         }
         return optimalSize;
+    }
+
+    /**
+     * Gets the optimal device specific camera preview size
+     *
+     * @param previewSize requested camera preview size
+     * @return Camera.Size object that is an element of the list returned from Camera.Parameters.getSupportedPictureSizes.
+     */
+    public static Camera.Size determinePictureSize(List<Camera.Size> supportedPictureSizes, Camera.Size previewSize) {
+        Camera.Size retSize = null;
+
+        if (supportedPictureSizes.contains(previewSize)) {
+            retSize = previewSize;
+        } else {
+            Log.v(LOG_TAG, "Same picture size not found.");
+
+            float reqRatio = (float) previewSize.width / (float) previewSize.height;
+            float curRatio, deltaRatio;
+            float deltaRatioMin = Float.MAX_VALUE;
+            for (Camera.Size size : supportedPictureSizes) {
+                curRatio = (float) size.width / (float) size.height;
+                deltaRatio = Math.abs(reqRatio - curRatio);
+                if (deltaRatio < deltaRatioMin) {
+                    deltaRatioMin = deltaRatio;
+                    retSize = size;
+                }
+            }
+        }
+
+        return retSize;
+    }
+
+    /**
+     * Returns the image URI
+     *
+     * @return
+     */
+    public static Uri getImageUri() {
+        return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath(IMAGE_FILENAME));
+    }
+
+    /**
+     * Get image media path.
+     *
+     * @return path to image
+     */
+    public static String getImageMediaFilePath() {
+        return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + IMAGE_FILENAME);
     }
 
     /**
