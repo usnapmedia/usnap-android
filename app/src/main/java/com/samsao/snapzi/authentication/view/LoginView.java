@@ -55,12 +55,21 @@ public class LoginView extends LinearLayout {
         setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
-        mButton.setText(getResources().getString(R.string.action_login));
+        showLoginContent();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         ButterKnife.reset(this);
+    }
+
+    /**
+     * Show login content
+     */
+    public void showLoginContent() {
+        mSignupToggleButton.setEnabled(true);
+        mLoginToggleButton.setEnabled(false);
+        mButton.setText(getResources().getString(R.string.action_login));
     }
 }

@@ -8,4 +8,5 @@
     <color name="light_gray">#f3f1f1</color>
     <color name="light_pink">#fff7f7</color>
     <color name="pink">#e9adad</color>
+    <color name="text_hint">#dad9d9</color>
 </resources>

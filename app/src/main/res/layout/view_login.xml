@@ -13,7 +13,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/action_signup"
-            android:textColor="@color/dark_gray"/>
+            android:textColor="@color/dark_gray"
+            android:textAllCaps="false"
+            android:background="@drawable/sel_login_toggle_btn"/>
 
         <Button
             android:id="@+id/view_login_loginToggle_btn"
@@ -21,7 +23,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/action_login"
-            android:textColor="@color/dark_gray"/>
+            android:textColor="@color/dark_gray"
+            android:textAllCaps="false"
+            android:background="@drawable/sel_login_toggle_btn"/>
 
     </LinearLayout>
 
@@ -32,7 +36,7 @@
         <com.samsao.snapzi.authentication.view.ContentLoginView
             android:id="@+id/view_login_content_login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </FrameLayout>
 
@@ -41,6 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_gray"
-        tools:text="@string/action_login"/>
+        tools:text="@string/action_login"
+        android:textAllCaps="false"
+        android:background="@drawable/sel_login_btn"/>
 
 </merge>
