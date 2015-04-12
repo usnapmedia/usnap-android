@@ -148,4 +148,5 @@ dependencies {
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
     compile 'com.jakewharton.timber:timber:2.7.1'
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
+    compile 'com.mobsandgeeks:android-saripaar:1.0.3'
 }

@@ -4,7 +4,7 @@
     <!--Login-->
     <string name="action_login">login</string>
     <string name="action_signup">sign up</string>
-    <string name="username">email</string>
+    <string name="username">username</string>
     <string name="password">password</string>
     <string name="reset_password">reset password</string>
 
@@ -48,4 +48,11 @@
     <string name="action_clear">Clear</string>
     <string name="action_undo">Undo</string>
     <string name="text_annotation_placeholder">Enter text here</string>
+
+    <!--Errors-->
+    <string name="error_empty_username">username is required</string>
+    <string name="error_empty_email">email is required</string>
+    <string name="error_invalid_email">email is not valid</string>
+    <string name="error_empty_password">password is required</string>
+
 </resources>

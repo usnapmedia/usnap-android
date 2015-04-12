@@ -16,15 +16,12 @@ import butterknife.InjectView;
  * @author jfcartier
  * @since 15-04-11
  */
-public class LoginView extends LinearLayout {
+public class LoginView extends LinearLayout implements ContentLoginView.Callback {
     @InjectView(R.id.view_login_signupToggle_btn)
     public Button mSignupToggleButton;
 
     @InjectView(R.id.view_login_loginToggle_btn)
     public Button mLoginToggleButton;
-
-    @InjectView(R.id.view_login_btn)
-    public Button mButton;
 
     @InjectView(R.id.view_login_content_login)
     public ContentLoginView mContentLoginView;
@@ -55,6 +52,7 @@ public class LoginView extends LinearLayout {
         setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
+        mContentLoginView.setCallback(this);
         showLoginContent();
     }
 
@@ -70,6 +68,11 @@ public class LoginView extends LinearLayout {
     public void showLoginContent() {
         mSignupToggleButton.setEnabled(true);
         mLoginToggleButton.setEnabled(false);
-        mButton.setText(getResources().getString(R.string.action_login));
+        mContentLoginView.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void onLogin() {
+        // TODO
     }
 }
