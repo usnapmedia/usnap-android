@@ -118,11 +118,12 @@
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="answers-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="gpuimage-library-1.2.3" level="project" />
+    <orderEntry type="library" exported="" name="ProgressWheel-1.0" level="project" />
     <orderEntry type="library" exported="" name="fabric-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
-    <orderEntry type="library" exported="" name="isoparser-1.0.5.4" level="project" />
     <orderEntry type="library" exported="" name="tweet-ui-1.0.7" level="project" />
+    <orderEntry type="library" exported="" name="isoparser-1.0.5.4" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="icepick-2.3.6" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
