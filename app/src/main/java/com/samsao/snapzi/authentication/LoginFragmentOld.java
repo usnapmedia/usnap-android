@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class LoginFragment extends SocialNetworkFragment {
+public class LoginFragmentOld extends SocialNetworkFragment {
 
     /**
      * Use this factory method to create a new instance of
@@ -26,12 +26,12 @@ public class LoginFragment extends SocialNetworkFragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
+    public static LoginFragmentOld newInstance() {
+        LoginFragmentOld fragment = new LoginFragmentOld();
         return fragment;
     }
 
-    public LoginFragment() {
+    public LoginFragmentOld() {
         // Required empty public constructor
     }
 
@@ -39,7 +39,7 @@ public class LoginFragment extends SocialNetworkFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login_old, container, false);
         ButterKnife.inject(this, view);
         return view;
     }

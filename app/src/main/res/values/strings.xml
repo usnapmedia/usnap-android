@@ -2,7 +2,11 @@
     <string name="app_name">Snapzi</string>
 
     <!--Login-->
-    <string name="action_login">Login</string>
+    <string name="action_login">login</string>
+    <string name="action_signup">sign up</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="reset_password">reset password</string>
 
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">284759385065022</string>

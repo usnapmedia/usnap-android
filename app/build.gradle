@@ -86,9 +86,9 @@ android {
         exclude 'creativesdk-repo/*'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude '.readme'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
     }
 
     dexOptions {
@@ -147,4 +147,5 @@ dependencies {
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
     compile 'com.jakewharton.timber:timber:2.7.1'
+    compile 'com.rengwuxian.materialedittext:library:2.0.3'
 }

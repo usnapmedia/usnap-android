@@ -5,4 +5,7 @@
     <color name="white_alpha">#55000000</color>
     <color name="blue">#1a3875</color>
     <color name="dark_gray">#222222</color>
+    <color name="light_gray">#f3f1f1</color>
+    <color name="light_pink">#fff7f7</color>
+    <color name="pink">#e9adad</color>
 </resources>

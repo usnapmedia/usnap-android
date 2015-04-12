@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/view_login_content_login_username_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/username"
+        app:met_baseColor="@color/pink"
+        app:met_primaryColor="@color/pink"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/username"
+        app:met_floatingLabelAnimating="true"
+        app:met_textColorHint="@color/dark_gray" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/view_login_content_login_password_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        app:met_baseColor="@color/pink"
+        app:met_primaryColor="@color/pink"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/password"
+        app:met_floatingLabelAnimating="true"
+        app:met_textColorHint="@color/dark_gray"
+        android:layout_marginTop="@dimen/elements_vertical_margin"/>
+
+    <Button
+        android:id="@+id/view_login_content_login_resetPassword_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_password"
+        android:textColor="@color/pink"
+        android:layout_gravity="right" />
+
+</merge>
