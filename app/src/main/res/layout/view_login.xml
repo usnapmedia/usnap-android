@@ -14,7 +14,6 @@
             android:layout_weight="1"
             android:text="@string/action_signup"
             android:textColor="@color/dark_gray"
-            android:textAllCaps="false"
             android:background="@drawable/sel_login_toggle_btn"/>
 
         <Button
@@ -24,7 +23,6 @@
             android:layout_weight="1"
             android:text="@string/action_login"
             android:textColor="@color/dark_gray"
-            android:textAllCaps="false"
             android:background="@drawable/sel_login_toggle_btn"/>
 
     </LinearLayout>
@@ -46,7 +44,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/dark_gray"
         tools:text="@string/action_login"
-        android:textAllCaps="false"
         android:background="@drawable/sel_login_btn"/>
 
 </merge>
