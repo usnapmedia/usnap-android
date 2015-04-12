@@ -13,9 +13,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
-    maven { url "https://jitpack.io" }
 }
-
 
 /*
  * Manually set the MAJOR, MINOR and PATCH version components here.
@@ -68,7 +66,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            ext.betaDistributionGroupAliases="snapzi-android"
+            ext.betaDistributionGroupAliases = "snapzi-android"
             shrinkResources true
         }
         debugRelease.initWith(buildTypes.release)
@@ -147,7 +145,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.googlecode.mp4parser:isoparser:1.0.5.4'
-compile 'com.github.Todd-Davies:ProgressWheel:1.0'
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
     compile 'com.jakewharton.timber:timber:2.7.1'
