@@ -113,8 +113,8 @@
     <orderEntry type="library" exported="" name="play-services-plus-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="aspectjrt-1.8.2" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-7.0.0" level="project" />
-    <orderEntry type="library" exported="" name="jackson-databind-2.5.1" level="project" />
     <orderEntry type="library" exported="" name="guava-15.0" level="project" />
+    <orderEntry type="library" exported="" name="jackson-databind-2.5.1" level="project" />
     <orderEntry type="library" exported="" name="android-crop-0.9.10" level="project" />
     <orderEntry type="library" exported="" name="icepick-processor-2.3.6" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-3.21.1" level="project" />
@@ -134,8 +134,8 @@
     <orderEntry type="library" exported="" name="recyclerview-v7-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="icepick-2.3.6" level="project" />
     <orderEntry type="library" exported="" name="support-v13-22.0.0" level="project" />
-    <orderEntry type="library" exported="" name="retrofit-mock-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="timber-2.7.1" level="project" />
+    <orderEntry type="library" exported="" name="retrofit-mock-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="performance-metrics-0.2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-7.0.0" level="project" />
