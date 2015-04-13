@@ -83,9 +83,8 @@ android {
 
     packagingOptions {
         exclude 'android.keystore'
-        exclude 'creativesdk-repo/*'
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude '.readme'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
