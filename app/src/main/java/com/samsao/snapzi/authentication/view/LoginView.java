@@ -86,9 +86,9 @@ public class LoginView extends LinearLayout {
             }
 
             @Override
-            public void showBirthdayDatePicker() {
+            public void showBirthdayDatePicker(String date) {
                 if (mSignupCallback != null) {
-                    mSignupCallback.showBirthdayDatePicker();
+                    mSignupCallback.showBirthdayDatePicker(date);
                 }
             }
         });
@@ -169,7 +169,7 @@ public class LoginView extends LinearLayout {
      * Set signup birthday text
      * @param birthday
      */
-    public void setSignupBirthdayText(String birthday) {
+    public void setSignupBirthday(String birthday) {
         mContentSignupView.setBirthday(birthday);
     }
 
@@ -186,6 +186,6 @@ public class LoginView extends LinearLayout {
      */
     public interface SignupCallback {
         void onSignupValidated();
-        void showBirthdayDatePicker();
+        void showBirthdayDatePicker(String date);
     }
 }

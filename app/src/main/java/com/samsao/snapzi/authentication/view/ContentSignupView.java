@@ -84,6 +84,12 @@ public class ContentSignupView extends LinearLayout implements Validator.Validat
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
+        mBirthdayEditText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.showBirthdayDatePicker(mBirthdayEditText.getText().toString());
+            }
+        });
         mBirthdayEditText.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
@@ -162,13 +168,11 @@ public class ContentSignupView extends LinearLayout implements Validator.Validat
 
     @OnClick(R.id.view_login_content_signup_birthday_editText)
     public void showBirthdayDatePicker() {
-        mCallback.showBirthdayDatePicker();
+        mCallback.showBirthdayDatePicker(getBirthday());
     }
-
-
 
     public interface Callback {
         void onSignup();
-        void showBirthdayDatePicker();
+        void showBirthdayDatePicker(String date);
     }
 }
