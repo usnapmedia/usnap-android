@@ -41,7 +41,7 @@
 
     <Button
         android:id="@+id/view_login_content_login_btn"
-        style="@style/LoginButton"
+        style="@style/AppButton"
         android:text="@string/action_login"/>
 
 </merge>

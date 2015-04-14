@@ -1,20 +1,20 @@
-package com.samsao.snapzi.preferences;
+package com.samsao.snapzi.social;
 
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.samsao.snapzi.MainActivity;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.social.OnGooglePlusLoginListener;
-import com.samsao.snapzi.social.SocialNetworkFragment;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.Permission;
@@ -30,16 +30,18 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 
-public class PreferencesFragment extends SocialNetworkFragment {
+public class ShareFragment extends SocialNetworkFragment {
 
-    @InjectView(R.id.fragment_preferences_facebook)
+    @InjectView(R.id.fragment_share_facebook)
     public Switch mFacebookSwitch;
-    @InjectView(R.id.fragment_preferences_twitter)
+    @InjectView(R.id.fragment_share_twitter)
     public Switch mTwitterSwitch;
-    @InjectView(R.id.fragment_preferences_gplus)
+    @InjectView(R.id.fragment_share_gplus)
     public Switch mGooglePlusSwitch;
-    @InjectView(R.id.fragment_preferences_instagram)
-    public Switch mInstagramSwitch;
+    @InjectView(R.id.fragment_share_comment_editText)
+    public EditText mCommentEditText;
+    @InjectView(R.id.fragment_share_toolbar)
+    public Toolbar mToolbar;
 
     /**
      * Switches onChange listeners
@@ -57,12 +59,12 @@ public class PreferencesFragment extends SocialNetworkFragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static PreferencesFragment newInstance() {
-        PreferencesFragment fragment = new PreferencesFragment();
+    public static ShareFragment newInstance() {
+        ShareFragment fragment = new ShareFragment();
         return fragment;
     }
 
-    public PreferencesFragment() {
+    public ShareFragment() {
         // Required empty public constructor
     }
 
@@ -70,8 +72,9 @@ public class PreferencesFragment extends SocialNetworkFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_preferences, container, false);
+        View view = inflater.inflate(R.layout.fragment_share, container, false);
         ButterKnife.inject(this, view);
+        setupToolbar();
 
         mFacebookSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -82,6 +85,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                         public void onLogin() {
                             setFacebookAccessToken();
                             mFacebookSwitch.setChecked(true);
+                            // TODO translation
                             Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
                         }
 
@@ -91,6 +95,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                             mFacebookSwitch.setOnCheckedChangeListener(null);
                             mFacebookSwitch.setChecked(false);
                             mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+                            // TODO translation
                             Toast.makeText(getActivity(), "Facebook login failed: user did not accept permissions", Toast.LENGTH_SHORT).show();
                         }
 
@@ -105,6 +110,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                             mFacebookSwitch.setOnCheckedChangeListener(null);
                             mFacebookSwitch.setChecked(false);
                             mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+                            // TODO translation
                             Toast.makeText(getActivity(), "Facebook login failed: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
@@ -114,6 +120,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                             mFacebookSwitch.setOnCheckedChangeListener(null);
                             mFacebookSwitch.setChecked(false);
                             mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+                            // TODO translation
                             Toast.makeText(getActivity(), "Facebook login failed: " + error, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -151,6 +158,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                         @Override
                         public void success(Result<TwitterSession> twitterSessionResult) {
                             setTwitterAccessToken();
+                            // TODO translation
                             Toast.makeText(getActivity(), "Twitter login success", Toast.LENGTH_SHORT).show();
                         }
 
@@ -160,6 +168,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                             mTwitterSwitch.setOnCheckedChangeListener(null);
                             mTwitterSwitch.setChecked(false);
                             mTwitterSwitch.setOnCheckedChangeListener(mTwitterSwitchOnCheckedChangeListener);
+                            // TODO translation
                             Toast.makeText(getActivity(), "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -177,6 +186,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                         @Override
                         public void onSuccess() {
                             setGooglePlusAccessToken();
+                            // TODO translation
                             Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
                         }
 
@@ -186,6 +196,7 @@ public class PreferencesFragment extends SocialNetworkFragment {
                             mGooglePlusSwitch.setOnCheckedChangeListener(null);
                             mGooglePlusSwitch.setChecked(false);
                             mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
+                            // TODO translation
                             Toast.makeText(getActivity(), "Google+ login failed", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -203,6 +214,18 @@ public class PreferencesFragment extends SocialNetworkFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -238,37 +261,19 @@ public class PreferencesFragment extends SocialNetworkFragment {
         mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
     }
 
-    @OnClick(R.id.fragment_preferences_logout_btn)
-    public void logout() {
-        logoutFromFacebook(new OnLogoutListener() {
-            @Override
-            public void onLogout() {
+    /**
+     * Setup the toolbar
+     */
+    public void setupToolbar() {
+        if (mToolbar != null) {
+            ((ActionBarActivity)getActivity()).setSupportActionBar(mToolbar);
+        }
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
 
-            }
-
-            @Override
-            public void onThinking() {
-
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onFail(String s) {
-
-            }
-        });
-        logoutFromTwitter();
-        logoutFromGooglePlus();
-        // TODO instagram
-        // TODO logout from backend
-
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        getActivity().finish();
+    @OnClick(R.id.fragment_share_share_btn)
+    public void share() {
+        Toast.makeText(getActivity(), "TODO: share", Toast.LENGTH_SHORT).show();
     }
 }

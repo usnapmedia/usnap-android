@@ -92,7 +92,7 @@
 
     <Button
         android:id="@+id/view_login_content_signup_btn"
-        style="@style/LoginButton"
+        style="@style/AppButton"
         android:text="@string/action_signup"/>
 
 </merge>
