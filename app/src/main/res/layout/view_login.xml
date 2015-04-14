@@ -9,21 +9,23 @@
 
         <Button
             android:id="@+id/view_login_signupToggle_btn"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/action_signup"
             android:textColor="@color/dark_gray"
-            android:background="@drawable/sel_login_toggle_btn"/>
+            android:background="@drawable/sel_login_toggle_signup_btn"/>
 
         <Button
             android:id="@+id/view_login_loginToggle_btn"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/action_login"
             android:textColor="@color/dark_gray"
-            android:background="@drawable/sel_login_toggle_btn"/>
+            android:background="@drawable/sel_login_toggle_login_btn"/>
 
     </LinearLayout>
 
@@ -35,6 +37,11 @@
             android:id="@+id/view_login_content_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <com.samsao.snapzi.authentication.view.ContentSignupView
+            android:id="@+id/view_login_content_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </FrameLayout>
 

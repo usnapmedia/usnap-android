@@ -157,6 +157,5 @@ public class UserManager {
         removeFacebookAccessToken();
         removeGooglePlusAccessToken();
         removeTwitterAccessToken();
-        // TODO check if we need to call the backend
     }
 }

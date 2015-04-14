@@ -11,12 +11,15 @@ import com.samsao.snapzi.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * @author jfcartier
  * @since 15-04-11
  */
-public class LoginView extends LinearLayout implements ContentLoginView.Callback {
+public class LoginView extends LinearLayout implements ContentLoginView.Callback,
+        ContentSignupView.Callback {
+
     @InjectView(R.id.view_login_signupToggle_btn)
     public Button mSignupToggleButton;
 
@@ -25,6 +28,9 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
 
     @InjectView(R.id.view_login_content_login)
     public ContentLoginView mContentLoginView;
+
+    @InjectView(R.id.view_login_content_signup)
+    public ContentSignupView mContentSignupView;
 
     public LoginView(Context context) {
         super(context);
@@ -53,6 +59,7 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
         mContentLoginView.setCallback(this);
+        mContentSignupView.setCallback(this);
         showLoginContent();
     }
 
@@ -65,14 +72,37 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
     /**
      * Show login content
      */
+    @OnClick(R.id.view_login_loginToggle_btn)
     public void showLoginContent() {
         mSignupToggleButton.setEnabled(true);
         mLoginToggleButton.setEnabled(false);
+        mContentSignupView.setVisibility(GONE);
         mContentLoginView.setVisibility(VISIBLE);
+    }
+
+    /**
+     * Show signup content
+     */
+    @OnClick(R.id.view_login_signupToggle_btn)
+    public void showSignupContent() {
+        mSignupToggleButton.setEnabled(false);
+        mLoginToggleButton.setEnabled(true);
+        mContentSignupView.setVisibility(VISIBLE);
+        mContentLoginView.setVisibility(GONE);
     }
 
     @Override
     public void onLogin() {
+        // TODO
+    }
+
+    @Override
+    public void onSignup() {
+        // TODO
+    }
+
+    @Override
+    public void showBirthdayDatePicker() {
         // TODO
     }
 }

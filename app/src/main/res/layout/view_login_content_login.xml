@@ -14,32 +14,18 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/view_login_content_login_username_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/LoginEditText"
             android:hint="@string/username"
             android:inputType="textEmailAddress"
-            app:met_baseColor="@color/pink"
-            app:met_primaryColor="@color/pink"
-            app:met_floatingLabel="highlight"
-            app:met_floatingLabelText="@string/username"
-            app:met_floatingLabelAnimating="true"
-            app:met_textColor="@color/dark_gray"
-            app:met_textColorHint="@color/text_hint" />
+            app:met_floatingLabelText="@string/username"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/view_login_content_login_password_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/LoginEditText"
             android:hint="@string/password"
             android:inputType="textPassword"
             android:fontFamily="sans-serif"
-            app:met_baseColor="@color/pink"
-            app:met_primaryColor="@color/pink"
-            app:met_floatingLabel="highlight"
             app:met_floatingLabelText="@string/password"
-            app:met_floatingLabelAnimating="true"
-            app:met_textColor="@color/dark_gray"
-            app:met_textColorHint="@color/text_hint"
             android:layout_marginTop="@dimen/elements_vertical_margin"/>
 
         <Button
@@ -47,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/reset_password"
-            android:textColor="@color/pink"
+            android:textColor="?colorAccent"
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/elements_vertical_margin" />
 
@@ -55,10 +41,7 @@
 
     <Button
         android:id="@+id/view_login_content_login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/dark_gray"
-        android:text="@string/action_login"
-        android:background="@drawable/sel_login_btn"/>
+        style="@style/LoginButton"
+        android:text="@string/action_login"/>
 
 </merge>
