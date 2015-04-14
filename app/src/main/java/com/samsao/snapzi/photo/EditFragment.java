@@ -1,6 +1,7 @@
 package com.samsao.snapzi.photo;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
 import com.samsao.snapzi.photo.tools.ToolText;
 import com.samsao.snapzi.photo.util.TextAnnotationEditText;
+import com.samsao.snapzi.util.PhotoUtil;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -127,6 +130,7 @@ public class EditFragment extends Fragment {
             public void onSuccess() {
                 Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
                 toolDraw.setCanvasHeight(bitmap.getHeight()).setCanvasWidth(bitmap.getWidth());
+                refreshEditArea();
             }
 
             @Override
@@ -172,6 +176,7 @@ public class EditFragment extends Fragment {
 
     /**
      * Refreshes the image
+     *
      * @param transformation
      */
     public void refreshImage(Transformation transformation) {
@@ -180,7 +185,17 @@ public class EditFragment extends Fragment {
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
-        requestCreator.into(mImage);
+        requestCreator.into(mImage, new Callback() {
+            @Override
+            public void onSuccess() {
+                refreshEditArea();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     // FIXME I don't think we need this anymore
@@ -223,6 +238,7 @@ public class EditFragment extends Fragment {
 
     /**
      * Get the menu items associated with current tools
+     *
      * @return
      */
     private ArrayList<MenuItem> getMenuItemsForTools() {
@@ -235,6 +251,7 @@ public class EditFragment extends Fragment {
 
     /**
      * Replaces the tool container view
+     *
      * @param resId
      */
     public View showToolContainer(int resId) {
@@ -254,6 +271,7 @@ public class EditFragment extends Fragment {
 
     /**
      * Set the current tool
+     *
      * @param currentTool
      * @throws UnsupportedOperationException
      */
@@ -266,6 +284,7 @@ public class EditFragment extends Fragment {
 
     /**
      * This method shows the edit options menu
+     *
      * @param showDone
      * @param showClear
      * @param showUndo
@@ -292,8 +311,10 @@ public class EditFragment extends Fragment {
     public void resetOptionsMenu() {
         mListener.resetMenu();
     }
+
     /**
      * Returns the text annotation EditText
+     *
      * @return
      */
     public EditText getTextAnnotation() {
@@ -302,6 +323,7 @@ public class EditFragment extends Fragment {
 
     /**
      * Returns the DrawAnnotationContainer
+     *
      * @return
      */
     public DrawableView getDrawAnnotationContainer() {
@@ -319,7 +341,7 @@ public class EditFragment extends Fragment {
             }
         });
 
-        for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
+        for (int i = 0; i < mTextAnnotationContainer.getChildCount(); ++i) {
             mTextAnnotationContainer.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -334,13 +356,14 @@ public class EditFragment extends Fragment {
      */
     public void enableTextAnnotationContainerTouchEvent() {
         mTextAnnotationContainer.setOnTouchListener(null);
-        for(int i=0; i < mTextAnnotationContainer.getChildCount(); ++i) {
+        for (int i = 0; i < mTextAnnotationContainer.getChildCount(); ++i) {
             mTextAnnotationContainer.getChildAt(i).setOnTouchListener(null);
         }
     }
 
     /**
      * Get the text annotation container
+     *
      * @return
      */
     public FrameLayout getTextAnnotationContainer() {
@@ -478,15 +501,35 @@ public class EditFragment extends Fragment {
         showToolbar();
     }
 
+    private void refreshEditArea() {
+        if (mDrawAnnotationContainer != null) {
+            // Bound drawing area to displayed image size
+            PhotoUtil.ImageSize imageSize = PhotoUtil.getImageSizeFromImageView(mImage);
+            ViewGroup.LayoutParams drawAnnotationContainerLayoutParam = mDrawAnnotationContainer.getLayoutParams();
+            drawAnnotationContainerLayoutParam.width = imageSize.getWidth();
+            drawAnnotationContainerLayoutParam.height = imageSize.getHeight();
+            mDrawAnnotationContainer.setLayoutParams(drawAnnotationContainerLayoutParam);
+            mDrawAnnotationContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
     public interface Listener {
         Uri getImageUri();
+
         void saveBitmap(Bitmap bitmap);
+
         void resetMenu();
+
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
+
         Toolbar getToolbar();
+
         ArrayList<Tool> getTools();
+
         void setTools(ArrayList<Tool> tools);
+
         Tool getCurrentTool();
+
         void setCurrentTool(Tool currentTool);
     }
 }

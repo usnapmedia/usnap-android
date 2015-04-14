@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.camera.CameraHelper;
@@ -196,5 +198,55 @@ public class PhotoUtil {
         }
 
         return outputBitmap;
+    }
+
+    public static ImageSize getImageSizeFromImageView(ImageView imageView) {
+        if (imageView != null) {
+            final int imageViewWidth = imageView.getMeasuredWidth();
+            final int imageViewHeight = imageView.getMeasuredHeight();
+            final int originalImageWidth = imageView.getDrawable().getIntrinsicWidth();
+            final int originalImageHeight = imageView.getDrawable().getIntrinsicHeight();
+            final float widthScaleFactor = (float) imageViewWidth / (float) originalImageWidth;
+            final float heightScaleFactor = (float) imageViewHeight / (float) originalImageHeight;
+            float imageScaleFactor;
+
+            // Find image scale factor
+            if (widthScaleFactor < heightScaleFactor) {
+                imageScaleFactor = widthScaleFactor;
+            } else {
+                imageScaleFactor = heightScaleFactor;
+            }
+
+            return new ImageSize((int) (originalImageWidth * imageScaleFactor),
+                    (int) (originalImageHeight * imageScaleFactor));
+        } else {
+            return new ImageSize(0, 0);
+        }
+    }
+
+    public static class ImageSize {
+        private int mWidth;
+        private int mHeight;
+
+        public ImageSize(int width, int height) {
+            mWidth = width;
+            mHeight = height;
+        }
+
+        public int getWidth() {
+            return mWidth;
+        }
+
+        public void setWidth(int width) {
+            mWidth = width;
+        }
+
+        public int getHeight() {
+            return mHeight;
+        }
+
+        public void setHeight(int height) {
+            mHeight = height;
+        }
     }
 }
