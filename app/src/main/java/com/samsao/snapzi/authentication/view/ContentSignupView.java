@@ -84,10 +84,13 @@ public class ContentSignupView extends LinearLayout implements Validator.Validat
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
-        mBirthdayEditText.setOnClickListener(new OnClickListener() {
+        mBirthdayEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                mCallback.showBirthdayDatePicker(mBirthdayEditText.getText().toString());
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    KeyboardUtil.hideKeyboard(v);
+                    mCallback.showBirthdayDatePicker(mBirthdayEditText.getText().toString());
+                }
             }
         });
         mBirthdayEditText.setOnEditorActionListener(
