@@ -31,6 +31,7 @@ import com.samsao.snapzi.photo.tools.ToolText;
 import com.samsao.snapzi.photo.util.TextAnnotationEditText;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -122,7 +123,10 @@ public class PhotoEditFragment extends Fragment {
         mRecyclerView.setAdapter(mMenuItemAdapter);
 
         // load the image
-        Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder().into(mImage, new Callback() {
+        Picasso.with(getActivity()).load(mListener.getImageUri())
+                .noPlaceholder()
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .into(mImage, new Callback() {
             @Override
             public void onSuccess() {
                 Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
@@ -180,7 +184,7 @@ public class PhotoEditFragment extends Fragment {
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
-        requestCreator.into(mImage);
+        requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(mImage);
     }
 
     // FIXME I don't think we need this anymore
