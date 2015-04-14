@@ -30,7 +30,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_photo_edit_tool_list_item, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_edit_tool_list_item, parent, false));
     }
 
     @Override
@@ -61,8 +61,8 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
-            mName = (TextView) view.findViewById(R.id.fragment_photo_edit_tool_name);
-            mImage = (ImageView) view.findViewById(R.id.fragment_photo_edit_tool_image);
+            mName = (TextView) view.findViewById(R.id.fragment_edit_tool_name);
+            mImage = (ImageView) view.findViewById(R.id.fragment_edit_tool_image);
         }
 
         public void setup(MenuItem item) {

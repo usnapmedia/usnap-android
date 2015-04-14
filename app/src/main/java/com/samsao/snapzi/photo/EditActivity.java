@@ -22,13 +22,13 @@ import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
-public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFragment.Listener {
-    public static final String EXTRA_URI = "com.samsao.snapzi.photo.PhotoEditActivity.EXTRA_URI";
+public class EditActivity extends ActionBarActivity implements EditFragment.Listener {
+    public static final String EXTRA_URI = "com.samsao.snapzi.photo.EditActivity.EXTRA_URI";
 
-    @InjectView(R.id.activity_photo_edit_toolbar)
+    @InjectView(R.id.activity_edit_toolbar)
     public Toolbar mToolbar;
 
-    private PhotoEditFragment mPhotoEditFragment;
+    private EditFragment mEditFragment;
 
     @Icicle
     public Uri mImageUri;
@@ -42,7 +42,7 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_edit);
+        setContentView(R.layout.activity_edit);
         ButterKnife.inject(this);
         setupToolbar();
 
@@ -55,8 +55,8 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         if (savedInstanceState == null) {
-            mPhotoEditFragment = PhotoEditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.activity_photo_edit_content, mPhotoEditFragment).commit();
+            mEditFragment = EditFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
         }
     }
 
@@ -71,8 +71,8 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
         switch(requestCode) {
             case Crop.REQUEST_CROP:
                 if (resultCode == Activity.RESULT_OK && null != data) {
-                    if (mPhotoEditFragment != null) {
-                        mPhotoEditFragment.refreshImage();
+                    if (mEditFragment != null) {
+                        mEditFragment.refreshImage();
                     }
                 }
                 break;
@@ -91,29 +91,29 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.activity_photo_edit_next:
-                if (mPhotoEditFragment != null) {
-                    mPhotoEditFragment.onOptionsNextSelected();
+            case R.id.activity_edit_next:
+                if (mEditFragment != null) {
+                    mEditFragment.onOptionsNextSelected();
                 }
                 return true;
-            case R.id.activity_photo_edit_clear:
-                if (mPhotoEditFragment != null) {
-                    mPhotoEditFragment.onOptionsClearSelected();
+            case R.id.activity_edit_clear:
+                if (mEditFragment != null) {
+                    mEditFragment.onOptionsClearSelected();
                 }
                 return true;
-            case R.id.activity_photo_edit_undo:
-                if (mPhotoEditFragment != null) {
-                    mPhotoEditFragment.onOptionsUndoSelected();
+            case R.id.activity_edit_undo:
+                if (mEditFragment != null) {
+                    mEditFragment.onOptionsUndoSelected();
                 }
                 return true;
-            case R.id.activity_photo_edit_done:
-                if (mPhotoEditFragment != null) {
-                    mPhotoEditFragment.onOptionsDoneSelected();
+            case R.id.activity_edit_done:
+                if (mEditFragment != null) {
+                    mEditFragment.onOptionsDoneSelected();
                 }
                 return true;
             case android.R.id.home:
-                if (mPhotoEditFragment != null) {
-                    mPhotoEditFragment.onOptionsHomeSelected();
+                if (mEditFragment != null) {
+                    mEditFragment.onOptionsHomeSelected();
                 } else {
                     finish();
                 }
@@ -125,8 +125,8 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
 
     @Override
     public void onBackPressed() {
-        if (mPhotoEditFragment != null) {
-            mPhotoEditFragment.onOptionsHomeSelected();
+        if (mEditFragment != null) {
+            mEditFragment.onOptionsHomeSelected();
         } else {
             finish();
         }

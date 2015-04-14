@@ -1,7 +1,6 @@
 package com.samsao.snapzi.photo;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -16,7 +15,7 @@ import com.samsao.snapzi.R;
 public class MenuStateView extends MenuState {
     @Override
     public void onCreateOptionsMenu(MenuInflater menuInflater, Menu menu) {
-        menuInflater.inflate(R.menu.activity_photo_edit, menu);
+        menuInflater.inflate(R.menu.activity_edit, menu);
     }
 
 

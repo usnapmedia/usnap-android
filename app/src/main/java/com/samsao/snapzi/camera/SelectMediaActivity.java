@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.PhotoEditActivity;
+import com.samsao.snapzi.photo.EditActivity;
 import com.samsao.snapzi.util.MediaUtil;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
@@ -208,8 +208,8 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
     @Override
     public void startEditImageActivity() {
-        Intent editImageIntent = new Intent(this, PhotoEditActivity.class);
-        editImageIntent.putExtra(PhotoEditActivity.EXTRA_URI, CameraHelper.getImageUri());
+        Intent editImageIntent = new Intent(this, EditActivity.class);
+        editImageIntent.putExtra(EditActivity.EXTRA_URI, CameraHelper.getImageUri());
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.releaseCamera();
         }

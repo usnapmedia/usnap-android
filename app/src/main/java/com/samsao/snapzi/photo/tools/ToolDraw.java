@@ -9,7 +9,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.PhotoEditFragment;
+import com.samsao.snapzi.photo.EditFragment;
 import com.samsao.snapzi.util.StringUtil;
 
 import me.panavtec.drawableview.DrawableViewConfig;
@@ -80,7 +80,7 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
     }
 
     @Override
-    public Tool setToolFragment(PhotoEditFragment toolFragment) {
+    public Tool setToolFragment(EditFragment toolFragment) {
         super.setToolFragment(toolFragment);
         toolFragment.getDrawAnnotationContainer().setConfig(mDrawableViewConfig);
         return this;

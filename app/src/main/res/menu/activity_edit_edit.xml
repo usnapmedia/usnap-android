@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) 2014 Samsao Development Inc.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/activity_edit_clear"
+        android:icon="@drawable/ic_clear_white_24dp"
+        android:title="@string/action_clear"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/activity_edit_undo"
+        android:icon="@drawable/ic_undo_white_24dp"
+        android:title="@string/action_undo"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/activity_edit_done"
+        android:icon="@drawable/ic_done_white_24dp"
+        android:title="@string/action_done"
+        app:showAsAction="ifRoom" />
+
+</menu>

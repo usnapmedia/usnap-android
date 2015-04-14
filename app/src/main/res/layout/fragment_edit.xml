@@ -2,27 +2,27 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.samsao.snapzi.photo.PhotoEditFragment">
+             tools:context="com.samsao.snapzi.photo.EditFragment">
 
     <ImageView
-        android:id="@+id/fragment_photo_edit_image"
+        android:id="@+id/fragment_edit_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
     <me.panavtec.drawableview.DrawableView
-        android:id="@+id/fragment_photo_edit_draw_annotation_container"
+        android:id="@+id/fragment_edit_draw_annotation_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
 
     <FrameLayout
-        android:id="@+id/fragment_photo_edit_text_annotation_container"
+        android:id="@+id/fragment_edit_text_annotation_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.samsao.snapzi.photo.util.TextAnnotationEditText
-            android:id="@+id/fragment_photo_edit_text_annotation_container_text"
+            android:id="@+id/fragment_edit_text_annotation_container_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -42,7 +42,7 @@
     </FrameLayout>|
 
     <FrameLayout
-        android:id="@+id/fragment_photo_tool_container"
+        android:id="@+id/fragment_tool_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"/>

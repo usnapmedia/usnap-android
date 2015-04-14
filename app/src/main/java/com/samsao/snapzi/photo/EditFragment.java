@@ -45,26 +45,26 @@ import me.panavtec.drawableview.DrawableView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhotoEditFragment extends Fragment {
+public class EditFragment extends Fragment {
 
     private final int ANIMATION_DURATION = 300;
 
-    @InjectView(R.id.fragment_photo_edit_image)
+    @InjectView(R.id.fragment_edit_image)
     public ImageView mImage;
 
     @InjectView(R.id.fragment_cafe_list_recyclerview)
     public RecyclerView mRecyclerView;
 
-    @InjectView(R.id.fragment_photo_edit_text_annotation_container)
+    @InjectView(R.id.fragment_edit_text_annotation_container)
     public FrameLayout mTextAnnotationContainer;
 
-    @InjectView(R.id.fragment_photo_edit_draw_annotation_container)
+    @InjectView(R.id.fragment_edit_draw_annotation_container)
     public DrawableView mDrawAnnotationContainer;
 
-    @InjectView(R.id.fragment_photo_tool_container)
+    @InjectView(R.id.fragment_tool_container)
     public FrameLayout mToolContainer;
 
-    @InjectView(R.id.fragment_photo_edit_text_annotation_container_text)
+    @InjectView(R.id.fragment_edit_text_annotation_container_text)
     @Optional
     public TextAnnotationEditText mTextAnnotation;
 
@@ -76,14 +76,14 @@ public class PhotoEditFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment PhotoEditFragment.
+     * @return A new instance of fragment EditFragment.
      */
-    public static PhotoEditFragment newInstance() {
-        PhotoEditFragment fragment = new PhotoEditFragment();
+    public static EditFragment newInstance() {
+        EditFragment fragment = new EditFragment();
         return fragment;
     }
 
-    public PhotoEditFragment() {
+    public EditFragment() {
         // Required empty public constructor
     }
 
@@ -91,7 +91,7 @@ public class PhotoEditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_photo_edit, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit, container, false);
         ButterKnife.inject(this, view);
 
         // TODO read the value from gradle to know what tools to instantiate
@@ -159,7 +159,7 @@ public class PhotoEditFragment extends Fragment {
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement PhotoEditFragment.Listener");
+                    + " must implement EditFragment.Listener");
         }
     }
 

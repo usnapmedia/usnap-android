@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.PhotoEditFragment;
+import com.samsao.snapzi.photo.EditFragment;
 import com.samsao.snapzi.photo.util.TextAnnotationTouchListener;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.StringUtil;
@@ -51,7 +51,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     }
 
     @Override
-    public Tool setToolFragment(PhotoEditFragment toolFragment) {
+    public Tool setToolFragment(EditFragment toolFragment) {
         super.setToolFragment(toolFragment);
         mToolFragment.getTextAnnotation().setTextColor(ToolOptionTextColor.DEFAULT_COLOR);
         mToolFragment.getTextAnnotation().setOnEditorActionListener(

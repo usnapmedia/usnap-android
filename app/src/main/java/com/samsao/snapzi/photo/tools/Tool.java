@@ -3,10 +3,11 @@ package com.samsao.snapzi.photo.tools;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
+import com.samsao.snapzi.photo.EditFragment;
 import com.samsao.snapzi.photo.MenuItem;
-import com.samsao.snapzi.photo.PhotoEditFragment;
 
 import java.util.ArrayList;
+
 
 /**
  * @author jfcartier
@@ -34,7 +35,7 @@ public abstract class Tool implements Parcelable {
     /**
      * Associated Fragment
      */
-    protected PhotoEditFragment mToolFragment;
+    protected EditFragment mToolFragment;
 
     /**
      * Constructor
@@ -47,6 +48,7 @@ public abstract class Tool implements Parcelable {
 
     /**
      * Return the menu item for this tool
+     *
      * @return
      */
     public MenuItem getMenuItem() {
@@ -75,12 +77,14 @@ public abstract class Tool implements Parcelable {
 
     /**
      * Return the name of this tool
+     *
      * @return
      */
     public abstract String getName();
 
     /**
      * Return the image resource of this tool
+     *
      * @return
      */
     public abstract int getImageResource();
@@ -151,17 +155,18 @@ public abstract class Tool implements Parcelable {
         mToolFragment.setMenuItems(items);
     }
 
-    public PhotoEditFragment getToolFragment() {
+    public EditFragment getToolFragment() {
         return mToolFragment;
     }
 
-    public Tool setToolFragment(PhotoEditFragment toolFragment) {
+    public Tool setToolFragment(EditFragment toolFragment) {
         mToolFragment = toolFragment;
         return this;
     }
 
     /**
      * Select an option
+     *
      * @param toolOption
      */
     public void selectOption(ToolOption toolOption) {
@@ -176,6 +181,7 @@ public abstract class Tool implements Parcelable {
 
     /**
      * Add an option to the options list
+     *
      * @param option
      */
     public void addOption(ToolOption option) {
@@ -184,6 +190,7 @@ public abstract class Tool implements Parcelable {
 
     /**
      * Check if there's an option selected
+     *
      * @return
      */
     public boolean hasOptionSelected() {

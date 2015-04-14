@@ -21,21 +21,21 @@ public class MenuStateEdit extends MenuState implements Parcelable {
 
     @Override
     public void onCreateOptionsMenu(MenuInflater menuInflater, Menu menu) {
-        menuInflater.inflate(R.menu.activity_photo_edit_edit, menu);
+        menuInflater.inflate(R.menu.activity_edit_edit, menu);
         if (!mShowDone) {
-            android.view.MenuItem item = menu.findItem(R.id.activity_photo_edit_done);
+            android.view.MenuItem item = menu.findItem(R.id.activity_edit_done);
             if (item != null) {
                 item.setVisible(false);
             }
         }
         if (!mShowClear) {
-            android.view.MenuItem item = menu.findItem(R.id.activity_photo_edit_clear);
+            android.view.MenuItem item = menu.findItem(R.id.activity_edit_clear);
             if (item != null) {
                 item.setVisible(false);
             }
         }
         if (!mShowUndo) {
-            android.view.MenuItem item = menu.findItem(R.id.activity_photo_edit_undo);
+            android.view.MenuItem item = menu.findItem(R.id.activity_edit_undo);
             if (item != null) {
                 item.setVisible(false);
             }
