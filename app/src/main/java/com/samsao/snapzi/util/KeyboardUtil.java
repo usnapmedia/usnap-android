@@ -9,6 +9,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.samsao.snapzi.SnapziApplication;
+
 /**
  * @author jfcartier
  * @since 2014-07-24
@@ -35,5 +37,14 @@ public class KeyboardUtil {
             InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(viewWithFocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    /**
+     * Hide soft keyboard
+     * @param view
+     */
+    public static void hideKeyboard(View view) {
+        InputMethodManager inputManager = (InputMethodManager) SnapziApplication.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

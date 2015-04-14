@@ -11,6 +11,7 @@ import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -63,7 +64,7 @@ public class ApiService {
      * UserManager
      * TODO inject me
      */
-    private UserManager mUserManager;
+    private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     /**
      * Constructor
@@ -143,23 +144,13 @@ public class ApiService {
     }
 
     /**
-     * Register
-     * @param email
-     * @param password
-     * @param callback
-     */
-    public void register(String email, String password, Callback<Response> callback) {
-        mApiService.register(email, password, callback);
-    }
-
-    /**
      * Login
-     * @param email
+     * @param username
      * @param password
      * @param callback
      */
-    public void login(String email, String password, Callback<Response> callback) {
-        mApiService.login(email, password, callback);
+    public void login(String username, String password, Callback<Response> callback) {
+        mApiService.login(username, password, callback);
     }
 }
 

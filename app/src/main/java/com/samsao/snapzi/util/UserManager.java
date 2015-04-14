@@ -149,6 +149,20 @@ public class UserManager {
     }
 
     /**
+     * Logs the user in
+     * @param username
+     * @param password
+     * @throws IllegalArgumentException
+     */
+    public void login(String username, String password) throws IllegalArgumentException {
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+            throw new IllegalArgumentException();
+        }
+        setUsername(username);
+        setPassword(password);
+    }
+
+    /**
      * Logs the user out
      */
     public void logout() {

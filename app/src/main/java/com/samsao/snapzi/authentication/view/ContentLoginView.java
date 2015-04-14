@@ -3,19 +3,21 @@ package com.samsao.snapzi.authentication.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
-
-import java.lang.ref.WeakReference;
+import com.samsao.snapzi.util.KeyboardUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -39,7 +41,7 @@ public class ContentLoginView extends LinearLayout implements com.mobsandgeeks.s
     public Button mResetPasswordButton;
 
     private Validator mValidator;
-    private WeakReference<Callback> mCallback;
+    private Callback mCallback;
 
     public ContentLoginView(Context context) {
         super(context);
@@ -67,6 +69,18 @@ public class ContentLoginView extends LinearLayout implements com.mobsandgeeks.s
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
+        mPasswordEditText.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            KeyboardUtil.hideKeyboard(mPasswordEditText);
+                            login();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
         mValidator = new Validator(this);
         mValidator.setValidationListener(this);
         mCallback = null;
@@ -82,8 +96,8 @@ public class ContentLoginView extends LinearLayout implements com.mobsandgeeks.s
 
     @Override
     public void onValidationSucceeded() {
-        if (mCallback != null && mCallback.get() != null) {
-            mCallback.get().onLogin();
+        if (mCallback != null) {
+            mCallback.onLogin();
         }
     }
 
@@ -95,7 +109,15 @@ public class ContentLoginView extends LinearLayout implements com.mobsandgeeks.s
     }
 
     public void setCallback(Callback callback) {
-        mCallback = new WeakReference<>(callback);
+        mCallback = callback;
+    }
+
+    public String getUsername() {
+        return mUsernameEditText.getText().toString();
+    }
+
+    public String getPassword() {
+        return mPasswordEditText.getText().toString();
     }
 
     @OnClick(R.id.view_login_content_login_btn)
@@ -103,7 +125,13 @@ public class ContentLoginView extends LinearLayout implements com.mobsandgeeks.s
         mValidator.validate();
     }
 
+    @OnClick(R.id.view_login_content_login_resetPassword_btn)
+    public void onResetPasswordClick() {
+        mCallback.onResetPasswordClick();
+    }
+
     public interface Callback {
         void onLogin();
+        void onResetPasswordClick();
     }
 }

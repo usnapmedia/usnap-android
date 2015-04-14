@@ -15,15 +15,21 @@ import retrofit.http.POST;
  * @since 2014-05-29
  */
 public interface SnapziApi {
-    // TODO add fields
+    // TODO fix fields
     @POST("/register")
-    public void register(@Field("email") String email,
-                      @Field("register") String password,
-                      Callback<Response> callback);
-
-    @POST("/login")
-    public void login(@Field("email") String email,
-                         @Field("register") String password,
+    public void register(@Field("username") String username,
+                         @Field("password") String password,
+                         @Field("email") String email,
+                         @Field("first_name") String firstName,
+                         @Field("last_name") String lastName,
+                         @Field("birthday") String birthday,
                          Callback<Response> callback);
+
+
+    // TODO rename email tu username
+    @POST("/login")
+    public void login(@Field("email") String username,
+                      @Field("password") String password,
+                      Callback<Response> callback);
 
 }

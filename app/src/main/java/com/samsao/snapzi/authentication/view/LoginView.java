@@ -17,8 +17,7 @@ import butterknife.OnClick;
  * @author jfcartier
  * @since 15-04-11
  */
-public class LoginView extends LinearLayout implements ContentLoginView.Callback,
-        ContentSignupView.Callback {
+public class LoginView extends LinearLayout {
 
     @InjectView(R.id.view_login_signupToggle_btn)
     public Button mSignupToggleButton;
@@ -31,6 +30,9 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
 
     @InjectView(R.id.view_login_content_signup)
     public ContentSignupView mContentSignupView;
+
+    private LoginCallback mLoginCallback;
+    private SignupCallback mSignupCallback;
 
     public LoginView(Context context) {
         super(context);
@@ -58,8 +60,37 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
         setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
         ButterKnife.inject(this, this);
-        mContentLoginView.setCallback(this);
-        mContentSignupView.setCallback(this);
+        mContentLoginView.setCallback(new ContentLoginView.Callback() {
+            @Override
+            public void onLogin() {
+                if (mLoginCallback != null) {
+                    mLoginCallback.onLoginValidated();
+                }
+            }
+
+            @Override
+            public void onResetPasswordClick() {
+                if (mLoginCallback != null) {
+                    mLoginCallback.onResetPasswordClick();
+                }
+            }
+        });
+
+        mContentSignupView.setCallback(new ContentSignupView.Callback() {
+            @Override
+            public void onSignup() {
+                if (mSignupCallback != null) {
+                    mSignupCallback.onSignupValidated();
+                }
+            }
+
+            @Override
+            public void showBirthdayDatePicker() {
+                if (mSignupCallback != null) {
+                    mSignupCallback.showBirthdayDatePicker();
+                }
+            }
+        });
         showLoginContent();
     }
 
@@ -67,6 +98,8 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         ButterKnife.reset(this);
+        mLoginCallback = null;
+        mSignupCallback = null;
     }
 
     /**
@@ -91,18 +124,67 @@ public class LoginView extends LinearLayout implements ContentLoginView.Callback
         mContentLoginView.setVisibility(GONE);
     }
 
-    @Override
-    public void onLogin() {
-        // TODO
+    public void setLoginCallback(LoginCallback loginCallback) {
+        mLoginCallback = loginCallback;
     }
 
-    @Override
-    public void onSignup() {
-        // TODO
+    public void setSignupCallback(SignupCallback signupCallback) {
+        mSignupCallback = signupCallback;
     }
 
-    @Override
-    public void showBirthdayDatePicker() {
-        // TODO
+    public String getLoginUsername() {
+        return mContentLoginView.getUsername();
+    }
+
+    public String getLoginPassword() {
+        return mContentLoginView.getPassword();
+    }
+
+    public String getSignupFirstName() {
+        return mContentSignupView.getFirstName();
+    }
+
+    public String getSignupLastName() {
+        return mContentSignupView.getLastName();
+    }
+
+    public String getSignupEmail() {
+        return mContentSignupView.getEmail();
+    }
+
+    public String getSignupUsername() {
+        return mContentSignupView.getUsername();
+    }
+
+    public String getSignupPassword() {
+        return mContentSignupView.getPassword();
+    }
+
+    public String getSignupBirthday() {
+        return mContentSignupView.getBirthday();
+    }
+
+    /**
+     * Set signup birthday text
+     * @param birthday
+     */
+    public void setSignupBirthdayText(String birthday) {
+        mContentSignupView.setBirthday(birthday);
+    }
+
+    /**
+     * Login callback
+     */
+    public interface LoginCallback {
+        void onLoginValidated();
+        void onResetPasswordClick();
+    }
+
+    /**
+     * Signup callback
+     */
+    public interface SignupCallback {
+        void onSignupValidated();
+        void showBirthdayDatePicker();
     }
 }

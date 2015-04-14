@@ -24,6 +24,7 @@
                 android:layout_weight="1"
                 android:hint="@string/first_name"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@+id/view_login_content_signup_lastName_editText"
                 app:met_floatingLabelText="@string/first_name"
                 android:layout_marginRight="@dimen/elements_half_horizontal_margin"/>
 
@@ -61,6 +62,7 @@
                 android:hint="@string/username"
                 android:inputType="textNoSuggestions"
                 app:met_floatingLabelText="@string/username"
+                android:nextFocusDown="@+id/view_login_content_signup_password_editText"
                 android:layout_marginRight="@dimen/elements_half_horizontal_margin"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
