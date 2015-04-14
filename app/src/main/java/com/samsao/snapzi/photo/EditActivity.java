@@ -23,13 +23,21 @@ import icepick.Icepick;
 import icepick.Icicle;
 
 public class EditActivity extends ActionBarActivity implements EditFragment.Listener {
+
+    /**
+     * Constants
+     */
+    public static final String EXTRA_IS_EDIT_PICTURE_MODE = "com.samsao.snapzi.photo.EditActivity.EXTRA_IS_EDIT_PICTURE_MODE";
     public static final String EXTRA_URI = "com.samsao.snapzi.photo.EditActivity.EXTRA_URI";
+    public static final String EXTRA_VIDEO_PATH = "com.samsao.snapzi.photo.EditActivity.EXTRA_VIDEO_PATH";
 
     @InjectView(R.id.activity_edit_toolbar)
     public Toolbar mToolbar;
 
     private EditFragment mEditFragment;
 
+    @Icicle
+    public boolean mIsEditPictureMode;
     @Icicle
     public Uri mImageUri;
     @Icicle
@@ -38,6 +46,8 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     public ArrayList<Tool> mTools;
     @Icicle
     public Tool mCurrentTool;
+    @Icicle
+    public String mVideoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +59,9 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         mMenuState = new MenuStateView();
         Intent intent = getIntent();
         if (intent != null) {
+            mIsEditPictureMode = intent.getBooleanExtra(EXTRA_IS_EDIT_PICTURE_MODE, true);
             mImageUri = intent.getParcelableExtra(EXTRA_URI);
+            mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
         }
         // restore saved state
         Icepick.restoreInstanceState(this, savedInstanceState);
@@ -162,6 +174,11 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     }
 
     @Override
+    public boolean isEditPictureMode() {
+        return mIsEditPictureMode;
+    }
+
+    @Override
     public Uri getImageUri() {
         return mImageUri;
     }
@@ -184,6 +201,11 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
 
     public void setCurrentTool(Tool currentTool) {
         mCurrentTool = currentTool;
+    }
+
+    @Override
+    public String getVideoPath() {
+        return mVideoPath;
     }
 
     /**

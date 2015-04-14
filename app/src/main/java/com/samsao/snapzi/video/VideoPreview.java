@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.VideoView;
 
@@ -31,9 +32,17 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
         CenterCrop
     }
 
+    public VideoPreview(Activity activity, String videoPath) {
+        super(activity);
+        init(LayoutMode.CenterCrop, videoPath);
+    }
+
     public VideoPreview(Activity activity, LayoutMode layoutMode, String videoPath) {
         super(activity);
+        init(layoutMode, videoPath);
+    }
 
+    private void init(LayoutMode layoutMode, String videoPath) {
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mHolder = getHolder();
@@ -64,31 +73,44 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        resizeToFitParentView();
+    }
+
+    /**
+     * Resize PhotoCamera view to fit it's parent container
+     */
+    public void resizeToFitParentView() {
+        int parentViewWidth = ((View) getParent()).getWidth();
+        int parentViewHeight = ((View) getParent()).getHeight();
+
+        if (!adjustSurfaceLayoutSize(parentViewWidth, parentViewHeight)) {
+            start();
+        }
+    }
+
+    /**
+     * Adjusts this VideoView dimension to our layout available space.
+     *
+     * @param availableWidth  available width of the parent container
+     * @param availableHeight available heigth of the parent container
+     */
+    private boolean adjustSurfaceLayoutSize(int availableWidth, int availableHeight) {
+        float previewSizeWidth, previewSizeHeight;
+        float heightScale, widthScale, previewSizeScale;
+
+        // Get video size
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
         metaRetriever.setDataSource(mVideoPath);
         int videoWidth = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
         int videoHeight = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
         metaRetriever.release();
 
-        if (!adjustSurfaceLayoutSize(videoWidth, videoHeight, width, height)) {
-            start();
-        }
-    }
-
-    /**
-     * Adjusts SurfaceView dimension to our layout available space.
-     */
-    private boolean adjustSurfaceLayoutSize(int targetedWidth, int targetedHeight,
-                                            int availableWidth, int availableHeight) {
-        float previewSizeWidth, previewSizeHeight;
-        float heightScale, widthScale, previewSizeScale;
-
         if (CameraHelper.isPortrait(getContext())) {
-            previewSizeWidth = targetedHeight;
-            previewSizeHeight = targetedWidth;
+            previewSizeWidth = videoHeight;
+            previewSizeHeight = videoWidth;
         } else {
-            previewSizeWidth = targetedWidth;
-            previewSizeHeight = targetedHeight;
+            previewSizeWidth = videoWidth;
+            previewSizeHeight = videoHeight;
         }
 
         heightScale = availableHeight / previewSizeHeight;

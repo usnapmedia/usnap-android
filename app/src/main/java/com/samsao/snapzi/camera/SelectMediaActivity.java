@@ -17,7 +17,6 @@ import com.samsao.snapzi.util.MediaUtil;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.VideoUtil;
-import com.samsao.snapzi.video.VideoEditActivity;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -208,24 +207,26 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
     @Override
     public void startEditImageActivity() {
-        Intent editImageIntent = new Intent(this, EditActivity.class);
-        editImageIntent.putExtra(EditActivity.EXTRA_URI, CameraHelper.getImageUri());
+        Intent editIntent = new Intent(this, EditActivity.class);
+        editIntent.putExtra(EditActivity.EXTRA_IS_EDIT_PICTURE_MODE, true);
+        editIntent.putExtra(EditActivity.EXTRA_URI, CameraHelper.getImageUri());
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.releaseCamera();
         }
 
-        startActivity(editImageIntent);
+        startActivity(editIntent);
     }
 
     @Override
     public void startEditVideoActivity(String videoPath) {
-        Intent editVideoIntent = new Intent(this, VideoEditActivity.class);
-        editVideoIntent.putExtra(VideoEditActivity.EXTRA_VIDEO_PATH, videoPath);
+        Intent editIntent = new Intent(this, EditActivity.class);
+        editIntent.putExtra(EditActivity.EXTRA_IS_EDIT_PICTURE_MODE, false);
+        editIntent.putExtra(EditActivity.EXTRA_VIDEO_PATH, videoPath);
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.releaseCamera();
         }
 
-        startActivity(editVideoIntent);
+        startActivity(editIntent);
     }
 
     /**

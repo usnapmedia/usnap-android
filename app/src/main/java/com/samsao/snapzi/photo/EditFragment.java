@@ -1,7 +1,6 @@
 package com.samsao.snapzi.photo;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,9 +29,8 @@ import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
 import com.samsao.snapzi.photo.tools.ToolText;
 import com.samsao.snapzi.photo.util.TextAnnotationEditText;
-import com.samsao.snapzi.util.PhotoUtil;
+import com.samsao.snapzi.video.VideoPreview;
 import com.soundcloud.android.crop.Crop;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -52,8 +49,12 @@ public class EditFragment extends Fragment {
 
     private final int ANIMATION_DURATION = 300;
 
-    @InjectView(R.id.fragment_edit_image)
-    public ImageView mImage;
+    @InjectView(R.id.fragment_edit_image_container)
+    public ImageView mImageContainer;
+
+    @InjectView(R.id.fragment_edit_video_container)
+    public FrameLayout mVideoContainer;
+    private VideoPreview mVideoPreview;
 
     @InjectView(R.id.fragment_cafe_list_recyclerview)
     public RecyclerView mRecyclerView;
@@ -99,16 +100,27 @@ public class EditFragment extends Fragment {
 
         // TODO read the value from gradle to know what tools to instantiate
         ArrayList<Tool> tools = new ArrayList<>();
-        tools.add(new ToolFilters().setToolFragment(this));
-        tools.add(new ToolText().setToolFragment(this));
-        // special case for draw tool since we need to get the canvas height and width
-        final ToolDraw toolDraw = new ToolDraw();
-        toolDraw.setToolFragment(this);
-        tools.add(toolDraw);
-        tools.add(new ToolCrop().setToolFragment(this));
-        mListener.setTools(tools);
-        mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
 
+        // Add common tools for both modes
+        tools.add(new ToolText().setToolFragment(this));
+        tools.add(new ToolDraw().setToolFragment(this));
+
+        if (mListener.isEditPictureMode()) {
+            // Add specific tool for edit image mode
+            tools.add(new ToolCrop().setToolFragment(this));
+            tools.add(new ToolFilters().setToolFragment(this));
+
+            // load the image
+            Picasso.with(getActivity()).invalidate(mListener.getImageUri()); // clear cache to force refresh
+            Picasso.with(getActivity())
+                    .load(mListener.getImageUri())
+                    .noPlaceholder()
+                    .into(mImageContainer);
+            mImageContainer.setVisibility(View.VISIBLE);
+        }
+        mListener.setTools(tools);
+
+        mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -123,21 +135,6 @@ public class EditFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mMenuItemAdapter);
-
-        // load the image
-        Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder().into(mImage, new Callback() {
-            @Override
-            public void onSuccess() {
-                Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
-                toolDraw.setCanvasHeight(bitmap.getHeight()).setCanvasWidth(bitmap.getWidth());
-                refreshEditArea();
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
 
         // disable the touch listener on the draw view so it does not take draw events
         mDrawAnnotationContainer.setOnTouchListener(null);
@@ -167,6 +164,31 @@ public class EditFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!mListener.isEditPictureMode()) {
+            // load the video
+            if (mVideoPreview == null) {
+                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+            }
+            mVideoContainer.setVisibility(View.VISIBLE);
+            mVideoContainer.addView(mVideoPreview);
+
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (!mListener.isEditPictureMode() && mVideoPreview != null) {
+            mVideoContainer.removeView(mVideoPreview);
+            mVideoPreview = null;
+        }
+    }
+
     /**
      * Refreshes the image without any transformation
      */
@@ -185,45 +207,8 @@ public class EditFragment extends Fragment {
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
-        requestCreator.into(mImage, new Callback() {
-            @Override
-            public void onSuccess() {
-                refreshEditArea();
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
+        requestCreator.into(mImageContainer);
     }
-
-    // FIXME I don't think we need this anymore
-//    public void fitImageToScreen() {
-//        if (mImage != null) {
-//            int width = ((View) mImage.getParent()).getWidth();
-//            int height = ((View) mImage.getParent()).getHeight();
-//
-//            BitmapDrawable bitmap = (BitmapDrawable) mImage.getDrawable();
-//            float bitmapWidth = bitmap.getBitmap().getWidth();
-//            float bitmapHeight = bitmap.getBitmap().getHeight();
-//
-//            float wRatio = width / bitmapWidth;
-//            float hRatio = height / bitmapHeight;
-//
-//            float ratioMultiplier;
-//            if (hRatio < wRatio) {
-//                ratioMultiplier = hRatio;
-//            } else {
-//                ratioMultiplier = wRatio;
-//            }
-//
-//            int newBitmapWidth = (int) (bitmapWidth * ratioMultiplier);
-//            int newBitmapHeight = (int) (bitmapHeight * ratioMultiplier);
-//
-//            mImage.setLayoutParams(new FrameLayout.LayoutParams(newBitmapWidth, newBitmapHeight));
-//        }
-//    }
 
     public void setMenuItems(ArrayList<MenuItem> items) {
         mMenuItemAdapter.setData(items);
@@ -420,7 +405,7 @@ public class EditFragment extends Fragment {
      * Save the current image
      */
     public void saveImage() {
-        mListener.saveBitmap(((BitmapDrawable) mImage.getDrawable()).getBitmap());
+        mListener.saveBitmap(((BitmapDrawable) mImageContainer.getDrawable()).getBitmap());
     }
 
     /**
@@ -501,19 +486,9 @@ public class EditFragment extends Fragment {
         showToolbar();
     }
 
-    private void refreshEditArea() {
-        if (mDrawAnnotationContainer != null) {
-            // Bound drawing area to displayed image size
-            PhotoUtil.ImageSize imageSize = PhotoUtil.getImageSizeFromImageView(mImage);
-            ViewGroup.LayoutParams drawAnnotationContainerLayoutParam = mDrawAnnotationContainer.getLayoutParams();
-            drawAnnotationContainerLayoutParam.width = imageSize.getWidth();
-            drawAnnotationContainerLayoutParam.height = imageSize.getHeight();
-            mDrawAnnotationContainer.setLayoutParams(drawAnnotationContainerLayoutParam);
-            mDrawAnnotationContainer.setVisibility(View.VISIBLE);
-        }
-    }
-
     public interface Listener {
+        boolean isEditPictureMode();
+
         Uri getImageUri();
 
         void saveBitmap(Bitmap bitmap);
@@ -531,5 +506,7 @@ public class EditFragment extends Fragment {
         Tool getCurrentTool();
 
         void setCurrentTool(Tool currentTool);
+
+        String getVideoPath();
     }
 }
