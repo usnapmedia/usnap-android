@@ -4,13 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
@@ -18,7 +15,6 @@ import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.util.KeyboardUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -88,23 +84,16 @@ public class ContentSignupView extends LinearLayout implements Validator.Validat
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    KeyboardUtil.hideKeyboard(v);
                     mCallback.showBirthdayDatePicker(mBirthdayEditText.getText().toString());
                 }
             }
         });
-        mBirthdayEditText.setOnEditorActionListener(
-                new EditText.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            KeyboardUtil.hideKeyboard(mBirthdayEditText);
-                            signup();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+        mBirthdayEditText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallback.showBirthdayDatePicker(mBirthdayEditText.getText().toString());
+            }
+        });
         mValidator = new Validator(this);
         mValidator.setValidationListener(this);
         mCallback = null;
@@ -169,13 +158,9 @@ public class ContentSignupView extends LinearLayout implements Validator.Validat
         mBirthdayEditText.setText(birthday);
     }
 
-    @OnClick(R.id.view_login_content_signup_birthday_editText)
-    public void showBirthdayDatePicker() {
-        mCallback.showBirthdayDatePicker(getBirthday());
-    }
-
     public interface Callback {
         void onSignup();
+
         void showBirthdayDatePicker(String date);
     }
 }

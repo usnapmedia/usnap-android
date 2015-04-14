@@ -81,6 +81,8 @@
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/view_login_content_signup_birthday_editText"
             style="@style/LoginEditText"
+            android:textIsSelectable="true"
+            android:cursorVisible="false"
             android:hint="@string/birthday"
             android:inputType="text"
             app:met_floatingLabelText="@string/birthday"

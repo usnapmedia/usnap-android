@@ -17,13 +17,15 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.api.exception.ApiException;
-import com.samsao.snapzi.util.LocaleUtil;
+import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.lang.ref.WeakReference;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import butterknife.ButterKnife;
@@ -116,20 +118,23 @@ public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSe
 
             @Override
             public void showBirthdayDatePicker(String date) {
-                if (!TextUtils.isEmpty(date)) {
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, LocaleUtil.getLocale());
-                    try {
-                        cal.setTime(simpleDateFormat.parse(date));
-                        DatePickerFragment.newInstance(LoginFragment.this,
-                                cal.get(Calendar.YEAR),
-                                cal.get(Calendar.MONTH),
-                                cal.get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
-                    } catch (ParseException e) {
+                KeyboardUtil.hideKeyboard(getActivity());
+                if (getFragmentManager().findFragmentByTag(DATE_PICKER_DIALOG_FRAGMENT_TAG) == null) {
+                    if (!TextUtils.isEmpty(date)) {
+                        DateTimeFormatter dateTimeFormatter = getDateFormatter();
+                        try {
+                            DateTime dateTime = dateTimeFormatter.parseDateTime(date);
+                            DatePickerFragment.newInstance(LoginFragment.this,
+                                    dateTime.getYear(),
+                                    dateTime.getMonthOfYear(),
+                                    dateTime.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                        } catch (IllegalArgumentException e) {
+                            // error in string format
+                            DatePickerFragment.newInstance(LoginFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                        }
+                    } else {
                         DatePickerFragment.newInstance(LoginFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
                     }
-                } else {
-                    DatePickerFragment.newInstance(LoginFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
                 }
             }
         });
@@ -153,7 +158,16 @@ public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSe
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        DateTimeFormatter dateTimeFormatter = getDateFormatter();
+        mLoginView.setSignupBirthday(dateTimeFormatter.print(new DateTime(year, monthOfYear, dayOfMonth, 0, 0)));
+    }
 
+    /**
+     * Returns the date formatter for birthday
+     * @return
+     */
+    private DateTimeFormatter getDateFormatter() {
+        return DateTimeFormat.forPattern(DATE_FORMAT);
     }
 
     /**
@@ -197,8 +211,10 @@ public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSe
         @Override
         public void onDetach() {
             super.onDetach();
-            mListener.clear();
-            mListener = null;
+            if (mListener != null) {
+                mListener.clear();
+                mListener = null;
+            }
         }
 
         public void setYear(Integer year) {
