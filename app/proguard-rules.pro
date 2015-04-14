@@ -100,3 +100,15 @@
 # For Facebook SDK
 -keep class com.facebook.** { *; }
 -keepattributes Signature
+
+# For Jackson
+-keepattributes *Annotation*,EnclosingMethod,Signature
+-keepnames class org.codehaus.jackson.** { *; }
+-dontwarn javax.xml.**
+-dontwarn javax.xml.stream.events.**
+-dontwarn com.fasterxml.jackson.databind.**
+# If the model classes are obfuscated, reflection does not work
+-keep public class com.samsao.snapzi.api.entity.** {
+  public void set*(***);
+  public *** get*();
+}

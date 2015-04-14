@@ -36,7 +36,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     public final static int RESULT_IMAGE_LOADED_FROM_GALLERY = 8401;
     public final static int RESULT_VIDEO_LOADED_FROM_GALLERY = 8402;
     public final static int MAXIMUM_VIDEO_DURATION_MS = 30000; // 30 seconds
-    public final static int COUNTDOWN_INTERVAL_MS = 500; // half a second
+    public final static int COUNTDOWN_INTERVAL_MS = 84;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;

@@ -11,7 +11,6 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,7 +62,7 @@ public class SelectMediaFragment extends Fragment {
     public TextView mVideoCountdown;
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
-    public Button mCaptureMediaButton;
+    public ProgressButton mCaptureMediaButton;
 
     @InjectView(R.id.fragment_select_media_pref_button)
     public Button mPreferenceButton;
@@ -276,6 +275,7 @@ public class SelectMediaFragment extends Fragment {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
                     triggerCapturingVideo(false);
+                    hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
                         mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
@@ -296,11 +296,13 @@ public class SelectMediaFragment extends Fragment {
         // Setup video capture countdown
         mVideoCaptureCountdownTimer = new CountDownTimer(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS, SelectMediaActivity.COUNTDOWN_INTERVAL_MS) {
             public void onTick(long millisUntilFinished) {
+                mCaptureMediaButton.setProgress(1.0f - ((float) millisUntilFinished / SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS));
                 mVideoCountdown.setText(String.valueOf((int) Math.ceil((double) millisUntilFinished / 1000.0))); // show elapsed time in seconds
             }
 
             public void onFinish() {
                 boolean isVideoCaptureSuccessful = false;
+                mCaptureMediaButton.setProgress(1.0f);
                 mVideoCountdown.setText(String.valueOf(0));
 
                 // stop recording and start video edit activity
@@ -486,9 +488,10 @@ public class SelectMediaFragment extends Fragment {
                 }
             });
             mCameraPreviewContainer.addView(mCameraPreview);
-
-            triggerCapturingMediaState(false);
         }
+
+        triggerCapturingMediaState(false);
+        mCaptureMediaButton.setProgress(0.0f);
     }
 
     /**
