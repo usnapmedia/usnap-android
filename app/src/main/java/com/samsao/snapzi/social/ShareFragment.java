@@ -1,6 +1,7 @@
 package com.samsao.snapzi.social;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,12 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
@@ -42,6 +46,13 @@ public class ShareFragment extends SocialNetworkFragment {
     public EditText mCommentEditText;
     @InjectView(R.id.fragment_share_toolbar)
     public Toolbar mToolbar;
+    @InjectView(R.id.fragment_share_image)
+    public ImageView mImage;
+
+    /**
+     * Image Uri
+     */
+    private Uri mImageUri;
 
     /**
      * Switches onChange listeners
@@ -59,8 +70,9 @@ public class ShareFragment extends SocialNetworkFragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static ShareFragment newInstance() {
+    public static ShareFragment newInstance(Uri imageUri) {
         ShareFragment fragment = new ShareFragment();
+        fragment.setImageUri(imageUri);
         return fragment;
     }
 
@@ -75,6 +87,12 @@ public class ShareFragment extends SocialNetworkFragment {
         View view = inflater.inflate(R.layout.fragment_share, container, false);
         ButterKnife.inject(this, view);
         setupToolbar();
+
+        // load the image
+        Picasso.with(getActivity()).load(mImageUri)
+                .noPlaceholder()
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .into(mImage);
 
         mFacebookSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -221,7 +239,9 @@ public class ShareFragment extends SocialNetworkFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().finish();
+                // FIXME
+                Toast.makeText(getActivity(), "TODO: go back, bug for now", Toast.LENGTH_SHORT).show();
+//                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -270,6 +290,14 @@ public class ShareFragment extends SocialNetworkFragment {
         }
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    /**
+     * Set Image Uri
+     * @param imageUri
+     */
+    public void setImageUri(Uri imageUri) {
+        mImageUri = imageUri;
     }
 
     @OnClick(R.id.fragment_share_share_btn)

@@ -6,7 +6,7 @@
              tools:context="com.samsao.snapzi.social.ShareFragment">
 
     <ImageView
-        android:id="@+id/fragment_photo_edit_image"
+        android:id="@+id/fragment_share_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />

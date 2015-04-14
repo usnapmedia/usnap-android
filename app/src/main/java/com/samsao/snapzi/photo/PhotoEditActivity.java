@@ -34,7 +34,7 @@ public class PhotoEditActivity extends ActionBarActivity implements PhotoEditFra
     public Uri mImageUri;
     @Icicle
     public MenuState mMenuState;
-    @Icicle
+    @Icicle // FIXME saving tools does not work
     public ArrayList<Tool> mTools;
     @Icicle
     public Tool mCurrentTool;

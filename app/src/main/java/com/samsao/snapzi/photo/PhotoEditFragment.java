@@ -3,6 +3,7 @@ package com.samsao.snapzi.photo;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,7 +20,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.camera.CameraHelper;
@@ -29,6 +29,7 @@ import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
 import com.samsao.snapzi.photo.tools.ToolText;
 import com.samsao.snapzi.photo.util.TextAnnotationEditText;
+import com.samsao.snapzi.social.ShareActivity;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -355,8 +356,9 @@ public class PhotoEditFragment extends Fragment {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: go to share activity", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ShareActivity.class);
+        intent.putExtra(ShareActivity.EXTRA_URI, mListener.getImageUri());
+        startActivity(intent);
     }
 
     /**
