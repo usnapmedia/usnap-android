@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <item name="android:actionBarStyle">@style/ActionBarTheme</item>
         <!--   your app branding color for the app bar -->
         <item name="colorPrimary">@color/primary</item>
@@ -19,7 +19,7 @@
         <item name="android:displayOptions">showHome</item>
     </style>
 
-    <style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+    <style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Dialog">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
