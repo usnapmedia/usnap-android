@@ -24,15 +24,6 @@
     <string name="action_select_media_type_text">Please select a type of media to pick from gallery:</string>
     <string name="action_select_media_type_pick_image">Pick image</string>
     <string name="action_select_media_type_pick_video">Pick video</string>
-    <string name="error_unable_to_take_picture">Unable to take picture</string>
-    <string name="error_unable_to_open_image">Unable to open image</string>
-    <string name="error_unable_to_open_video">Unable to open video</string>
-    <string name="error_please_select_a_local_video">Please select a local video</string>
-    <string name="error_unsupported_format">Unsupported format</string>
-    <string name="error_unable_to_launch_camera">Unable to launch camera</string>
-    <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
-    <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
-    <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
     <string name="action_processing_image_title">Processing Image</string>
     <string name="action_processing_image_text">Processing image...</string>
 
@@ -61,5 +52,15 @@
     <string name="error_empty_first_name">first name is required</string>
     <string name="error_empty_last_name">first name is required</string>
     <string name="error_empty_birthday">birthday is required</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_unable_to_take_picture">Unable to take picture</string>
+    <string name="error_unable_to_open_image">Unable to open image</string>
+    <string name="error_unable_to_open_video">Unable to open video</string>
+    <string name="error_please_select_a_local_video">Please select a local video</string>
+    <string name="error_unsupported_format">Unsupported format</string>
+    <string name="error_unable_to_launch_camera">Unable to launch camera</string>
+    <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
+    <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
+    <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
 
 </resources>

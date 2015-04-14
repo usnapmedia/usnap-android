@@ -8,6 +8,7 @@ import com.samsao.snapzi.api.entity.Response;
 
 import retrofit.Callback;
 import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
 
 /**
@@ -16,6 +17,7 @@ import retrofit.http.POST;
  */
 public interface SnapziApi {
     // TODO fix fields
+    @FormUrlEncoded
     @POST("/register")
     public void register(@Field("username") String username,
                          @Field("password") String password,
@@ -27,6 +29,7 @@ public interface SnapziApi {
 
 
     // TODO rename email tu username
+    @FormUrlEncoded
     @POST("/login")
     public void login(@Field("email") String username,
                       @Field("password") String password,

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.api.exception.ApiException;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 
@@ -78,7 +79,10 @@ public class LoginFragment extends Fragment {
 
                             @Override
                             public void failure(RetrofitError retrofitError) {
-                                showError("Login returned error");
+                                if (retrofitError.getCause() instanceof ApiException) {
+                                    showError(((ApiException)retrofitError.getCause()).getMessage());
+                                }
+                                // TODO
                             }
                         });
             }
