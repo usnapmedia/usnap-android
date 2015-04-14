@@ -17,6 +17,7 @@ import com.samsao.snapzi.api.exception.HostUnreachableException;
 import com.samsao.snapzi.api.exception.InternalServerErrorException;
 import com.samsao.snapzi.api.exception.MalformedUrlException;
 import com.samsao.snapzi.api.exception.NetworkTimeoutException;
+import com.samsao.snapzi.api.exception.RetrofitException;
 import com.samsao.snapzi.api.exception.UnauthorizedException;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
@@ -106,24 +107,28 @@ public class ApiService {
                         if (retrofitError.getCause() != null) {
                             final Throwable cause = retrofitError.getCause();
                             if (cause instanceof UnknownHostException) {
-                                return new HostUnreachableException(retrofitError);
+                                return new HostUnreachableException();
                             } else if (cause instanceof SocketTimeoutException) {
-                                return new NetworkTimeoutException(retrofitError);
+                                return new NetworkTimeoutException();
                             } else if (cause instanceof MalformedURLException) {
-                                return new MalformedUrlException(retrofitError);
+                                return new MalformedUrlException();
                             }
                         } else if (retrofitError.getResponse() != null) {
                             final retrofit.client.Response response = retrofitError.getResponse();
+                            RetrofitException exception;
                             switch (response.getStatus()) {
                                 case 500:
-                                    return new InternalServerErrorException(retrofitError);
+                                    exception = new InternalServerErrorException();
+                                    break;
                                 case 401:
-                                    return new UnauthorizedException(retrofitError);
+                                    exception = new UnauthorizedException();
+                                    break;
                                 default:
-                                    ApiException exception = new ApiException(retrofitError);
-                                    exception.setMessage(getErrorMessage(retrofitError));
-                                    return exception;
+                                    exception = new ApiException();
+                                    break;
                             }
+                            exception.setMessage(getErrorMessage(retrofitError));
+                            return exception;
                         }
                         return retrofitError;
                     }
@@ -161,7 +166,6 @@ public class ApiService {
      * @return
      */
     private String getErrorMessage(RetrofitError error) {
-        final String message = SnapziApplication.getContext().getString(R.string.error_unknown);
         if (error.getResponse() != null && error.getResponse().getBody() != null) {
             try {
                 final String body = convertResponseStreamToString(error.getResponse().getBody().in());
@@ -169,13 +173,13 @@ public class ApiService {
                     ObjectMapper mapper = new ObjectMapper();
                     return mapper.readValue(body, com.samsao.snapzi.api.entity.Error.class).getResponse();
                 } else {
-                    return message;
+                    return null;
                 }
             } catch (Exception e) {
-                return message;
+                return null;
             }
         } else {
-            return message;
+            return null;
         }
     }
 
