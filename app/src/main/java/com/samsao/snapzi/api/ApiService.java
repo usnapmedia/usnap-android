@@ -7,19 +7,31 @@ package com.samsao.snapzi.api;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.api.exception.ApiException;
+import com.samsao.snapzi.api.exception.HostUnreachableException;
+import com.samsao.snapzi.api.exception.InternalServerErrorException;
+import com.samsao.snapzi.api.exception.MalformedUrlException;
+import com.samsao.snapzi.api.exception.NetworkTimeoutException;
+import com.samsao.snapzi.api.exception.RetrofitException;
+import com.samsao.snapzi.api.exception.UnauthorizedException;
+import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
 import retrofit.Callback;
+import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -39,13 +51,6 @@ public class ApiService {
      * Constants
      */
     private final String LOG_TAG = getClass().getName();
-    private final String ERROR_HOST_UNREACHABLE = "Host unreachable";
-    private final String ERROR_TIMEOUT = "Network timeout";
-    private final String ERROR_MALFORMED_URL = "Malformed URL";
-    private final String ERROR_STATUS_500 = "Status 500";
-    private final String ERROR_UNAUTHORIZED = "Unauthorized";
-    private final String ERROR_CONFLICT = "Conflict";
-    private final String ERROR_UNKNOWN = "Unkwnown error";
 
     /**
      * Service to communicate with the API
@@ -63,7 +68,7 @@ public class ApiService {
      * UserManager
      * TODO inject me
      */
-    private UserManager mUserManager;
+    private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     /**
      * Constructor
@@ -96,6 +101,38 @@ public class ApiService {
                         }
                     }
                 })
+                .setErrorHandler(new ErrorHandler() {
+                    @Override
+                    public Throwable handleError(RetrofitError retrofitError) {
+                        if (retrofitError.getCause() != null) {
+                            final Throwable cause = retrofitError.getCause();
+                            if (cause instanceof UnknownHostException) {
+                                return new HostUnreachableException();
+                            } else if (cause instanceof SocketTimeoutException) {
+                                return new NetworkTimeoutException();
+                            } else if (cause instanceof MalformedURLException) {
+                                return new MalformedUrlException();
+                            }
+                        } else if (retrofitError.getResponse() != null) {
+                            final retrofit.client.Response response = retrofitError.getResponse();
+                            RetrofitException exception;
+                            switch (response.getStatus()) {
+                                case 500:
+                                    exception = new InternalServerErrorException();
+                                    break;
+                                case 401:
+                                    exception = new UnauthorizedException();
+                                    break;
+                                default:
+                                    exception = new ApiException();
+                                    break;
+                            }
+                            exception.setMessage(getErrorMessage(retrofitError));
+                            return exception;
+                        }
+                        return retrofitError;
+                    }
+                })
                 .build();
 
         mApiService = restAdapter.create(SnapziApi.class);
@@ -105,61 +142,64 @@ public class ApiService {
     }
 
     /**
-     * Get the appropriate error message depending on the connection error cause
+     * Convert an input stream to a string
      *
-     * @param error
-     * @return Error message
+     * @param is
+     * @return
      */
-    public String getErrorMessage(RetrofitError error) {
-        if (error != null) {
-            if (error.getCause() != null) {
-                if (error.getCause() instanceof UnknownHostException) {
-                    return ERROR_HOST_UNREACHABLE;
-                } else if (error.getCause() instanceof SocketTimeoutException) {
-                    return ERROR_TIMEOUT;
-                } else if (error.getCause() instanceof MalformedURLException) {
-                    return ERROR_MALFORMED_URL;
-                }
-            } else if (error.getResponse() != null) {
-                if (error.getResponse().getStatus() == 500) {
-                    return ERROR_STATUS_500;
-                } else if (error.getResponse().getStatus() == 401) {
-                    return ERROR_UNAUTHORIZED;
-                } else if (error.getResponse().getStatus() == 409) {
-                    return ERROR_CONFLICT;
-                }
+    private String convertResponseStreamToString(InputStream is) {
+        int k;
+        StringBuffer sb = new StringBuffer();
+        try {
+            while ((k = is.read()) != -1) {
+                sb.append((char) k);
             }
+        } catch (IOException e) {
+            return null;
         }
-        return ERROR_UNKNOWN;
+        return sb.toString();
+    }
+
+    /**
+     * Get a request error message
+     * @param error
+     * @return
+     */
+    private String getErrorMessage(RetrofitError error) {
+        if (error.getResponse() != null && error.getResponse().getBody() != null) {
+            try {
+                final String body = convertResponseStreamToString(error.getResponse().getBody().in());
+                if (!TextUtils.isEmpty(body)) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(body, com.samsao.snapzi.api.entity.Error.class).getResponse();
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     private String getAuthenticationHeader() throws UnauthorizedException {
         String username = mUserManager.getUsername();
         String password = mUserManager.getPassword();
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-            throw new UnauthorizedException("Not logged in.");
+            throw new UnauthorizedException();
         }
         return Base64.encodeToString(new String("Basic " + username + ":" + password).getBytes(Charset.forName("UTF-8")), Base64.DEFAULT);
     }
 
     /**
-     * Register
-     * @param email
-     * @param password
-     * @param callback
-     */
-    public void register(String email, String password, Callback<Response> callback) {
-        mApiService.register(email, password, callback);
-    }
-
-    /**
      * Login
-     * @param email
+     * @param username
      * @param password
      * @param callback
      */
-    public void login(String email, String password, Callback<Response> callback) {
-        mApiService.login(email, password, callback);
+    public void login(String username, String password, Callback<Response> callback) {
+        mApiService.login(username, password, callback);
     }
 }
 

@@ -2,6 +2,7 @@ package com.samsao.snapzi.photo.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
@@ -23,7 +24,7 @@ public class TextAnnotationEditText extends EditText {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(21)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TextAnnotationEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

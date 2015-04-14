@@ -10,6 +10,8 @@ import com.sromku.simple.fb.SimpleFacebookConfiguration;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -49,6 +51,9 @@ public class SnapziApplication extends Application {
                 .setPermissions(permissions)
                 .build();
         SimpleFacebook.setConfiguration(configuration);
+
+        // initialize jodatime
+        JodaTimeAndroid.init(this);
     }
 
     /**

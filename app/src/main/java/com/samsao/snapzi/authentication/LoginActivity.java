@@ -2,6 +2,7 @@ package com.samsao.snapzi.authentication;
 
 import android.os.Bundle;
 
+import com.samsao.snapzi.authentication.view.LoginFragment;
 import com.samsao.snapzi.social.SocialNetworkActivity;
 import com.samsao.snapzi.social.SocialNetworkFragment;
 

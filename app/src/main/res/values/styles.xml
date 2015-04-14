@@ -1,20 +1,55 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/ActionBarTheme</item>
         <!--   your app branding color for the app bar -->
         <item name="colorPrimary">@color/primary</item>
         <!--   darker variant for the status bar and contextual app bars -->
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <!--   theme UI controls like checkboxes and text fields -->
-        <item name="colorAccent">@color/blue</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlHighlight">@color/control_highlight</item>
         <item name="windowActionBar">false</item>
         <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:dialogTheme">@style/AppTheme.DialogTheme</item>
     </style>
 
     <style name="ActionBarTheme" parent="Widget.AppCompat.ActionBar">
         <item name="android:displayOptions">showHome</item>
     </style>
+
+    <style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+
+    </style>
+
+    <style name="LoginEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="met_baseColor">?colorAccent</item>
+        <item name="met_primaryColor">?colorAccent</item>
+        <item name="met_floatingLabel">highlight</item>
+        <item name="met_floatingLabelAnimating">true</item>
+        <item name="met_textColor">@color/dark_gray</item>
+        <item name="met_textColorHint">@color/text_hint</item>
+    </style>
+
+    <style name="SignupEditText" parent="LoginEditText">
+        <item name="met_baseColor">@color/light_gray</item>
+        <item name="met_primaryColor">@color/light_gray</item>
+    </style>
+
+    <style name="LoginButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:background">@drawable/sel_login_btn</item>
+    </style>
+
 
 </resources>
