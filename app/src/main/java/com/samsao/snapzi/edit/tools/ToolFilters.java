@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,16 +7,23 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.StringUtil;
 
+
 /**
  * @author jfcartier
  * @since 15-04-06
  */
 @ParcelablePlease(allFields = false)
-public class ToolCrop extends Tool implements Parcelable {
+public class ToolFilters extends Tool implements Parcelable {
+
+    public ToolFilters() {
+        super();
+        addOption(new ToolOptionBrightness().setTool(this));
+        addOption(new ToolOptionContrast().setTool(this));
+    }
 
     @Override
     public String getName() {
-        return StringUtil.getString(R.string.tool_crop_name);
+        return StringUtil.getString(R.string.tool_filters_name);
     }
 
     @Override
@@ -34,11 +41,18 @@ public class ToolCrop extends Tool implements Parcelable {
 
     }
 
+    /**
+     * When options item DONE is selected
+     */
     @Override
     public void onOptionsDoneSelected() {
-
+        mToolFragment.saveImage();
+        selectOption(null);
     }
 
+    /**
+     * When options item HOME is selected
+     */
     @Override
     public void onOptionsHomeSelected() {
         if (hasOptionSelected()) {
@@ -49,19 +63,9 @@ public class ToolCrop extends Tool implements Parcelable {
         }
     }
 
-    /**
-     * select() needs to be overridden because Crop tool can't be selected
-     * @return
-     */
-    @Override
-    public Tool select() {
-        mToolFragment.startCropActivity();
-        return this;
-    }
-
     @Override
     public void onSelected() {
-
+        mToolFragment.showEditOptionsMenu(false, false, false);
     }
 
     @Override
@@ -76,18 +80,18 @@ public class ToolCrop extends Tool implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ToolCropParcelablePlease.writeToParcel(this, dest, flags);
+        ToolFiltersParcelablePlease.writeToParcel(this, dest, flags);
     }
 
-    public static final Creator<ToolCrop> CREATOR = new Creator<ToolCrop>() {
-        public ToolCrop createFromParcel(Parcel source) {
-            ToolCrop target = new ToolCrop();
-            ToolCropParcelablePlease.readFromParcel(target, source);
+    public static final Creator<ToolFilters> CREATOR = new Creator<ToolFilters>() {
+        public ToolFilters createFromParcel(Parcel source) {
+            ToolFilters target = new ToolFilters();
+            ToolFiltersParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
-        public ToolCrop[] newArray(int size) {
-            return new ToolCrop[size];
+        public ToolFilters[] newArray(int size) {
+            return new ToolFilters[size];
         }
     };
 }

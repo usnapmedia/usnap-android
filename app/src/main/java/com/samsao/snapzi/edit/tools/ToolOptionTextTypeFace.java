@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.graphics.Typeface;
 import android.os.Parcel;
@@ -10,6 +10,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.SnapziApplication;
 
 import java.util.Locale;
+
 
 /**
  * @author jfcartier
@@ -29,7 +30,7 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
     public ToolOption setTool(Tool tool) {
         super.setTool(tool);
         try {
-            mToolCallback = (ToolCallback)tool;
+            mToolCallback = (ToolCallback) tool;
         } catch (ClassCastException e) {
             throw new ClassCastException("Tool " + tool.getClass().getName() + " must implement ToolOptionTextTypeFace.ToolCallback");
         }

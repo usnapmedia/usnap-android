@@ -1,10 +1,11 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.SnapziApplication;
+
 
 /**
  * @author jfcartier

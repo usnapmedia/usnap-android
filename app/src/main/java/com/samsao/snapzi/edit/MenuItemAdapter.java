@@ -2,7 +2,7 @@
  * Copyright (c) 2014 Samsao Development Inc.
  */
 
-package com.samsao.snapzi.photo;
+package com.samsao.snapzi.edit;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

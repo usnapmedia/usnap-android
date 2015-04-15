@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo;
+package com.samsao.snapzi.edit;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.tools.Tool;
+import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.soundcloud.android.crop.Crop;
@@ -27,9 +27,9 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     /**
      * Constants
      */
-    public static final String EXTRA_IS_EDIT_PICTURE_MODE = "com.samsao.snapzi.photo.EditActivity.EXTRA_IS_EDIT_PICTURE_MODE";
-    public static final String EXTRA_URI = "com.samsao.snapzi.photo.EditActivity.EXTRA_URI";
-    public static final String EXTRA_VIDEO_PATH = "com.samsao.snapzi.photo.EditActivity.EXTRA_VIDEO_PATH";
+    public static final String EXTRA_IS_EDIT_PICTURE_MODE = "EditActivity.EXTRA_IS_EDIT_PICTURE_MODE";
+    public static final String EXTRA_URI = "EditActivity.EXTRA_URI";
+    public static final String EXTRA_VIDEO_PATH = "EditActivity.EXTRA_VIDEO_PATH";
 
     @InjectView(R.id.activity_edit_toolbar)
     public Toolbar mToolbar;

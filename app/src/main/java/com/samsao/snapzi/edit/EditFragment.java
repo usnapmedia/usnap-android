@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo;
+package com.samsao.snapzi.edit;
 
 
 import android.app.Activity;
@@ -23,14 +23,13 @@ import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.camera.CameraHelper;
-import com.samsao.snapzi.photo.tools.Tool;
-import com.samsao.snapzi.photo.tools.ToolCrop;
-import com.samsao.snapzi.photo.tools.ToolDraw;
-import com.samsao.snapzi.photo.tools.ToolFilters;
-import com.samsao.snapzi.photo.tools.ToolText;
-import com.samsao.snapzi.photo.util.TextAnnotationEditText;
+import com.samsao.snapzi.edit.tools.Tool;
+import com.samsao.snapzi.edit.tools.ToolCrop;
+import com.samsao.snapzi.edit.tools.ToolDraw;
+import com.samsao.snapzi.edit.tools.ToolFilters;
+import com.samsao.snapzi.edit.tools.ToolText;
+import com.samsao.snapzi.edit.util.TextAnnotationEditText;
 import com.samsao.snapzi.social.ShareActivity;
-import com.samsao.snapzi.video.VideoPreview;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;

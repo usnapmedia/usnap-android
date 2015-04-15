@@ -1,10 +1,10 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
-import com.samsao.snapzi.photo.EditFragment;
-import com.samsao.snapzi.photo.MenuItem;
+import com.samsao.snapzi.edit.EditFragment;
+import com.samsao.snapzi.edit.MenuItem;
 
 import java.util.ArrayList;
 

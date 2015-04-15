@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo.util;
+package com.samsao.snapzi.edit.util;
 
 import android.view.MotionEvent;
 import android.view.View;

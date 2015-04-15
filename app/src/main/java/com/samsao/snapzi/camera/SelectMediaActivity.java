@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.EditActivity;
+import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.util.MediaUtil;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;

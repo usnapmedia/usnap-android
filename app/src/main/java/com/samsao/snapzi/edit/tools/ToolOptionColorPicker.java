@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcelable;
 import android.view.View;
@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.MenuItem;
+import com.samsao.snapzi.edit.MenuItem;
 import com.samsao.snapzi.util.StringUtil;
 
 /**

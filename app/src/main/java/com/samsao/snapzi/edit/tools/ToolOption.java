@@ -1,8 +1,8 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcelable;
 
-import com.samsao.snapzi.photo.MenuItem;
+import com.samsao.snapzi.edit.MenuItem;
 
 /**
  * @author jfcartier

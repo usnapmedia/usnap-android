@@ -39,7 +39,7 @@
             android:label="@string/action_select_media"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".photo.EditActivity"
+            android:name=".edit.EditActivity"
             android:label="@string/app_name" />
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />

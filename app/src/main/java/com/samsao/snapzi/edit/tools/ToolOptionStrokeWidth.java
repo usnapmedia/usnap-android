@@ -1,10 +1,11 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
+
 
 /**
  * @author jfcartier
@@ -27,7 +28,7 @@ public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
 
     @Override
     public void onSelected() {
-        ((ToolDraw)mTool).setStrokeWidth(mStrokeWidth);
+        ((ToolDraw) mTool).setStrokeWidth(mStrokeWidth);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
 
     @Override
     public String getName() {
-        return Integer.toString((int)mStrokeWidth/10);
+        return Integer.toString((int) mStrokeWidth / 10);
     }
 
     @Override

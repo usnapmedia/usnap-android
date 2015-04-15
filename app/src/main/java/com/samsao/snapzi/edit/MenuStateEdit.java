@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo;
+package com.samsao.snapzi.edit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
+
 
 /**
  * @author jfcartier

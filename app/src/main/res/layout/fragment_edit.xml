@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.samsao.snapzi.photo.EditFragment">
+    tools:context="com.samsao.snapzi.edit.EditFragment">
 
     <ImageView
         android:id="@+id/fragment_edit_image_container"
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.samsao.snapzi.photo.util.TextAnnotationEditText
+        <com.samsao.snapzi.edit.util.TextAnnotationEditText
             android:id="@+id/fragment_edit_text_annotation_container_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

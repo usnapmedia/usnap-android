@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,10 +9,11 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.EditFragment;
+import com.samsao.snapzi.edit.EditFragment;
 import com.samsao.snapzi.util.StringUtil;
 
 import me.panavtec.drawableview.DrawableViewConfig;
+
 
 /**
  * @author jfcartier

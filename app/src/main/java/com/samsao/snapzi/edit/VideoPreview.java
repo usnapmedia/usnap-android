@@ -1,4 +1,4 @@
-package com.samsao.snapzi.video;
+package com.samsao.snapzi.edit;
 
 import android.app.Activity;
 import android.media.MediaMetadataRetriever;

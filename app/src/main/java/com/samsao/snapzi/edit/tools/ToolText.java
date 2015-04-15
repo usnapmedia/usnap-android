@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo.tools;
+package com.samsao.snapzi.edit.tools;
 
 import android.graphics.Typeface;
 import android.os.Parcel;
@@ -14,10 +14,11 @@ import android.widget.TextView;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.photo.EditFragment;
-import com.samsao.snapzi.photo.util.TextAnnotationTouchListener;
+import com.samsao.snapzi.edit.EditFragment;
+import com.samsao.snapzi.edit.util.TextAnnotationTouchListener;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.StringUtil;
+
 
 /**
  * @author jfcartier

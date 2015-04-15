@@ -1,4 +1,4 @@
-package com.samsao.snapzi.photo;
+package com.samsao.snapzi.edit;
 
 /**
  * @author jfcartier
