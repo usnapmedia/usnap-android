@@ -42,7 +42,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     public Uri mImageUri;
     @Icicle
     public MenuState mMenuState;
-    @Icicle // FIXME saving tools does not work
+    @Icicle
     public ArrayList<Tool> mTools;
     @Icicle
     public Tool mCurrentTool;

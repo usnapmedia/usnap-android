@@ -239,9 +239,7 @@ public class ShareFragment extends SocialNetworkFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // FIXME
-                Toast.makeText(getActivity(), "TODO: go back, bug for now", Toast.LENGTH_SHORT).show();
-//                getActivity().finish();
+                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

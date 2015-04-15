@@ -17,7 +17,6 @@ public abstract class Tool implements Parcelable {
     /**
      * List of options
      */
-    // FIXME saving tools does not work
     @ParcelableThisPlease
     public ArrayList<ToolOption> mOptions;
 
