@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,8 +23,14 @@ import java.io.IOException;
  */
 public class PhotoUtil {
 
+    /**
+     * Constants
+     */
     private final static String LOG_TAG = PhotoUtil.class.getSimpleName();
+    public static final int MAXIMUM_IMAGE_SIDE_SIZE = 1280; // 720p standard: 1280x720
+
     private static SaveBitmapTask mSaveBitmapTask;
+
 
     /**
      * Save an image to disk
@@ -68,7 +73,7 @@ public class PhotoUtil {
         protected Boolean doInBackground(Void... nothing) {
             try {
                 FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(CameraHelper.IMAGE_FILENAME, Context.MODE_PRIVATE);
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
+                resizeImage(mBitmap, PhotoUtil.MAXIMUM_IMAGE_SIDE_SIZE).compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
                 fOutputStream.flush();
                 fOutputStream.close();
                 return true;
@@ -89,6 +94,34 @@ public class PhotoUtil {
             }
 
             mSaveBitmapTask = null;
+        }
+
+        /**
+         * @param sourceBitmap
+         * @param maximumSideSize in pixels
+         * @return
+         */
+        private Bitmap resizeImage(Bitmap sourceBitmap, int maximumSideSize) {
+            Bitmap destBitmap;
+            int width = sourceBitmap.getWidth();
+            int height = sourceBitmap.getHeight();
+
+            if (width <= maximumSideSize && height <= maximumSideSize) {
+                destBitmap = sourceBitmap;
+            } else {
+                int destWidth, destHeight;
+
+                if (width < height) {
+                    destWidth = (int) ((float) width * (float) maximumSideSize / (float) height);
+                    destHeight = maximumSideSize;
+                } else {
+                    destHeight = (int) ((float) height * (float) maximumSideSize / (float) width);
+                    destWidth = maximumSideSize;
+                }
+                destBitmap = Bitmap.createScaledBitmap(sourceBitmap, destWidth, destHeight, true);
+            }
+
+            return destBitmap;
         }
     }
 
@@ -170,12 +203,12 @@ public class PhotoUtil {
     }
 
     /**
-     * Get center cropped bitmap from
+     * Get a square center cropped bitmap from
      *
      * @param sourceBitmap original bitmap
      * @return rotated bitmap
      */
-    public static Bitmap getCenterCropBitmapFrom(Bitmap sourceBitmap) {
+    public static Bitmap getSquareCenterCropBitmapFrom(Bitmap sourceBitmap) {
         Bitmap outputBitmap;
 
         if (sourceBitmap.getWidth() >= sourceBitmap.getHeight()) {

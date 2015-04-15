@@ -16,6 +16,10 @@ public interface SelectMediaProvider {
 
     public void setCameraFlashMode(String cameraFlashMode);
 
+    public float getCameraPreviewAspectRatio();
+
+    public void setCameraPreviewAspectRatio(float cameraPreviewAspectRatio);
+
     public int getCameraLastOrientationAngleKnown();
 
     public void setCameraLastOrientationAngleKnown(int angle);

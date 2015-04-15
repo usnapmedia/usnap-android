@@ -40,6 +40,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
+    private final float DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO = 1.0f;
 
     SelectMediaFragment mSelectMediaFragment;
     Dialog mSavingImageProgressDialog;
@@ -51,6 +52,9 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     public String mCameraFlashMode;
 
     @Icicle
+    public float mCameraPreviewAspectRatio;
+
+    @Icicle
     public int mCameraLastOrientationAngleKnown;
 
     @Override
@@ -59,6 +63,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
         mCameraId = DEFAULT_CAMERA_ID;
         mCameraFlashMode = DEFAULT_CAMERA_FLASH_MODE;
+        mCameraPreviewAspectRatio = DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO;
         mCameraLastOrientationAngleKnown = 0;
 
         if (savedInstanceState != null) {
@@ -102,8 +107,9 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 && MediaUtil.getMediaTypeFromUri(this, data.getData()) == MediaUtil.MediaType.Image
                 && resultCode == Activity.RESULT_OK) {
             if (CameraHelper.getAvailableDiskSpace(this) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
-                Bitmap correctedImageBitmap = PhotoUtil.applyBitmapOrientationCorrection(this, data.getData());
-                saveImageAndStartEditActivity(correctedImageBitmap);
+                Bitmap bitmap = PhotoUtil.applyBitmapOrientationCorrection(this, data.getData());
+                bitmap = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(bitmap, getCameraPreviewAspectRatio());
+                saveImageAndStartEditActivity(bitmap);
             } else {
                 Toast.makeText(this,
                         getResources().getString(R.string.error_not_enough_available_space),
@@ -159,6 +165,16 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Override
     public void setCameraFlashMode(String cameraFlashMode) {
         mCameraFlashMode = cameraFlashMode;
+    }
+
+    @Override
+    public float getCameraPreviewAspectRatio() {
+        return mCameraPreviewAspectRatio;
+    }
+
+    @Override
+    public void setCameraPreviewAspectRatio(float cameraPreviewAspectRatio) {
+        mCameraPreviewAspectRatio = cameraPreviewAspectRatio;
     }
 
     @Override
@@ -236,6 +252,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         if (mSavingImageProgressDialog == null) {
             mSavingImageProgressDialog = createSavingImageProgressDialog();
         }
+        mSavingImageProgressDialog.setCancelable(false);
         mSavingImageProgressDialog.show();
 
         // Stop camera preview

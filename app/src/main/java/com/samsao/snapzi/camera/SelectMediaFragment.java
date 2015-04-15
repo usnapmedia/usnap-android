@@ -481,6 +481,7 @@ public class SelectMediaFragment extends Fragment {
             mCameraPreview.setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
                 @Override
                 public void onCameraPreviewReady() {
+                    mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
                     setupButtons();
                 }
 
@@ -568,8 +569,9 @@ public class SelectMediaFragment extends Fragment {
                 releaseCamera();
                 dismissPickMediaDialog();
 
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_IMAGE_LOADED_FROM_GALLERY);
             }
@@ -582,8 +584,9 @@ public class SelectMediaFragment extends Fragment {
                 releaseCamera();
                 dismissPickMediaDialog();
 
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("video/*");
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             }
