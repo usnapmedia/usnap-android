@@ -423,6 +423,7 @@ public class EditFragment extends Fragment {
     public void startCropActivity() {
         new Crop(CameraHelper.getImageUri())
                 .output(CameraHelper.getImageUri())
+                .withAspect(mImageContainer.getWidth(), mImageContainer.getHeight())
                 .start(getActivity());
     }
 
