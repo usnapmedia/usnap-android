@@ -6,6 +6,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.edit.EditFragment;
 import com.samsao.snapzi.edit.MenuItem;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
@@ -35,7 +36,7 @@ public abstract class Tool implements Parcelable {
     /**
      * Associated Fragment
      */
-    protected EditFragment mToolFragment;
+    protected WeakReference<EditFragment> mToolFragment;
 
     /**
      * Constructor
@@ -115,7 +116,7 @@ public abstract class Tool implements Parcelable {
     public Tool select() {
         if (!mIsSelected) {
             mIsSelected = true;
-            mToolFragment.setCurrentTool(this);
+            mToolFragment.get().setCurrentTool(this);
             setOptionsMenuItems();
             onSelected();
         }
@@ -152,15 +153,15 @@ public abstract class Tool implements Parcelable {
         for (ToolOption option : mOptions) {
             items.add(option.getMenuItem());
         }
-        mToolFragment.setMenuItems(items);
+        mToolFragment.get().setMenuItems(items);
     }
 
     public EditFragment getToolFragment() {
-        return mToolFragment;
+        return mToolFragment.get();
     }
 
     public Tool setToolFragment(EditFragment toolFragment) {
-        mToolFragment = toolFragment;
+        mToolFragment = new WeakReference<>(toolFragment);
         return this;
     }
 
@@ -204,6 +205,7 @@ public abstract class Tool implements Parcelable {
         for (ToolOption option : mOptions) {
             option.destroy();
         }
+        mToolFragment.clear();
         mToolFragment = null;
     }
 }

@@ -82,6 +82,12 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
     }
 
     @Override
+    public void destroy() {
+        super.destroy();
+        mToolCallback = null;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

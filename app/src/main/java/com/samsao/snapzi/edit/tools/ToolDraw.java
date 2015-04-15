@@ -55,29 +55,29 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public void onSelected() {
         mOptions.get(DEFAULT_OPTION_INDEX).select();
-        mToolFragment.showEditOptionsMenu(true, true, true);
-//        mToolFragment.getDrawAnnotationContainer().setOnTouchListener(mToolFragment.getDrawAnnotationContainer());
-        mToolFragment.getDrawAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
+        getToolFragment().showEditOptionsMenu(true, true, true);
+//        getToolFragment().getDrawAnnotationContainer().setOnTouchListener(getToolFragment().getDrawAnnotationContainer());
+        getToolFragment().getDrawAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        mToolFragment.hideOverlays();
+                        getToolFragment().hideOverlays();
                         break;
                     case MotionEvent.ACTION_UP:
-                        mToolFragment.showOverlays();
+                        getToolFragment().showOverlays();
                         break;
                 }
-                return mToolFragment.getDrawAnnotationContainer().onTouch(v, event);
+                return getToolFragment().getDrawAnnotationContainer().onTouch(v, event);
             }
         });
-        mToolFragment.disableTextAnnotationContainerTouchEvent();
+        getToolFragment().disableTextAnnotationContainerTouchEvent();
     }
 
     @Override
     public void onUnselected() {
-        mToolFragment.getDrawAnnotationContainer().setOnTouchListener(null);
-        mToolFragment.enableTextAnnotationContainerTouchEvent();
+        getToolFragment().getDrawAnnotationContainer().setOnTouchListener(null);
+        getToolFragment().enableTextAnnotationContainerTouchEvent();
     }
 
     @Override
@@ -109,18 +109,18 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onOptionsClearSelected() {
-        mToolFragment.getDrawAnnotationContainer().clear();
+        getToolFragment().getDrawAnnotationContainer().clear();
     }
 
     @Override
     public void onOptionsUndoSelected() {
-        mToolFragment.getDrawAnnotationContainer().undo();
+        getToolFragment().getDrawAnnotationContainer().undo();
     }
 
     @Override
     public void onOptionsDoneSelected() {
-        mToolFragment.resetCurrentTool();
-        mToolFragment.resetOptionsMenu();
+        getToolFragment().resetCurrentTool();
+        getToolFragment().resetOptionsMenu();
     }
 
     @Override

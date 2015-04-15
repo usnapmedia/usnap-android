@@ -46,7 +46,7 @@ public class ToolFilters extends Tool implements Parcelable {
      */
     @Override
     public void onOptionsDoneSelected() {
-        mToolFragment.saveImage();
+        getToolFragment().saveImage();
         selectOption(null);
     }
 
@@ -58,14 +58,14 @@ public class ToolFilters extends Tool implements Parcelable {
         if (hasOptionSelected()) {
             selectOption(null);
         } else {
-            mToolFragment.resetCurrentTool();
-            mToolFragment.resetOptionsMenu();
+            getToolFragment().resetCurrentTool();
+            getToolFragment().resetOptionsMenu();
         }
     }
 
     @Override
     public void onSelected() {
-        mToolFragment.showEditOptionsMenu(false, false, false);
+        getToolFragment().showEditOptionsMenu(false, false, false);
     }
 
     @Override
