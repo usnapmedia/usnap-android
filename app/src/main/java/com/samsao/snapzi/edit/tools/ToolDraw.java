@@ -23,7 +23,7 @@ import me.panavtec.drawableview.DrawableViewConfig;
 public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.ToolCallback {
 
     @ParcelableNoThanks
-    private final int DEFAULT_OPTION_INDEX = 1;
+    private final int DEFAULT_OPTION_INDEX = 2;
     @ParcelableThisPlease
     public DrawableViewConfig mDrawableViewConfig;
 
@@ -36,10 +36,10 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         mDrawableViewConfig.setMaxZoom(3.0f);
         mDrawableViewConfig.setCanvasHeight(0);
         mDrawableViewConfig.setCanvasWidth(0);
+        addOption(new ToolOptionStrokeColor().setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_SMALL).setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_MEDIUM).setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_LARGE).setTool(this));
-        addOption(new ToolOptionStrokeColor().setTool(this));
     }
 
     @Override

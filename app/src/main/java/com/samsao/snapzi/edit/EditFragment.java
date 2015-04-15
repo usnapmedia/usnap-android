@@ -165,6 +165,12 @@ public class EditFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 

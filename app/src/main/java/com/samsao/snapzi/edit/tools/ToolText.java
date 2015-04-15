@@ -30,15 +30,15 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
         TextAnnotationTouchListener.Callback {
 
     @ParcelableNoThanks
-    private final int DEFAULT_OPTION_INDEX = 0;
+    private final int DEFAULT_OPTION_INDEX = 1;
 
     public ToolText() {
         super();
+        addOption(new ToolOptionTextColor().setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.DEFAULT_TYPEFACE_NAME).setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("futura.ttc").setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("georgia.ttf").setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("impact.ttf").setTool(this));
-        addOption(new ToolOptionTextColor().setTool(this));
     }
 
     @Override
