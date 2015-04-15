@@ -200,6 +200,38 @@ public class PhotoUtil {
         return outputBitmap;
     }
 
+    /**
+     * Get center cropped a bitmap with a new aspect ratio.
+     *
+     * @param sourceBitmap      original bitmap
+     * @param targetAspectRatio aspect ratio of the new image
+     * @return rotated bitmap
+     */
+    public static Bitmap getCenterCropBitmapWithTargetAspectRatio(Bitmap sourceBitmap, float targetAspectRatio) {
+        float originalAspectRatio = (float) sourceBitmap.getWidth() / (float) sourceBitmap.getHeight();
+        Bitmap outputBitmap;
+
+        if (originalAspectRatio < targetAspectRatio) {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    0,
+                    (int) (((float) sourceBitmap.getHeight() - (float) sourceBitmap.getWidth() / targetAspectRatio) / 2.0f),
+                    sourceBitmap.getWidth(),
+                    sourceBitmap.getHeight() - (int) ((float) sourceBitmap.getHeight() - (float) sourceBitmap.getWidth() / targetAspectRatio)
+            );
+        } else {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    (int) (((float) sourceBitmap.getWidth() - (float) sourceBitmap.getHeight() * targetAspectRatio) / 2.0f),
+                    0,
+                    sourceBitmap.getWidth() - (int) ((float) sourceBitmap.getWidth() - (float) sourceBitmap.getHeight() * targetAspectRatio),
+                    sourceBitmap.getHeight()
+            );
+        }
+
+        return outputBitmap;
+    }
+
     public static ImageSize getImageSizeFromImageView(ImageView imageView) {
         if (imageView != null) {
             final int imageViewWidth = imageView.getMeasuredWidth();

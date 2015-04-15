@@ -89,6 +89,8 @@ public class SelectMediaFragment extends Fragment {
             int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
             Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting image
             image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown); // Add rotation correction to bitmap
+            image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mCameraPreview.getPreviewAspectRatio());
+
             mSelectMediaProvider.saveImageAndStartEditActivity(image);
         }
     };
@@ -475,7 +477,7 @@ public class SelectMediaFragment extends Fragment {
      */
     public void initializeCamera(int cameraId) {
         if (mCameraPreview == null) {
-            mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.FitParent, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
+            mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.CenterCrop, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
             mCameraPreview.setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
                 @Override
                 public void onCameraPreviewReady() {

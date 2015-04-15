@@ -80,7 +80,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
+        switch (requestCode) {
             case Crop.REQUEST_CROP:
                 if (resultCode == Activity.RESULT_OK && null != data) {
                     if (mEditFragment != null) {
@@ -163,6 +163,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
 
     /**
      * Show the edit menu
+     *
      * @param showDone
      * @param showClear
      * @param showUndo
