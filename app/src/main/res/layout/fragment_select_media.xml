@@ -54,13 +54,6 @@
             android:layout_gravity="center"
             app:radius="48dp"/>
 
-        <Button
-            android:id="@+id/fragment_select_media_pref_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:text="PREF" />
-
     </FrameLayout>
 
 </FrameLayout>

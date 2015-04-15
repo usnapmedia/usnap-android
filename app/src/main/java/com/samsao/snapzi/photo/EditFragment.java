@@ -3,6 +3,7 @@ package com.samsao.snapzi.photo;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,7 +20,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.camera.CameraHelper;
@@ -29,8 +29,10 @@ import com.samsao.snapzi.photo.tools.ToolDraw;
 import com.samsao.snapzi.photo.tools.ToolFilters;
 import com.samsao.snapzi.photo.tools.ToolText;
 import com.samsao.snapzi.photo.util.TextAnnotationEditText;
+import com.samsao.snapzi.social.ShareActivity;
 import com.samsao.snapzi.video.VideoPreview;
 import com.soundcloud.android.crop.Crop;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -111,10 +113,9 @@ public class EditFragment extends Fragment {
             tools.add(new ToolFilters().setToolFragment(this));
 
             // load the image
-            Picasso.with(getActivity()).invalidate(mListener.getImageUri()); // clear cache to force refresh
-            Picasso.with(getActivity())
-                    .load(mListener.getImageUri())
+            Picasso.with(getActivity()).load(mListener.getImageUri())
                     .noPlaceholder()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .into(mImageContainer);
             mImageContainer.setVisibility(View.VISIBLE);
         }
@@ -207,7 +208,7 @@ public class EditFragment extends Fragment {
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
-        requestCreator.into(mImageContainer);
+        requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(mImageContainer);
     }
 
     public void setMenuItems(ArrayList<MenuItem> items) {
@@ -359,8 +360,9 @@ public class EditFragment extends Fragment {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: go to share activity", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ShareActivity.class);
+        intent.putExtra(ShareActivity.EXTRA_URI, mListener.getImageUri());
+        startActivity(intent);
     }
 
     /**

@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.preferences.PreferencesActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
 
@@ -63,9 +62,6 @@ public class SelectMediaFragment extends Fragment {
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
-
-    @InjectView(R.id.fragment_select_media_pref_button)
-    public Button mPreferenceButton;
 
     /**
      * Callback that plays a camera sound as near as possible to the moment when a photo is captured
@@ -192,15 +188,6 @@ public class SelectMediaFragment extends Fragment {
                 }
             });
         }
-
-        // Preferences button
-        mPreferenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                releaseCamera();
-                startActivity(new Intent(getActivity(), PreferencesActivity.class));
-            }
-        });
 
         // Pick media from gallery button
         mPickFromGalleryButton.setOnClickListener(new View.OnClickListener() {
@@ -407,7 +394,6 @@ public class SelectMediaFragment extends Fragment {
             }
             mFlipCameraButton.setVisibility(View.VISIBLE);
             mPickFromGalleryButton.setVisibility(View.VISIBLE);
-            mPreferenceButton.setVisibility(View.VISIBLE);
             mVideoCountdown.setVisibility(View.GONE);
 
             WindowUtil.unlockScreenOrientation(getActivity());
@@ -448,10 +434,6 @@ public class SelectMediaFragment extends Fragment {
 
         if (mPickFromGalleryButton != null) {
             mPickFromGalleryButton.setVisibility(View.GONE);
-        }
-
-        if (mPreferenceButton != null) {
-            mPreferenceButton.setVisibility(View.GONE);
         }
     }
 
@@ -511,10 +493,6 @@ public class SelectMediaFragment extends Fragment {
 
         if (mPickFromGalleryButton != null) {
             mPickFromGalleryButton.setOnClickListener(null);
-        }
-
-        if (mPreferenceButton != null) {
-            mPreferenceButton.setOnClickListener(null);
         }
 
         if (mCaptureMediaButton != null) {
