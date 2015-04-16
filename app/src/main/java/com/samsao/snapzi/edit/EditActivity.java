@@ -93,7 +93,14 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
             } else {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
+        } else {
+            if (VideoUtil.isVideoPortraitOriented(mMediaPath)) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
         }
+
 
         if (savedInstanceState == null) {
             mEditFragment = EditFragment.newInstance();
