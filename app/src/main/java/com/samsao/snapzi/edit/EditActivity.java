@@ -3,7 +3,6 @@ package com.samsao.snapzi.edit;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +27,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
      * Constants
      */
     public static final String EXTRA_IS_EDIT_PICTURE_MODE = "EditActivity.EXTRA_IS_EDIT_PICTURE_MODE";
-    public static final String EXTRA_URI = "EditActivity.EXTRA_URI";
+    public static final String EXTRA_IMAGE_PATH = "EditActivity.EXTRA_IMAGE_PATH";
     public static final String EXTRA_VIDEO_PATH = "EditActivity.EXTRA_VIDEO_PATH";
 
     @InjectView(R.id.activity_edit_toolbar)
@@ -39,13 +38,13 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     @Icicle
     public boolean mIsEditPictureMode;
     @Icicle
-    public Uri mImageUri;
-    @Icicle
     public MenuState mMenuState;
     @Icicle // FIXME saving tools does not work
     public ArrayList<Tool> mTools;
     @Icicle
     public Tool mCurrentTool;
+    @Icicle
+    private String mImagePath;
     @Icicle
     public String mVideoPath;
 
@@ -60,11 +59,14 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         Intent intent = getIntent();
         if (intent != null) {
             mIsEditPictureMode = intent.getBooleanExtra(EXTRA_IS_EDIT_PICTURE_MODE, true);
-            mImageUri = intent.getParcelableExtra(EXTRA_URI);
+            mImagePath = intent.getStringExtra(EXTRA_IMAGE_PATH);
             mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
         }
+
         // restore saved state
-        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
 
         if (savedInstanceState == null) {
             mEditFragment = EditFragment.newInstance();
@@ -179,11 +181,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         return mIsEditPictureMode;
     }
 
-    @Override
-    public Uri getImageUri() {
-        return mImageUri;
-    }
-
     public Toolbar getToolbar() {
         return mToolbar;
     }
@@ -205,6 +202,11 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     }
 
     @Override
+    public String getImagePath() {
+        return mImagePath;
+    }
+
+    @Override
     public String getVideoPath() {
         return mVideoPath;
     }
@@ -215,9 +217,9 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
      * @param bitmap
      */
     public void saveBitmap(Bitmap bitmap) {
-        PhotoUtil.saveImage(bitmap, new SaveImageCallback() {
+        PhotoUtil.saveImage(bitmap, mImagePath, new SaveImageCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String destFilePath) {
 
             }
 

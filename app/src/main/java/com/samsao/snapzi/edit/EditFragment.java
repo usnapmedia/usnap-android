@@ -1,6 +1,5 @@
 package com.samsao.snapzi.edit;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -43,10 +44,10 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class EditFragment extends Fragment {
+
+    private final String LOG_TAG = getClass().getSimpleName();
 
     private final int ANIMATION_DURATION = 300;
 
@@ -112,7 +113,8 @@ public class EditFragment extends Fragment {
             tools.add(new ToolFilters().setToolFragment(this));
 
             // load the image
-            Picasso.with(getActivity()).load(mListener.getImageUri())
+            Uri imageUri = Uri.fromFile(new File(CameraHelper.getDefaultImageFilePath()));
+            Picasso.with(getActivity()).load(imageUri)
                     .noPlaceholder()
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .into(mImageContainer);
@@ -202,12 +204,13 @@ public class EditFragment extends Fragment {
      * @param transformation
      */
     public void refreshImage(Transformation transformation) {
-        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
-        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder();
+        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImagePath()).noPlaceholder();
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
-        requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(mImageContainer);
+        requestCreator
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .into(mImageContainer);
     }
 
     public void setMenuItems(ArrayList<MenuItem> items) {
@@ -359,9 +362,14 @@ public class EditFragment extends Fragment {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
-        intent.putExtra(ShareActivity.EXTRA_URI, mListener.getImageUri());
-        startActivity(intent);
+        Uri imageUri = Uri.parse(new File(mListener.getImagePath()).toString());
+        if (imageUri != null) {
+            Intent intent = new Intent(getActivity(), ShareActivity.class);
+            intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
+            startActivity(intent);
+        } else {
+            Log.e(LOG_TAG, "image uri is null");
+        }
     }
 
     /**
@@ -420,8 +428,9 @@ public class EditFragment extends Fragment {
      * Start cropping activity
      */
     public void startCropActivity() {
-        new Crop(CameraHelper.getImageUri())
-                .output(CameraHelper.getImageUri())
+        Uri imageUri = Uri.parse(new File(mListener.getImagePath()).toString());
+        new Crop(imageUri)
+                .output(imageUri)
                 .withAspect(mImageContainer.getWidth(), mImageContainer.getHeight())
                 .start(getActivity());
     }
@@ -491,8 +500,6 @@ public class EditFragment extends Fragment {
     public interface Listener {
         boolean isEditPictureMode();
 
-        Uri getImageUri();
-
         void saveBitmap(Bitmap bitmap);
 
         void resetMenu();
@@ -508,6 +515,8 @@ public class EditFragment extends Fragment {
         Tool getCurrentTool();
 
         void setCurrentTool(Tool currentTool);
+
+        String getImagePath();
 
         String getVideoPath();
     }

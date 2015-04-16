@@ -59,7 +59,7 @@ public class CameraHelper {
      * dimensions of the given view while maintaining the aspect ratio. If none can,
      * be lenient with the aspect ratio.
      *
-     * @param sizes  Supported camera preview sizes.
+     * @param sizes        Supported camera preview sizes.
      * @param targetWidth
      * @param targetHeight
      * @return Best match camera preview size to fit in the view.
@@ -134,20 +134,11 @@ public class CameraHelper {
     }
 
     /**
-     * Returns the image URI
-     *
-     * @return
-     */
-    public static Uri getImageUri() {
-        return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath(IMAGE_FILENAME));
-    }
-
-    /**
      * Get image media path.
      *
      * @return path to image
      */
-    public static String getImageMediaFilePath() {
+    public static String getDefaultImageFilePath() {
         return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + IMAGE_FILENAME);
     }
 

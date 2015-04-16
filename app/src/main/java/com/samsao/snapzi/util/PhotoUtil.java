@@ -8,14 +8,13 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.camera.CameraHelper;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 
 /**
  * @author jfcartier
@@ -38,8 +37,8 @@ public class PhotoUtil {
      * @param bitmap
      * @param callback
      */
-    public static void saveImage(Bitmap bitmap, SaveImageCallback callback) {
-        mSaveBitmapTask = new SaveBitmapTask(bitmap, callback);
+    public static void saveImage(Bitmap bitmap, String destFilePath, SaveImageCallback callback) {
+        mSaveBitmapTask = new SaveBitmapTask(bitmap, destFilePath, callback);
         mSaveBitmapTask.execute();
     }
 
@@ -63,32 +62,41 @@ public class PhotoUtil {
      */
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
         private Bitmap mBitmap;
+        private String mDestFilePath;
         private SaveImageCallback mCallback;
 
-        private SaveBitmapTask(Bitmap bitmap, SaveImageCallback callback) {
+        private SaveBitmapTask(Bitmap bitmap, String destFilePath, SaveImageCallback callback) {
             mBitmap = bitmap;
+            mDestFilePath = destFilePath;
             mCallback = callback;
         }
 
         protected Boolean doInBackground(Void... nothing) {
+            Boolean isSuccess = true;
+            FileOutputStream fileOutputStream = null;
             try {
-                FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(CameraHelper.IMAGE_FILENAME, Context.MODE_PRIVATE);
-                resizeImage(mBitmap, PhotoUtil.MAXIMUM_IMAGE_SIDE_SIZE).compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
-                fOutputStream.flush();
-                fOutputStream.close();
-                return true;
-            } catch (FileNotFoundException e) {
+                fileOutputStream = new FileOutputStream(mDestFilePath);
+                resizeImage(mBitmap, PhotoUtil.MAXIMUM_IMAGE_SIDE_SIZE).compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream); // PNG is a lossless format, the compression factor (100) is ignored
+            } catch (Exception e) {
                 Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());
-                return false;
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());
-                return false;
+                isSuccess = false;
+            } finally {
+                try {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.close();
+                    }
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());
+                    isSuccess = false;
+                }
             }
+
+            return isSuccess;
         }
 
         protected void onPostExecute(Boolean success) {
             if (success) {
-                mCallback.onSuccess();
+                mCallback.onSuccess(mDestFilePath);
             } else {
                 mCallback.onFailure();
             }
@@ -263,55 +271,5 @@ public class PhotoUtil {
         }
 
         return outputBitmap;
-    }
-
-    public static ImageSize getImageSizeFromImageView(ImageView imageView) {
-        if (imageView != null) {
-            final int imageViewWidth = imageView.getMeasuredWidth();
-            final int imageViewHeight = imageView.getMeasuredHeight();
-            final int originalImageWidth = imageView.getDrawable().getIntrinsicWidth();
-            final int originalImageHeight = imageView.getDrawable().getIntrinsicHeight();
-            final float widthScaleFactor = (float) imageViewWidth / (float) originalImageWidth;
-            final float heightScaleFactor = (float) imageViewHeight / (float) originalImageHeight;
-            float imageScaleFactor;
-
-            // Find image scale factor
-            if (widthScaleFactor < heightScaleFactor) {
-                imageScaleFactor = widthScaleFactor;
-            } else {
-                imageScaleFactor = heightScaleFactor;
-            }
-
-            return new ImageSize((int) (originalImageWidth * imageScaleFactor),
-                    (int) (originalImageHeight * imageScaleFactor));
-        } else {
-            return new ImageSize(0, 0);
-        }
-    }
-
-    public static class ImageSize {
-        private int mWidth;
-        private int mHeight;
-
-        public ImageSize(int width, int height) {
-            mWidth = width;
-            mHeight = height;
-        }
-
-        public int getWidth() {
-            return mWidth;
-        }
-
-        public void setWidth(int width) {
-            mWidth = width;
-        }
-
-        public int getHeight() {
-            return mHeight;
-        }
-
-        public void setHeight(int height) {
-            mHeight = height;
-        }
     }
 }

@@ -66,8 +66,8 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         mCameraPreviewAspectRatio = DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO;
         mCameraLastOrientationAngleKnown = 0;
 
+        // restore saved state
         if (savedInstanceState != null) {
-            // restore saved state
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
 
@@ -109,7 +109,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             if (CameraHelper.getAvailableDiskSpace(this) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                 Bitmap bitmap = PhotoUtil.applyBitmapOrientationCorrection(this, data.getData());
                 bitmap = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(bitmap, getCameraPreviewAspectRatio());
-                saveImageAndStartEditActivity(bitmap);
+                saveImageAndStartEditActivity(bitmap, CameraHelper.getDefaultImageFilePath());
             } else {
                 Toast.makeText(this,
                         getResources().getString(R.string.error_not_enough_available_space),
@@ -188,13 +188,13 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     }
 
     @Override
-    public void saveImageAndStartEditActivity(Bitmap bitmap) {
+    public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath) {
         if (bitmap != null) {
             showSavingImageProgressDialog();
-            PhotoUtil.saveImage(bitmap, new SaveImageCallback() {
+            PhotoUtil.saveImage(bitmap, destFilePath, new SaveImageCallback() {
                 @Override
-                public void onSuccess() {
-                    startEditImageActivity();
+                public void onSuccess(String destFilePath) {
+                    startEditImageActivity(destFilePath);
                     dismissSavingImageProgressDialog();
                 }
 
@@ -218,14 +218,19 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             Toast.makeText(SelectMediaActivity.this,
                     getResources().getString(R.string.error_unable_to_open_image),
                     Toast.LENGTH_LONG).show();
+
+            // Restart camera preview
+            if (mSelectMediaFragment != null) {
+                mSelectMediaFragment.initializeCamera(mCameraId);
+            }
         }
     }
 
     @Override
-    public void startEditImageActivity() {
+    public void startEditImageActivity(String imagePath) {
         Intent editIntent = new Intent(this, EditActivity.class);
         editIntent.putExtra(EditActivity.EXTRA_IS_EDIT_PICTURE_MODE, true);
-        editIntent.putExtra(EditActivity.EXTRA_URI, CameraHelper.getImageUri());
+        editIntent.putExtra(EditActivity.EXTRA_IMAGE_PATH, imagePath);
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.releaseCamera();
         }

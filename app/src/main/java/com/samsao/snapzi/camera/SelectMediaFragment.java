@@ -87,7 +87,7 @@ public class SelectMediaFragment extends Fragment {
             image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown); // Add rotation correction to bitmap
             image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mCameraPreview.getPreviewAspectRatio());
 
-            mSelectMediaProvider.saveImageAndStartEditActivity(image);
+            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
         }
     };
 

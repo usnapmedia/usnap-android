@@ -1,7 +1,7 @@
 package com.samsao.snapzi.camera;
 
-
 import android.graphics.Bitmap;
+
 
 /**
  * Created by vlegault on 15-03-18.
@@ -24,9 +24,9 @@ public interface SelectMediaProvider {
 
     public void setCameraLastOrientationAngleKnown(int angle);
 
-    public void saveImageAndStartEditActivity(Bitmap bitmap);
+    public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath);
 
-    public void startEditImageActivity();
+    public void startEditImageActivity(String imagePath);
 
     public void startEditVideoActivity(String videoPath);
 }
