@@ -137,7 +137,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             } else {
                 if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
-                    startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getVideoMediaFilePath());
                 } else {
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_video),
@@ -194,7 +194,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
             PhotoUtil.saveImage(bitmap, destFilePath, new SaveImageCallback() {
                 @Override
                 public void onSuccess(String destFilePath) {
-                    startEditImageActivity(destFilePath);
+                    startEditActivity(EditActivity.IMAGE_MODE, destFilePath);
                     dismissSavingImageProgressDialog();
                 }
 
@@ -227,22 +227,10 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     }
 
     @Override
-    public void startEditImageActivity(String imagePath) {
+    public void startEditActivity(String editMode, String mediaPath) {
         Intent editIntent = new Intent(this, EditActivity.class);
-        editIntent.putExtra(EditActivity.EXTRA_IS_EDIT_PICTURE_MODE, true);
-        editIntent.putExtra(EditActivity.EXTRA_IMAGE_PATH, imagePath);
-        if (mSelectMediaFragment != null) {
-            mSelectMediaFragment.releaseCamera();
-        }
-
-        startActivity(editIntent);
-    }
-
-    @Override
-    public void startEditVideoActivity(String videoPath) {
-        Intent editIntent = new Intent(this, EditActivity.class);
-        editIntent.putExtra(EditActivity.EXTRA_IS_EDIT_PICTURE_MODE, false);
-        editIntent.putExtra(EditActivity.EXTRA_VIDEO_PATH, videoPath);
+        editIntent.putExtra(EditActivity.EXTRA_EDIT_MODE, editMode);
+        editIntent.putExtra(EditActivity.EXTRA_MEDIA_PATH, mediaPath);
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.releaseCamera();
         }

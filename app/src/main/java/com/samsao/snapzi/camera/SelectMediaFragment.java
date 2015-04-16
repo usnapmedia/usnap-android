@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
 
@@ -267,7 +268,7 @@ public class SelectMediaFragment extends Fragment {
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
-                        mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getVideoMediaFilePath());
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -300,7 +301,7 @@ public class SelectMediaFragment extends Fragment {
                 }
 
                 if (isVideoCaptureSuccessful) {
-                    mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getVideoMediaFilePath());
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),

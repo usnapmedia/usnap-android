@@ -26,7 +26,5 @@ public interface SelectMediaProvider {
 
     public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath);
 
-    public void startEditImageActivity(String imagePath);
-
-    public void startEditVideoActivity(String videoPath);
+    public void startEditActivity(String isEditPictureMode, String mediaPath);
 }

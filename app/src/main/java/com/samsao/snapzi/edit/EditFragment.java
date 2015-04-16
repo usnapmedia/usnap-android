@@ -107,7 +107,7 @@ public class EditFragment extends Fragment {
         tools.add(new ToolText().setToolFragment(this));
         tools.add(new ToolDraw().setToolFragment(this));
 
-        if (mListener.isEditPictureMode()) {
+        if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
             // Add specific tool for edit image mode
             tools.add(new ToolCrop().setToolFragment(this));
             tools.add(new ToolFilters().setToolFragment(this));
@@ -170,14 +170,13 @@ public class EditFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (!mListener.isEditPictureMode()) {
+        if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             // load the video
             if (mVideoPreview == null) {
-                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+                mVideoPreview = new VideoPreview(getActivity(), mListener.getMediaPath());
             }
             mVideoContainer.setVisibility(View.VISIBLE);
             mVideoContainer.addView(mVideoPreview);
-
         }
     }
 
@@ -185,7 +184,7 @@ public class EditFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        if (!mListener.isEditPictureMode() && mVideoPreview != null) {
+        if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             mVideoContainer.removeView(mVideoPreview);
             mVideoPreview = null;
         }
@@ -204,7 +203,7 @@ public class EditFragment extends Fragment {
      * @param transformation
      */
     public void refreshImage(Transformation transformation) {
-        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImagePath()).noPlaceholder();
+        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getMediaPath()).noPlaceholder();
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
@@ -362,7 +361,7 @@ public class EditFragment extends Fragment {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        Uri imageUri = Uri.parse(new File(mListener.getImagePath()).toString());
+        Uri imageUri = Uri.parse(new File(mListener.getMediaPath()).toString());
         if (imageUri != null) {
             Intent intent = new Intent(getActivity(), ShareActivity.class);
             intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
@@ -428,7 +427,7 @@ public class EditFragment extends Fragment {
      * Start cropping activity
      */
     public void startCropActivity() {
-        Uri imageUri = Uri.parse(new File(mListener.getImagePath()).toString());
+        Uri imageUri = Uri.parse(new File(mListener.getMediaPath()).toString());
         new Crop(imageUri)
                 .output(imageUri)
                 .withAspect(mImageContainer.getWidth(), mImageContainer.getHeight())
@@ -498,7 +497,7 @@ public class EditFragment extends Fragment {
     }
 
     public interface Listener {
-        boolean isEditPictureMode();
+        String getEditMode();
 
         void saveBitmap(Bitmap bitmap);
 
@@ -516,8 +515,6 @@ public class EditFragment extends Fragment {
 
         void setCurrentTool(Tool currentTool);
 
-        String getImagePath();
-
-        String getVideoPath();
+        String getMediaPath();
     }
 }
