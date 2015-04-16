@@ -142,6 +142,7 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         public ToolDraw createFromParcel(Parcel source) {
             ToolDraw target = new ToolDraw();
             ToolDrawParcelablePlease.readFromParcel(target, source);
+            target.setOptionsTool();
             return target;
         }
 

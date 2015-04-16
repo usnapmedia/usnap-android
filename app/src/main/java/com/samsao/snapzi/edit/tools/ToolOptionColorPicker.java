@@ -116,12 +116,6 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         mColor = color;
     }
 
-    @Override
-    public void destroy() {
-        super.destroy();
-        mToolCallback = null;
-    }
-
     /**
      * Interface for the tool callback
      */

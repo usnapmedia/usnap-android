@@ -2,6 +2,7 @@ package com.samsao.snapzi.edit.tools;
 
 import android.os.Parcelable;
 
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.edit.MenuItem;
 
@@ -10,7 +11,8 @@ import com.samsao.snapzi.edit.MenuItem;
  * @since 15-04-06
  */
 public abstract class ToolOption implements Parcelable {
-    @ParcelableThisPlease
+    // tool will be set by the tool itself
+    @ParcelableNoThanks
     public Tool mTool;
     @ParcelableThisPlease
     public Boolean mIsSelected;
@@ -101,12 +103,5 @@ public abstract class ToolOption implements Parcelable {
     public ToolOption setTool(Tool tool) {
         mTool = tool;
         return this;
-    }
-
-    /**
-     * A ToolOption must be destroyed to avoid memory leaks
-     */
-    public void destroy() {
-        mTool = null;
     }
 }
