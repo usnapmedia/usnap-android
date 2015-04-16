@@ -1,5 +1,7 @@
 package com.samsao.snapzi.util;
 
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import com.coremedia.iso.IsoFile;
@@ -172,5 +174,28 @@ public class VideoUtil {
             previous = timeOfSyncSample;
         }
         return timeOfSyncSamples[timeOfSyncSamples.length - 1];
+    }
+
+    /**
+     * Tells if the provided video is portrait oriented
+     *
+     * @param videoPath
+     * @return true if video is portrait oriented
+     */
+    public static boolean isVideoPortraitOriented(String videoPath) {
+        int width, height;
+
+        // Get video size
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(videoPath);
+        width = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+        height = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+        metaRetriever.release();
+
+        if (width < height) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

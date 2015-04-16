@@ -15,6 +15,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.util.VideoUtil;
 import com.soundcloud.android.crop.Crop;
 
 import java.util.ArrayList;
@@ -80,10 +81,16 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
             finish();
         }
 
-        if(mEditMode.equals(IMAGE_MODE)){
-            if(PhotoUtil.isImagePortraitOriented(mMediaPath)){
+        if (mEditMode.equals(IMAGE_MODE)) {
+            if (PhotoUtil.isImagePortraitOriented(mMediaPath)) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            }else{
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+        } else {
+            if (VideoUtil.isVideoPortraitOriented(mMediaPath)) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            } else {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
         }
