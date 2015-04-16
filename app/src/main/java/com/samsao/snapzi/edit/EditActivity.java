@@ -2,6 +2,7 @@ package com.samsao.snapzi.edit;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -71,17 +72,25 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
 
-        if (mEditMode != null && (mEditMode.equals(IMAGE_MODE) || mEditMode.equals(VIDEO_MODE))) {
-            if (savedInstanceState == null) {
-                mEditFragment = EditFragment.newInstance();
-                getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
-            }
-        } else {
+        if (mEditMode == null || !(mEditMode.equals(IMAGE_MODE) || mEditMode.equals(VIDEO_MODE))) {
             Log.e(LOG_TAG, "Unrecognized edit mode was provided, closing EditActivity");
             Toast.makeText(this,
                     getResources().getString(R.string.error_unknown),
                     Toast.LENGTH_LONG).show();
             finish();
+        }
+
+        if(mEditMode.equals(IMAGE_MODE)){
+            if(PhotoUtil.isImagePortraitOriented(mMediaPath)){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }else{
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+        }
+
+        if (savedInstanceState == null) {
+            mEditFragment = EditFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
         }
     }
 

@@ -272,4 +272,26 @@ public class PhotoUtil {
 
         return outputBitmap;
     }
+
+    /**
+     * Tells if the provided image is portrait oriented
+     *
+     * @param imagePath
+     * @return true if image is portrait oriented
+     */
+    public static boolean isImagePortraitOriented(String imagePath) {
+        int width, height;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(imagePath, options);
+        width = options.outWidth;
+        height = options.outHeight;
+
+        if (width < height) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
