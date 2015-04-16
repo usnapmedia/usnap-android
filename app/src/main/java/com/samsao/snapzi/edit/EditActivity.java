@@ -71,9 +71,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         if (savedInstanceState == null) {
-            mEditFragment = EditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
-
             // initialize tools
             // TODO put the available tools in a config file that can change
             // depending the produt flavor
@@ -89,6 +86,9 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
                 mTools.add(new ToolCrop());
                 mTools.add(new ToolFilters());
             }
+
+            mEditFragment = EditFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
         } else {
             if (mCurrentTool != null) {
                 // current tool has to be selected if restoring from a saved instance
