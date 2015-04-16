@@ -252,6 +252,12 @@ public class PhotoUtil {
         float originalAspectRatio = (float) sourceBitmap.getWidth() / (float) sourceBitmap.getHeight();
         Bitmap outputBitmap;
 
+        // Set target aspect ratio in the same mode (portrait or landscape) as the original
+        if ((originalAspectRatio < 1.0f && !(targetAspectRatio < 1.0f)) ||
+                (originalAspectRatio > 1.0f && !(targetAspectRatio > 1.0f))) {
+            targetAspectRatio = 1.0f / targetAspectRatio; // inverse target's aspect ratio
+        }
+
         if (originalAspectRatio < targetAspectRatio) {
             outputBitmap = Bitmap.createBitmap(
                     sourceBitmap,

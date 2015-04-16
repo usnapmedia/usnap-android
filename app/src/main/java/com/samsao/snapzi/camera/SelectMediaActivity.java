@@ -123,7 +123,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 && resultCode == Activity.RESULT_OK) {
             // Get the video from data
             String sourceVideoPath = CameraHelper.getRealPathFromURI(this, data.getData());
-            String destVideoPath = CameraHelper.getVideoMediaFilePath();
+            String destVideoPath = CameraHelper.getDefaultVideoFilePath();
 
             // If non-local video select an other one
             if (sourceVideoPath.contains("https://")) {
@@ -137,7 +137,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
                 startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             } else {
                 if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
-                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getVideoMediaFilePath());
+                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                 } else {
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_video),

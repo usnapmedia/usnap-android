@@ -253,7 +253,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mMediaRecorder.setProfile(mCamcorderProfile);
 
         // Set output file
-        mMediaRecorder.setOutputFile(CameraHelper.getVideoMediaFilePath());
+        mMediaRecorder.setOutputFile(CameraHelper.getDefaultVideoFilePath());
 
         // Set maximum duration
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);

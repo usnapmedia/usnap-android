@@ -147,7 +147,7 @@ public class CameraHelper {
      *
      * @return path to video
      */
-    public static String getVideoMediaFilePath() {
+    public static String getDefaultVideoFilePath() {
         return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + VIDEO_FILENAME);
     }
 

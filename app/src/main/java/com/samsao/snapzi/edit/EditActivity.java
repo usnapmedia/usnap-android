@@ -87,13 +87,8 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         }
 
         if (mEditMode.equals(IMAGE_MODE)) {
+            // Lock screen in image orientation
             if (PhotoUtil.isImagePortraitOriented(mMediaPath)) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            } else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-        } else {
-            if (VideoUtil.isVideoPortraitOriented(mMediaPath)) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
             } else {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
@@ -106,7 +101,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
 
             // initialize tools
             // TODO put the available tools in a config file that can change
-            // depending the produt flavor
+            // depending the product flavor
             mTools = new ArrayList<>();
 
             // Add common tools for both modes

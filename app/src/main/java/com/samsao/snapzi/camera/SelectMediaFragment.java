@@ -268,7 +268,7 @@ public class SelectMediaFragment extends Fragment {
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
-                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getVideoMediaFilePath());
+                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -301,7 +301,7 @@ public class SelectMediaFragment extends Fragment {
                 }
 
                 if (isVideoCaptureSuccessful) {
-                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getVideoMediaFilePath());
+                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),
