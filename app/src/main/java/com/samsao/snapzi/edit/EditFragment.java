@@ -24,10 +24,6 @@ import android.widget.ImageView;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.edit.tools.Tool;
-import com.samsao.snapzi.edit.tools.ToolCrop;
-import com.samsao.snapzi.edit.tools.ToolDraw;
-import com.samsao.snapzi.edit.tools.ToolFilters;
-import com.samsao.snapzi.edit.tools.ToolText;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
 import com.samsao.snapzi.social.ShareActivity;
 import com.soundcloud.android.crop.Crop;
@@ -100,18 +96,7 @@ public class EditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit, container, false);
         ButterKnife.inject(this, view);
 
-        // TODO read the value from gradle to know what tools to instantiate
-        ArrayList<Tool> tools = new ArrayList<>();
-
-        // Add common tools for both modes
-        tools.add(new ToolText().setToolFragment(this));
-        tools.add(new ToolDraw().setToolFragment(this));
-
         if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
-            // Add specific tool for edit image mode
-            tools.add(new ToolCrop().setToolFragment(this));
-            tools.add(new ToolFilters().setToolFragment(this));
-
             // load the image
             Uri imageUri = Uri.fromFile(new File(CameraHelper.getDefaultImageFilePath()));
             Picasso.with(getActivity()).load(imageUri)
@@ -120,7 +105,11 @@ public class EditFragment extends Fragment {
                     .into(mImageContainer);
             mImageContainer.setVisibility(View.VISIBLE);
         }
-        mListener.setTools(tools);
+
+        // set the fragment for tools
+        for (Tool tool : mListener.getTools()) {
+            tool.setToolFragment(this);
+        }
 
         mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -147,10 +136,6 @@ public class EditFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-        for (Tool tool : mListener.getTools()) {
-            tool.destroy();
-        }
-        mListener.getTools().clear();
     }
 
     @Override
@@ -164,6 +149,12 @@ public class EditFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement EditFragment.Listener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override

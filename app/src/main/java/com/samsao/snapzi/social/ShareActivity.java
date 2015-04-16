@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import icepick.Icepick;
 import icepick.Icicle;
 
-public class ShareActivity extends SocialNetworkActivity {
+public class ShareActivity extends SocialNetworkActivity implements ShareFragment.Listener {
     public static final String EXTRA_URI = "com.samsao.snapzi.social.ShareActivity.EXTRA_URI";
 
     private ShareFragment mShareFragment;
@@ -27,7 +27,7 @@ public class ShareActivity extends SocialNetworkActivity {
 
         if (savedInstanceState == null) {
             // Create a new Fragment to be placed in the activity layout
-            mShareFragment = ShareFragment.newInstance(mImageUri);
+            mShareFragment = ShareFragment.newInstance();
 
             // Add the fragment
             getFragmentManager().beginTransaction()
@@ -56,4 +56,8 @@ public class ShareActivity extends SocialNetworkActivity {
         }
     }
 
+    @Override
+    public Uri getImageUri() {
+        return mImageUri;
+    }
 }

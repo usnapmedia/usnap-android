@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/elements_horizontal_margin"
         android:text="@string/action_processing_image_text" />
 
 </LinearLayout>

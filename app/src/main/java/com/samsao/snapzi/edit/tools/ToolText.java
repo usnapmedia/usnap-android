@@ -30,15 +30,15 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
         TextAnnotationTouchListener.Callback {
 
     @ParcelableNoThanks
-    private final int DEFAULT_OPTION_INDEX = 0;
+    private final int DEFAULT_OPTION_INDEX = 1;
 
     public ToolText() {
         super();
+        addOption(new ToolOptionTextColor().setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.DEFAULT_TYPEFACE_NAME).setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("futura.ttc").setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("georgia.ttf").setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName("impact.ttf").setTool(this));
-        addOption(new ToolOptionTextColor().setTool(this));
     }
 
     @Override
@@ -54,13 +54,13 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public Tool setToolFragment(EditFragment toolFragment) {
         super.setToolFragment(toolFragment);
-        mToolFragment.getTextAnnotation().setTextColor(ToolOptionTextColor.DEFAULT_COLOR);
-        mToolFragment.getTextAnnotation().setOnEditorActionListener(
+        getToolFragment().getTextAnnotation().setTextColor(ToolOptionTextColor.DEFAULT_COLOR);
+        getToolFragment().getTextAnnotation().setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            if (!TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
+                            if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
                                 lockText();
                                 return false;
                             } else {
@@ -75,9 +75,9 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onOptionsClearSelected() {
-        mToolFragment.getTextAnnotation().setTranslationX(0);
-        mToolFragment.getTextAnnotation().setTranslationY(0);
-        mToolFragment.getTextAnnotation().setText("");
+        getToolFragment().getTextAnnotation().setTranslationX(0);
+        getToolFragment().getTextAnnotation().setTranslationY(0);
+        getToolFragment().getTextAnnotation().setText("");
         unlockText();
     }
 
@@ -88,8 +88,8 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onOptionsDoneSelected() {
-        mToolFragment.resetCurrentTool();
-        mToolFragment.resetOptionsMenu();
+        getToolFragment().resetCurrentTool();
+        getToolFragment().resetOptionsMenu();
     }
 
     @Override
@@ -100,40 +100,40 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public void onSelected() {
         mOptions.get(DEFAULT_OPTION_INDEX).select();
-        mToolFragment.showEditOptionsMenu(true, true, false);
-        mToolFragment.enableTextAnnotationContainerTouchEvent();
+        getToolFragment().showEditOptionsMenu(true, true, false);
+        getToolFragment().enableTextAnnotationContainerTouchEvent();
         // lock the text if the user presses anywhere on the screen
-        mToolFragment.getTextAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
+        getToolFragment().getTextAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (!TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
-                    KeyboardUtil.hideKeyboard(mToolFragment.getActivity());
+                if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
+                    KeyboardUtil.hideKeyboard(getToolFragment().getActivity());
                     lockText();
                 }
                 return false;
             }
         });
 
-        if (!TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
+        if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
             lockText();
         } else {
-            mToolFragment.getTextAnnotation().setVisibility(View.VISIBLE);
+            getToolFragment().getTextAnnotation().setVisibility(View.VISIBLE);
             unlockText();
         }
     }
 
     @Override
     public void onUnselected() {
-        KeyboardUtil.hideKeyboard(mToolFragment.getActivity()); // in case the keyboard is still shown
-        mToolFragment.disableTextAnnotationContainerTouchEvent();
-        if (!TextUtils.isEmpty(mToolFragment.getTextAnnotation().getText())) {
+        KeyboardUtil.hideKeyboard(getToolFragment().getActivity()); // in case the keyboard is still shown
+        getToolFragment().disableTextAnnotationContainerTouchEvent();
+        if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
             // in case the done button is clicked before the keyboard was dismissed
-            mToolFragment.getTextAnnotation().setFocusableInTouchMode(false);
-            mToolFragment.getTextAnnotation().clearFocus();
+            getToolFragment().getTextAnnotation().setFocusableInTouchMode(false);
+            getToolFragment().getTextAnnotation().clearFocus();
             // remove the touch listener so the text cant be dragged
-            mToolFragment.getTextAnnotation().setOnTouchListener(null);
+            getToolFragment().getTextAnnotation().setOnTouchListener(null);
         } else {
-            mToolFragment.getTextAnnotation().setVisibility(View.GONE);
+            getToolFragment().getTextAnnotation().setVisibility(View.GONE);
         }
     }
 
@@ -141,18 +141,18 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
      * Lock the text so it can only be moved
      */
     protected void lockText() {
-        mToolFragment.getTextAnnotation().setFocusableInTouchMode(false);
-        mToolFragment.getTextAnnotation().clearFocus();
-        mToolFragment.getTextAnnotation().setOnTouchListener(new TextAnnotationTouchListener(mToolFragment.getTextAnnotation(), this));
+        getToolFragment().getTextAnnotation().setFocusableInTouchMode(false);
+        getToolFragment().getTextAnnotation().clearFocus();
+        getToolFragment().getTextAnnotation().setOnTouchListener(new TextAnnotationTouchListener(getToolFragment().getTextAnnotation(), this));
     }
 
     /**
      * Unlock text and request user input
      */
     protected void unlockText() {
-        mToolFragment.getTextAnnotation().setFocusableInTouchMode(true);
-        mToolFragment.getTextAnnotation().requestFocus();
-        KeyboardUtil.showKeyboard(mToolFragment.getActivity(), mToolFragment.getTextAnnotation());
+        getToolFragment().getTextAnnotation().setFocusableInTouchMode(true);
+        getToolFragment().getTextAnnotation().requestFocus();
+        KeyboardUtil.showKeyboard(getToolFragment().getActivity(), getToolFragment().getTextAnnotation());
     }
 
     @Override
@@ -169,6 +169,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
         public ToolText createFromParcel(Parcel source) {
             ToolText target = new ToolText();
             ToolTextParcelablePlease.readFromParcel(target, source);
+            target.setOptionsTool();
             return target;
         }
 
@@ -179,25 +180,25 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onColorSelected(int color) {
-        mToolFragment.getTextAnnotation().setTextColor(color);
+        getToolFragment().getTextAnnotation().setTextColor(color);
     }
 
     @Override
     public void setTypeFace(Typeface font) {
-        mToolFragment.getTextAnnotation().setTypeface(font);
+        getToolFragment().getTextAnnotation().setTypeface(font);
         // if the editText has focus, show the keyboard
-        if (mToolFragment.getTextAnnotation().hasFocus()) {
-            KeyboardUtil.showKeyboard(mToolFragment.getActivity(), mToolFragment.getTextAnnotation());
+        if (getToolFragment().getTextAnnotation().hasFocus()) {
+            KeyboardUtil.showKeyboard(getToolFragment().getActivity(), getToolFragment().getTextAnnotation());
         }
     }
 
     @Override
     public void hideOverlays() {
-        mToolFragment.hideOverlays();
+        getToolFragment().hideOverlays();
     }
 
     @Override
     public void showOverlays() {
-        mToolFragment.showOverlays();
+        getToolFragment().showOverlays();
     }
 }

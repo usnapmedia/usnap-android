@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.SeekBar;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.StringUtil;
 
@@ -18,6 +19,7 @@ import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
  */
 @ParcelablePlease
 public class ToolOptionBrightness extends ToolOption implements Parcelable {
+    @ParcelableThisPlease
     public int mBrightness;
 
     public ToolOptionBrightness() {

@@ -13,6 +13,10 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.tools.Tool;
+import com.samsao.snapzi.edit.tools.ToolCrop;
+import com.samsao.snapzi.edit.tools.ToolDraw;
+import com.samsao.snapzi.edit.tools.ToolFilters;
+import com.samsao.snapzi.edit.tools.ToolText;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.VideoUtil;
@@ -24,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
+
 
 public class EditActivity extends ActionBarActivity implements EditFragment.Listener {
 
@@ -46,7 +51,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     public String mEditMode;
     @Icicle
     public MenuState mMenuState;
-    @Icicle // FIXME saving tools does not work
+    @Icicle
     public ArrayList<Tool> mTools;
     @Icicle
     public Tool mCurrentTool;
@@ -98,6 +103,27 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         if (savedInstanceState == null) {
             mEditFragment = EditFragment.newInstance();
             getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
+
+            // initialize tools
+            // TODO put the available tools in a config file that can change
+            // depending the produt flavor
+            mTools = new ArrayList<>();
+
+            // Add common tools for both modes
+            mTools.add(new ToolText());
+            mTools.add(new ToolDraw());
+
+            // TODO have a tools list for picture and one for video
+            if (getEditMode().equals(EditActivity.IMAGE_MODE)) {
+                // Add specific tool for edit image mode
+                mTools.add(new ToolCrop());
+                mTools.add(new ToolFilters());
+            }
+        } else {
+            if (mCurrentTool != null) {
+                // current tool has to be selected if restoring from a saved instance
+                mCurrentTool.select();
+            }
         }
     }
 
@@ -105,6 +131,14 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (Tool tool : mTools) {
+            tool.destroy();
+        }
     }
 
     @Override

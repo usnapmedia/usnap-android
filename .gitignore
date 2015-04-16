@@ -5,3 +5,4 @@
 /build
 app/app.iml
 snapzi-android.iml
+*.iml

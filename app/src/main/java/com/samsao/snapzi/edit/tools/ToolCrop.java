@@ -45,8 +45,8 @@ public class ToolCrop extends Tool implements Parcelable {
         if (hasOptionSelected()) {
             selectOption(null);
         } else {
-            mToolFragment.resetCurrentTool();
-            mToolFragment.resetOptionsMenu();
+            getToolFragment().resetCurrentTool();
+            getToolFragment().resetOptionsMenu();
         }
     }
 
@@ -57,7 +57,7 @@ public class ToolCrop extends Tool implements Parcelable {
      */
     @Override
     public Tool select() {
-        mToolFragment.startCropActivity();
+        getToolFragment().startCropActivity();
         return this;
     }
 

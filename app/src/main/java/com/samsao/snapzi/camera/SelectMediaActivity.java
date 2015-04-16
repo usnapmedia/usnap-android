@@ -240,6 +240,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
     /**
      * Show SavingImageProgressDialog
+     * FIXME use DialogFragment
      */
     public void showSavingImageProgressDialog() {
         if (mSavingImageProgressDialog == null) {
@@ -258,6 +259,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
     /**
      * Hide SavingImageProgressDialog
+     * FIXME use DialogFragment
      */
     public void dismissSavingImageProgressDialog() {
         if (mSavingImageProgressDialog != null) {

@@ -1,6 +1,7 @@
 package com.samsao.snapzi.social;
 
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -49,10 +50,7 @@ public class ShareFragment extends SocialNetworkFragment {
     @InjectView(R.id.fragment_share_image)
     public ImageView mImage;
 
-    /**
-     * Image Uri
-     */
-    private Uri mImageUri;
+    private Listener mListener;
 
     /**
      * Switches onChange listeners
@@ -70,9 +68,8 @@ public class ShareFragment extends SocialNetworkFragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static ShareFragment newInstance(Uri imageUri) {
+    public static ShareFragment newInstance() {
         ShareFragment fragment = new ShareFragment();
-        fragment.setImageUri(imageUri);
         return fragment;
     }
 
@@ -89,7 +86,7 @@ public class ShareFragment extends SocialNetworkFragment {
         setupToolbar();
 
         // load the image
-        Picasso.with(getActivity()).load(mImageUri)
+        Picasso.with(getActivity()).load(mListener.getImageUri())
                 .noPlaceholder()
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .into(mImage);
@@ -234,14 +231,30 @@ public class ShareFragment extends SocialNetworkFragment {
         ButterKnife.reset(this);
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mListener = (Listener) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement ShareFragment.Listener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // FIXME
-                Toast.makeText(getActivity(), "TODO: go back, bug for now", Toast.LENGTH_SHORT).show();
-//                getActivity().finish();
+                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -292,16 +305,12 @@ public class ShareFragment extends SocialNetworkFragment {
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    /**
-     * Set Image Uri
-     * @param imageUri
-     */
-    public void setImageUri(Uri imageUri) {
-        mImageUri = imageUri;
-    }
-
     @OnClick(R.id.fragment_share_share_btn)
     public void share() {
         Toast.makeText(getActivity(), "TODO: share", Toast.LENGTH_SHORT).show();
+    }
+
+    public interface Listener {
+        Uri getImageUri();
     }
 }
