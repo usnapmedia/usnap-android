@@ -135,7 +135,7 @@ public class SelectMediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.img_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_edit_livefeed_recycler_view);
         initLiveFeed();
 
         return view;

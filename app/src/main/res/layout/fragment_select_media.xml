@@ -12,7 +12,7 @@
         android:background="@android:color/black" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/img_recycler_view"
+        android:id="@+id/fragment_edit_livefeed_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="92dp"
         android:background="@color/black_alpha"

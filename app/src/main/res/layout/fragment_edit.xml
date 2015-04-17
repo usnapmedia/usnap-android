@@ -52,7 +52,7 @@
     |
 
     <FrameLayout
-        android:id="@+id/fragment_tool_container"
+        android:id="@+id/fragment_edit_tool_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
@@ -63,26 +63,34 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/activity_edit_toolbar"
+        <LinearLayout
+            android:id="@+id/fragment_edit_toolbar_livefeed_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dark_gray" />
+            android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/img_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:background="@color/black_alpha"
-            android:paddingBottom="@dimen/elements_half_vertical_margin"
-            android:paddingLeft="@dimen/elements_horizontal_margin"
-            android:paddingRight="@dimen/elements_horizontal_margin"
-            android:paddingTop="@dimen/elements_half_vertical_margin" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/fragment_edit_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_gray"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_edit_livefeed_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="92dp"
+                android:background="@color/black_alpha"
+                android:paddingBottom="@dimen/elements_half_vertical_margin"
+                android:paddingLeft="@dimen/elements_horizontal_margin"
+                android:paddingRight="@dimen/elements_horizontal_margin"
+                android:paddingTop="@dimen/elements_half_vertical_margin"/>
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_edit_list_recyclerview"
@@ -92,7 +100,7 @@
             android:paddingBottom="@dimen/elements_vertical_margin"
             android:paddingLeft="@dimen/elements_horizontal_margin"
             android:paddingRight="@dimen/elements_horizontal_margin"
-            android:paddingTop="@dimen/elements_vertical_margin"  />
+            android:paddingTop="@dimen/elements_vertical_margin"/>
 
     </LinearLayout>
 
