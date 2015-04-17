@@ -11,6 +11,8 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.CountDownTimer;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,8 +24,13 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.EditActivity;
+import com.samsao.snapzi.live_feed.ImageLiveFeed;
+import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -45,6 +52,9 @@ public class SelectMediaFragment extends Fragment {
     private boolean mIsCapturingMedia, mIsCapturingVideo;
     private CountDownTimer mVideoCaptureCountdownTimer;
     private Dialog mPickMediaDialog;
+
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
@@ -108,6 +118,16 @@ public class SelectMediaFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void initLiveFeed() {
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        LiveFeedAdapter liveFeedAdapter = new LiveFeedAdapter(createList(20));
+        mRecyclerView.setAdapter(liveFeedAdapter);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -115,7 +135,27 @@ public class SelectMediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.img_recycler_view);
+        initLiveFeed();
+
         return view;
+    }
+
+
+
+    private List<ImageLiveFeed> createList(int size) {
+        List<ImageLiveFeed> result = new ArrayList<ImageLiveFeed>();
+        for (int i = 1; i <= size; i++) {
+            ImageLiveFeed imageLiveFeed = new ImageLiveFeed();
+            if (i % 2 != 0) {
+                imageLiveFeed.setPath("http://i.imgur.com/DvpvklR.png");
+            } else {
+                imageLiveFeed.setPath("http://static.cdn.markiza.sk/media/a501/image/file/1/0083/ihXN.jpg");
+            }
+
+            result.add(imageLiveFeed);
+        }
+        return result;
     }
 
     @Override

@@ -41,10 +41,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     public static final String IMAGE_MODE = "EditActivity.IMAGE_MODE";
     public static final String VIDEO_MODE = "EditActivity.VIDEO_MODE";
 
-
-    @InjectView(R.id.activity_edit_toolbar)
-    public Toolbar mToolbar;
-
     private EditFragment mEditFragment;
 
     @Icicle
@@ -64,7 +60,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.inject(this);
-        setupToolbar();
 
         mMenuState = new MenuStateView();
         Intent intent = getIntent();
@@ -209,13 +204,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         }
     }
 
-    public void setupToolbar() {
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
-        }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
+
 
     /**
      * Reset menu
@@ -242,10 +231,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     @Override
     public String getEditMode() {
         return mEditMode;
-    }
-
-    public Toolbar getToolbar() {
-        return mToolbar;
     }
 
     public ArrayList<Tool> getTools() {

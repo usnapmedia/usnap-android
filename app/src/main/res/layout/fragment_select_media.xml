@@ -11,6 +11,17 @@
         android:layout_height="match_parent"
         android:background="@android:color/black" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/img_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:background="@color/black_alpha"
+        android:paddingLeft="@dimen/elements_horizontal_margin"
+        android:paddingRight="@dimen/elements_horizontal_margin"
+        android:paddingTop="@dimen/elements_half_vertical_margin"
+        android:paddingBottom="@dimen/elements_half_vertical_margin"
+        />
+
     <TextView
         android:id="@+id/fragment_select_media_video_countdown"
         android:layout_width="wrap_content"
