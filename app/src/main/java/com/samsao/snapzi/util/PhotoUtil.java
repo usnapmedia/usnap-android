@@ -9,12 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.camera.CameraHelper;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 
 /**
  * @author jfcartier
@@ -22,8 +22,14 @@ import java.io.IOException;
  */
 public class PhotoUtil {
 
+    /**
+     * Constants
+     */
     private final static String LOG_TAG = PhotoUtil.class.getSimpleName();
+    public static final int MAXIMUM_IMAGE_SIDE_SIZE = 1280; // 720p standard: 1280x720
+
     private static SaveBitmapTask mSaveBitmapTask;
+
 
     /**
      * Save an image to disk
@@ -31,8 +37,8 @@ public class PhotoUtil {
      * @param bitmap
      * @param callback
      */
-    public static void saveImage(Bitmap bitmap, SaveImageCallback callback) {
-        mSaveBitmapTask = new SaveBitmapTask(bitmap, callback);
+    public static void saveImage(Bitmap bitmap, String destFilePath, SaveImageCallback callback) {
+        mSaveBitmapTask = new SaveBitmapTask(bitmap, destFilePath, callback);
         mSaveBitmapTask.execute();
     }
 
@@ -56,37 +62,74 @@ public class PhotoUtil {
      */
     private static class SaveBitmapTask extends AsyncTask<Void, Void, Boolean> {
         private Bitmap mBitmap;
+        private String mDestFilePath;
         private SaveImageCallback mCallback;
 
-        private SaveBitmapTask(Bitmap bitmap, SaveImageCallback callback) {
+        private SaveBitmapTask(Bitmap bitmap, String destFilePath, SaveImageCallback callback) {
             mBitmap = bitmap;
+            mDestFilePath = destFilePath;
             mCallback = callback;
         }
 
         protected Boolean doInBackground(Void... nothing) {
+            Boolean isSuccess = true;
+            FileOutputStream fileOutputStream = null;
             try {
-                FileOutputStream fOutputStream = SnapziApplication.getContext().openFileOutput(CameraHelper.IMAGE_FILENAME, Context.MODE_PRIVATE);
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
-                fOutputStream.flush();
-                fOutputStream.close();
-                return true;
-            } catch (FileNotFoundException e) {
+                fileOutputStream = new FileOutputStream(mDestFilePath);
+                resizeImage(mBitmap, PhotoUtil.MAXIMUM_IMAGE_SIDE_SIZE).compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream); // PNG is a lossless format, the compression factor (100) is ignored
+            } catch (Exception e) {
                 Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());
-                return false;
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());
-                return false;
+                isSuccess = false;
+            } finally {
+                try {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.close();
+                    }
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Save bitmap failed:" + e.getMessage());
+                    isSuccess = false;
+                }
             }
+
+            return isSuccess;
         }
 
         protected void onPostExecute(Boolean success) {
             if (success) {
-                mCallback.onSuccess();
+                mCallback.onSuccess(mDestFilePath);
             } else {
                 mCallback.onFailure();
             }
 
             mSaveBitmapTask = null;
+        }
+
+        /**
+         * @param sourceBitmap
+         * @param maximumSideSize in pixels
+         * @return
+         */
+        private Bitmap resizeImage(Bitmap sourceBitmap, int maximumSideSize) {
+            Bitmap destBitmap;
+            int width = sourceBitmap.getWidth();
+            int height = sourceBitmap.getHeight();
+
+            if (width <= maximumSideSize && height <= maximumSideSize) {
+                destBitmap = sourceBitmap;
+            } else {
+                int destWidth, destHeight;
+
+                if (width < height) {
+                    destWidth = (int) ((float) width * (float) maximumSideSize / (float) height);
+                    destHeight = maximumSideSize;
+                } else {
+                    destHeight = (int) ((float) height * (float) maximumSideSize / (float) width);
+                    destWidth = maximumSideSize;
+                }
+                destBitmap = Bitmap.createScaledBitmap(sourceBitmap, destWidth, destHeight, true);
+            }
+
+            return destBitmap;
         }
     }
 
@@ -168,12 +211,12 @@ public class PhotoUtil {
     }
 
     /**
-     * Get center cropped bitmap from
+     * Get a square center cropped bitmap from
      *
      * @param sourceBitmap original bitmap
      * @return rotated bitmap
      */
-    public static Bitmap getCenterCropBitmapFrom(Bitmap sourceBitmap) {
+    public static Bitmap getSquareCenterCropBitmapFrom(Bitmap sourceBitmap) {
         Bitmap outputBitmap;
 
         if (sourceBitmap.getWidth() >= sourceBitmap.getHeight()) {
@@ -196,5 +239,65 @@ public class PhotoUtil {
         }
 
         return outputBitmap;
+    }
+
+    /**
+     * Get center cropped a bitmap with a new aspect ratio.
+     *
+     * @param sourceBitmap      original bitmap
+     * @param targetAspectRatio aspect ratio of the new image
+     * @return rotated bitmap
+     */
+    public static Bitmap getCenterCropBitmapWithTargetAspectRatio(Bitmap sourceBitmap, float targetAspectRatio) {
+        float originalAspectRatio = (float) sourceBitmap.getWidth() / (float) sourceBitmap.getHeight();
+        Bitmap outputBitmap;
+
+        // Set target aspect ratio in the same mode (portrait or landscape) as the original
+        if ((originalAspectRatio < 1.0f && !(targetAspectRatio < 1.0f)) ||
+                (originalAspectRatio > 1.0f && !(targetAspectRatio > 1.0f))) {
+            targetAspectRatio = 1.0f / targetAspectRatio; // inverse target's aspect ratio
+        }
+
+        if (originalAspectRatio < targetAspectRatio) {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    0,
+                    (int) (((float) sourceBitmap.getHeight() - (float) sourceBitmap.getWidth() / targetAspectRatio) / 2.0f),
+                    sourceBitmap.getWidth(),
+                    sourceBitmap.getHeight() - (int) ((float) sourceBitmap.getHeight() - (float) sourceBitmap.getWidth() / targetAspectRatio)
+            );
+        } else {
+            outputBitmap = Bitmap.createBitmap(
+                    sourceBitmap,
+                    (int) (((float) sourceBitmap.getWidth() - (float) sourceBitmap.getHeight() * targetAspectRatio) / 2.0f),
+                    0,
+                    sourceBitmap.getWidth() - (int) ((float) sourceBitmap.getWidth() - (float) sourceBitmap.getHeight() * targetAspectRatio),
+                    sourceBitmap.getHeight()
+            );
+        }
+
+        return outputBitmap;
+    }
+
+    /**
+     * Tells if the provided image is portrait oriented
+     *
+     * @param imagePath
+     * @return true if image is portrait oriented
+     */
+    public static boolean isImagePortraitOriented(String imagePath) {
+        int width, height;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(imagePath, options);
+        width = options.outWidth;
+        height = options.outHeight;
+
+        if (width < height) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

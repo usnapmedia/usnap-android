@@ -84,10 +84,9 @@ android {
     packagingOptions {
         exclude 'android.keystore'
         exclude '.readme'
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
     }
 
     dexOptions {
@@ -146,4 +145,7 @@ dependencies {
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
     compile 'com.jakewharton.timber:timber:2.7.1'
+    compile 'com.rengwuxian.materialedittext:library:2.0.3'
+    compile 'com.mobsandgeeks:android-saripaar:1.0.3'
+    compile 'net.danlew:android.joda:2.7.2'
 }

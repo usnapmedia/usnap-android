@@ -11,7 +11,6 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.preferences.PreferencesActivity;
+import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
 
@@ -63,10 +62,7 @@ public class SelectMediaFragment extends Fragment {
     public TextView mVideoCountdown;
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
-    public Button mCaptureMediaButton;
-
-    @InjectView(R.id.fragment_select_media_pref_button)
-    public Button mPreferenceButton;
+    public ProgressButton mCaptureMediaButton;
 
     /**
      * Callback that plays a camera sound as near as possible to the moment when a photo is captured
@@ -90,7 +86,9 @@ public class SelectMediaFragment extends Fragment {
             int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
             Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting image
             image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown); // Add rotation correction to bitmap
-            mSelectMediaProvider.saveImageAndStartEditActivity(image);
+            image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mCameraPreview.getPreviewAspectRatio());
+
+            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
         }
     };
 
@@ -192,15 +190,6 @@ public class SelectMediaFragment extends Fragment {
             });
         }
 
-        // Preferences button
-        mPreferenceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                releaseCamera();
-                startActivity(new Intent(getActivity(), PreferencesActivity.class));
-            }
-        });
-
         // Pick media from gallery button
         mPickFromGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,9 +265,10 @@ public class SelectMediaFragment extends Fragment {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
                     triggerCapturingVideo(false);
+                    hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
-                        mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -296,11 +286,13 @@ public class SelectMediaFragment extends Fragment {
         // Setup video capture countdown
         mVideoCaptureCountdownTimer = new CountDownTimer(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS, SelectMediaActivity.COUNTDOWN_INTERVAL_MS) {
             public void onTick(long millisUntilFinished) {
+                mCaptureMediaButton.setProgress(1.0f - ((float) millisUntilFinished / SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS));
                 mVideoCountdown.setText(String.valueOf((int) Math.ceil((double) millisUntilFinished / 1000.0))); // show elapsed time in seconds
             }
 
             public void onFinish() {
                 boolean isVideoCaptureSuccessful = false;
+                mCaptureMediaButton.setProgress(1.0f);
                 mVideoCountdown.setText(String.valueOf(0));
 
                 // stop recording and start video edit activity
@@ -309,7 +301,7 @@ public class SelectMediaFragment extends Fragment {
                 }
 
                 if (isVideoCaptureSuccessful) {
-                    mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),
@@ -403,7 +395,6 @@ public class SelectMediaFragment extends Fragment {
             }
             mFlipCameraButton.setVisibility(View.VISIBLE);
             mPickFromGalleryButton.setVisibility(View.VISIBLE);
-            mPreferenceButton.setVisibility(View.VISIBLE);
             mVideoCountdown.setVisibility(View.GONE);
 
             WindowUtil.unlockScreenOrientation(getActivity());
@@ -445,10 +436,6 @@ public class SelectMediaFragment extends Fragment {
         if (mPickFromGalleryButton != null) {
             mPickFromGalleryButton.setVisibility(View.GONE);
         }
-
-        if (mPreferenceButton != null) {
-            mPreferenceButton.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -473,10 +460,11 @@ public class SelectMediaFragment extends Fragment {
      */
     public void initializeCamera(int cameraId) {
         if (mCameraPreview == null) {
-            mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.FitParent, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
+            mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.CenterCrop, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
             mCameraPreview.setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
                 @Override
                 public void onCameraPreviewReady() {
+                    mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
                     setupButtons();
                 }
 
@@ -486,9 +474,10 @@ public class SelectMediaFragment extends Fragment {
                 }
             });
             mCameraPreviewContainer.addView(mCameraPreview);
-
-            triggerCapturingMediaState(false);
         }
+
+        triggerCapturingMediaState(false);
+        mCaptureMediaButton.setProgress(0.0f);
     }
 
     /**
@@ -505,10 +494,6 @@ public class SelectMediaFragment extends Fragment {
 
         if (mPickFromGalleryButton != null) {
             mPickFromGalleryButton.setOnClickListener(null);
-        }
-
-        if (mPreferenceButton != null) {
-            mPreferenceButton.setOnClickListener(null);
         }
 
         if (mCaptureMediaButton != null) {
@@ -563,8 +548,9 @@ public class SelectMediaFragment extends Fragment {
                 releaseCamera();
                 dismissPickMediaDialog();
 
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_IMAGE_LOADED_FROM_GALLERY);
             }
@@ -577,8 +563,9 @@ public class SelectMediaFragment extends Fragment {
                 releaseCamera();
                 dismissPickMediaDialog();
 
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("video/*");
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             }

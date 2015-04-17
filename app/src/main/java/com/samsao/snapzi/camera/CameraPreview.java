@@ -138,7 +138,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
      * Adjusts SurfaceView dimension to our layout available space.
      *
      * @param availableWidth  available width of the parent container
-     * @param availableHeight available heigth of the parent container
+     * @param availableHeight available height of the parent container
      */
     private boolean adjustSurfaceLayoutSize(int availableWidth, int availableHeight) {
         float previewSizeWidth, previewSizeHeight;
@@ -253,7 +253,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mMediaRecorder.setProfile(mCamcorderProfile);
 
         // Set output file
-        mMediaRecorder.setOutputFile(CameraHelper.getVideoMediaFilePath());
+        mMediaRecorder.setOutputFile(CameraHelper.getDefaultVideoFilePath());
 
         // Set maximum duration
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);
@@ -342,6 +342,22 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     public Camera getCamera() {
         return mCamera;
+    }
+
+    public float getPreviewAspectRatio() {
+        float width, height;
+
+        if (mLayoutMode == LayoutMode.CenterCrop) {
+            width = (float) ((View) getParent()).getWidth();
+            height = (float) ((View) getParent()).getHeight();
+        } else if (mLayoutMode == LayoutMode.FitParent) {
+            width = (float) getWidth();
+            height = (float) getHeight();
+        } else {
+            width = height = 1.0f;
+        }
+
+        return width / height;
     }
 
     public boolean isFlashAvailable() {

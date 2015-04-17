@@ -2,7 +2,15 @@
     <string name="app_name">Snapzi</string>
 
     <!--Login-->
-    <string name="action_login">Login</string>
+    <string name="action_login">login</string>
+    <string name="action_signup">sign up</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="reset_password">reset password</string>
+    <string name="first_name">first name</string>
+    <string name="last_name">last name</string>
+    <string name="email">email</string>
+    <string name="birthday">birthday</string>
 
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">284759385065022</string>
@@ -16,17 +24,13 @@
     <string name="action_select_media_type_text">Please select a type of media to pick from gallery:</string>
     <string name="action_select_media_type_pick_image">Pick image</string>
     <string name="action_select_media_type_pick_video">Pick video</string>
-    <string name="error_unable_to_take_picture">Unable to take picture</string>
-    <string name="error_unable_to_open_image">Unable to open image</string>
-    <string name="error_unable_to_open_video">Unable to open video</string>
-    <string name="error_please_select_a_local_video">Please select a local video</string>
-    <string name="error_unsupported_format">Unsupported format</string>
-    <string name="error_unable_to_launch_camera">Unable to launch camera</string>
-    <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
-    <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
-    <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
     <string name="action_processing_image_title">Processing Image</string>
     <string name="action_processing_image_text">Processing image...</string>
+
+    <!--Share-->
+    <string name="action_share">Share</string>
+    <string name="share_social_networks">Tap on the social networks you\'d like to share your picture to!</string>
+    <string name="share_add_comment_hint">Add comment</string>
 
     <!--Preferences-->
     <string name="preferences">Preferences</string>
@@ -44,4 +48,24 @@
     <string name="action_clear">Clear</string>
     <string name="action_undo">Undo</string>
     <string name="text_annotation_placeholder">Enter text here</string>
+
+    <!--Errors-->
+    <string name="error_empty_username">username is required</string>
+    <string name="error_empty_email">email is required</string>
+    <string name="error_invalid_email">email is not valid</string>
+    <string name="error_empty_password">password is required</string>
+    <string name="error_empty_first_name">first name is required</string>
+    <string name="error_empty_last_name">first name is required</string>
+    <string name="error_empty_birthday">birthday is required</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_unable_to_take_picture">Unable to take picture</string>
+    <string name="error_unable_to_open_image">Unable to open image</string>
+    <string name="error_unable_to_open_video">Unable to open video</string>
+    <string name="error_please_select_a_local_video">Please select a local video</string>
+    <string name="error_unsupported_format">Unsupported format</string>
+    <string name="error_unable_to_launch_camera">Unable to launch camera</string>
+    <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
+    <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
+    <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
+    <string name="title_activity_share">ShareActivity</string>
 </resources>

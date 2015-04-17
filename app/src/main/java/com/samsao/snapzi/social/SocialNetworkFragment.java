@@ -149,7 +149,7 @@ public class SocialNetworkFragment extends Fragment {
      * Disconnected from Google+
      */
     protected void disconnectFromGooglePlus() {
-        mGooglePlusProvider.disconnecttFromGooglePlus();
+        mGooglePlusProvider.disconnectFromGooglePlus();
     }
 
 

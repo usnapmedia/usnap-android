@@ -36,6 +36,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
         GooglePlusProvider,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
     /**
      * Request codes
      */
@@ -98,11 +99,6 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
-                // deliver the result to the fragment
-//                Fragment fragment = getFragmentManager().findFragmentByTag(SocialNetworkFragment.SOCIAL_NETWORK_TAG);
-//                if (fragment != null) {
-//                    fragment.onActivityResult(requestCode, resultCode, data);
-//                }
                 break;
         }
     }
@@ -255,7 +251,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
     /**
      * Disconnect from Google+
      */
-    public void disconnecttFromGooglePlus() {
+    public void disconnectFromGooglePlus() {
         if (isGooglePlusConnected()) {
             mGoogleApiClient.disconnect();
         }
@@ -308,8 +304,7 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
                 // Recover
                 return null;
             } catch (GoogleAuthException authEx) {
-                // Failure. The call is not expected to ever succeed so it should not be
-                // retried.
+                // Failure. The call is not expected to ever succeed so it should not be retried.
                 return null;
             } catch (Exception e) {
                 return null;
