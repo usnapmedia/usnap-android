@@ -56,7 +56,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     @Icicle
     public Tool mCurrentTool;
     @Icicle
-    private String mMediaPath;
+    public String mMediaPath;
 
 
     @Override
