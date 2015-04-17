@@ -264,7 +264,7 @@ public class SelectMediaFragment extends Fragment {
                     if (mCameraPreview != null) {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
-                    triggerCapturingVideo(false);
+                    mVideoCaptureCountdownTimer.cancel();
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
