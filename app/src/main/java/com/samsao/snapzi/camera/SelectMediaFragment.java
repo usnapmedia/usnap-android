@@ -2,6 +2,7 @@ package com.samsao.snapzi.camera;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.CountDownTimer;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,17 +23,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.EditActivity;
-import com.samsao.snapzi.live_feed.ImageLiveFeed;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 
 /**
@@ -55,6 +57,7 @@ public class SelectMediaFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
+    private LiveFeedAdapter mLiveFeedAdapter;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
@@ -73,6 +76,8 @@ public class SelectMediaFragment extends Fragment {
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
+
+    ApiService mApiService = new ApiService();
 
     /**
      * Callback that plays a camera sound as near as possible to the moment when a photo is captured
@@ -118,16 +123,6 @@ public class SelectMediaFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void initLiveFeed() {
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        LiveFeedAdapter liveFeedAdapter = new LiveFeedAdapter(createList(20));
-        mRecyclerView.setAdapter(liveFeedAdapter);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -141,21 +136,29 @@ public class SelectMediaFragment extends Fragment {
         return view;
     }
 
+    public void initLiveFeed() {
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mLiveFeedAdapter = new LiveFeedAdapter();
+        mRecyclerView.setAdapter(mLiveFeedAdapter);
+        getFeedImage();
+    }
 
-    private List<ImageLiveFeed> createList(int size) {
-        List<ImageLiveFeed> result = new ArrayList<ImageLiveFeed>();
-        for (int i = 1; i <= size; i++) {
-            ImageLiveFeed imageLiveFeed = new ImageLiveFeed();
-            if (i % 2 != 0) {
-                imageLiveFeed.setPath("http://i.imgur.com/DvpvklR.png");
-            } else {
-                imageLiveFeed.setPath("http://static.cdn.markiza.sk/media/a501/image/file/1/0083/ihXN.jpg");
+    public void getFeedImage() {
+        mApiService.getLiveFeed(new Callback<FeedImageList>() {
+            @Override
+            public void success(FeedImageList feedImageList, Response response) {
+                mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
             }
 
-            result.add(imageLiveFeed);
-        }
-        return result;
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching Images!");
+            }
+        });
     }
 
     @Override

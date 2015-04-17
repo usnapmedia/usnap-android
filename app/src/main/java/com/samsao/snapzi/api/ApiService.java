@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.api.exception.ApiException;
 import com.samsao.snapzi.api.exception.HostUnreachableException;
@@ -200,6 +201,14 @@ public class ApiService {
      */
     public void login(String username, String password, Callback<Response> callback) {
         mApiService.login(username, password, callback);
+    }
+
+    /**
+     * get the live feed images
+     * @param callback
+     */
+    public void getLiveFeed(Callback<FeedImageList> callback) {
+        mApiService.getLiveFeed(callback);
     }
 }
 

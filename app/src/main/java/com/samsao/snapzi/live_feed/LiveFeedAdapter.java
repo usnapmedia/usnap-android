@@ -1,7 +1,6 @@
 package com.samsao.snapzi.live_feed;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.entity.FeedImage;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,20 +19,20 @@ import java.util.List;
  */
 public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFeedViewHolder> {
 
-    private List<ImageLiveFeed> imgLiveFeedList;
-
-    public LiveFeedAdapter(List<ImageLiveFeed> imgLiveFeedList) {
-        this.imgLiveFeedList = imgLiveFeedList;
-    }
+    private List<FeedImage> mImageLiveFeedList;
 
     @Override
     public int getItemCount() {
-        return imgLiveFeedList.size();
+        if (mImageLiveFeedList == null) {
+            return 0;
+        } else {
+            return mImageLiveFeedList.size();
+        }
     }
 
     @Override
     public void onBindViewHolder(LiveFeedViewHolder liveFeedViewHolder, int position) {
-        ImageLiveFeed imgLiveFeed = imgLiveFeedList.get(position);
+        FeedImage imgLiveFeed = mImageLiveFeedList.get(position);
 
 
         if (position < (getItemCount() - 1)) {
@@ -42,7 +42,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
         }
 
         Context context = liveFeedViewHolder.imgIcon.getContext();
-        Picasso.with(context).load(imgLiveFeed.getPath()).into(liveFeedViewHolder.imgIcon);
+        Picasso.with(context).load(imgLiveFeed.getUrl()).into(liveFeedViewHolder.imgIcon);
     }
 
     @Override
@@ -50,6 +50,12 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
         View imgView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_livefeed, parent, false);
         return new LiveFeedViewHolder(imgView);
     }
+
+    public void setImageLiveFeed(List<FeedImage> list) {
+        mImageLiveFeedList = list;
+        notifyDataSetChanged();
+    }
+
 
     public static class LiveFeedViewHolder extends RecyclerView.ViewHolder {
         ImageView imgIcon;
@@ -60,5 +66,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
         }
     }
+
+
 }
 

@@ -24,10 +24,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
-import com.samsao.snapzi.live_feed.ImageLiveFeed;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
 import com.soundcloud.android.crop.Crop;
@@ -38,12 +39,15 @@ import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 
 public class EditFragment extends Fragment {
@@ -87,6 +91,13 @@ public class EditFragment extends Fragment {
 
     private RecyclerView mLiveFeedRecyclerView;
     private LinearLayoutManager mLiveFeedLayoutManager;
+
+    private LiveFeedAdapter mLiveFeedAdapter;
+
+    /**
+     * TODO inject me
+     */
+    private ApiService mApiService = new ApiService();
 
     /**
      * Use this factory method to create a new instance of
@@ -158,24 +169,26 @@ public class EditFragment extends Fragment {
         mLiveFeedLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mLiveFeedRecyclerView.setLayoutManager(mLiveFeedLayoutManager);
 
-        LiveFeedAdapter liveFeedAdapter = new LiveFeedAdapter(createList(20));
-        mLiveFeedRecyclerView.setAdapter(liveFeedAdapter);
+        mLiveFeedAdapter = new LiveFeedAdapter();
+        mLiveFeedRecyclerView.setAdapter(mLiveFeedAdapter);
+        getFeedImage();
     }
 
-    private List<ImageLiveFeed> createList(int size) {
-        List<ImageLiveFeed> result = new ArrayList<ImageLiveFeed>();
-        for (int i = 1; i <= size; i++) {
-            ImageLiveFeed imageLiveFeed = new ImageLiveFeed();
-            if (i % 2 != 0) {
-                imageLiveFeed.setPath("http://i.imgur.com/DvpvklR.png");
-            } else {
-                imageLiveFeed.setPath("http://static.cdn.markiza.sk/media/a501/image/file/1/0083/ihXN.jpg");
+    public void getFeedImage() {
+        mApiService.getLiveFeed(new Callback<FeedImageList>() {
+            @Override
+            public void success(FeedImageList feedImageList, Response response) {
+                mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
             }
 
-            result.add(imageLiveFeed);
-        }
-        return result;
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching Images!");
+            }
+        });
     }
+
+
 
     public void setupToolbar() {
         if (mToolbar != null) {
