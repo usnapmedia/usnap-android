@@ -1,15 +1,19 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -32,6 +36,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     private LayoutMode mLayoutMode;
     private int mCameraId;
+    private int mCameraOriginalOrientation;
     private Camera mCamera;
     private boolean mIsFlashAvailable;
     CameraPreviewCallback mCameraPreviewCallback = null;
@@ -65,6 +70,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         setSurfaceTextureListener(this);
         mLayoutMode = layoutMode;
         mCameraId = cameraId;
+
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        mCameraOriginalOrientation = info.orientation;
 
         Camera camera = CameraHelper.getCameraInstance(mCameraId);
         if (camera != null) {
@@ -201,8 +211,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         Camera.Parameters cameraParams = mCamera.getParameters();
 
         // Setting up camera preview
-        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
-        mCamera.setDisplayOrientation(cameraCurrentOrientationAngle);
+        mCamera.setDisplayOrientation(getPreviewOrientation());
         cameraParams.setPreviewSize(mCamcorderProfile.videoFrameWidth, mCamcorderProfile.videoFrameHeight);
 
         // Setting up optimal picture size & resolution based on camera preview aspect ratio
@@ -259,8 +268,8 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);
 
         // Tags the video with deviceOrientationAngle in order to tell the phone how to display it
-        int cameraCurrentOrientationAngle = CameraHelper.getCameraCurrentOrientationAngle(getContext());
-        if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        //int cameraCurrentOrientationAngle = getOrientation();
+        /*if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             // Dirty fix: setOrientationHint doesn't support negative values
             if (-cameraCurrentOrientationAngle < 0) {
                 mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle + 360);
@@ -269,7 +278,9 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             }
         } else {
             mMediaRecorder.setOrientationHint(cameraCurrentOrientationAngle);
-        }
+        }*/
+
+        mMediaRecorder.setOrientationHint(getOrientation());
 
         // Prepare configured MediaRecorder
         try {
@@ -433,5 +444,78 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     public void setOnCameraPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
         mCameraPreviewCallback = cameraPreviewCallback;
+    }
+
+    /**
+     * Gets camera preview angle
+     */
+    private int getPreviewOrientation() {
+        int angle = mCameraOriginalOrientation;
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0:
+                if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    angle += 180;
+                }
+                break;
+            case Surface.ROTATION_90:
+                if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    angle += 90;
+                } else {
+                    angle += 270;
+                }
+                break;
+            case Surface.ROTATION_180:
+                if (mCameraId != Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    angle += 180;
+                }
+                break;
+            case Surface.ROTATION_270:
+                if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    angle += 270;
+                } else {
+                    angle += 90;
+                }
+                break;
+            default:
+                break;
+        }
+
+        return (angle % 360); // always return a value between 0 and 360 degrees
+    }
+
+    /**
+     * Gets camera's current orientation angle
+     */
+    public int getOrientation() {
+        int angle = mCameraOriginalOrientation;
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        switch (display.getRotation()) {
+            case Surface.ROTATION_90:
+                if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    angle += 90;
+                } else {
+                    angle += 270;
+                }
+                break;
+            case Surface.ROTATION_180:
+                angle += 180;
+                break;
+            case Surface.ROTATION_270:
+                if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    angle += 270;
+                } else {
+                    angle += 90;
+                }
+                break;
+            default:
+                break;
+        }
+
+        return (angle % 360); // always return a value between 0 and 360 degrees
     }
 }
