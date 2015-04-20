@@ -42,6 +42,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
         }
 
         Context context = liveFeedViewHolder.imgIcon.getContext();
+        // TODO add an error image and a placeholder
         Picasso.with(context).load(imgLiveFeed.getUrl()).into(liveFeedViewHolder.imgIcon);
     }
 

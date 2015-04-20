@@ -66,7 +66,7 @@ public class EditFragment extends Fragment {
     public FrameLayout mVideoContainer;
     private VideoPreview mVideoPreview;
 
-    @InjectView(R.id.fragment_edit_list_recyclerview)
+    @InjectView(R.id.fragment_edit_tools_menu_recyclerview)
     public RecyclerView mMenuRecyclerView;
 
     @InjectView(R.id.fragment_edit_text_annotation_container)
@@ -171,7 +171,6 @@ public class EditFragment extends Fragment {
 
         mLiveFeedAdapter = new LiveFeedAdapter();
         mLiveFeedRecyclerView.setAdapter(mLiveFeedAdapter);
-        getFeedImage();
     }
 
     public void getFeedImage() {
@@ -226,7 +225,6 @@ public class EditFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             // load the video
             if (mVideoPreview == null) {
@@ -235,6 +233,7 @@ public class EditFragment extends Fragment {
             mVideoContainer.setVisibility(View.VISIBLE);
             mVideoContainer.addView(mVideoPreview);
         }
+        getFeedImage();
     }
 
     @Override
