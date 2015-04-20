@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +21,15 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
+import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
@@ -39,6 +44,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 
 public class EditFragment extends Fragment {
@@ -47,6 +56,9 @@ public class EditFragment extends Fragment {
 
     private final int ANIMATION_DURATION = 300;
 
+    @InjectView(R.id.fragment_edit_toolbar_livefeed_container)
+    public LinearLayout mToolBarAndLiveFeedContainer;
+
     @InjectView(R.id.fragment_edit_image_container)
     public ImageView mImageContainer;
 
@@ -54,8 +66,8 @@ public class EditFragment extends Fragment {
     public FrameLayout mVideoContainer;
     private VideoPreview mVideoPreview;
 
-    @InjectView(R.id.fragment_cafe_list_recyclerview)
-    public RecyclerView mRecyclerView;
+    @InjectView(R.id.fragment_edit_list_recyclerview)
+    public RecyclerView mMenuRecyclerView;
 
     @InjectView(R.id.fragment_edit_text_annotation_container)
     public FrameLayout mTextAnnotationContainer;
@@ -63,7 +75,7 @@ public class EditFragment extends Fragment {
     @InjectView(R.id.fragment_edit_draw_annotation_container)
     public DrawableView mDrawAnnotationContainer;
 
-    @InjectView(R.id.fragment_tool_container)
+    @InjectView(R.id.fragment_edit_tool_container)
     public FrameLayout mToolContainer;
 
     @InjectView(R.id.fragment_edit_text_annotation_container_text)
@@ -71,8 +83,21 @@ public class EditFragment extends Fragment {
     public TextAnnotationEditText mTextAnnotation;
 
     private MenuItemAdapter mMenuItemAdapter;
-    private LinearLayoutManager mLayoutManager;
+    private LinearLayoutManager mMenuLayoutManager;
     private Listener mListener;
+
+    @InjectView(R.id.fragment_edit_toolbar)
+    public Toolbar mToolbar;
+
+    private RecyclerView mLiveFeedRecyclerView;
+    private LinearLayoutManager mLiveFeedLayoutManager;
+
+    private LiveFeedAdapter mLiveFeedAdapter;
+
+    /**
+     * TODO inject me
+     */
+    private ApiService mApiService = new ApiService();
 
     /**
      * Use this factory method to create a new instance of
@@ -96,6 +121,8 @@ public class EditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit, container, false);
         ButterKnife.inject(this, view);
 
+        setupToolbar();
+
         if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
             // load the image
             Uri imageUri = Uri.fromFile(new File(CameraHelper.getDefaultImageFilePath()));
@@ -112,8 +139,8 @@ public class EditFragment extends Fragment {
         }
 
         mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
-        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+        mMenuLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mMenuRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 if (parent.getChildAdapterPosition(view) != 0) {
@@ -123,13 +150,52 @@ public class EditFragment extends Fragment {
                 }
             }
         });
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mMenuItemAdapter);
+        mMenuRecyclerView.setHasFixedSize(true);
+        mMenuRecyclerView.setLayoutManager(mMenuLayoutManager);
+        mMenuRecyclerView.setAdapter(mMenuItemAdapter);
 
         // disable the touch listener on the draw view so it does not take draw events
         mDrawAnnotationContainer.setOnTouchListener(null);
+
+        mLiveFeedRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_edit_livefeed_recycler_view);
+        initLiveFeed();
+
         return view;
+    }
+
+    public void initLiveFeed() {
+        mLiveFeedRecyclerView.setHasFixedSize(true);
+        mLiveFeedLayoutManager = new LinearLayoutManager(getActivity());
+        mLiveFeedLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mLiveFeedRecyclerView.setLayoutManager(mLiveFeedLayoutManager);
+
+        mLiveFeedAdapter = new LiveFeedAdapter();
+        mLiveFeedRecyclerView.setAdapter(mLiveFeedAdapter);
+        getFeedImage();
+    }
+
+    public void getFeedImage() {
+        mApiService.getLiveFeed(new Callback<FeedImageList>() {
+            @Override
+            public void success(FeedImageList feedImageList, Response response) {
+                mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching Images!");
+            }
+        });
+    }
+
+
+
+    public void setupToolbar() {
+        if (mToolbar != null) {
+            ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
+        }
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
@@ -429,27 +495,26 @@ public class EditFragment extends Fragment {
      * Hide the tools menu
      */
     public void hideMenu() {
-        float transY = mRecyclerView.getMeasuredHeight();
-        if (mRecyclerView.getTranslationY() != 0) {
-            mRecyclerView.animate().cancel();
-            transY = -mRecyclerView.getTranslationY();
+        float transY = mMenuRecyclerView.getMeasuredHeight();
+        if (mMenuRecyclerView.getTranslationY() != 0) {
+            mMenuRecyclerView.animate().cancel();
+            transY = -mMenuRecyclerView.getTranslationY();
         }
-        mRecyclerView.animate().translationYBy(transY)
+        mMenuRecyclerView.animate().translationYBy(transY)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(ANIMATION_DURATION);
     }
 
     /**
-     * Hide the toolbar
+     * Hide the toolbar and live feed
      */
-    public void hideToolbar() {
-        Toolbar toolbar = mListener.getToolbar();
-        float transY = -toolbar.getMeasuredHeight();
-        if (toolbar.getTranslationY() != 0) {
-            toolbar.animate().cancel();
-            transY = -toolbar.getTranslationY();
+    public void hideToolbarAndLiveFeed() {
+        float transY = -mToolBarAndLiveFeedContainer.getMeasuredHeight();
+        if (mToolBarAndLiveFeedContainer.getTranslationY() != 0) {
+            mToolBarAndLiveFeedContainer.animate().cancel();
+            transY = -mToolBarAndLiveFeedContainer.getTranslationY();
         }
-        toolbar.animate().translationYBy(transY)
+        mToolBarAndLiveFeedContainer.animate().translationYBy(transY)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(ANIMATION_DURATION);
     }
@@ -458,17 +523,16 @@ public class EditFragment extends Fragment {
      * Show the tools menu
      */
     public void showMenu() {
-        mRecyclerView.animate().cancel();
-        mRecyclerView.animate().translationYBy(-mRecyclerView.getTranslationY()).setDuration(ANIMATION_DURATION);
+        mMenuRecyclerView.animate().cancel();
+        mMenuRecyclerView.animate().translationYBy(-mMenuRecyclerView.getTranslationY()).setDuration(ANIMATION_DURATION);
     }
 
     /**
-     * Show the toolbar
+     * Show the toolbar and live feed
      */
-    public void showToolbar() {
-        Toolbar toolbar = mListener.getToolbar();
-        toolbar.animate().cancel();
-        toolbar.animate().translationYBy(-toolbar.getTranslationY()).setDuration(ANIMATION_DURATION);
+    public void showToolbarAndLiveFeed() {
+        mToolBarAndLiveFeedContainer.animate().cancel();
+        mToolBarAndLiveFeedContainer.animate().translationYBy(-mToolBarAndLiveFeedContainer.getTranslationY()).setDuration(ANIMATION_DURATION);
     }
 
     /**
@@ -476,7 +540,7 @@ public class EditFragment extends Fragment {
      */
     public void hideOverlays() {
         hideMenu();
-        hideToolbar();
+        hideToolbarAndLiveFeed();
     }
 
     /**
@@ -484,7 +548,7 @@ public class EditFragment extends Fragment {
      */
     public void showOverlays() {
         showMenu();
-        showToolbar();
+        showToolbarAndLiveFeed();
     }
 
     public interface Listener {
@@ -495,8 +559,6 @@ public class EditFragment extends Fragment {
         void resetMenu();
 
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
-
-        Toolbar getToolbar();
 
         ArrayList<Tool> getTools();
 

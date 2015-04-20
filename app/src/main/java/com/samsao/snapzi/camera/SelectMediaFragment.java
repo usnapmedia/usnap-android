@@ -2,6 +2,7 @@ package com.samsao.snapzi.camera;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,8 +10,9 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.CountDownTimer;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,12 +23,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.EditActivity;
+import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 
 /**
@@ -46,6 +55,10 @@ public class SelectMediaFragment extends Fragment {
     private CountDownTimer mVideoCaptureCountdownTimer;
     private Dialog mPickMediaDialog;
 
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private LiveFeedAdapter mLiveFeedAdapter;
+
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
 
@@ -63,6 +76,8 @@ public class SelectMediaFragment extends Fragment {
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
+
+    ApiService mApiService = new ApiService();
 
     /**
      * Callback that plays a camera sound as near as possible to the moment when a photo is captured
@@ -115,7 +130,35 @@ public class SelectMediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
 
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_edit_livefeed_recycler_view);
+        initLiveFeed();
+
         return view;
+    }
+
+    public void initLiveFeed() {
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mLiveFeedAdapter = new LiveFeedAdapter();
+        mRecyclerView.setAdapter(mLiveFeedAdapter);
+        getFeedImage();
+    }
+
+    public void getFeedImage() {
+        mApiService.getLiveFeed(new Callback<FeedImageList>() {
+            @Override
+            public void success(FeedImageList feedImageList, Response response) {
+                mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching Images!");
+            }
+        });
     }
 
     @Override

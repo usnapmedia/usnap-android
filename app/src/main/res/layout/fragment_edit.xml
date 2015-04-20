@@ -1,28 +1,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.samsao.snapzi.edit.EditFragment">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.samsao.snapzi.edit.EditFragment">
+
 
     <ImageView
         android:id="@+id/fragment_edit_image_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/fragment_edit_video_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <me.panavtec.drawableview.DrawableView
         android:id="@+id/fragment_edit_draw_annotation_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"/>
 
     <FrameLayout
         android:id="@+id/fragment_edit_text_annotation_container"
@@ -34,39 +35,74 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/text_annotation_placeholder"
             android:background="@null"
-            android:inputType="textFilter"
+            android:hint="@string/text_annotation_placeholder"
             android:imeOptions="actionDone"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/font_size_extra_large"
-            android:paddingTop="@dimen/elements_vertical_margin"
+            android:inputType="textFilter"
             android:paddingBottom="@dimen/elements_vertical_margin"
             android:paddingLeft="@dimen/elements_horizontal_margin"
             android:paddingRight="@dimen/elements_horizontal_margin"
+            android:paddingTop="@dimen/elements_vertical_margin"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/font_size_extra_large"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"/>
 
     </FrameLayout>
     |
 
     <FrameLayout
-        android:id="@+id/fragment_tool_container"
+        android:id="@+id/fragment_edit_tool_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_cafe_list_recyclerview"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/photo_edit_menu_size"
-        android:layout_gravity="bottom"
-        android:background="@color/black_alpha"
-        android:paddingTop="@dimen/elements_vertical_margin"
-        android:paddingBottom="@dimen/elements_vertical_margin"
-        android:paddingLeft="@dimen/elements_horizontal_margin"
-        android:paddingRight="@dimen/elements_horizontal_margin"
-        android:scrollbars="none" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/fragment_edit_toolbar_livefeed_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/fragment_edit_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_gray"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_edit_livefeed_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="92dp"
+                android:background="@color/black_alpha"
+                android:paddingBottom="@dimen/elements_half_vertical_margin"
+                android:paddingLeft="@dimen/elements_horizontal_margin"
+                android:paddingRight="@dimen/elements_horizontal_margin"
+                android:paddingTop="@dimen/elements_half_vertical_margin"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_edit_list_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/photo_edit_menu_size"
+            android:background="@color/black_alpha"
+            android:paddingBottom="@dimen/elements_vertical_margin"
+            android:paddingLeft="@dimen/elements_horizontal_margin"
+            android:paddingRight="@dimen/elements_horizontal_margin"
+            android:paddingTop="@dimen/elements_vertical_margin"/>
+
+    </LinearLayout>
+
 
 </FrameLayout>
