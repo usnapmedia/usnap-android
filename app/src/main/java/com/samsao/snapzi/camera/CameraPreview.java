@@ -268,18 +268,6 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);
 
         // Tags the video with deviceOrientationAngle in order to tell the phone how to display it
-        //int cameraCurrentOrientationAngle = getOrientation();
-        /*if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            // Dirty fix: setOrientationHint doesn't support negative values
-            if (-cameraCurrentOrientationAngle < 0) {
-                mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle + 360);
-            } else {
-                mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle);
-            }
-        } else {
-            mMediaRecorder.setOrientationHint(cameraCurrentOrientationAngle);
-        }*/
-
         mMediaRecorder.setOrientationHint(getOrientation());
 
         // Prepare configured MediaRecorder
