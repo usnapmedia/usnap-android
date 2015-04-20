@@ -7,6 +7,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -59,7 +60,7 @@ public class CameraHelper {
      * dimensions of the given view while maintaining the aspect ratio. If none can,
      * be lenient with the aspect ratio.
      *
-     * @param sizes  Supported camera preview sizes.
+     * @param sizes        Supported camera preview sizes.
      * @param targetWidth
      * @param targetHeight
      * @return Best match camera preview size to fit in the view.
@@ -134,20 +135,11 @@ public class CameraHelper {
     }
 
     /**
-     * Returns the image URI
-     *
-     * @return
-     */
-    public static Uri getImageUri() {
-        return Uri.fromFile(SnapziApplication.getContext().getFileStreamPath(IMAGE_FILENAME));
-    }
-
-    /**
      * Get image media path.
      *
      * @return path to image
      */
-    public static String getImageMediaFilePath() {
+    public static String getDefaultImageFilePath() {
         return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + IMAGE_FILENAME);
     }
 
@@ -156,7 +148,7 @@ public class CameraHelper {
      *
      * @return path to video
      */
-    public static String getVideoMediaFilePath() {
+    public static String getDefaultVideoFilePath() {
         return (SnapziApplication.getContext().getFilesDir().getPath() + "/" + VIDEO_FILENAME);
     }
 
@@ -165,35 +157,6 @@ public class CameraHelper {
      */
     public static boolean isPortrait(Context context) {
         return (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
-    }
-
-    /**
-     * Gets camera's current orientation angle
-     */
-    public static int getCameraCurrentOrientationAngle(Context context) {
-        int angle;
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0: // This is display orientation
-                angle = 90; // This is camera orientation
-                break;
-            case Surface.ROTATION_90:
-                angle = 0;
-                break;
-            case Surface.ROTATION_180:
-                angle = 270;
-                break;
-            case Surface.ROTATION_270:
-                angle = 180;
-                break;
-            default:
-                angle = 90;
-                break;
-        }
-
-        return angle;
     }
 
     /**

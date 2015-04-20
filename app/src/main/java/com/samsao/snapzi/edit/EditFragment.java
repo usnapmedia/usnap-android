@@ -1,6 +1,5 @@
 package com.samsao.snapzi.edit;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -39,10 +40,10 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class EditFragment extends Fragment {
+
+    private final String LOG_TAG = getClass().getSimpleName();
 
     private final int ANIMATION_DURATION = 300;
 
@@ -95,9 +96,10 @@ public class EditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit, container, false);
         ButterKnife.inject(this, view);
 
-        if (mListener.isEditPictureMode()) {
+        if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
             // load the image
-            Picasso.with(getActivity()).load(mListener.getImageUri())
+            Uri imageUri = Uri.fromFile(new File(CameraHelper.getDefaultImageFilePath()));
+            Picasso.with(getActivity()).load(imageUri)
                     .noPlaceholder()
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .into(mImageContainer);
@@ -159,14 +161,13 @@ public class EditFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (!mListener.isEditPictureMode()) {
+        if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             // load the video
             if (mVideoPreview == null) {
-                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+                mVideoPreview = new VideoPreview(getActivity(), mListener.getMediaPath());
             }
             mVideoContainer.setVisibility(View.VISIBLE);
             mVideoContainer.addView(mVideoPreview);
-
         }
     }
 
@@ -174,7 +175,7 @@ public class EditFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        if (!mListener.isEditPictureMode() && mVideoPreview != null) {
+        if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             mVideoContainer.removeView(mVideoPreview);
             mVideoPreview = null;
         }
@@ -193,12 +194,13 @@ public class EditFragment extends Fragment {
      * @param transformation
      */
     public void refreshImage(Transformation transformation) {
-        Picasso.with(getActivity()).invalidate(mListener.getImageUri());
-        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getImageUri()).noPlaceholder();
+        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getMediaPath()).noPlaceholder();
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
-        requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(mImageContainer);
+        requestCreator
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .into(mImageContainer);
     }
 
     public void setMenuItems(ArrayList<MenuItem> items) {
@@ -350,9 +352,14 @@ public class EditFragment extends Fragment {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
-        intent.putExtra(ShareActivity.EXTRA_URI, mListener.getImageUri());
-        startActivity(intent);
+        Uri imageUri = Uri.parse(new File(mListener.getMediaPath()).toString());
+        if (imageUri != null) {
+            Intent intent = new Intent(getActivity(), ShareActivity.class);
+            intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
+            startActivity(intent);
+        } else {
+            Log.e(LOG_TAG, "image uri is null");
+        }
     }
 
     /**
@@ -411,8 +418,9 @@ public class EditFragment extends Fragment {
      * Start cropping activity
      */
     public void startCropActivity() {
-        new Crop(CameraHelper.getImageUri())
-                .output(CameraHelper.getImageUri())
+        Uri imageUri = Uri.parse(new File(mListener.getMediaPath()).toString());
+        new Crop(imageUri)
+                .output(imageUri)
                 .withAspect(mImageContainer.getWidth(), mImageContainer.getHeight())
                 .start(getActivity());
     }
@@ -480,9 +488,7 @@ public class EditFragment extends Fragment {
     }
 
     public interface Listener {
-        boolean isEditPictureMode();
-
-        Uri getImageUri();
+        String getEditMode();
 
         void saveBitmap(Bitmap bitmap);
 
@@ -500,6 +506,6 @@ public class EditFragment extends Fragment {
 
         void setCurrentTool(Tool currentTool);
 
-        String getVideoPath();
+        String getMediaPath();
     }
 }

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
 
@@ -69,7 +70,7 @@ public class SelectMediaFragment extends Fragment {
      */
     private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
         public void onShutter() {
-            mSelectMediaProvider.setCameraLastOrientationAngleKnown(CameraHelper.getCameraCurrentOrientationAngle(getActivity()));
+            mSelectMediaProvider.setCameraLastOrientationAngleKnown(mCameraPreview.getOrientation());
             AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
             mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
         }
@@ -87,7 +88,7 @@ public class SelectMediaFragment extends Fragment {
             image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown); // Add rotation correction to bitmap
             image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mCameraPreview.getPreviewAspectRatio());
 
-            mSelectMediaProvider.saveImageAndStartEditActivity(image);
+            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
         }
     };
 
@@ -263,11 +264,11 @@ public class SelectMediaFragment extends Fragment {
                     if (mCameraPreview != null) {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
-                    triggerCapturingVideo(false);
+                    mVideoCaptureCountdownTimer.cancel();
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
-                        mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -300,7 +301,7 @@ public class SelectMediaFragment extends Fragment {
                 }
 
                 if (isVideoCaptureSuccessful) {
-                    mSelectMediaProvider.startEditVideoActivity(CameraHelper.getVideoMediaFilePath());
+                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),

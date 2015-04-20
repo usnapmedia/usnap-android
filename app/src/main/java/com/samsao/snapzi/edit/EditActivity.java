@@ -2,12 +2,14 @@ package com.samsao.snapzi.edit;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.tools.Tool;
@@ -17,6 +19,7 @@ import com.samsao.snapzi.edit.tools.ToolFilters;
 import com.samsao.snapzi.edit.tools.ToolText;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.util.VideoUtil;
 import com.soundcloud.android.crop.Crop;
 
 import java.util.ArrayList;
@@ -26,14 +29,18 @@ import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
+
 public class EditActivity extends ActionBarActivity implements EditFragment.Listener {
 
     /**
      * Constants
      */
-    public static final String EXTRA_IS_EDIT_PICTURE_MODE = "EditActivity.EXTRA_IS_EDIT_PICTURE_MODE";
-    public static final String EXTRA_URI = "EditActivity.EXTRA_URI";
-    public static final String EXTRA_VIDEO_PATH = "EditActivity.EXTRA_VIDEO_PATH";
+    private final String LOG_TAG = getClass().getSimpleName();
+    public static final String EXTRA_EDIT_MODE = "EditActivity.EXTRA_EDIT_MODE";
+    public static final String EXTRA_MEDIA_PATH = "EditActivity.EXTRA_MEDIA_PATH";
+    public static final String IMAGE_MODE = "EditActivity.IMAGE_MODE";
+    public static final String VIDEO_MODE = "EditActivity.VIDEO_MODE";
+
 
     @InjectView(R.id.activity_edit_toolbar)
     public Toolbar mToolbar;
@@ -41,9 +48,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     private EditFragment mEditFragment;
 
     @Icicle
-    public boolean mIsEditPictureMode;
-    @Icicle
-    public Uri mImageUri;
+    public String mEditMode;
     @Icicle
     public MenuState mMenuState;
     @Icicle
@@ -51,7 +56,8 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     @Icicle
     public Tool mCurrentTool;
     @Icicle
-    public String mVideoPath;
+    public String mMediaPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +69,43 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         mMenuState = new MenuStateView();
         Intent intent = getIntent();
         if (intent != null) {
-            mIsEditPictureMode = intent.getBooleanExtra(EXTRA_IS_EDIT_PICTURE_MODE, true);
-            mImageUri = intent.getParcelableExtra(EXTRA_URI);
-            mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
+            mEditMode = intent.getStringExtra(EXTRA_EDIT_MODE);
+            mMediaPath = intent.getStringExtra(EXTRA_MEDIA_PATH);
         }
+
         // restore saved state
-        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
+
+        if (mEditMode == null || !(mEditMode.equals(IMAGE_MODE) || mEditMode.equals(VIDEO_MODE))) {
+            Log.e(LOG_TAG, "Unrecognized edit mode was provided, closing EditActivity");
+            Toast.makeText(this,
+                    getResources().getString(R.string.error_unknown),
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        if (mEditMode.equals(IMAGE_MODE)) {
+            // Lock screen in image orientation
+            if (PhotoUtil.isImagePortraitOriented(mMediaPath)) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+        } else {
+            if (VideoUtil.isVideoPortraitOriented(mMediaPath)) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+        }
+
 
         if (savedInstanceState == null) {
             // initialize tools
             // TODO put the available tools in a config file that can change
-            // depending the produt flavor
+            // depending the product flavor
             mTools = new ArrayList<>();
 
             // Add common tools for both modes
@@ -81,7 +113,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
             mTools.add(new ToolDraw());
 
             // TODO have a tools list for picture and one for video
-            if (isEditPictureMode()) {
+            if (getEditMode().equals(EditActivity.IMAGE_MODE)) {
                 // Add specific tool for edit image mode
                 mTools.add(new ToolCrop());
                 mTools.add(new ToolFilters());
@@ -208,13 +240,8 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     }
 
     @Override
-    public boolean isEditPictureMode() {
-        return mIsEditPictureMode;
-    }
-
-    @Override
-    public Uri getImageUri() {
-        return mImageUri;
+    public String getEditMode() {
+        return mEditMode;
     }
 
     public Toolbar getToolbar() {
@@ -238,8 +265,8 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     }
 
     @Override
-    public String getVideoPath() {
-        return mVideoPath;
+    public String getMediaPath() {
+        return mMediaPath;
     }
 
     /**
@@ -248,9 +275,9 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
      * @param bitmap
      */
     public void saveBitmap(Bitmap bitmap) {
-        PhotoUtil.saveImage(bitmap, new SaveImageCallback() {
+        PhotoUtil.saveImage(bitmap, mMediaPath, new SaveImageCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String destFilePath) {
 
             }
 
