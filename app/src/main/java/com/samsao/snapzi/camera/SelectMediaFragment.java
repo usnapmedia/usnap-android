@@ -85,7 +85,7 @@ public class SelectMediaFragment extends Fragment {
      */
     private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
         public void onShutter() {
-            mSelectMediaProvider.setCameraLastOrientationAngleKnown(CameraHelper.getCameraCurrentOrientationAngle(getActivity()));
+            mSelectMediaProvider.setCameraLastOrientationAngleKnown(mCameraPreview.getOrientation());
             AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
             mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
         }
@@ -307,7 +307,7 @@ public class SelectMediaFragment extends Fragment {
                     if (mCameraPreview != null) {
                         isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     }
-                    triggerCapturingVideo(false);
+                    mVideoCaptureCountdownTimer.cancel();
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {

@@ -13,6 +13,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://clojars.org/repo/' }
 }
 
 
@@ -117,8 +118,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.github.frankiesardo:icepick:2.3.6'
-    provided 'com.github.frankiesardo:icepick-processor:2.3.6'
+    compile 'frankiesardo:icepick:3.0.2'
+    apt 'frankiesardo:icepick-processor:3.0.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }
