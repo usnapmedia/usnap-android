@@ -2,19 +2,20 @@ package com.samsao.snapzi.camera;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
-import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -41,13 +42,16 @@ public class SelectMediaFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
 
     private SelectMediaProvider mSelectMediaProvider;
-    private CameraPreview mCameraPreview;
     private boolean mIsCapturingMedia, mIsCapturingVideo;
     private CountDownTimer mVideoCaptureCountdownTimer;
     private Dialog mPickMediaDialog;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
+    private CameraPreview mCameraPreview;
+
+    @InjectView(R.id.fragment_select_media_camera_controls)
+    public FrameLayout mCameraControlsContainer;
 
     @InjectView(R.id.fragment_select_media_flash_setup_button)
     public Button mFlashSetupButton;
@@ -64,28 +68,16 @@ public class SelectMediaFragment extends Fragment {
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
 
-    /**
-     * Callback that plays a camera sound as near as possible to the moment when a photo is captured
-     * from the sensor.
-     */
-    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
-        public void onShutter() {
-            mSelectMediaProvider.setCameraLastOrientationAngleKnown(mCameraPreview.getOrientation());
-            AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
-        }
-    };
 
     /**
      * Called when image data is available after a picture is taken. We transform the raw data to a
      * bitmap object then start the modification activity
      */
-    private Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
+    private final Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
-            int cameraLastOrientationAngleKnown = mSelectMediaProvider.getCameraLastOrientationAngleKnown();
             Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting image
-            image = PhotoUtil.rotateBitmap(image, cameraLastOrientationAngleKnown); // Add rotation correction to bitmap
+            image = PhotoUtil.rotateBitmap(image, mCameraPreview.getOrientation()); // Add rotation correction to bitmap
             image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mCameraPreview.getPreviewAspectRatio());
 
             mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
@@ -129,7 +121,7 @@ public class SelectMediaFragment extends Fragment {
 
         // Don't start camera preview if an image is being saved
         if (!PhotoUtil.isSaveImageInProgress()) {
-            initializeCamera(mSelectMediaProvider.getCameraId());
+            initializeCamera();
         } else {
             hideAllButtons();
         }
@@ -169,22 +161,19 @@ public class SelectMediaFragment extends Fragment {
             mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setNextAvailableCameraFlashMode();
+                    setCameraFlashMode(mCameraPreview.getNextAvailableFlashMode());
                 }
             });
             setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
-            mFlashSetupButton.setVisibility(View.VISIBLE);
-        } else {
-            mFlashSetupButton.setVisibility(View.GONE);
         }
 
         // Camera flip button
         // Activate camera flipping function only if more than one camera is available
-        if (Camera.getNumberOfCameras() > 1) {
+        if (mCameraPreview.hasFrontCamera()) {
             mFlipCameraButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    flipCamera();
+                    mSelectMediaProvider.setCameraId(mCameraPreview.flip());
                 }
             });
         }
@@ -206,12 +195,7 @@ public class SelectMediaFragment extends Fragment {
                 if (!mIsCapturingMedia) {
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                         triggerCapturingMediaState(true);
-                        mCameraPreview.getCamera().autoFocus(new Camera.AutoFocusCallback() {
-                            @Override
-                            public void onAutoFocus(boolean b, Camera camera) {
-                                mCameraPreview.getCamera().takePicture(mShutterCallback, null, mJpegCallback);
-                            }
-                        });
+                        mCameraPreview.takePicture(mJpegCallback);
                     } else {
                         WindowUtil.unlockScreenOrientation(getActivity());
                         Toast.makeText(getActivity(),
@@ -257,12 +241,7 @@ public class SelectMediaFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 // If releasing capture media button while capturing video, then stop recording video
                 if (mIsCapturingVideo && event.getAction() == MotionEvent.ACTION_UP) {
-                    boolean isVideoCaptureSuccessful = false;
-
-                    // stop recording and start video edit activity
-                    if (mCameraPreview != null) {
-                        isVideoCaptureSuccessful = mCameraPreview.stopRecording();
-                    }
+                    boolean isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                     mVideoCaptureCountdownTimer.cancel();
                     hideAllSettingsButtons();
 
@@ -290,15 +269,11 @@ public class SelectMediaFragment extends Fragment {
             }
 
             public void onFinish() {
-                boolean isVideoCaptureSuccessful = false;
                 mCaptureMediaButton.setProgress(1.0f);
                 mVideoCountdown.setText(String.valueOf(0));
 
                 // stop recording and start video edit activity
-                if (mCameraPreview != null) {
-                    isVideoCaptureSuccessful = mCameraPreview.stopRecording();
-                }
-
+                boolean isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                 if (isVideoCaptureSuccessful) {
                     mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                 } else {
@@ -310,6 +285,9 @@ public class SelectMediaFragment extends Fragment {
                 }
             }
         };
+
+        triggerCapturingMediaState(false);
+        mCaptureMediaButton.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -320,16 +298,6 @@ public class SelectMediaFragment extends Fragment {
     private void setCameraFlashMode(String flashMode) {
         if (mCameraPreview.setFlashMode(flashMode)) {
             mSelectMediaProvider.setCameraFlashMode(flashMode);
-            updateFlashButton(mSelectMediaProvider.getCameraFlashMode());
-        }
-    }
-
-    /**
-     * Sets next available Camera flash mode.
-     */
-    private void setNextAvailableCameraFlashMode() {
-        if (mCameraPreview.isFlashAvailable()) {
-            mSelectMediaProvider.setCameraFlashMode(mCameraPreview.triggerNextFlashMode());
             updateFlashButton(mSelectMediaProvider.getCameraFlashMode());
         }
     }
@@ -357,21 +325,6 @@ public class SelectMediaFragment extends Fragment {
     }
 
     /**
-     * If more the one camera is available on the current device, this function switches the camera
-     * source (FRONT, BACK).
-     */
-    public void flipCamera() {
-        if (mSelectMediaProvider.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
-        } else {
-            mSelectMediaProvider.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
-        }
-
-        releaseCamera();
-        initializeCamera(mSelectMediaProvider.getCameraId());
-    }
-
-    /**
      * Updates camera controls accordingly to camera capturing state.
      *
      * @param isCapturingMedia
@@ -386,14 +339,20 @@ public class SelectMediaFragment extends Fragment {
         } else {
             // inform the user that recording has stopped
             if (mCameraPreview.isFlashAvailable()) {
+                setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
                 mFlashSetupButton.setVisibility(View.VISIBLE);
+            } else {
+                mFlashSetupButton.setVisibility(View.GONE);
             }
+
             // Activate camera flipping function only if more than one camera is available
-            if (Camera.getNumberOfCameras() > 1) {
+            if (mCameraPreview.hasFrontCamera()) {
                 mFlipCameraButton.setVisibility(View.VISIBLE);
+            } else {
+                mFlipCameraButton.setVisibility(View.GONE);
             }
-            mFlipCameraButton.setVisibility(View.VISIBLE);
             mPickFromGalleryButton.setVisibility(View.VISIBLE);
+            mCaptureMediaButton.setProgress(0.0f);
             mVideoCountdown.setVisibility(View.GONE);
 
             WindowUtil.unlockScreenOrientation(getActivity());
@@ -454,29 +413,41 @@ public class SelectMediaFragment extends Fragment {
 
     /**
      * Initialize camera
-     *
-     * @param cameraId source camera: FRONT or BACK
      */
-    public void initializeCamera(int cameraId) {
+    public void initializeCamera() {
         if (mCameraPreview == null) {
-            mCameraPreview = new CameraPreview(getActivity(), CameraPreview.LayoutMode.CenterCrop, cameraId, SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS);
-            mCameraPreview.setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
-                @Override
-                public void onCameraPreviewReady() {
-                    mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
-                    setupButtons();
-                }
+            mCameraPreview = CameraPreview.getNewInstance(getActivity())
+                    .setLayoutMode(CameraPreview.LayoutMode.CENTER_CROP)
+                    .setCameraId(mSelectMediaProvider.getCameraId())
+                    .setMaximumVideoDuration_ms(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS)
+                    .setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
+                        private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                // Controls were initialize, stop listening for their creation
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                    mCameraControlsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+                                } else {
+                                    mCameraControlsContainer.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+                                }
+                                setupButtons();
+                            }
+                        };
 
-                @Override
-                public void onCameraPreviewFailed() {
-                    //FIXME
-                }
-            });
-            mCameraPreviewContainer.addView(mCameraPreview);
+                        @Override
+                        public void onCameraPreviewReady() {
+                            mCameraControlsContainer.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+                            mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
+                        }
+
+                        @Override
+                        public void onCameraPreviewFailed() {
+                            Log.e(LOG_TAG, "Camera init failed");
+                            //FIXME
+                        }
+                    })
+                    .into(mCameraPreviewContainer);
         }
-
-        triggerCapturingMediaState(false);
-        mCaptureMediaButton.setProgress(0.0f);
     }
 
     /**
@@ -503,9 +474,6 @@ public class SelectMediaFragment extends Fragment {
 
         if (mCameraPreview != null) {
             mCameraPreview.release();
-            if (mCameraPreviewContainer != null) {
-                mCameraPreviewContainer.removeView(mCameraPreview);
-            }
             mCameraPreview = null;
         }
     }
