@@ -3,13 +3,14 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
@@ -20,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -76,9 +76,6 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
     public FrameLayout mCameraPreviewContainer;
     private CameraPreview mCameraPreview;
 
-    @InjectView(R.id.fragment_select_media_camera_controls)
-    public FrameLayout mCameraControlsContainer;
-
     @InjectView(R.id.fragment_select_media_flash_setup_button)
     public Button mFlashSetupButton;
 
@@ -90,19 +87,6 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
-
-
-    /**
-     * Callback that plays a camera sound as near as possible to the moment when a photo is captured
-     * from the sensor.
-     */
-    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
-        public void onShutter() {
-            mSelectMediaProvider.setCameraLastOrientationAngleKnown(mCameraPreview.getOrientation());
-            AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
-        }
-    };
 
     /**
      * Called when image data is available after a picture is taken. We transform the raw data to a
@@ -477,22 +461,9 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
                     .setCameraId(mSelectMediaProvider.getCameraId())
                     .setMaximumVideoDuration_ms(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS)
                     .setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
-                        private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                // Controls were initialize, stop listening for their creation
-                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                                    mCameraControlsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
-                                } else {
-                                    mCameraControlsContainer.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
-                                }
-                                setupButtons();
-                            }
-                        };
-
                         @Override
                         public void onCameraPreviewReady() {
-                            mCameraControlsContainer.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+                            setupButtons();
                             mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
                         }
 
@@ -616,7 +587,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
 
         switch (loaderID) {
             case URI_LOADER:
-                return new CursorLoader (getActivity(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mProjection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+                return new CursorLoader(getActivity(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mProjection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
             default:
                 return null;
         }
