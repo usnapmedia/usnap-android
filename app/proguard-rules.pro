@@ -103,12 +103,17 @@
 
 # For Jackson
 -keepattributes *Annotation*,EnclosingMethod,Signature
+-keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class org.codehaus.jackson.** { *; }
 -dontwarn javax.xml.**
 -dontwarn javax.xml.stream.events.**
 -dontwarn com.fasterxml.jackson.databind.**
+-keepclassmembers public final enum org.codehaus.jackson.annotate.JsonAutoDetect$Visibility {
+    public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *;
+}
 # If the model classes are obfuscated, reflection does not work
 -keep public class com.samsao.snapzi.api.entity.** {
   public void set*(***);
   public *** get*();
+  public boolean is*();
 }
