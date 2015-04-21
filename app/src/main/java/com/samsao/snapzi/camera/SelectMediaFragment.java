@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
@@ -21,9 +22,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +78,9 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
     private CameraPreview mCameraPreview;
+
+    @InjectView(R.id.fragment_select_media_camera_controls)
+    public RelativeLayout mCameraControlsContainer;
 
     @InjectView(R.id.fragment_select_media_flash_setup_button)
     public Button mFlashSetupButton;
@@ -461,9 +467,24 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
                     .setCameraId(mSelectMediaProvider.getCameraId())
                     .setMaximumVideoDuration_ms(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS)
                     .setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
+                        private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                // Controls were initialize, stop listening for their creation
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                    mCameraControlsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+                                } else {
+                                    //noinspection deprecation
+                                    mCameraControlsContainer.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+                                }
+                                setupButtons();
+                            }
+                        };
+
                         @Override
                         public void onCameraPreviewReady() {
                             setupButtons();
+                            mCameraControlsContainer.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
                             mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
                         }
 
@@ -604,6 +625,4 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {}
-
-
 }
