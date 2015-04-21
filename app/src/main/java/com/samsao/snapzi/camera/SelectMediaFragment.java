@@ -26,7 +26,6 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,9 +78,6 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
     public FrameLayout mCameraPreviewContainer;
     private CameraPreview mCameraPreview;
 
-    @InjectView(R.id.fragment_select_media_camera_controls)
-    public RelativeLayout mCameraControlsContainer;
-
     @InjectView(R.id.fragment_select_media_flash_setup_button)
     public Button mFlashSetupButton;
 
@@ -130,6 +126,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
+        setupButtons();
         initLiveFeed();
         getLoaderManager().initLoader(URI_LOADER, null, this);
         return view;
@@ -203,33 +200,29 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
+
     /**
      * Setup view's buttons listener to their corresponding behavior.
      */
     private void setupButtons() {
         // Camera flash setup button
-        if (mCameraPreview.isFlashAvailable()) {
-            mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setCameraFlashMode(mCameraPreview.getNextAvailableFlashMode());
-                }
-            });
-            setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
-        }
+        mFlashSetupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setCameraFlashMode(mCameraPreview.getNextAvailableFlashMode());
+            }
+        });
 
         // Camera flip button
         // Activate camera flipping function only if more than one camera is available
-        if (mCameraPreview.hasFrontCamera()) {
-            mFlipCameraButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mSelectMediaProvider.setCameraId(mCameraPreview.flip());
-                }
-            });
-        }
+        mFlipCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSelectMediaProvider.setCameraId(mCameraPreview.flip());
+            }
+        });
 
-        //Pick media from gallery
+        // Pick media from gallery
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -336,8 +329,6 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
                 }
             }
         };
-
-        triggerCapturingMediaState(false);
         mCaptureMediaButton.setVisibility(View.VISIBLE);
     }
 
@@ -388,27 +379,38 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
             // inform the user that recording has started
             hideAllSettingsButtons();
         } else {
-            // inform the user that recording has stopped
-            if (mCameraPreview.isFlashAvailable()) {
-                setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
-                mFlashSetupButton.setVisibility(View.VISIBLE);
-            } else {
-                mFlashSetupButton.setVisibility(View.GONE);
-            }
-
-            // Activate camera flipping function only if more than one camera is available
-            if (mCameraPreview.hasFrontCamera()) {
-                mFlipCameraButton.setVisibility(View.VISIBLE);
-            } else {
-                mFlipCameraButton.setVisibility(View.GONE);
-            }
-            mFlipCameraButton.setVisibility(View.VISIBLE);
             mVideoCountdown.setVisibility(View.GONE);
-
             WindowUtil.unlockScreenOrientation(getActivity());
             mIsCapturingMedia = mIsCapturingVideo = false;
         }
+        setFlashButtonVisibility(isCapturingMedia);
+        setFlipButtonVisiblity(isCapturingMedia);
         mCaptureMediaButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Set flash button visibility
+     * @param isCapturingMedia
+     */
+    private void setFlashButtonVisibility(boolean isCapturingMedia) {
+        if (!isCapturingMedia && mCameraPreview.isFlashAvailable()) {
+            setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
+            mFlashSetupButton.setVisibility(View.VISIBLE);
+        } else {
+            mFlashSetupButton.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Set the flip button visibility
+     * @param isCapturingMedia
+     */
+    private void setFlipButtonVisiblity(boolean isCapturingMedia) {
+        if (!isCapturingMedia && mCameraPreview.hasFrontCamera()) {
+            mFlipCameraButton.setVisibility(View.VISIBLE);
+        } else {
+            mFlipCameraButton.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -467,24 +469,40 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
                     .setCameraId(mSelectMediaProvider.getCameraId())
                     .setMaximumVideoDuration_ms(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS)
                     .setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
-                        private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                        private final ViewTreeObserver.OnGlobalLayoutListener flashButtonGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
                             public void onGlobalLayout() {
+                                setFlashButtonVisibility(false);
                                 // Controls were initialize, stop listening for their creation
                                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                                    mCameraControlsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+                                    mFlashSetupButton.getViewTreeObserver().removeOnGlobalLayoutListener(flashButtonGlobalLayoutListener);
                                 } else {
                                     //noinspection deprecation
-                                    mCameraControlsContainer.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+                                    mFlashSetupButton.getViewTreeObserver().removeGlobalOnLayoutListener(flashButtonGlobalLayoutListener);
                                 }
-                                setupButtons();
+                            }
+                        };
+
+                        private final ViewTreeObserver.OnGlobalLayoutListener flipButtonGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                setFlipButtonVisiblity(false);
+                                // Controls were initialize, stop listening for their creation
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                    mFlipCameraButton.getViewTreeObserver().removeOnGlobalLayoutListener(flipButtonGlobalLayoutListener);
+                                } else {
+                                    //noinspection deprecation
+                                    mFlipCameraButton.getViewTreeObserver().removeGlobalOnLayoutListener(flipButtonGlobalLayoutListener);
+                                }
                             }
                         };
 
                         @Override
                         public void onCameraPreviewReady() {
-                            setupButtons();
-                            mCameraControlsContainer.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+                            triggerCapturingMediaState(false);
+                            setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
+                            mFlashSetupButton.getViewTreeObserver().addOnGlobalLayoutListener(flashButtonGlobalLayoutListener);
+                            mFlipCameraButton.getViewTreeObserver().addOnGlobalLayoutListener(flipButtonGlobalLayoutListener);
                             mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
                         }
 
@@ -533,7 +551,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
     }
 
     /**
-     *Display the latest image from gallery.
+     * Display the latest image from gallery.
      */
     public void initLatestImage(String imageLocation) {
         if (imageLocation != "") {
