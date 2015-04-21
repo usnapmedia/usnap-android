@@ -38,7 +38,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     public final static int COUNTDOWN_INTERVAL_MS = 84;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
-    private final int DEFAULT_CAMERA_ID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private final CameraPreview.CameraId DEFAULT_CAMERA_ID = CameraPreview.CameraId.CAMERA_FACING_FRONT;
     private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
     private final float DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO = 1.0f;
 
@@ -46,16 +46,13 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     Dialog mSavingImageProgressDialog;
 
     @Icicle
-    public int mCameraId;
+    public CameraPreview.CameraId mCameraId;
 
     @Icicle
     public String mCameraFlashMode;
 
     @Icicle
     public float mCameraPreviewAspectRatio;
-
-    @Icicle
-    public int mCameraLastOrientationAngleKnown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +61,6 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         mCameraId = DEFAULT_CAMERA_ID;
         mCameraFlashMode = DEFAULT_CAMERA_FLASH_MODE;
         mCameraPreviewAspectRatio = DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO;
-        mCameraLastOrientationAngleKnown = 0;
 
         // restore saved state
         if (savedInstanceState != null) {
@@ -148,12 +144,12 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     }
 
     @Override
-    public int getCameraId() {
+    public CameraPreview.CameraId getCameraId() {
         return mCameraId;
     }
 
     @Override
-    public void setCameraId(int cameraId) {
+    public void setCameraId(CameraPreview.CameraId cameraId) {
         mCameraId = cameraId;
     }
 
@@ -178,16 +174,6 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     }
 
     @Override
-    public int getCameraLastOrientationAngleKnown() {
-        return mCameraLastOrientationAngleKnown;
-    }
-
-    @Override
-    public void setCameraLastOrientationAngleKnown(int angle) {
-        mCameraLastOrientationAngleKnown = angle;
-    }
-
-    @Override
     public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath) {
         if (bitmap != null) {
             showSavingImageProgressDialog();
@@ -209,7 +195,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
                     // Restart camera preview
                     if (mSelectMediaFragment != null) {
-                        mSelectMediaFragment.initializeCamera(mCameraId);
+                        mSelectMediaFragment.initializeCamera();
                     }
                 }
             });
@@ -221,7 +207,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
             // Restart camera preview
             if (mSelectMediaFragment != null) {
-                mSelectMediaFragment.initializeCamera(mCameraId);
+                mSelectMediaFragment.initializeCamera();
             }
         }
     }
@@ -232,6 +218,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         editIntent.putExtra(EditActivity.EXTRA_EDIT_MODE, editMode);
         editIntent.putExtra(EditActivity.EXTRA_MEDIA_PATH, mediaPath);
         if (mSelectMediaFragment != null) {
+            mSelectMediaFragment.hideAllButtons();
             mSelectMediaFragment.releaseCamera();
         }
 
@@ -284,7 +271,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
                 // Restart camera preview
                 if (mSelectMediaFragment != null) {
-                    mSelectMediaFragment.initializeCamera(mCameraId);
+                    mSelectMediaFragment.initializeCamera();
                 }
             }
         });

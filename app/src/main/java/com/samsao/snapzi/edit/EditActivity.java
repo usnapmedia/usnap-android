@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -25,7 +24,6 @@ import com.soundcloud.android.crop.Crop;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -115,12 +113,9 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
             }
 
             mEditFragment = EditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment, EditFragment.FRAGMENT_TAG).commit();
         } else {
-            if (mCurrentTool != null) {
-                // current tool has to be selected if restoring from a saved instance
-                mCurrentTool.select();
-            }
+            mEditFragment = (EditFragment)getFragmentManager().findFragmentByTag(EditFragment.FRAGMENT_TAG);
         }
     }
 

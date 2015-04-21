@@ -2,22 +2,22 @@ package com.samsao.snapzi.camera;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
+import android.media.AudioManager;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-
-import com.samsao.snapzi.R;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,21 +33,34 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
+    private final LayoutMode DEFAULT_LAYOUT_MODE = LayoutMode.FIT_PARENT;
+    private final CameraId DEFAULT_CAMERA_ID = CameraId.CAMERA_FACING_FRONT;
+    private final int DEFAULT_MAXIMUM_VIDEO_DURATION_MS = 60000; // 60 sec
+
+    private static CameraPreview mCameraPreviewInstance;
+    private Camera mCamera;
 
     private LayoutMode mLayoutMode;
+    private FrameLayout mCameraPreviewContainer;
+
     private int mCameraId;
-    private int mCameraOriginalOrientation;
-    private Camera mCamera;
-    private boolean mIsFlashAvailable;
-    CameraPreviewCallback mCameraPreviewCallback = null;
+    private int mCameraFactoryOrientation;
+
+    private OrientationEventListener mOrientationListener;
+    private CameraPreviewCallback mCameraPreviewCallback;
 
     private int mMaximumVideoDuration;
     private CamcorderProfile mCamcorderProfile;
     private MediaRecorder mMediaRecorder;
 
     public enum LayoutMode {
-        FitParent,
-        CenterCrop
+        FIT_PARENT,
+        CENTER_CROP
+    }
+
+    public enum CameraId {
+        CAMERA_FACING_FRONT,
+        CAMERA_FACING_BACK,
     }
 
     public interface CameraPreviewCallback {
@@ -57,53 +70,55 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     }
 
 
+    public static CameraPreview getNewInstance(Activity activity) {
+        if (mCameraPreviewInstance != null) {
+            mCameraPreviewInstance.release();
+            mCameraPreviewInstance = null;
+        }
+        return mCameraPreviewInstance = new CameraPreview(activity);
+    }
+
     /**
-     * PhotoCamera constructor
+     * Callback that plays a camera sound as near as possible to the moment when a photo is captured
+     * from the sensor.
+     */
+    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+        public void onShutter() {
+            AudioManager mgr = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+        }
+    };
+
+
+    /**
+     * CameraPreview constructor
      *
      * @param activity
-     * @param layoutMode FitToCenter or CenterCrop
-     * @param cameraId   Front-facing or back-facing camera
      */
-    public CameraPreview(Activity activity, LayoutMode layoutMode, int cameraId, int maximumVideoDuration) {
+    private CameraPreview(Activity activity) {
         super(activity);
 
-        setSurfaceTextureListener(this);
-        mLayoutMode = layoutMode;
-        mCameraId = cameraId;
+        setLayoutMode(DEFAULT_LAYOUT_MODE);
+        setCameraId(DEFAULT_CAMERA_ID);
+        setMaximumVideoDuration_ms(DEFAULT_MAXIMUM_VIDEO_DURATION_MS);
 
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-        mCameraOriginalOrientation = info.orientation;
+        // Set orientation listener
+        /*mOrientationListener = new OrientationEventListener(activity, SensorManager.SENSOR_DELAY_NORMAL) {
+            private int m
+            dfgdfg
 
-        Camera camera = CameraHelper.getCameraInstance(mCameraId);
-        if (camera != null) {
-            List<String> supportedFlashModes = camera.getParameters().getSupportedFlashModes();
-            camera.release();
-            if (supportedFlashModes != null && supportedFlashModes.size() > 0) {
-                mIsFlashAvailable = true;
-            } else {
-                mIsFlashAvailable = false;
+            public void onOrientationChanged(int orientation) {
+                if (orientation >= 0) { // if valid orientation
+
+                }
             }
-
-            mMaximumVideoDuration = maximumVideoDuration;
-            // Set a CamcorderProfile to 720p quality or lower of not available
-            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
-                mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
-
-            } else {
-                mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-            }
-        } else {
-            Toast.makeText(getContext(),
-                    getResources().getString(R.string.error_unable_to_launch_camera),
-                    Toast.LENGTH_LONG).show();
-        }
+        };*/
     }
+
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-        resizeToFitParentView();
+        resizeToFitContainerView();
     }
 
     @Override
@@ -114,7 +129,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
-        resizeToFitParentView();
+        resizeToFitContainerView();
     }
 
     @Override
@@ -122,13 +137,37 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     }
 
     /**
+     * Get an instance of the Camera object.
+     */
+    public Camera getCameraInstance(int cameraId) {
+        Camera camera = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD &&
+                cameraId < Camera.getNumberOfCameras()) {
+            try {
+                camera = Camera.open(cameraId);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Camera is not available (in use or does not exist): " + e.getMessage());
+            }
+        } else {
+            try {
+                camera = Camera.open();
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Camera is not available (in use or does not exist): " + e.getMessage());
+            }
+        }
+
+        return camera;
+    }
+
+    /**
      * Resize PhotoCamera view to fit it's parent container
      */
-    public void resizeToFitParentView() {
-        int parentViewWidth = ((View) getParent()).getWidth();
-        int parentViewHeight = ((View) getParent()).getHeight();
+    public void resizeToFitContainerView() {
+        int previewContainerWidth = mCameraPreviewContainer.getWidth();
+        int previewContainerHeight = mCameraPreviewContainer.getHeight();
 
-        if (!adjustSurfaceLayoutSize(parentViewWidth, parentViewHeight)) {
+        if (!adjustSurfaceLayoutSize(previewContainerWidth, previewContainerHeight)) {
             if (prepareCamera()) {
                 if (null != mCameraPreviewCallback) {
                     mCameraPreviewCallback.onCameraPreviewReady();
@@ -137,9 +176,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
                 if (null != mCameraPreviewCallback) {
                     mCameraPreviewCallback.onCameraPreviewFailed();
                 }
-                Toast.makeText(getContext(),
-                        getResources().getString(R.string.error_unable_to_launch_camera),
-                        Toast.LENGTH_LONG).show();
+                Log.e(LOG_TAG, "Unable to prepare camera");
             }
         }
     }
@@ -165,7 +202,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         heightScale = availableHeight / previewSizeHeight;
         widthScale = availableWidth / previewSizeWidth;
 
-        if (mLayoutMode == LayoutMode.FitParent) {
+        if (mLayoutMode == LayoutMode.FIT_PARENT) {
             // Select smaller factor, because the surface cannot be set to the size larger than display metrics.
             if (heightScale < widthScale) {
                 previewSizeScale = heightScale;
@@ -205,9 +242,9 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
      */
     private boolean prepareCamera() {
         // Reset camera and media recorder instances
-        release();
+        releaseCamera();
 
-        mCamera = CameraHelper.getCameraInstance(mCameraId);
+        mCamera = getCameraInstance(mCameraId);
         Camera.Parameters cameraParams = mCamera.getParameters();
 
         // Setting up camera preview
@@ -227,7 +264,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             mCamera.setPreviewTexture(getSurfaceTexture());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Surface texture for camera is unavailable or unsuitable" + e.getMessage());
-            release();
+            releaseCamera();
             return false;
         }
 
@@ -235,11 +272,20 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             mCamera.startPreview();
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to start camera preview: " + e.getMessage());
-            release();
+            releaseCamera();
             return false;
         }
 
         return true;
+    }
+
+    public void takePicture(final Camera.PictureCallback jpegCallback) {
+        mCamera.autoFocus(new Camera.AutoFocusCallback() {
+            @Override
+            public void onAutoFocus(boolean b, Camera camera) {
+                camera.takePicture(mShutterCallback, null, jpegCallback);
+            }
+        });
     }
 
     /**
@@ -268,18 +314,6 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mMediaRecorder.setMaxDuration(mMaximumVideoDuration);
 
         // Tags the video with deviceOrientationAngle in order to tell the phone how to display it
-        //int cameraCurrentOrientationAngle = getOrientation();
-        /*if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            // Dirty fix: setOrientationHint doesn't support negative values
-            if (-cameraCurrentOrientationAngle < 0) {
-                mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle + 360);
-            } else {
-                mMediaRecorder.setOrientationHint(-cameraCurrentOrientationAngle);
-            }
-        } else {
-            mMediaRecorder.setOrientationHint(cameraCurrentOrientationAngle);
-        }*/
-
         mMediaRecorder.setOrientationHint(getOrientation());
 
         // Prepare configured MediaRecorder
@@ -341,9 +375,9 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     }
 
     /**
-     * Release the camera for other applications.
+     * Release camera for other applications.
      */
-    public void release() {
+    private void releaseCamera() {
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.release();
@@ -351,33 +385,123 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         }
     }
 
-    public Camera getCamera() {
-        return mCamera;
-    }
+    /**
+     * Release the camera for other applications.
+     */
+    public void release() {
+        releaseMediaRecorder();
+        releaseCamera();
+        setSurfaceTextureListener(null);
 
-    public float getPreviewAspectRatio() {
-        float width, height;
-
-        if (mLayoutMode == LayoutMode.CenterCrop) {
-            width = (float) ((View) getParent()).getWidth();
-            height = (float) ((View) getParent()).getHeight();
-        } else if (mLayoutMode == LayoutMode.FitParent) {
-            width = (float) getWidth();
-            height = (float) getHeight();
-        } else {
-            width = height = 1.0f;
+        if (mOrientationListener != null) {
+            mOrientationListener.disable();
+            mOrientationListener = null;
         }
 
-        return width / height;
+        if (mCameraPreviewContainer != null) {
+            mCameraPreviewContainer.removeAllViews();
+        }
+    }
+
+    public CameraPreview setLayoutMode(LayoutMode layoutMode) {
+        mLayoutMode = layoutMode;
+        return this;
+    }
+
+    public CameraId getCameraId() {
+        if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            return CameraId.CAMERA_FACING_FRONT;
+        } else {
+            return CameraId.CAMERA_FACING_BACK;
+        }
+    }
+
+    public CameraPreview setCameraId(CameraId cameraId) {
+        if (cameraId == CameraId.CAMERA_FACING_FRONT) {
+            mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+        } else {
+            mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+        }
+
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(mCameraId, info);
+        mCameraFactoryOrientation = info.orientation;
+
+        return this;
+    }
+
+    public CameraPreview setMaximumVideoDuration_ms(int maximumVideoDuration) {
+        mMaximumVideoDuration = maximumVideoDuration;
+        return this;
+    }
+
+    public CameraPreview setOnCameraPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
+        mCameraPreviewCallback = cameraPreviewCallback;
+        return this;
+    }
+
+    public CameraPreview into(FrameLayout cameraPreviewContainer) {
+
+        if (cameraPreviewContainer != null) {
+            mCameraPreviewContainer = cameraPreviewContainer;
+
+            // Set a CamcorderProfile to 720p quality or lower of not available
+            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+                mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+
+            } else {
+                mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+            }
+
+            mCameraPreviewContainer.removeAllViews();
+            setSurfaceTextureListener(this);
+            mCameraPreviewContainer.addView(this);
+            return this;
+        } else {
+            Log.e(LOG_TAG, "Provided camera preview container view is null");
+            return null;
+        }
+    }
+
+    /**
+     * If more the one camera is available on the current device, this function switches the camera
+     * source (FRONT, BACK).
+     */
+    public CameraId flip() {
+        releaseCamera();
+
+        if (mCameraId == Camera.CameraInfo.CAMERA_FACING_BACK && hasFrontCamera()) {
+            mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+        } else {
+            mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+        }
+
+        resizeToFitContainerView();
+        return getCameraId();
+    }
+
+    public boolean hasFrontCamera() {
+        PackageManager packageManager = getContext().getPackageManager();
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
     }
 
     public boolean isFlashAvailable() {
-        return mIsFlashAvailable;
+        if (mCamera != null) {
+            List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
+            if (supportedFlashModes != null && supportedFlashModes.size() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean setFlashMode(String flashMode) {
         boolean success = false;
-        if (mIsFlashAvailable && mCamera != null) {
+        if (isFlashAvailable() && mCamera != null) {
             List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
             if (supportedFlashModes != null) {
                 Camera.Parameters cameraParams = mCamera.getParameters();
@@ -390,9 +514,9 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return success;
     }
 
-    public String triggerNextFlashMode() {
+    public String getNextAvailableFlashMode() {
         String newFlashMode;
-        if (mIsFlashAvailable && mCamera != null) {
+        if (isFlashAvailable() && mCamera != null) {
             List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
             if (supportedFlashModes != null) {
                 String currentFlashMode = mCamera.getParameters().getFlashMode();
@@ -428,29 +552,36 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
                         newFlashMode = currentFlashMode;
                         break;
                 }
-
-                Camera.Parameters cameraParams = mCamera.getParameters();
-                cameraParams.setFlashMode(newFlashMode);
-                mCamera.setParameters(cameraParams);
             } else {
                 newFlashMode = null;
             }
         } else {
             newFlashMode = null;
         }
-
         return newFlashMode;
     }
 
-    public void setOnCameraPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
-        mCameraPreviewCallback = cameraPreviewCallback;
+    public float getPreviewAspectRatio() {
+        float width, height;
+
+        if (mLayoutMode == LayoutMode.CENTER_CROP) {
+            width = (float) mCameraPreviewContainer.getWidth();
+            height = (float) mCameraPreviewContainer.getHeight();
+        } else if (mLayoutMode == LayoutMode.FIT_PARENT) {
+            width = (float) getWidth();
+            height = (float) getHeight();
+        } else {
+            width = height = 1.0f;
+        }
+
+        return width / height;
     }
 
     /**
      * Gets camera preview angle
      */
     private int getPreviewOrientation() {
-        int angle = mCameraOriginalOrientation;
+        int angle = mCameraFactoryOrientation;
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
 
@@ -490,7 +621,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
      * Gets camera's current orientation angle
      */
     public int getOrientation() {
-        int angle = mCameraOriginalOrientation;
+        int angle = mCameraFactoryOrientation;
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
 

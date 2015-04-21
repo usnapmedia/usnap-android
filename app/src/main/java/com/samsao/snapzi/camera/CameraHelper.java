@@ -5,13 +5,8 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.hardware.Camera;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.Surface;
-import android.view.WindowManager;
 
 import com.samsao.snapzi.SnapziApplication;
 
@@ -30,30 +25,6 @@ public class CameraHelper {
     public final static String IMAGE_FILENAME = "image.png";
     public final static String VIDEO_FILENAME = "video.mp4";
 
-
-    /**
-     * Get an instance of the Camera object.
-     */
-    public static Camera getCameraInstance(int cameraId) {
-        Camera camera = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD &&
-                cameraId < Camera.getNumberOfCameras()) {
-            try {
-                camera = Camera.open(cameraId);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Camera is not available (in use or does not exist): " + e.getMessage());
-            }
-        } else {
-            try {
-                camera = Camera.open();
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Camera is not available (in use or does not exist): " + e.getMessage());
-            }
-        }
-
-        return camera;
-    }
 
     /**
      * Iterate over supported camera preview sizes to see which one best fits the

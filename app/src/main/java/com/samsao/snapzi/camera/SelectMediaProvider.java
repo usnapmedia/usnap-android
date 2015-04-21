@@ -8,9 +8,9 @@ import android.graphics.Bitmap;
  */
 public interface SelectMediaProvider {
 
-    public int getCameraId();
+    public CameraPreview.CameraId getCameraId();
 
-    public void setCameraId(int cameraId);
+    public void setCameraId(CameraPreview.CameraId cameraId);
 
     public String getCameraFlashMode();
 
@@ -19,10 +19,6 @@ public interface SelectMediaProvider {
     public float getCameraPreviewAspectRatio();
 
     public void setCameraPreviewAspectRatio(float cameraPreviewAspectRatio);
-
-    public int getCameraLastOrientationAngleKnown();
-
-    public void setCameraLastOrientationAngleKnown(int angle);
 
     public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath);
 

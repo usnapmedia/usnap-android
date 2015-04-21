@@ -93,7 +93,7 @@
             android:layout_weight="1"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_edit_list_recyclerview"
+            android:id="@+id/fragment_edit_tools_menu_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/photo_edit_menu_size"
             android:background="@color/black_alpha"
