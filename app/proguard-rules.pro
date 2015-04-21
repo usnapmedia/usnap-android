@@ -54,8 +54,6 @@
 -keepnames class * { @butterknife.InjectView *;}
 
 # For retrofit
--keepattributes Signature
--keepattributes *Annotation*
 -dontwarn com.squareup.**
 -dontwarn rx.**
 -dontwarn retrofit.**
@@ -74,8 +72,7 @@
 }
 
 # your package path where your gson models are stored
--keepclassmembers class com.samsao.app.network.entity.** { *; }
--keepclassmembers class com.samsao.app.model.entity.** { *; }
+-keepclassmembers class com.samsao.snapzi.api.entity.** { *; }
 
 # For Fabric
 -keepattributes SourceFile,LineNumberTable
@@ -102,7 +99,6 @@
 
 # For Facebook SDK
 -keep class com.facebook.** { *; }
--keepattributes Signature
 
 # For Jackson
 -keepattributes *Annotation*,EnclosingMethod,Signature
