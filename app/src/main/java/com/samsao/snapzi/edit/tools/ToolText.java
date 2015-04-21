@@ -170,6 +170,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
             ToolText target = new ToolText();
             ToolTextParcelablePlease.readFromParcel(target, source);
             target.setOptionsTool();
+            target.selectCurrentlySelectedOption();
             return target;
         }
 

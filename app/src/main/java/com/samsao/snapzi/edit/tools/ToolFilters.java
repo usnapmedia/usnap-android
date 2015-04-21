@@ -88,6 +88,7 @@ public class ToolFilters extends Tool implements Parcelable {
             ToolFilters target = new ToolFilters();
             ToolFiltersParcelablePlease.readFromParcel(target, source);
             target.setOptionsTool();
+            target.selectCurrentlySelectedOption();
             return target;
         }
 

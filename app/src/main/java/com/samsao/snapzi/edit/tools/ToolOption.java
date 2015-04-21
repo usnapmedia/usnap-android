@@ -104,4 +104,12 @@ public abstract class ToolOption implements Parcelable {
         mTool = tool;
         return this;
     }
+
+    /**
+     * Check if the option is selected
+     * @return
+     */
+    public Boolean isSelected() {
+        return mIsSelected;
+    }
 }

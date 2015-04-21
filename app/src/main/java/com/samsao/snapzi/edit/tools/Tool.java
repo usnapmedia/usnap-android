@@ -220,4 +220,17 @@ public abstract class Tool implements Parcelable {
             toolOption.setTool(this);
         }
     }
+
+    /**
+     * Select currently selected option (if any).
+     * Called in the Parcelable constructor
+     *
+     */
+    public void selectCurrentlySelectedOption() {
+        for (ToolOption option : mOptions) {
+            if (option.isSelected()) {
+                option.unselect();
+            }
+        }
+    }
 }
