@@ -41,7 +41,6 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Optional;
 import me.panavtec.drawableview.DrawableView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -77,20 +76,19 @@ public class EditFragment extends Fragment {
     public FrameLayout mToolContainer;
 
     @InjectView(R.id.fragment_edit_text_annotation_container_text)
-    @Optional
     public TextAnnotationEditText mTextAnnotation;
-
-    private MenuItemAdapter mMenuItemAdapter;
-    private LinearLayoutManager mMenuLayoutManager;
-    private Listener mListener;
 
     @InjectView(R.id.fragment_edit_toolbar)
     public Toolbar mToolbar;
 
-    private RecyclerView mLiveFeedRecyclerView;
-    private LinearLayoutManager mLiveFeedLayoutManager;
+    @InjectView(R.id.fragment_edit_livefeed_recycler_view)
+    public RecyclerView mLiveFeedRecyclerView;
 
     private LiveFeedAdapter mLiveFeedAdapter;
+    private MenuItemAdapter mMenuItemAdapter;
+    private LinearLayoutManager mMenuLayoutManager;
+    private LinearLayoutManager mLiveFeedLayoutManager;
+    private Listener mListener;
 
     /**
      * TODO inject me
@@ -113,6 +111,12 @@ public class EditFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mLiveFeedAdapter = new LiveFeedAdapter();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -121,8 +125,8 @@ public class EditFragment extends Fragment {
 
         setupToolbar();
 
+        // load the image
         if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
-            // load the image
             Uri imageUri = Uri.fromFile(new File(CameraHelper.getDefaultImageFilePath()));
             Picasso.with(getActivity()).load(imageUri)
                     .noPlaceholder()
@@ -136,6 +140,26 @@ public class EditFragment extends Fragment {
             tool.setToolFragment(this);
         }
 
+        // initializes menus
+        initToolsMenu();
+        initLiveFeed();
+
+        // disable the touch listener on the draw view so it does not take draw events
+        mDrawAnnotationContainer.setOnTouchListener(null);
+
+        // select the current tool if there's one
+        if (mListener.getCurrentTool() != null) {
+            // current tool has to be selected if restoring from a saved instance
+            mListener.getCurrentTool().unselect(); // force unselect first to reset isSelected boolean
+            mListener.getCurrentTool().select();
+        }
+        return view;
+    }
+
+    /**
+     * This method initializes the tools menu
+     */
+    public void initToolsMenu() {
         mMenuItemAdapter = new MenuItemAdapter(getMenuItemsForTools());
         mMenuLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mMenuRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -151,30 +175,16 @@ public class EditFragment extends Fragment {
         mMenuRecyclerView.setHasFixedSize(true);
         mMenuRecyclerView.setLayoutManager(mMenuLayoutManager);
         mMenuRecyclerView.setAdapter(mMenuItemAdapter);
-
-        // disable the touch listener on the draw view so it does not take draw events
-        mDrawAnnotationContainer.setOnTouchListener(null);
-
-        mLiveFeedRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_edit_livefeed_recycler_view);
-        initLiveFeed();
-
-        // select the current tool if there's one
-        if (mListener.getCurrentTool() != null) {
-            // current tool has to be selected if restoring from a saved instance
-            mListener.getCurrentTool().unselect(); // force unselect first to reset isSelected boolean
-            mListener.getCurrentTool().select();
-        }
-
-        return view;
     }
 
+    /**
+     * This method initializes the live feed
+     */
     public void initLiveFeed() {
         mLiveFeedRecyclerView.setHasFixedSize(true);
         mLiveFeedLayoutManager = new LinearLayoutManager(getActivity());
         mLiveFeedLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mLiveFeedRecyclerView.setLayoutManager(mLiveFeedLayoutManager);
-
-        mLiveFeedAdapter = new LiveFeedAdapter();
         mLiveFeedRecyclerView.setAdapter(mLiveFeedAdapter);
     }
 
@@ -192,8 +202,9 @@ public class EditFragment extends Fragment {
         });
     }
 
-
-
+    /**
+     * Setup the toolbar
+     */
     public void setupToolbar() {
         if (mToolbar != null) {
             ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
