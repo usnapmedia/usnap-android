@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,20 +81,6 @@ public class SelectMediaFragment extends Fragment {
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
 
-    /**
-     * Called when image data is available after a picture is taken. We transform the raw data to a
-     * bitmap object then start the modification activity
-     */
-    private final Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] bytes, Camera camera) {
-            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting image
-            image = PhotoUtil.rotateBitmap(image, mCameraPreview.getOrientation()); // Add rotation correction to bitmap
-            image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mCameraPreview.getPreviewAspectRatio());
-
-            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
-        }
-    };
 
     /**
      * Use this factory method to create a new instance of
@@ -236,7 +221,7 @@ public class SelectMediaFragment extends Fragment {
                 if (!mIsCapturingMedia) {
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                         triggerCapturingMediaState(true);
-                        mCameraPreview.takePicture(mJpegCallback);
+                        mCameraPreview.takePicture();
                     } else {
                         WindowUtil.unlockScreenOrientation(getActivity());
                         Toast.makeText(getActivity(),
@@ -461,7 +446,7 @@ public class SelectMediaFragment extends Fragment {
                     .setLayoutMode(CameraPreview.LayoutMode.CENTER_CROP)
                     .setCameraId(mSelectMediaProvider.getCameraId())
                     .setMaximumVideoDuration_ms(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS)
-                    .setOnCameraPreviewReady(new CameraPreview.CameraPreviewCallback() {
+                    .setOnCameraPreviewReady(new CameraPreview.SimpleCameraCallback() {
                         private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
                             public void onGlobalLayout() {
@@ -485,6 +470,11 @@ public class SelectMediaFragment extends Fragment {
                         public void onCameraPreviewFailed() {
                             Log.e(LOG_TAG, "Camera init failed");
                             //FIXME
+                        }
+
+                        @Override
+                        public void onPictureReady(Bitmap image) {
+                            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
                         }
                     })
                     .into(mCameraPreviewContainer);

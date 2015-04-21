@@ -3,6 +3,8 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
@@ -19,6 +21,8 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+
+import com.samsao.snapzi.util.PhotoUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +41,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     private final LayoutMode DEFAULT_LAYOUT_MODE = LayoutMode.FIT_PARENT;
     private final CameraId DEFAULT_CAMERA_ID = CameraId.CAMERA_FACING_FRONT;
     private final int DEFAULT_MAXIMUM_VIDEO_DURATION_MS = 60000; // 60 sec
-    private final int PREVIEW_ORIENTATION_THRESHOLD_DEG = 18;
+    private final int PREVIEW_ORIENTATION_THRESHOLD_DEG = 20;
 
     private static CameraPreview mCameraPreviewInstance;
     private Camera mCamera;
@@ -48,9 +52,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     private int mCameraId;
     private int mCameraBuiltInOrientationOffset = 0;
     private int mLastPreviewOrientation = 0;
+    private int mOrientationWhenPictureTaken = 0;
+    private float mAspectRatioWhenPictureTaken = 1.0f;
 
     private OrientationEventListener mOrientationListener;
-    private CameraPreviewCallback mCameraPreviewCallback;
+    private SimpleCameraCallback mSimpleCameraCallback;
 
     private int mMaximumVideoDuration;
     private CamcorderProfile mCamcorderProfile;
@@ -63,14 +69,46 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     public enum CameraId {
         CAMERA_FACING_FRONT,
-        CAMERA_FACING_BACK,
+        CAMERA_FACING_BACK
     }
 
-    public interface CameraPreviewCallback {
+    public interface SimpleCameraCallback {
         public void onCameraPreviewReady();
 
         public void onCameraPreviewFailed();
+
+        public void onPictureReady(Bitmap image);
     }
+
+    /**
+     * Callback that plays a camera sound as near as possible to the moment when a photo is captured
+     * from the sensor.
+     */
+    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+        public void onShutter() {
+            mOrientationWhenPictureTaken = getOrientation();
+            mAspectRatioWhenPictureTaken = getPreviewAspectRatio();
+            AudioManager mgr = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+        }
+    };
+
+    /**
+     * Called when image data is available after a picture is taken. We transform the raw data to a
+     * bitmap object then start the modification activity
+     */
+    private final Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] bytes, Camera camera) {
+            Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length); // Get resulting image
+            image = PhotoUtil.rotateBitmap(image, mOrientationWhenPictureTaken); // Add rotation correction to bitmap
+            image = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(image, mAspectRatioWhenPictureTaken);
+
+            if (null != mSimpleCameraCallback) {
+                mSimpleCameraCallback.onPictureReady(image);
+            }
+        }
+    };
 
 
     public static CameraPreview getNewInstance(Activity activity) {
@@ -80,18 +118,6 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         }
         return mCameraPreviewInstance = new CameraPreview(activity);
     }
-
-    /**
-     * Callback that plays a camera sound as near as possible to the moment when a photo is captured
-     * from the sensor.
-     */
-    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
-        public void onShutter() {
-            AudioManager mgr = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
-        }
-    };
-
 
     /**
      * CameraPreview constructor
@@ -160,13 +186,13 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
         if (!adjustSurfaceLayoutSize(previewContainerWidth, previewContainerHeight)) {
             if (prepareCamera()) {
-                if (null != mCameraPreviewCallback) {
+                if (null != mSimpleCameraCallback) {
                     mOrientationListener.enable();
-                    mCameraPreviewCallback.onCameraPreviewReady();
+                    mSimpleCameraCallback.onCameraPreviewReady();
                 }
             } else {
-                if (null != mCameraPreviewCallback) {
-                    mCameraPreviewCallback.onCameraPreviewFailed();
+                if (null != mSimpleCameraCallback) {
+                    mSimpleCameraCallback.onCameraPreviewFailed();
                 }
                 Log.e(LOG_TAG, "Unable to prepare camera");
             }
@@ -272,11 +298,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return true;
     }
 
-    public void takePicture(final Camera.PictureCallback jpegCallback) {
+    public void takePicture() {
         mCamera.autoFocus(new Camera.AutoFocusCallback() {
             @Override
             public void onAutoFocus(boolean b, Camera camera) {
-                camera.takePicture(mShutterCallback, null, jpegCallback);
+                camera.takePicture(mShutterCallback, null, mJpegCallback);
             }
         });
     }
@@ -396,11 +422,19 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         }
     }
 
+    /**
+     * Set camera preview layout mode.
+     *
+     * @param layoutMode : FIT_PARENT or CENTER_CROP
+     */
     public CameraPreview setLayoutMode(LayoutMode layoutMode) {
         mLayoutMode = layoutMode;
         return this;
     }
 
+    /**
+     * Get which camera is currently used.
+     */
     public CameraId getCameraId() {
         if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             return CameraId.CAMERA_FACING_FRONT;
@@ -409,6 +443,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         }
     }
 
+    /**
+     * Set which camera to use.
+     *
+     * @param cameraId : CAMERA_FACING_FRONT, CAMERA_FACING_BACK
+     */
     public CameraPreview setCameraId(CameraId cameraId) {
         if (cameraId == CameraId.CAMERA_FACING_FRONT) {
             mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
@@ -424,17 +463,38 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return this;
     }
 
+    /**
+     * Set maximum video capture duration.
+     *
+     * @param maximumVideoDuration video duration in milliseconds
+     */
     public CameraPreview setMaximumVideoDuration_ms(int maximumVideoDuration) {
         mMaximumVideoDuration = maximumVideoDuration;
         return this;
     }
 
-    public CameraPreview setOnCameraPreviewReady(CameraPreviewCallback cameraPreviewCallback) {
-        mCameraPreviewCallback = cameraPreviewCallback;
+    /**
+     * Set SimpleCameraCallback to know when the camera preview is ready or when a picture was taken.
+     * Providing a SimpleCameraCallback is mandatory.
+     *
+     * @param simpleCameraCallback
+     */
+    public CameraPreview setOnCameraPreviewReady(SimpleCameraCallback simpleCameraCallback) {
+        mSimpleCameraCallback = simpleCameraCallback;
         return this;
     }
 
+    /**
+     * Set in which container to display camera preview.
+     *
+     * @param cameraPreviewContainer
+     */
     public CameraPreview into(FrameLayout cameraPreviewContainer) {
+
+        if (mSimpleCameraCallback == null) {
+            Log.e(LOG_TAG, "No SimpleCameraCallback callback was provided");
+            return null;
+        }
 
         if (cameraPreviewContainer != null) {
             mCameraPreviewContainer = cameraPreviewContainer;
@@ -472,7 +532,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
             return this;
         } else {
-            Log.e(LOG_TAG, "Provided camera preview container view is null");
+            Log.e(LOG_TAG, "Camera preview container is null");
             return null;
         }
     }
@@ -494,11 +554,21 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return getCameraId();
     }
 
+    /**
+     * Tells if the current device have a front camera.
+     *
+     * @return true if it has a front camera
+     */
     public boolean hasFrontCamera() {
         PackageManager packageManager = getContext().getPackageManager();
         return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
     }
 
+    /**
+     * Tells if the current camera have a flash functionality.
+     *
+     * @return true if it has a front camera
+     */
     public boolean isFlashAvailable() {
         if (mCamera != null) {
             List<String> supportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
@@ -512,6 +582,12 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         }
     }
 
+    /**
+     * Set current camera's flash mode.
+     *
+     * @param flashMode : FLASH_MODE_AUTO, FLASH_MODE_OFF, FLASH_MODE_ON
+     * @return true on success
+     */
     public boolean setFlashMode(String flashMode) {
         boolean success = false;
         if (isFlashAvailable()) {
@@ -533,6 +609,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return success;
     }
 
+    /**
+     * Get next available flash mode on the current camera. Supported mode : FLASH_MODE_AUTO, FLASH_MODE_OFF, FLASH_MODE_ON
+     *
+     * @return next available flash mode
+     */
     public String getNextAvailableFlashMode() {
         String newFlashMode;
         if (isFlashAvailable() && mCamera != null) {
@@ -580,6 +661,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         return newFlashMode;
     }
 
+    /**
+     * Get camera preview display aspect ratio.
+     *
+     * @return aspect ratio
+     */
     public float getPreviewAspectRatio() {
         float width, height;
 

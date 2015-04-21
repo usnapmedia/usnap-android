@@ -40,7 +40,6 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final CameraPreview.CameraId DEFAULT_CAMERA_ID = CameraPreview.CameraId.CAMERA_FACING_FRONT;
     private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
-    private final float DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO = 1.0f;
 
     SelectMediaFragment mSelectMediaFragment;
     Dialog mSavingImageProgressDialog;
@@ -60,7 +59,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
 
         mCameraId = DEFAULT_CAMERA_ID;
         mCameraFlashMode = DEFAULT_CAMERA_FLASH_MODE;
-        mCameraPreviewAspectRatio = DEFAULT_CAMERA_PREVIEW_ASPECT_RATIO;
+        mCameraPreviewAspectRatio = 0.0f;
 
         // restore saved state
         if (savedInstanceState != null) {
