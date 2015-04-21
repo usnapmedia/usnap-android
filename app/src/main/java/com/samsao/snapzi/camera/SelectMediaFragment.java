@@ -537,7 +537,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
      */
     public void initLatestImage(String imageLocation) {
         if (imageLocation != "") {
-            Picasso.with(getActivity()).load(imageLocation).into(mImageView);
+            Picasso.with(getActivity()).load(imageLocation).fit().centerCrop().into(mImageView);
         } else {
             Log.e(LOG_TAG, "Image not found");
         }
