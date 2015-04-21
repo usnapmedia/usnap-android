@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -25,7 +24,6 @@ import com.soundcloud.android.crop.Crop;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -40,10 +38,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     public static final String EXTRA_MEDIA_PATH = "EditActivity.EXTRA_MEDIA_PATH";
     public static final String IMAGE_MODE = "EditActivity.IMAGE_MODE";
     public static final String VIDEO_MODE = "EditActivity.VIDEO_MODE";
-
-
-    @InjectView(R.id.activity_edit_toolbar)
-    public Toolbar mToolbar;
 
     private EditFragment mEditFragment;
 
@@ -64,7 +58,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.inject(this);
-        setupToolbar();
 
         mMenuState = new MenuStateView();
         Intent intent = getIntent();
@@ -103,9 +96,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
 
 
         if (savedInstanceState == null) {
-            mEditFragment = EditFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment).commit();
-
             // initialize tools
             // TODO put the available tools in a config file that can change
             // depending the product flavor
@@ -121,11 +111,11 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
                 mTools.add(new ToolCrop());
                 mTools.add(new ToolFilters());
             }
+
+            mEditFragment = EditFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.activity_edit_content, mEditFragment, EditFragment.FRAGMENT_TAG).commit();
         } else {
-            if (mCurrentTool != null) {
-                // current tool has to be selected if restoring from a saved instance
-                mCurrentTool.select();
-            }
+            mEditFragment = (EditFragment)getFragmentManager().findFragmentByTag(EditFragment.FRAGMENT_TAG);
         }
     }
 
@@ -209,13 +199,7 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         }
     }
 
-    public void setupToolbar() {
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
-        }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
+
 
     /**
      * Reset menu
@@ -242,10 +226,6 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     @Override
     public String getEditMode() {
         return mEditMode;
-    }
-
-    public Toolbar getToolbar() {
-        return mToolbar;
     }
 
     public ArrayList<Tool> getTools() {

@@ -4,11 +4,13 @@
 
 package com.samsao.snapzi.api;
 
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
 
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
 import retrofit.http.POST;
 
 /**
@@ -28,11 +30,14 @@ public interface SnapziApi {
                          Callback<Response> callback);
 
 
-    // TODO rename email tu username
+    // TODO rename email to username
     @FormUrlEncoded
     @POST("/login")
     public void login(@Field("email") String username,
                       @Field("password") String password,
                       Callback<Response> callback);
+
+    @GET("/feed/live")
+    public void getLiveFeed(Callback<FeedImageList> callback);
 
 }
