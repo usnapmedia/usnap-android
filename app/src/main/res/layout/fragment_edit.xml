@@ -78,12 +78,13 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/fragment_edit_livefeed_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="92dp"
+                android:layout_height="@dimen/live_feed_layout_height"
                 android:background="@color/black_alpha"
                 android:paddingBottom="@dimen/elements_half_vertical_margin"
                 android:paddingLeft="@dimen/elements_horizontal_margin"
                 android:paddingRight="@dimen/elements_horizontal_margin"
-                android:paddingTop="@dimen/elements_half_vertical_margin"/>
+                android:paddingTop="@dimen/elements_half_vertical_margin"
+                android:layout_marginTop="@dimen/elements_half_vertical_margin"/>
 
         </LinearLayout>
 

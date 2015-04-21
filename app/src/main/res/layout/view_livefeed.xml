@@ -2,6 +2,6 @@
 
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
            android:id="@+id/img_view_id"
-           android:layout_width="80dp"
-           android:layout_height="80dp"
+           android:layout_width="@dimen/live_feed_imageView_layout_size"
+           android:layout_height="@dimen/live_feed_imageView_layout_size"
            android:scaleType="centerCrop" />

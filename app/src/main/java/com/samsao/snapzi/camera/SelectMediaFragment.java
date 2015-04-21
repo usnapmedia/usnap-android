@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +34,7 @@ import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
+import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,22 +48,29 @@ import timber.log.Timber;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaFragment extends Fragment {
+public class SelectMediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     /**
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
+    private static final int URI_LOADER = 0;
+
+    private String mImageLocation = "";
 
     private SelectMediaProvider mSelectMediaProvider;
     private boolean mIsCapturingMedia, mIsCapturingVideo;
     private CountDownTimer mVideoCaptureCountdownTimer;
     private Dialog mPickMediaDialog;
 
-    private RecyclerView mRecyclerView;
+    @InjectView(R.id.fragment_select_media_livefeed_recycler_view)
+    public RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private LiveFeedAdapter mLiveFeedAdapter;
-    ApiService mApiService = new ApiService();
+    private ApiService mApiService = new ApiService();
+
+    @InjectView(R.id.fragment_select_media_latest_image)
+    public ImageView mImageView;
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
@@ -73,14 +85,24 @@ public class SelectMediaFragment extends Fragment {
     @InjectView(R.id.fragment_select_media_flip_camera_button)
     public Button mFlipCameraButton;
 
-    @InjectView(R.id.fragment_select_media_pick_from_gallery_button)
-    public Button mPickFromGalleryButton;
-
     @InjectView(R.id.fragment_select_media_video_countdown)
     public TextView mVideoCountdown;
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
+
+
+    /**
+     * Callback that plays a camera sound as near as possible to the moment when a photo is captured
+     * from the sensor.
+     */
+    private final Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+        public void onShutter() {
+            mSelectMediaProvider.setCameraLastOrientationAngleKnown(mCameraPreview.getOrientation());
+            AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+            mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+        }
+    };
 
     /**
      * Called when image data is available after a picture is taken. We transform the raw data to a
@@ -118,10 +140,8 @@ public class SelectMediaFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_media, container, false);
         ButterKnife.inject(this, view);
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_edit_livefeed_recycler_view);
         initLiveFeed();
-
+        getLoaderManager().initLoader(URI_LOADER, null, this);
         return view;
     }
 
@@ -219,8 +239,8 @@ public class SelectMediaFragment extends Fragment {
             });
         }
 
-        // Pick media from gallery button
-        mPickFromGalleryButton.setOnClickListener(new View.OnClickListener() {
+        //Pick media from gallery
+        mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPickMediaDialog();
@@ -392,8 +412,7 @@ public class SelectMediaFragment extends Fragment {
             } else {
                 mFlipCameraButton.setVisibility(View.GONE);
             }
-            mPickFromGalleryButton.setVisibility(View.VISIBLE);
-            mCaptureMediaButton.setProgress(0.0f);
+            mFlipCameraButton.setVisibility(View.VISIBLE);
             mVideoCountdown.setVisibility(View.GONE);
 
             WindowUtil.unlockScreenOrientation(getActivity());
@@ -430,10 +449,6 @@ public class SelectMediaFragment extends Fragment {
 
         if (mFlipCameraButton != null) {
             mFlipCameraButton.setVisibility(View.GONE);
-        }
-
-        if (mPickFromGalleryButton != null) {
-            mPickFromGalleryButton.setVisibility(View.GONE);
         }
     }
 
@@ -503,10 +518,6 @@ public class SelectMediaFragment extends Fragment {
             mFlipCameraButton.setOnClickListener(null);
         }
 
-        if (mPickFromGalleryButton != null) {
-            mPickFromGalleryButton.setOnClickListener(null);
-        }
-
         if (mCaptureMediaButton != null) {
             mCaptureMediaButton.setOnClickListener(null);
             mCaptureMediaButton.setOnLongClickListener(null);
@@ -516,6 +527,27 @@ public class SelectMediaFragment extends Fragment {
         if (mCameraPreview != null) {
             mCameraPreview.release();
             mCameraPreview = null;
+        }
+    }
+
+    /**
+     * Hide pick media dialog
+     */
+    public void dismissPickMediaDialog() {
+        if (mPickMediaDialog != null) {
+            mPickMediaDialog.dismiss();
+            mPickMediaDialog = null;
+        }
+    }
+
+    /**
+     *Display the latest image from gallery.
+     */
+    public void initLatestImage(String imageLocation) {
+        if (imageLocation != "") {
+            Picasso.with(getActivity()).load(imageLocation).into(mImageView);
+        } else {
+            Log.e(LOG_TAG, "Image not found");
         }
     }
 
@@ -530,17 +562,7 @@ public class SelectMediaFragment extends Fragment {
     }
 
     /**
-     * Hide pick media dialog
-     */
-    public void dismissPickMediaDialog() {
-        if (mPickMediaDialog != null) {
-            mPickMediaDialog.dismiss();
-            mPickMediaDialog = null;
-        }
-    }
-
-    /**
-     * Create a dialog that asks what kind kind of media to pick from gallery.
+     * Create a dialog that asks what kind of media to pick from gallery.
      *
      * @return pick media dialog
      */
@@ -581,4 +603,36 @@ public class SelectMediaFragment extends Fragment {
 
         return dialog;
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
+        String[] mProjection = new String[] {
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+
+        switch (loaderID) {
+            case URI_LOADER:
+                return new CursorLoader (getActivity(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mProjection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        if (cursor.moveToFirst()) {
+            mImageLocation = cursor.getString(1);
+            mImageLocation = "file://" + mImageLocation;
+            initLatestImage(mImageLocation);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {}
+
+
 }

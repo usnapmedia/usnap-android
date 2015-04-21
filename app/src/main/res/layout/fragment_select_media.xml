@@ -11,17 +11,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/black" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_edit_livefeed_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="92dp"
-        android:background="@color/black_alpha"
-        android:paddingLeft="@dimen/elements_horizontal_margin"
-        android:paddingRight="@dimen/elements_horizontal_margin"
-        android:paddingTop="@dimen/elements_half_vertical_margin"
-        android:paddingBottom="@dimen/elements_half_vertical_margin"
-        />
-
     <TextView
         android:id="@+id/fragment_select_media_video_countdown"
         android:layout_width="wrap_content"
@@ -29,26 +18,47 @@
         android:layout_gravity="top|center_horizontal"
         android:textColor="@android:color/holo_red_dark" />
 
-    <FrameLayout
-        android:id="@+id/fragment_select_media_camera_controls"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!--Camera top controls-->
-        <Button
-            android:id="@+id/fragment_select_media_flash_setup_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:visibility="gone" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_select_media_livefeed_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/live_feed_layout_height"
+            android:background="@color/black_alpha"
+            android:paddingLeft="@dimen/elements_half_vertical_margin"
+            android:paddingRight="@dimen/elements_half_vertical_margin"
+            android:paddingTop="@dimen/elements_half_vertical_margin"
+            android:paddingBottom="@dimen/elements_half_vertical_margin"
+            android:layout_marginTop="@dimen/elements_half_vertical_margin"/>
 
-        <Button
-            android:id="@+id/fragment_select_media_flip_camera_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="FLIP"
-            android:visibility="gone" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!--Camera top controls-->
+            <Button
+                android:id="@+id/fragment_select_media_flash_setup_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/elements_half_vertical_margin"/>
+
+            <Button
+                android:id="@+id/fragment_select_media_flip_camera_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FLIP"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/elements_half_vertical_margin"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
         <!--Camera bottom controls-->
         <FrameLayout
@@ -56,23 +66,30 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
 
-            <Button
-                android:id="@+id/fragment_select_media_pick_from_gallery_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|start"
-                android:text="SELECT" />
+        <com.samsao.snapzi.camera.ProgressButton
+            android:id="@+id/fragment_select_media_capture_media_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:radius="48dp"
+	 android:visibility="gone"/>
 
-            <com.samsao.snapzi.camera.ProgressButton
-                android:id="@+id/fragment_select_media_capture_media_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:radius="48dp"
-                android:visibility="gone" />
+        <LinearLayout
+            android:layout_width="@dimen/fragment_select_media_latest_image"
+            android:layout_height="@dimen/fragment_select_media_latest_image"
+            android:padding="@dimen/elements_half_vertical_margin"
+            android:background="@color/black_alpha"
+            android:layout_marginLeft="@dimen/elements_vertical_margin"
+            android:layout_marginBottom="@dimen/elements_vertical_margin"
+            android:layout_gravity="left|bottom">
 
-        </FrameLayout>
+            <ImageView
+                android:id="@+id/fragment_select_media_latest_image"
+                android:layout_width="@dimen/fragment_select_media_latest_image_size"
+                android:layout_height="@dimen/fragment_select_media_latest_image_size"
+                android:scaleType="centerCrop"/>
 
+        </LinearLayout>
     </FrameLayout>
 
 </FrameLayout>
