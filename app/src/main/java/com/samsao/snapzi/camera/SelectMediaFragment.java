@@ -364,6 +364,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
             // inform the user that recording has started
             hideAllSettingsButtons();
         } else {
+            mCaptureMediaButton.setProgress(0.0f);
             mVideoCountdown.setVisibility(View.GONE);
             WindowUtil.unlockScreenOrientation(getActivity());
             mIsCapturingMedia = mIsCapturingVideo = false;
