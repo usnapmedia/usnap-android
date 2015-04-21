@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,8 +51,7 @@ import timber.log.Timber;
 
 public class EditFragment extends Fragment {
 
-    private final String LOG_TAG = getClass().getSimpleName();
-
+    public static final String FRAGMENT_TAG = "com.samsao.snapzi.edit.EditFragment";
     private final int ANIMATION_DURATION = 300;
 
     @InjectView(R.id.fragment_edit_toolbar_livefeed_container)
@@ -159,6 +157,13 @@ public class EditFragment extends Fragment {
 
         mLiveFeedRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_edit_livefeed_recycler_view);
         initLiveFeed();
+
+        // select the current tool if there's one
+        if (mListener.getCurrentTool() != null) {
+            // current tool has to be selected if restoring from a saved instance
+            mListener.getCurrentTool().unselect(); // force unselect first to reset isSelected boolean
+            mListener.getCurrentTool().select();
+        }
 
         return view;
     }
@@ -423,7 +428,7 @@ public class EditFragment extends Fragment {
             intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
             startActivity(intent);
         } else {
-            Log.e(LOG_TAG, "image uri is null");
+            Timber.e("image uri is null");
         }
     }
 
