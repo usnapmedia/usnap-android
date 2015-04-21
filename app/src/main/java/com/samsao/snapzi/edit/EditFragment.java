@@ -25,7 +25,6 @@ import android.widget.LinearLayout;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
-import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
@@ -127,7 +126,7 @@ public class EditFragment extends Fragment {
 
         // load the image
         if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
-            Uri imageUri = Uri.fromFile(new File(CameraHelper.getDefaultImageFilePath()));
+            Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
             Picasso.with(getActivity()).load(imageUri)
                     .noPlaceholder()
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
@@ -275,7 +274,10 @@ public class EditFragment extends Fragment {
      * @param transformation
      */
     public void refreshImage(Transformation transformation) {
-        RequestCreator requestCreator = Picasso.with(getActivity()).load(mListener.getMediaPath()).noPlaceholder();
+        Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
+        RequestCreator requestCreator = Picasso.with(getActivity())
+                .load(imageUri)
+                .noPlaceholder();
         if (transformation != null) {
             requestCreator = requestCreator.transform(transformation);
         }
@@ -433,7 +435,7 @@ public class EditFragment extends Fragment {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        Uri imageUri = Uri.parse(new File(mListener.getMediaPath()).toString());
+        Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
         if (imageUri != null) {
             Intent intent = new Intent(getActivity(), ShareActivity.class);
             intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
@@ -499,7 +501,7 @@ public class EditFragment extends Fragment {
      * Start cropping activity
      */
     public void startCropActivity() {
-        Uri imageUri = Uri.parse(new File(mListener.getMediaPath()).toString());
+        Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
         new Crop(imageUri)
                 .output(imageUri)
                 .withAspect(mImageContainer.getWidth(), mImageContainer.getHeight())
