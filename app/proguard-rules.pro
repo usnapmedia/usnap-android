@@ -77,6 +77,9 @@
 -keepclassmembers class com.samsao.app.network.entity.** { *; }
 -keepclassmembers class com.samsao.app.model.entity.** { *; }
 
+# For Fabric
+-keepattributes SourceFile,LineNumberTable
+
 # For Realm
 -dontwarn io.realm.**
 -keep class io.realm.* { *; }
