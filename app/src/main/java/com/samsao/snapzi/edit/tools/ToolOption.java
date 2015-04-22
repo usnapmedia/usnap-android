@@ -21,16 +21,30 @@ public abstract class ToolOption implements Parcelable {
         mIsSelected = false;
     }
 
+
+
+    /**
+     * Select this tool option
+     * @param force If set to TRUE, force selection, that is select the tool even if mIsSelected is true
+     * @return
+     */
+    public ToolOption select(boolean force) {
+        if (force) {
+            mIsSelected = false;
+        }
+
+        if (!mIsSelected) {
+            mIsSelected = true;
+            onSelected();
+        }
+        return this;
+    }
+
     /**
      * Select this tool option
      */
     public ToolOption select() {
-        if (!mIsSelected) {
-            mIsSelected = true;
-            mTool.getToolFragment().notifyMenuItemAdapterDataSetChanged();
-            onSelected();
-        }
-        return this;
+        return select(false);
     }
 
     /**
@@ -44,7 +58,6 @@ public abstract class ToolOption implements Parcelable {
     public ToolOption unselect() {
         if (mIsSelected) {
             mIsSelected = false;
-            mTool.getToolFragment().notifyMenuItemAdapterDataSetChanged();
             onUnselected();
         }
         return this;
@@ -103,13 +116,5 @@ public abstract class ToolOption implements Parcelable {
     public ToolOption setTool(Tool tool) {
         mTool = tool;
         return this;
-    }
-
-    /**
-     * Check if the option is selected
-     * @return
-     */
-    public Boolean isSelected() {
-        return mIsSelected;
     }
 }

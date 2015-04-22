@@ -99,7 +99,9 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onSelected() {
-        mOptions.get(DEFAULT_OPTION_INDEX).select();
+        if (mCurrentOption == null) {
+            selectOption(mOptions.get(DEFAULT_OPTION_INDEX));
+        }
         getToolFragment().showEditOptionsMenu(true, true, false);
         getToolFragment().enableTextAnnotationContainerTouchEvent();
         // lock the text if the user presses anywhere on the screen
@@ -169,8 +171,6 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
         public ToolText createFromParcel(Parcel source) {
             ToolText target = new ToolText();
             ToolTextParcelablePlease.readFromParcel(target, source);
-            target.setOptionsTool();
-            target.selectCurrentlySelectedOption();
             return target;
         }
 

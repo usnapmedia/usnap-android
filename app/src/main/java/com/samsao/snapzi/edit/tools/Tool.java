@@ -114,15 +114,32 @@ public abstract class Tool implements Parcelable {
 
     /**
      * Select this tool
+     * @param force If set to TRUE, force selection, that is select the tool even if mIsSelected is true
+     * @return
      */
-    public Tool select() {
+    public Tool select(boolean force) {
+        if (force) {
+            mIsSelected = false;
+        }
+
         if (!mIsSelected) {
             mIsSelected = true;
             mToolFragment.get().setCurrentTool(this);
             setOptionsMenuItems();
+            // select the currently selected option if restoring from a saved state
+            if (mCurrentOption != null) {
+                mCurrentOption.select(true); // force selection
+            }
             onSelected();
         }
         return this;
+    }
+
+    /**
+     * Select this tool
+     */
+    public Tool select() {
+        return select(false);
     }
 
     /**
@@ -183,6 +200,7 @@ public abstract class Tool implements Parcelable {
         if (toolOption != null) {
             toolOption.select();
         }
+        mToolFragment.get().notifyMenuItemAdapterDataSetChanged();
     }
 
     /**
@@ -209,28 +227,5 @@ public abstract class Tool implements Parcelable {
     public void destroy() {
         mToolFragment.clear();
         mToolFragment = null;
-    }
-
-    /**
-     * Set options tools to this.
-     * Called in the Parcelable constructor
-     */
-    public void setOptionsTool() {
-        for (ToolOption toolOption : mOptions) {
-            toolOption.setTool(this);
-        }
-    }
-
-    /**
-     * Select currently selected option (if any).
-     * Called in the Parcelable constructor
-     *
-     */
-    public void selectCurrentlySelectedOption() {
-        for (ToolOption option : mOptions) {
-            if (option.isSelected()) {
-                option.unselect();
-            }
-        }
     }
 }

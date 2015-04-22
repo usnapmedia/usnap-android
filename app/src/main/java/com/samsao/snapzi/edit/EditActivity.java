@@ -2,7 +2,6 @@ package com.samsao.snapzi.edit;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -18,7 +17,6 @@ import com.samsao.snapzi.edit.tools.ToolFilters;
 import com.samsao.snapzi.edit.tools.ToolText;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
-import com.samsao.snapzi.util.VideoUtil;
 import com.soundcloud.android.crop.Crop;
 
 import java.util.ArrayList;
@@ -79,20 +77,20 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
             finish();
         }
 
-        if (mEditMode.equals(IMAGE_MODE)) {
-            // Lock screen in image orientation
-            if (PhotoUtil.isImagePortraitOriented(mMediaPath)) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            } else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-        } else {
-            if (VideoUtil.isVideoPortraitOriented(mMediaPath)) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            } else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-        }
+//        if (mEditMode.equals(IMAGE_MODE)) {
+//            // Lock screen in image orientation
+//            if (PhotoUtil.isImagePortraitOriented(mMediaPath)) {
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+//            } else {
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+//            }
+//        } else {
+//            if (VideoUtil.isVideoPortraitOriented(mMediaPath)) {
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+//            } else {
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+//            }
+//        }
 
 
         if (savedInstanceState == null) {

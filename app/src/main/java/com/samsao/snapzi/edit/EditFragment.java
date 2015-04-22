@@ -149,8 +149,7 @@ public class EditFragment extends Fragment {
         // select the current tool if there's one
         if (mListener.getCurrentTool() != null) {
             // current tool has to be selected if restoring from a saved instance
-            mListener.getCurrentTool().unselect(); // force unselect first to reset isSelected boolean
-            mListener.getCurrentTool().select();
+            mListener.getCurrentTool().select(true); // force selection
         }
         return view;
     }
