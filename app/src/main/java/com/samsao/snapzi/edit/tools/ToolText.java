@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.EditFragment;
 import com.samsao.snapzi.edit.util.TextAnnotationTouchListener;
@@ -32,13 +33,16 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
     @ParcelableNoThanks
     private final int DEFAULT_OPTION_INDEX = 1;
 
+    @ParcelableThisPlease
+    public String mText;
+
     public ToolText() {
         super();
         addOption(new ToolOptionTextColor().setTool(this));
         addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.DEFAULT_TYPEFACE_NAME).setTool(this));
-        addOption(new ToolOptionTextTypeFace().setTypeFaceName("futura.ttc").setTool(this));
-        addOption(new ToolOptionTextTypeFace().setTypeFaceName("georgia.ttf").setTool(this));
-        addOption(new ToolOptionTextTypeFace().setTypeFaceName("impact.ttf").setTool(this));
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.FUTURA_TYPEFACE_NAME).setTool(this));
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.GEORGIA_TYPEFACE_NAME).setTool(this));
+        addOption(new ToolOptionTextTypeFace().setTypeFaceName(ToolOptionTextTypeFace.IMPACT_TYPEFACE_NAME).setTool(this));
     }
 
     @Override
@@ -61,6 +65,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
+                                mText = getToolFragment().getTextAnnotation().getText().toString();
                                 lockText();
                                 return false;
                             } else {
@@ -75,6 +80,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onOptionsClearSelected() {
+        mText = null;
         getToolFragment().getTextAnnotation().setTranslationX(0);
         getToolFragment().getTextAnnotation().setTranslationY(0);
         getToolFragment().getTextAnnotation().setText("");
@@ -110,22 +116,23 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
             public boolean onTouch(View v, MotionEvent event) {
                 if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
                     KeyboardUtil.hideKeyboard(getToolFragment().getActivity());
+                    mText = getToolFragment().getTextAnnotation().getText().toString();
                     lockText();
                 }
                 return false;
             }
         });
 
-        if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
+        if (!TextUtils.isEmpty(mText)) {
             lockText();
         } else {
-            getToolFragment().getTextAnnotation().setVisibility(View.VISIBLE);
             unlockText();
         }
     }
 
     @Override
     public void onUnselected() {
+        mText = getToolFragment().getTextAnnotation().getText().toString();
         KeyboardUtil.hideKeyboard(getToolFragment().getActivity()); // in case the keyboard is still shown
         getToolFragment().disableTextAnnotationContainerTouchEvent();
         if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
@@ -134,8 +141,6 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
             getToolFragment().getTextAnnotation().clearFocus();
             // remove the touch listener so the text cant be dragged
             getToolFragment().getTextAnnotation().setOnTouchListener(null);
-        } else {
-            getToolFragment().getTextAnnotation().setVisibility(View.GONE);
         }
     }
 

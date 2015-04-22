@@ -43,9 +43,7 @@
             android:paddingRight="@dimen/elements_horizontal_margin"
             android:paddingTop="@dimen/elements_vertical_margin"
             android:textIsSelectable="false"
-            android:textSize="@dimen/font_size_extra_large"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:textSize="@dimen/font_size_extra_large" />
 
     </FrameLayout>
 
