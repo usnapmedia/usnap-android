@@ -25,6 +25,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,16 +84,15 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
     @InjectView(R.id.fragment_select_media_flash_setup_button)
     public Button mFlashSetupButton;
 
-    @InjectView(R.id.fragment_select_media_flip_camera_button)
-    public Button mFlipCameraButton;
-
     @InjectView(R.id.fragment_select_media_video_countdown)
     public TextView mVideoCountdown;
+
+    @InjectView(R.id.fragment_select_media_flip_camera_button)
+    public Button mFlipCameraButton;
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
 
-    View mRootView;
 
     /**
      * Use this factory method to create a new instance of
@@ -113,12 +113,12 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mRootView = inflater.inflate(R.layout.fragment_select_media, container, false);
-        ButterKnife.inject(this, mRootView);
+        View view = inflater.inflate(R.layout.fragment_select_media, container, false);
+        ButterKnife.inject(this, view);
         setupButtons();
         initLiveFeed();
         getLoaderManager().initLoader(URI_LOADER, null, this);
-        return mRootView;
+        return view;
     }
 
     public void initLiveFeed() {
@@ -376,10 +376,8 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
     private void setFlipButtonVisibility(boolean isCapturingMedia) {
         if (!isCapturingMedia && mCameraPreview.hasFrontCamera()) {
             mFlipCameraButton.setVisibility(View.VISIBLE);
-            Log.d("BLAH", "VISIBLE");
         } else {
             mFlipCameraButton.setVisibility(View.GONE);
-            Log.d("BLAH", "GONE");
         }
     }
 
@@ -434,7 +432,6 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
 
         if (mFlipCameraButton != null) {
             mFlipCameraButton.setVisibility(View.GONE);
-            Log.d("BLAH", "GONE");
         }
     }
 
@@ -463,26 +460,11 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
                     .setCameraId(mSelectMediaProvider.getCameraId())
                     .setMaximumVideoDuration_ms(SelectMediaActivity.MAXIMUM_VIDEO_DURATION_MS)
                     .setOnCameraPreviewReady(new CameraPreview.SimpleCameraCallback() {
-                        private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                // Controls were initialize, stop listening for their creation
-                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                                    mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
-                                } else {
-                                    //noinspection deprecation
-                                    mRootView.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
-                                }
-                                triggerCapturingMediaState(false);
-                            }
-                        };
-
                         @Override
                         public void onCameraPreviewReady() {
-                            triggerCapturingMediaState(false);
                             setCameraFlashMode(mSelectMediaProvider.getCameraFlashMode());
-                            mRootView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
                             mSelectMediaProvider.setCameraPreviewAspectRatio(mCameraPreview.getPreviewAspectRatio());
+                            triggerCapturingMediaState(false);
                         }
 
                         @Override
