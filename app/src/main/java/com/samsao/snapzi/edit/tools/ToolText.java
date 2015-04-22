@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.util.TextAnnotationTouchListener;
 import com.samsao.snapzi.util.KeyboardUtil;
@@ -31,9 +30,6 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @ParcelableNoThanks
     private final int DEFAULT_OPTION_INDEX = 1;
-
-    @ParcelableThisPlease
-    public String mText;
 
     public ToolText() {
         super();
@@ -56,7 +52,6 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onOptionsClearSelected() {
-        mText = null;
         getToolFragment().getTextAnnotation().setTranslationX(0);
         getToolFragment().getTextAnnotation().setTranslationY(0);
         getToolFragment().getTextAnnotation().setText("");
@@ -94,7 +89,6 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
-                                mText = getToolFragment().getTextAnnotation().getText().toString();
                                 lockText();
                                 return false;
                             } else {
@@ -110,42 +104,38 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
             public boolean onTouch(View v, MotionEvent event) {
                 if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
                     KeyboardUtil.hideKeyboard(getToolFragment().getActivity());
-                    mText = getToolFragment().getTextAnnotation().getText().toString();
                     lockText();
                 }
                 return false;
             }
         });
+        // set the Touch Listener
+        getToolFragment().getTextAnnotation().setOnTouchListener(new TextAnnotationTouchListener(getToolFragment().getTextAnnotation(), this));
+        // give the focus to edittext and show the keyboard
         unlockText();
     }
 
     @Override
     public void onUnselected() {
-        mText = getToolFragment().getTextAnnotation().getText().toString();
         KeyboardUtil.hideKeyboard(getToolFragment().getActivity()); // in case the keyboard is still shown
         getToolFragment().disableTextAnnotationContainerTouchEvent();
-        if (!TextUtils.isEmpty(getToolFragment().getTextAnnotation().getText())) {
-            // in case the done button is clicked before the keyboard was dismissed
-            getToolFragment().getTextAnnotation().setFocusableInTouchMode(false);
-            getToolFragment().getTextAnnotation().clearFocus();
-            // remove the touch listener so the text cant be dragged
-            getToolFragment().getTextAnnotation().setOnTouchListener(null);
-        }
+        // remove the touch listener so the text cant be dragged
+        getToolFragment().getTextAnnotation().setOnTouchListener(null);
     }
 
     /**
      * Lock the text so it can only be moved
      */
-    protected void lockText() {
+    public void lockText() {
         getToolFragment().getTextAnnotation().setFocusableInTouchMode(false);
         getToolFragment().getTextAnnotation().clearFocus();
-        getToolFragment().getTextAnnotation().setOnTouchListener(new TextAnnotationTouchListener(getToolFragment().getTextAnnotation(), this));
+        KeyboardUtil.hideKeyboard(getToolFragment().getActivity());
     }
 
     /**
      * Unlock text and request user input
      */
-    protected void unlockText() {
+    public void unlockText() {
         getToolFragment().getTextAnnotation().setFocusableInTouchMode(true);
         getToolFragment().getTextAnnotation().requestFocus();
         KeyboardUtil.showKeyboard(getToolFragment().getActivity(), getToolFragment().getTextAnnotation());

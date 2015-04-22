@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -412,10 +411,8 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
                 }
             });
         }
-
-        if (TextUtils.isEmpty(mTextAnnotation.getText().toString())) {
-            mTextAnnotation.setVisibility(View.GONE);
-        }
+        mTextAnnotation.setFocusableInTouchMode(false);
+        mTextAnnotation.clearFocus();
     }
 
     /**
@@ -426,7 +423,6 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
         for (int i = 0; i < mTextAnnotationContainer.getChildCount(); ++i) {
             mTextAnnotationContainer.getChildAt(i).setOnTouchListener(null);
         }
-        mTextAnnotation.setVisibility(View.VISIBLE);
     }
 
     /**
