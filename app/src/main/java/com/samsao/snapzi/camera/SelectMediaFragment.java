@@ -32,6 +32,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.EditActivity;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
@@ -49,7 +50,8 @@ import timber.log.Timber;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Listener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Constants
@@ -72,6 +74,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
 
     @InjectView(R.id.fragment_select_media_latest_image)
     public ImageView mImageView;
+
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
     public FrameLayout mCameraPreviewContainer;
@@ -124,7 +127,7 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mLiveFeedAdapter = new LiveFeedAdapter();
+        mLiveFeedAdapter = new LiveFeedAdapter(this);
         mRecyclerView.setAdapter(mLiveFeedAdapter);
         getFeedImage();
     }
@@ -612,5 +615,11 @@ public class SelectMediaFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent intent = new Intent(getActivity(), FanPageActivity.class);
+        startActivity(intent);
     }
 }

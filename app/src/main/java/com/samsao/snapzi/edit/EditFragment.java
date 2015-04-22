@@ -27,6 +27,7 @@ import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
 import com.soundcloud.android.crop.Crop;
@@ -47,7 +48,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 
-public class EditFragment extends Fragment {
+public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
 
     public static final String FRAGMENT_TAG = "com.samsao.snapzi.edit.EditFragment";
     private final int ANIMATION_DURATION = 300;
@@ -112,7 +113,7 @@ public class EditFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLiveFeedAdapter = new LiveFeedAdapter();
+        mLiveFeedAdapter = new LiveFeedAdapter(this);
     }
 
     @Override
@@ -149,8 +150,7 @@ public class EditFragment extends Fragment {
         // select the current tool if there's one
         if (mListener.getCurrentTool() != null) {
             // current tool has to be selected if restoring from a saved instance
-            mListener.getCurrentTool().unselect(); // force unselect first to reset isSelected boolean
-            mListener.getCurrentTool().select();
+            mListener.getCurrentTool().select(true); // force selection
         }
         return view;
     }
@@ -566,6 +566,12 @@ public class EditFragment extends Fragment {
     public void showOverlays() {
         showMenu();
         showToolbarAndLiveFeed();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent intent = new Intent(getActivity(), FanPageActivity.class);
+        startActivity(intent);
     }
 
     public interface Listener {

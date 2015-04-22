@@ -34,6 +34,7 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         mDrawableViewConfig.setStrokeWidth(20.0f);
         mDrawableViewConfig.setMinZoom(1.0f);
         mDrawableViewConfig.setMaxZoom(3.0f);
+        // FIXME
         mDrawableViewConfig.setCanvasHeight(0);
         mDrawableViewConfig.setCanvasWidth(0);
         addOption(new ToolOptionStrokeColor().setTool(this));
@@ -54,9 +55,10 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public void onSelected() {
-        mOptions.get(DEFAULT_OPTION_INDEX).select();
+        if (mCurrentOption == null) {
+            selectOption(mOptions.get(DEFAULT_OPTION_INDEX));
+        }
         getToolFragment().showEditOptionsMenu(true, true, true);
-//        getToolFragment().getDrawAnnotationContainer().setOnTouchListener(getToolFragment().getDrawAnnotationContainer());
         getToolFragment().getDrawAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -142,7 +144,6 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         public ToolDraw createFromParcel(Parcel source) {
             ToolDraw target = new ToolDraw();
             ToolDrawParcelablePlease.readFromParcel(target, source);
-            target.setOptionsTool();
             return target;
         }
 

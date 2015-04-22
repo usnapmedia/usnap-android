@@ -68,4 +68,6 @@
     <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
     <string name="title_activity_share">ShareActivity</string>
+    <string name="title_activity_fan_page">FanPage</string>
+    <string name="action_settings">Settings</string>
 </resources>
