@@ -34,18 +34,16 @@
             android:paddingRight="@dimen/elements_half_vertical_margin"
             android:paddingTop="@dimen/elements_half_vertical_margin" />
 
-        <RelativeLayout
+        <!--Camera top controls-->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-            <!--Camera top controls-->
             <Button
                 android:id="@+id/fragment_select_media_flash_setup_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/elements_half_vertical_margin"
+                android:layout_gravity="start"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -53,13 +51,12 @@
                 android:id="@+id/fragment_select_media_flip_camera_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/elements_half_vertical_margin"
+                android:layout_gravity="end"
                 android:text="FLIP"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-        </RelativeLayout>
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -75,21 +72,21 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:radius="48dp" />
+            app:radius="48dp"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:layout_width="@dimen/fragment_select_media_latest_image"
             android:layout_height="@dimen/fragment_select_media_latest_image"
-            android:layout_gravity="left|bottom"
-            android:layout_marginBottom="@dimen/elements_vertical_margin"
-            android:layout_marginLeft="@dimen/elements_vertical_margin"
-            android:background="@color/black_alpha"
-            android:padding="@dimen/elements_half_vertical_margin">
+            android:layout_gravity="start|bottom"
+            android:layout_margin="@dimen/elements_vertical_margin"
+            android:padding="@dimen/elements_half_vertical_margin"
+            android:background="@color/black_alpha">
 
             <ImageView
                 android:id="@+id/fragment_select_media_latest_image"
-                android:layout_width="@dimen/fragment_select_media_latest_image_size"
-                android:layout_height="@dimen/fragment_select_media_latest_image_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
         </LinearLayout>
