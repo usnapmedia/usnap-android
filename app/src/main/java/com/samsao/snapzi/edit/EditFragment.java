@@ -144,7 +144,8 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
         initToolsMenu();
         initLiveFeed();
 
-        // disable the touch listener on the draw view so it does not take draw events
+        // disable the touch listener on annotations layers
+        disableTextAnnotationContainerTouchEvent();
         mDrawAnnotationContainer.setOnTouchListener(null);
 
         // select the current tool if there's one
@@ -410,6 +411,8 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
                 }
             });
         }
+        mTextAnnotation.setFocusableInTouchMode(false);
+        mTextAnnotation.clearFocus();
     }
 
     /**

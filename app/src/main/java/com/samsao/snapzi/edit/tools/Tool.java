@@ -153,7 +153,6 @@ public abstract class Tool implements Parcelable {
     public Tool unselect() {
         if (mIsSelected) {
             mIsSelected = false;
-            selectOption(null);
             onUnselected();
         }
         return this;

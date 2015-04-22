@@ -35,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@null"
-            android:hint="@string/text_annotation_placeholder"
             android:imeOptions="actionDone"
             android:inputType="textFilter"
             android:paddingBottom="@dimen/elements_vertical_margin"
@@ -43,9 +42,7 @@
             android:paddingRight="@dimen/elements_horizontal_margin"
             android:paddingTop="@dimen/elements_vertical_margin"
             android:textIsSelectable="false"
-            android:textSize="@dimen/font_size_extra_large"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:textSize="@dimen/font_size_extra_large" />
 
     </FrameLayout>
 

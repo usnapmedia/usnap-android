@@ -70,7 +70,8 @@ public class ToolFilters extends Tool implements Parcelable {
 
     @Override
     public void onUnselected() {
-
+        // unselect all options
+        selectOption(null);
     }
 
     @Override
