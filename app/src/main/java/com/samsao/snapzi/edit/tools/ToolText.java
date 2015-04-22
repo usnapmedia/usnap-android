@@ -122,12 +122,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
                 return false;
             }
         });
-
-        if (!TextUtils.isEmpty(mText)) {
-            lockText();
-        } else {
-            unlockText();
-        }
+        unlockText();
     }
 
     @Override

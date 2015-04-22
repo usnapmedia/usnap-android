@@ -2,6 +2,7 @@ package com.samsao.snapzi.edit.util;
 
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 /**
  * @author jfcartier
@@ -9,24 +10,26 @@ import android.view.View;
  */
 public class TextAnnotationTouchListener implements View.OnTouchListener {
 
+    private float aPosX;
+    private float aPosY;
+    private float aLastTouchX;
+    private float aLastTouchY;
+    private float mTouchSlop;
+    private static final int INVALID_POINTER_ID = -1;
+
+    // The active pointer is the one currently moving our object.
+    private int mActivePointerId = INVALID_POINTER_ID;
+    private View mView = null;
     private Callback mCallback;
 
     public TextAnnotationTouchListener(View view, Callback callback) {
         super();
         mView = view;
         mCallback = callback;
+        mTouchSlop = ViewConfiguration.get(view.getContext()).getScaledTouchSlop();
     }
 
-    private float aPosX;
-    private float aPosY;
-    private float aLastTouchX;
-    private float aLastTouchY;
-    private float mTouchSlop = 1.0f;
-    private static final int INVALID_POINTER_ID = -1;
 
-    // The active pointer is the one currently moving our object.
-    private int mActivePointerId = INVALID_POINTER_ID;
-    private View mView = null;
 
     public boolean onTouch(View view, MotionEvent event) {
 
