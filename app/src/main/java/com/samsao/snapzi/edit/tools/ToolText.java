@@ -80,7 +80,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
             selectOption(mOptions.get(DEFAULT_OPTION_INDEX));
         }
         getToolFragment().getTextAnnotation().setTextColor(getTextColor());
-        getToolFragment().showEditOptionsMenu(true, true, false);
+        getToolFragment().showEditOptionsMenu(true, true, false, false);
         getToolFragment().enableTextAnnotationContainerTouchEvent();
         // set the DONE keyboard button listener
         getToolFragment().getTextAnnotation().setOnEditorActionListener(

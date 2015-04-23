@@ -50,14 +50,13 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
     @Icicle
     public String mMediaPath;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.inject(this);
 
-        mMenuState = new MenuStateView();
+        mMenuState = new MenuStateView().setActivity(this);
         Intent intent = getIntent();
         if (intent != null) {
             mEditMode = intent.getStringExtra(EXTRA_EDIT_MODE);
@@ -197,14 +196,12 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
         }
     }
 
-
-
     /**
      * Reset menu
      */
     @Override
     public void resetMenu() {
-        mMenuState = new MenuStateView();
+        mMenuState = new MenuStateView().setActivity(this);
         getSupportActionBar().invalidateOptionsMenu();
     }
 
@@ -216,8 +213,8 @@ public class EditActivity extends ActionBarActivity implements EditFragment.List
      * @param showUndo
      */
     @Override
-    public void showEditMenu(boolean showDone, boolean showClear, boolean showUndo) {
-        mMenuState = new MenuStateEdit().setShowDone(showDone).setShowClear(showClear).setShowUndo(showUndo);
+    public void showEditMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome) {
+        mMenuState = new MenuStateEdit().setShowDone(showDone).setShowClear(showClear).setShowUndo(showUndo).setShowHome(showHome).setActivity(this);
         invalidateOptionsMenu();
     }
 

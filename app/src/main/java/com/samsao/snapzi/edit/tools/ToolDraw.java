@@ -58,7 +58,7 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         if (mCurrentOption == null) {
             selectOption(mOptions.get(DEFAULT_OPTION_INDEX));
         }
-        getToolFragment().showEditOptionsMenu(true, true, true);
+        getToolFragment().showEditOptionsMenu(true, true, true, false);
         getToolFragment().getDrawAnnotationContainer().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

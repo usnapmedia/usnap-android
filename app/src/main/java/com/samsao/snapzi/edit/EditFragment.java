@@ -350,9 +350,10 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
      * @param showDone
      * @param showClear
      * @param showUndo
+     * @param showHome
      */
-    public void showEditOptionsMenu(boolean showDone, boolean showClear, boolean showUndo) {
-        mListener.showEditMenu(showDone, showClear, showUndo);
+    public void showEditOptionsMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome) {
+        mListener.showEditMenu(showDone, showClear, showUndo, showHome);
     }
 
     /**
@@ -584,7 +585,7 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
 
         void resetMenu();
 
-        void showEditMenu(boolean showDone, boolean showClear, boolean showUndo);
+        void showEditMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome);
 
         ArrayList<Tool> getTools();
 

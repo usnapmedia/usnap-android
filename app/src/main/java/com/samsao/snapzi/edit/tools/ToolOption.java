@@ -21,8 +21,6 @@ public abstract class ToolOption implements Parcelable {
         mIsSelected = false;
     }
 
-
-
     /**
      * Select this tool option
      * @param force If set to TRUE, force selection, that is select the tool even if mIsSelected is true
@@ -117,4 +115,24 @@ public abstract class ToolOption implements Parcelable {
         mTool = tool;
         return this;
     }
+
+    /**
+     * When options item CLEAR is selected
+     */
+    public abstract void onOptionsClearSelected();
+
+    /**
+     * When options item UNDO is selected
+     */
+    public abstract void onOptionsUndoSelected();
+
+    /**
+     * When options item DONE is selected
+     */
+    public abstract void onOptionsDoneSelected();
+
+    /**
+     * When options item HOME is selected
+     */
+    public abstract void onOptionsHomeSelected();
 }

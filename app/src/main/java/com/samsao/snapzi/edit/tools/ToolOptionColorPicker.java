@@ -116,6 +116,26 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         mColor = color;
     }
 
+    @Override
+    public void onOptionsClearSelected() {
+
+    }
+
+    @Override
+    public void onOptionsUndoSelected() {
+
+    }
+
+    @Override
+    public void onOptionsDoneSelected() {
+
+    }
+
+    @Override
+    public void onOptionsHomeSelected() {
+
+    }
+
     /**
      * Interface for the tool callback
      */

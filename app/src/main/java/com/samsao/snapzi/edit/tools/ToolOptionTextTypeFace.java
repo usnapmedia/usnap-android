@@ -81,6 +81,26 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
         return this;
     }
 
+    @Override
+    public void onOptionsClearSelected() {
+
+    }
+
+    @Override
+    public void onOptionsUndoSelected() {
+
+    }
+
+    @Override
+    public void onOptionsDoneSelected() {
+
+    }
+
+    @Override
+    public void onOptionsHomeSelected() {
+
+    }
+
     /**
      * Interface for the tool callback
      */
