@@ -19,7 +19,14 @@ import java.util.Locale;
 @ParcelablePlease(ignorePrivateFields = true)
 public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
 
+    @ParcelableNoThanks
     public final static String DEFAULT_TYPEFACE_NAME = "roboto.ttf";
+    @ParcelableNoThanks
+    public final static String FUTURA_TYPEFACE_NAME = "futura.ttc";
+    @ParcelableNoThanks
+    public final static String GEORGIA_TYPEFACE_NAME = "georgia.ttf";
+    @ParcelableNoThanks
+    public final static String IMPACT_TYPEFACE_NAME = "impact.ttf";
 
     @ParcelableThisPlease
     public String mTypeFaceName;
@@ -72,6 +79,26 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
     public ToolOptionTextTypeFace setTypeFaceName(String typeFaceName) {
         mTypeFaceName = typeFaceName;
         return this;
+    }
+
+    @Override
+    public void onOptionsClearSelected() {
+
+    }
+
+    @Override
+    public void onOptionsUndoSelected() {
+
+    }
+
+    @Override
+    public void onOptionsDoneSelected() {
+
+    }
+
+    @Override
+    public void onOptionsHomeSelected() {
+
     }
 
     /**

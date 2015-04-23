@@ -1,11 +1,14 @@
 package com.samsao.snapzi.edit;
 
 import android.os.Parcel;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.samsao.snapzi.R;
+
+import java.lang.ref.WeakReference;
 
 
 /**
@@ -14,11 +17,21 @@ import com.samsao.snapzi.R;
  */
 @ParcelablePlease
 public class MenuStateView extends MenuState {
+
     @Override
     public void onCreateOptionsMenu(MenuInflater menuInflater, Menu menu) {
         menuInflater.inflate(R.menu.activity_edit, menu);
+        // show home menu item
+        if (mActivity != null && mActivity.get() != null) {
+            mActivity.get().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
+    @Override
+    public MenuStateView setActivity(ActionBarActivity activity) {
+        mActivity = new WeakReference<>(activity);
+        return this;
+    }
 
     @Override
     public int describeContents() {

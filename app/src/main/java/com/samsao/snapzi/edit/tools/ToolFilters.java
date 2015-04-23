@@ -33,12 +33,16 @@ public class ToolFilters extends Tool implements Parcelable {
 
     @Override
     public void onOptionsClearSelected() {
-
+        if (mCurrentOption != null) {
+            mCurrentOption.onOptionsClearSelected();
+        }
     }
 
     @Override
     public void onOptionsUndoSelected() {
-
+        if (mCurrentOption != null) {
+            mCurrentOption.onOptionsUndoSelected();
+        }
     }
 
     /**
@@ -65,12 +69,13 @@ public class ToolFilters extends Tool implements Parcelable {
 
     @Override
     public void onSelected() {
-        getToolFragment().showEditOptionsMenu(false, false, false);
+        getToolFragment().showEditOptionsMenu(false, false, false, true);
     }
 
     @Override
     public void onUnselected() {
-
+        // unselect all options
+        selectOption(null);
     }
 
     @Override

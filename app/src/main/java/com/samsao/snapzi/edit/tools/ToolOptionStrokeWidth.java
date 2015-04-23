@@ -56,6 +56,26 @@ public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
     }
 
     @Override
+    public void onOptionsClearSelected() {
+
+    }
+
+    @Override
+    public void onOptionsUndoSelected() {
+
+    }
+
+    @Override
+    public void onOptionsDoneSelected() {
+
+    }
+
+    @Override
+    public void onOptionsHomeSelected() {
+
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
