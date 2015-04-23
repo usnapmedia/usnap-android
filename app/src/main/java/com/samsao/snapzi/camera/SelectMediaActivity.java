@@ -1,8 +1,6 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -41,8 +39,7 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     private final CameraPreview.CameraId DEFAULT_CAMERA_ID = CameraPreview.CameraId.CAMERA_FACING_FRONT;
     private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
 
-    SelectMediaFragment mSelectMediaFragment;
-    Dialog mSavingImageProgressDialog;
+    private SelectMediaFragment mSelectMediaFragment;
 
     @Icicle
     public CameraPreview.CameraId mCameraId;
@@ -75,21 +72,24 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Override
     protected void onResume() {
         super.onResume();
-        if (PhotoUtil.isSaveImageInProgress()) {
-            showSavingImageProgressDialog();
+        if (PhotoUtil.isSaveImageInProgress() && mSelectMediaFragment != null) {
+                mSelectMediaFragment.showSavingImageProgressDialog();
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        dismissSavingImageProgressDialog();
+        if (mSelectMediaFragment != null) {
+            mSelectMediaFragment.dismissSavingImageProgressDialog();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
+
     }
 
     @Override
@@ -175,27 +175,30 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
     @Override
     public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath) {
         if (bitmap != null) {
-            showSavingImageProgressDialog();
+            if (mSelectMediaFragment != null) {
+                mSelectMediaFragment.showSavingImageProgressDialog();
+            }
             PhotoUtil.saveImage(bitmap, destFilePath, new SaveImageCallback() {
                 @Override
                 public void onSuccess(String destFilePath) {
                     startEditActivity(EditActivity.IMAGE_MODE, destFilePath);
-                    dismissSavingImageProgressDialog();
+                    if (mSelectMediaFragment != null) {
+                        mSelectMediaFragment.dismissSavingImageProgressDialog();
+                    }
                 }
 
                 @Override
                 public void onFailure() {
                     Log.e(LOG_TAG, "An error happened while saving image");
-                    dismissSavingImageProgressDialog();
+                    if (mSelectMediaFragment != null) {
+                        mSelectMediaFragment.dismissSavingImageProgressDialog();
+                        mSelectMediaFragment.initializeCamera();
+                    }
 
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_image),
                             Toast.LENGTH_LONG).show();
 
-                    // Restart camera preview
-                    if (mSelectMediaFragment != null) {
-                        mSelectMediaFragment.initializeCamera();
-                    }
                 }
             });
         } else {
@@ -224,57 +227,5 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         startActivity(editIntent);
     }
 
-    /**
-     * Show SavingImageProgressDialog
-     * FIXME use DialogFragment
-     */
-    public void showSavingImageProgressDialog() {
-        if (mSavingImageProgressDialog == null) {
-            mSavingImageProgressDialog = createSavingImageProgressDialog();
-        }
-        mSavingImageProgressDialog.setCancelable(false);
-        mSavingImageProgressDialog.show();
 
-        // Stop camera preview
-        if (mSelectMediaFragment != null) {
-            mSelectMediaFragment.dismissPickMediaDialog();
-            mSelectMediaFragment.releaseCamera();
-            mSelectMediaFragment.hideAllButtons();
-        }
-    }
-
-    /**
-     * Hide SavingImageProgressDialog
-     * FIXME use DialogFragment
-     */
-    public void dismissSavingImageProgressDialog() {
-        if (mSavingImageProgressDialog != null) {
-            mSavingImageProgressDialog.dismiss();
-            mSavingImageProgressDialog = null;
-        }
-    }
-
-    /**
-     * Create a SavingImageProgressDialog.
-     *
-     * @return saving image progress dialog
-     */
-    private Dialog createSavingImageProgressDialog() {
-        final Dialog dialog = new Dialog(this, android.R.style.Theme_Holo_Light_Dialog);
-        dialog.setTitle(R.string.action_processing_image_title);
-        dialog.setContentView(R.layout.dialog_processing_image);
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                PhotoUtil.cancelSaveImage();
-
-                // Restart camera preview
-                if (mSelectMediaFragment != null) {
-                    mSelectMediaFragment.initializeCamera();
-                }
-            }
-        });
-
-        return dialog;
-    }
 }

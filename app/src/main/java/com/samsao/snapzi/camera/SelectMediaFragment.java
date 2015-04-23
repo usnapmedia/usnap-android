@@ -1,7 +1,7 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -50,7 +50,7 @@ import timber.log.Timber;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Listener,
+public class SelectMediaFragment extends Fragment implements PickMediaDialogFragment.PickMediaDialogListener, LiveFeedAdapter.Listener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
@@ -58,13 +58,17 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
      */
     private final String LOG_TAG = getClass().getSimpleName();
     private static final int URI_LOADER = 0;
+    private final String PICK_MEDIA_DIALOG_FRAGMENT_TAG = "camera.SelectMediaFragment.PICK_MEDIA_DIALOG_FRAGMENT_TAG";
+    private final String SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG = "camera.SelectMediaFragment.SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG";
 
     private String mImageLocation = "";
 
     private SelectMediaProvider mSelectMediaProvider;
     private boolean mIsCapturingMedia, mIsCapturingVideo;
     private CountDownTimer mVideoCaptureCountdownTimer;
-    private Dialog mPickMediaDialog;
+
+    private PickMediaDialogFragment mPickMediaDialogFragment;
+    private SavingImageProgressDialogFragment mSavingImageProgressDialog;
 
     @InjectView(R.id.fragment_select_media_livefeed_recycler_view)
     public RecyclerView mRecyclerView;
@@ -106,6 +110,17 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
 
     public SelectMediaFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mPickMediaDialogFragment = (PickMediaDialogFragment) getFragmentManager().findFragmentByTag(PICK_MEDIA_DIALOG_FRAGMENT_TAG);
+            if (mPickMediaDialogFragment != null) {
+                mPickMediaDialogFragment.setPickMediaDialogListener(this);
+            }
+        }
     }
 
     @Override
@@ -167,12 +182,12 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
     public void onPause() {
         super.onPause();
         releaseCamera();
+        dismissPickMediaDialog();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        dismissPickMediaDialog();
     }
 
     @Override
@@ -186,6 +201,11 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
             throw new ClassCastException(activity.toString()
                     + " must implement CameraProvider");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 
@@ -526,9 +546,8 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
      * Hide pick media dialog
      */
     public void dismissPickMediaDialog() {
-        if (mPickMediaDialog != null) {
-            mPickMediaDialog.dismiss();
-            mPickMediaDialog = null;
+        if (getFragmentManager().findFragmentByTag(PICK_MEDIA_DIALOG_FRAGMENT_TAG) != null) {
+            mPickMediaDialogFragment.dismiss();
         }
     }
 
@@ -547,53 +566,12 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
      * Show pick media dialog
      */
     public void showPickMediaDialog() {
-        if (mPickMediaDialog == null) {
-            mPickMediaDialog = createPickMediaDialog();
+        if (mPickMediaDialogFragment == null) {
+            mPickMediaDialogFragment = PickMediaDialogFragment.newInstance(this, getActivity());
         }
-        mPickMediaDialog.show();
-    }
-
-    /**
-     * Create a dialog that asks what kind of media to pick from gallery.
-     *
-     * @return pick media dialog
-     */
-    private Dialog createPickMediaDialog() {
-        final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog);
-        dialog.setTitle(R.string.action_select_media_type_title);
-        dialog.setContentView(R.layout.dialog_select_media_type);
-
-        Button pickImageButton = (Button) dialog.findViewById(R.id.dialog_select_media_type_pick_image);
-        pickImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                releaseCamera();
-                dismissPickMediaDialog();
-
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_IMAGE_LOADED_FROM_GALLERY);
-            }
-        });
-
-        Button pickVideoButton = (Button) dialog.findViewById(R.id.dialog_select_media_type_pick_video);
-        pickVideoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                releaseCamera();
-                dismissPickMediaDialog();
-
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
-            }
-        });
-
-        return dialog;
+        if (getFragmentManager().findFragmentByTag(PICK_MEDIA_DIALOG_FRAGMENT_TAG) == null) {
+            mPickMediaDialogFragment.show(getFragmentManager(), PICK_MEDIA_DIALOG_FRAGMENT_TAG);
+        }
     }
 
     @Override
@@ -631,5 +609,53 @@ public class SelectMediaFragment extends Fragment implements LiveFeedAdapter.Lis
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(getActivity(), FanPageActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPickImageClick(DialogFragment dialog) {
+        releaseCamera();
+        dismissPickMediaDialog();
+
+        Intent intent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_IMAGE_LOADED_FROM_GALLERY);
+    }
+
+    @Override
+    public void onPickVideoClick(DialogFragment dialog) {
+        releaseCamera();
+        dismissPickMediaDialog();
+
+        Intent intent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
+    }
+
+    public void showSavingImageProgressDialog() {
+        if (mSavingImageProgressDialog == null) {
+            mSavingImageProgressDialog = SavingImageProgressDialogFragment.newInstance(getActivity(), this);
+            mSavingImageProgressDialog.setCancelable(false);
+        }
+
+        if (getFragmentManager().findFragmentByTag(SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
+            dismissPickMediaDialog();
+            releaseCamera();
+            hideAllButtons();
+            mSavingImageProgressDialog.show(getFragmentManager(), SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG);
+        }
+    }
+
+    /**
+     * Hide SavingImageProgressDialog
+     * FIXME use DialogFragment
+     */
+    public void dismissSavingImageProgressDialog() {
+        if (getFragmentManager().findFragmentByTag(SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG) != null) {
+            mSavingImageProgressDialog.dismiss();
+        }
     }
 }
