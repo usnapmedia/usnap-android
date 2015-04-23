@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <FrameLayout
         android:id="@+id/fragment_edit_video_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <me.panavtec.drawableview.DrawableView
         android:id="@+id/fragment_edit_draw_annotation_container"
@@ -74,12 +74,12 @@
                 android:id="@+id/fragment_edit_livefeed_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/live_feed_layout_height"
+                android:layout_marginTop="@dimen/elements_half_vertical_margin"
                 android:background="@color/black_alpha"
                 android:paddingBottom="@dimen/elements_half_vertical_margin"
                 android:paddingLeft="@dimen/elements_horizontal_margin"
                 android:paddingRight="@dimen/elements_horizontal_margin"
-                android:paddingTop="@dimen/elements_half_vertical_margin"
-                android:layout_marginTop="@dimen/elements_half_vertical_margin" />
+                android:paddingTop="@dimen/elements_half_vertical_margin" />
 
         </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.samsao.snapzi.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import com.samsao.snapzi.camera.CameraHelper;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -298,6 +300,78 @@ public class PhotoUtil {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Get width of provided image
+     *
+     * @param imagePath
+     * @return image width
+     */
+    public static int getImageWidth(String imagePath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(imagePath, options);
+        if (options != null) {
+            return options.outWidth;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Get height of provided image
+     *
+     * @param imagePath
+     * @return image height
+     */
+    public static int getImageHeight(String imagePath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(imagePath, options);
+        if (options != null) {
+            return options.outHeight;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Combine Multi Image Into One
+     * @param bitmaps
+     * @return
+     */
+    public static Bitmap combineBitmapsIntoOne(ArrayList<Bitmap> bitmaps) {
+        if (bitmaps != null && !bitmaps.isEmpty()) {
+            int resultBitmapWidth = 0;
+            int resultBitmapHeight = 0;
+
+            // Get biggest width and height of images to combine
+            for (Bitmap bitmap : bitmaps) {
+                if (resultBitmapWidth < bitmap.getWidth()) {
+                    resultBitmapWidth = bitmap.getWidth();
+                }
+                if (resultBitmapHeight < bitmap.getHeight()) {
+                    resultBitmapHeight = bitmap.getHeight();
+                }
+            }
+
+            Bitmap resultBitmap = Bitmap.createBitmap(resultBitmapWidth, resultBitmapHeight, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(resultBitmap);
+            float widthPadding, heightPadding;
+
+            // Draw images
+            for (Bitmap bitmap : bitmaps) {
+                widthPadding = (float) (resultBitmapWidth - bitmap.getWidth()) / 2.0f;
+                heightPadding = (float) (resultBitmapHeight - bitmap.getHeight()) / 2.0f;
+                canvas.drawBitmap(bitmap, widthPadding, heightPadding, null);
+            }
+            return resultBitmap;
+        } else {
+            return null;
         }
     }
 }

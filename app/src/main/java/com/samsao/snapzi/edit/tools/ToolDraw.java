@@ -33,10 +33,7 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         mDrawableViewConfig.setStrokeColor(ToolOptionStrokeColor.DEFAULT_COLOR);
         mDrawableViewConfig.setStrokeWidth(20.0f);
         mDrawableViewConfig.setMinZoom(1.0f);
-        mDrawableViewConfig.setMaxZoom(3.0f);
-        // FIXME
-        mDrawableViewConfig.setCanvasHeight(0);
-        mDrawableViewConfig.setCanvasWidth(0);
+        mDrawableViewConfig.setMaxZoom(1.0f);
         addOption(new ToolOptionStrokeColor().setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_SMALL).setTool(this));
         addOption(new ToolOptionStrokeWidth().setStrokeWidth(ToolOptionStrokeWidth.STROKE_WIDTH_MEDIUM).setTool(this));
@@ -85,7 +82,12 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
     @Override
     public Tool setToolFragment(EditFragment toolFragment) {
         super.setToolFragment(toolFragment);
-        toolFragment.getDrawAnnotationContainer().setConfig(mDrawableViewConfig);
+        if (toolFragment != null && toolFragment.getView() != null) {
+            setCanvasWidth(toolFragment.getView().getWidth());
+            setCanvasHeight(toolFragment.getView().getHeight());
+            toolFragment.getDrawAnnotationContainer().setConfig(mDrawableViewConfig);
+        }
+
         return this;
     }
 
@@ -99,13 +101,13 @@ public class ToolDraw extends Tool implements Parcelable, ToolOptionColorPicker.
         return this;
     }
 
-    public ToolDraw setCanvasHeight(int canvasHeight) {
-        mDrawableViewConfig.setCanvasHeight(canvasHeight);
+    public ToolDraw setCanvasWidth(int canvasWidth) {
+        mDrawableViewConfig.setCanvasWidth(canvasWidth);
         return this;
     }
 
-    public ToolDraw setCanvasWidth(int canvasWidth) {
-        mDrawableViewConfig.setCanvasWidth(canvasWidth);
+    public ToolDraw setCanvasHeight(int canvasHeight) {
+        mDrawableViewConfig.setCanvasHeight(canvasHeight);
         return this;
     }
 

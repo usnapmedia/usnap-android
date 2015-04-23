@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -26,10 +29,13 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.tools.Tool;
+import com.samsao.snapzi.edit.tools.ToolDraw;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
 import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
+import com.samsao.snapzi.util.PhotoUtil;
+import com.samsao.snapzi.util.SaveImageCallback;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -90,6 +96,25 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
     private LinearLayoutManager mLiveFeedLayoutManager;
     private Listener mListener;
 
+    private ToolDraw mToolDraw;
+    private final ViewTreeObserver.OnGlobalLayoutListener mDrawAnnotationGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            // Controls were initialize, stop listening for their creation
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                mDrawAnnotationContainer.getViewTreeObserver().removeOnGlobalLayoutListener(mDrawAnnotationGlobalLayoutListener);
+            } else {
+                //noinspection deprecation
+                mDrawAnnotationContainer.getViewTreeObserver().removeGlobalOnLayoutListener(mDrawAnnotationGlobalLayoutListener);
+            }
+
+            if (mToolDraw != null) {
+                mToolDraw.setToolFragment(EditFragment.this);
+            }
+        }
+    };
+
+
     /**
      * TODO inject me
      */
@@ -133,10 +158,14 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .into(mImageContainer);
             mImageContainer.setVisibility(View.VISIBLE);
+            mVideoContainer.setVisibility(View.GONE);
         }
 
         // set the fragment for tools
         for (Tool tool : mListener.getTools()) {
+            if (tool.getClass().equals(ToolDraw.class)) {
+                mToolDraw = (ToolDraw) tool;
+            }
             tool.setToolFragment(this);
         }
 
@@ -147,6 +176,9 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
         // disable the touch listener on annotations layers
         disableTextAnnotationContainerTouchEvent();
         mDrawAnnotationContainer.setOnTouchListener(null);
+
+        // Adjust draw annotation container to screen size
+        mDrawAnnotationContainer.getViewTreeObserver().addOnGlobalLayoutListener(mDrawAnnotationGlobalLayoutListener);
 
         // select the current tool if there's one
         if (mListener.getCurrentTool() != null) {
@@ -247,6 +279,7 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
                 mVideoPreview = new VideoPreview(getActivity(), mListener.getMediaPath());
             }
             mVideoContainer.setVisibility(View.VISIBLE);
+            mImageContainer.setVisibility(View.GONE);
             mVideoContainer.addView(mVideoPreview);
         }
         getFeedImage();
@@ -439,14 +472,51 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
      * When options item NEXT is selected
      */
     public void onOptionsNextSelected() {
-        Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
-        if (imageUri != null) {
-            Intent intent = new Intent(getActivity(), ShareActivity.class);
-            intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
-            startActivity(intent);
-        } else {
-            Timber.e("image uri is null");
+        // Merge layers
+        ArrayList<Bitmap> bitmapLayers = new ArrayList<Bitmap>();
+
+        // Source image bitmap
+        Bitmap imageBitmap = ((BitmapDrawable) mImageContainer.getDrawable()).getBitmap();
+        bitmapLayers.add(imageBitmap);
+
+        // Draw annotation bitmap
+        Bitmap drawAnnotationBitmap = mDrawAnnotationContainer.obtainBitmap();
+        if (drawAnnotationBitmap != null) {
+            float drawAnnotationScaleFactor = Math.max(
+                    (float) imageBitmap.getWidth() / (float) drawAnnotationBitmap.getWidth(),
+                    (float) imageBitmap.getHeight() / (float) drawAnnotationBitmap.getHeight());
+            drawAnnotationBitmap = PhotoUtil.scaleBitmap(drawAnnotationBitmap, drawAnnotationScaleFactor, drawAnnotationScaleFactor);
+            bitmapLayers.add(drawAnnotationBitmap);
         }
+
+        // Text annotation bitmap
+        Bitmap textAnnotationBitmap = Bitmap.createBitmap(mTextAnnotationContainer.getWidth(), mTextAnnotationContainer.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(textAnnotationBitmap);
+        mTextAnnotationContainer.draw(canvas);
+        if (textAnnotationBitmap != null) {
+            float textAnnotationScaleFactor = Math.max(
+                    (float) imageBitmap.getWidth() / (float) textAnnotationBitmap.getWidth(),
+                    (float) imageBitmap.getHeight() / (float) textAnnotationBitmap.getHeight());
+            textAnnotationBitmap = PhotoUtil.scaleBitmap(textAnnotationBitmap, textAnnotationScaleFactor, textAnnotationScaleFactor);
+            bitmapLayers.add(textAnnotationBitmap);
+        }
+
+        // Combine images
+        Bitmap finalImage = PhotoUtil.combineBitmapsIntoOne(bitmapLayers);
+        // TODO add loading screen
+        PhotoUtil.saveImage(finalImage, mListener.getMediaPath(), new SaveImageCallback() {
+            @Override
+            public void onSuccess(String destFilePath) {
+                Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure() {
+            }
+        });
     }
 
     /**
