@@ -1,65 +1,131 @@
 package com.samsao.snapzi.fan_page;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.widget.Toolbar;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.Campaigns;
+import com.samsao.snapzi.api.entity.CampaignsList;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 public class FanPageActivity extends ActionBarActivity {
+
+    @InjectView(R.id.activity_fan_page_viewPager)
+    public ViewPager mViewPager;
+    @InjectView(R.id.activity_fan_page_viewPager_pagerTabStrip)
+    public PagerSlidingTabStrip mTabs;
+    @InjectView(R.id.activity_fan_page_toolbar)
+    public Toolbar mToolbar;
+    private FanPageAdapter mFanPageAdapter;
+    private ArrayList<FanPageFragment> mFanPageFragments;
+    private ApiService mApiService = new ApiService();;
+    private List<Campaigns> mCampaignsList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fan_page);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
+        ButterKnife.inject(this);
+        setupToolbar();
+        mCampaignsList = new ArrayList<>();
+        mFanPageFragments = new ArrayList<>();
+        mFanPageAdapter = new FanPageAdapter(getFragmentManager(), mFanPageFragments);
+        mViewPager.setAdapter(mFanPageAdapter);
+        mTabs = (PagerSlidingTabStrip) findViewById(R.id.activity_fan_page_viewPager_pagerTabStrip);
+        // Bind the tabs to the ViewPager
+        mTabs.setViewPager(mViewPager);
+        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        getCampaigns();
+    }
+
+    public void getCampaigns() {
+        mApiService.getCampaigns(new Callback<CampaignsList>() {
+            @Override
+            public void success(CampaignsList campaignsList, Response response) {
+                setCampaignsList(campaignsList.getResponse());
+                initCampaigns();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching Campaigns!");
+            }
+        });
+    }
+
+    public void initCampaigns() {
+        for (int i = 0; i < mCampaignsList.size(); i++) {
+            Campaigns campaigns = mCampaignsList.get(i);
+            mFanPageFragments.add(FanPageFragment.newInstance(campaigns.getName(), campaigns.getBannerImgUrl()));
         }
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_fan_page, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
         }
-
-        return super.onOptionsItemSelected(item);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
+    public void setCampaignsList(List<Campaigns> campaignsList) {
+        mCampaignsList = campaignsList;
+    }
 
-        public PlaceholderFragment() {
+    public static class FanPageAdapter extends FragmentStatePagerAdapter{
+        private final ArrayList<FanPageFragment> mFanPageFragments;
+
+        public FanPageAdapter(FragmentManager fragmentManager, ArrayList<FanPageFragment> fanPageFragments) {
+            super(fragmentManager);
+            this.mFanPageFragments = fanPageFragments;
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_fan_page, container, false);
-            return rootView;
+        public int getCount() {
+            return mFanPageFragments.size();
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFanPageFragments.get(position);
+        }
+
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFanPageFragments.get(position).getName();
         }
     }
 }
