@@ -25,9 +25,11 @@
     <dimen name="live_feed_layout_height">72dp</dimen>
     <dimen name="live_feed_imageView_layout_size">60dp</dimen>
 
-
-    <dimen name="fragment_select_media_button_marginTop">80dp</dimen>
     <!-- Latest image-->
     <dimen name="fragment_select_media_latest_image">72dp</dimen>
     <dimen name="fragment_select_media_latest_image_size">60dp</dimen>
+
+    <!--Campaign-->
+    <dimen name="fragment_campaign_image_height">192dp</dimen>
+
 </resources>

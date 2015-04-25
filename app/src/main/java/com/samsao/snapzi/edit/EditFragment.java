@@ -254,7 +254,6 @@ public class EditFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
         if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             mVideoContainer.removeView(mVideoPreview);
             mVideoPreview = null;

@@ -4,6 +4,7 @@
     <ImageView
         android:id="@+id/fragment_fan_page_bannerImageView"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="@dimen/fragment_campaign_image_height"
+        android:scaleType="centerCrop"/>
 
 </LinearLayout>

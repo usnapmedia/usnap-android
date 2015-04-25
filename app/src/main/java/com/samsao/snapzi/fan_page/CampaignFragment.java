@@ -10,21 +10,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.entity.Campaign;
 import com.squareup.picasso.Picasso;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * @author jingsilu
  * @since 2015-04-24
  */
 public class CampaignFragment extends Fragment{
-    private String mName;
-    private String mBannerImageUrl;
-    private ImageView mImageView;
 
-    public static CampaignFragment newInstance(String name, String url) {
+    @InjectView(R.id.fragment_fan_page_bannerImageView)
+    public ImageView mImageView;
+
+    private Campaign mCampaign;
+
+    public static CampaignFragment newInstance(Campaign campaign) {
         CampaignFragment campaignFragment = new CampaignFragment();
-        campaignFragment.setName(name);
-        campaignFragment.setBannerImageUrl(url);
+        campaignFragment.setCampaign(campaign);
         return campaignFragment;
     }
 
@@ -38,27 +43,30 @@ public class CampaignFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fan_page, container, false);
-        mImageView = (ImageView) view.findViewById(R.id.fragment_fan_page_bannerImageView);
+        ButterKnife.inject(this, view);
         // TODO add placeHolder and errorHolder
-        if (!TextUtils.isEmpty(mBannerImageUrl)) {
-            Picasso.with(getActivity()).load(mBannerImageUrl).into(mImageView);
+        if (!TextUtils.isEmpty(mCampaign.getBannerImgUrl())) {
+            Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mImageView);
         }
         return view;
     }
 
-    public void setName(String name) {
-        mName = name;
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
+    public void setCampaign(Campaign campaign) {
+        mCampaign = campaign;
+    }
+
+    /**
+     * Returns the campaign's name
+     * @return
+     */
     public String getName() {
-        return mName;
-    }
-
-    public String getBannerImageUrl() {
-        return mBannerImageUrl;
-    }
-
-    public void setBannerImageUrl(String bannerImageUrl) {
-        mBannerImageUrl = bannerImageUrl;
+        return mCampaign.getName();
     }
 }

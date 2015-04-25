@@ -85,6 +85,17 @@ public class FanPageActivity extends ActionBarActivity {
         Icepick.saveInstanceState(this, outState);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * Setup the toolbar for this activity
      */
@@ -116,7 +127,7 @@ public class FanPageActivity extends ActionBarActivity {
             super(fragmentManager);
             mFanPageFragments = new ArrayList<>();
             for (Campaign campaign : list.getResponse()) {
-                mFanPageFragments.add(new WeakReference<>(CampaignFragment.newInstance(campaign.getName(), campaign.getBannerImgUrl())));
+                mFanPageFragments.add(new WeakReference<>(CampaignFragment.newInstance(campaign)));
             }
         }
 
