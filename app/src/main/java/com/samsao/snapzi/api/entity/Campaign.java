@@ -1,20 +1,23 @@
 package com.samsao.snapzi.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.joda.time.DateTime;
 
 /**
  * @author jingsilu
  * @since 2015-04-24
  */
 
+@ParcelablePlease
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
@@ -27,29 +30,28 @@ import java.util.Map;
         "prize",
         "rules"
 })
-
-public class Campaigns {
+public class Campaign implements Parcelable {
 
     @JsonProperty("id")
-    private String id;
+    public Integer id;
     @JsonProperty("app_id")
-    private Object appId;
+    public Integer appId;
     @JsonProperty("name")
-    private String name;
+    public String name;
     @JsonProperty("description")
-    private String description;
+    public String description;
     @JsonProperty("banner_img_url")
-    private String bannerImgUrl;
+    public String bannerImgUrl;
     @JsonProperty("start_date")
-    private String startDate;
+    @JsonDeserialize(using = CustomJsonDateTimeDeserializer.class)
+    public DateTime startDate;
     @JsonProperty("end_date")
-    private String endDate;
+    @JsonDeserialize(using = CustomJsonDateTimeDeserializer.class)
+    public DateTime endDate;
     @JsonProperty("prize")
-    private String prize;
+    public String prize;
     @JsonProperty("rules")
-    private String rules;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    public String rules;
 
     /**
      *
@@ -57,7 +59,7 @@ public class Campaigns {
      * The id
      */
     @JsonProperty("id")
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -67,7 +69,7 @@ public class Campaigns {
      * The id
      */
     @JsonProperty("id")
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -87,7 +89,7 @@ public class Campaigns {
      * The app_id
      */
     @JsonProperty("app_id")
-    public void setAppId(Object appId) {
+    public void setAppId(Integer appId) {
         this.appId = appId;
     }
 
@@ -157,7 +159,7 @@ public class Campaigns {
      * The startDate
      */
     @JsonProperty("start_date")
-    public String getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
@@ -167,7 +169,7 @@ public class Campaigns {
      * The start_date
      */
     @JsonProperty("start_date")
-    public void setStartDate(String startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
@@ -177,7 +179,7 @@ public class Campaigns {
      * The endDate
      */
     @JsonProperty("end_date")
-    public String getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
@@ -187,7 +189,7 @@ public class Campaigns {
      * The end_date
      */
     @JsonProperty("end_date")
-    public void setEndDate(String endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 
@@ -231,13 +233,26 @@ public class Campaigns {
         this.rules = rules;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        CampaignParcelablePlease.writeToParcel(this, dest, flags);
     }
+
+    public static final Creator<Campaign> CREATOR = new Creator<Campaign>() {
+        public Campaign createFromParcel(Parcel source) {
+            Campaign target = new Campaign();
+            CampaignParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public Campaign[] newArray(int size) {
+            return new Campaign[size];
+        }
+    };
 }

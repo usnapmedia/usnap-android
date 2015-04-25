@@ -3,6 +3,7 @@ package com.samsao.snapzi.fan_page;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +16,16 @@ import com.squareup.picasso.Picasso;
  * @author jingsilu
  * @since 2015-04-24
  */
-public class FanPageFragment extends Fragment{
+public class CampaignFragment extends Fragment{
     private String mName;
     private String mBannerImageUrl;
     private ImageView mImageView;
 
-    public static FanPageFragment newInstance(String name, String url) {
-        FanPageFragment fanPageFragment = new FanPageFragment();
-        fanPageFragment.setName(name);
-        fanPageFragment.setBannerImageUrl(url);
-        return fanPageFragment;
+    public static CampaignFragment newInstance(String name, String url) {
+        CampaignFragment campaignFragment = new CampaignFragment();
+        campaignFragment.setName(name);
+        campaignFragment.setBannerImageUrl(url);
+        return campaignFragment;
     }
 
     @Override
@@ -38,7 +39,10 @@ public class FanPageFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fan_page, container, false);
         mImageView = (ImageView) view.findViewById(R.id.fragment_fan_page_bannerImageView);
-        Picasso.with(getActivity()).load(mBannerImageUrl).into(mImageView);
+        // TODO add placeHolder and errorHolder
+        if (!TextUtils.isEmpty(mBannerImageUrl)) {
+            Picasso.with(getActivity()).load(mBannerImageUrl).into(mImageView);
+        }
         return view;
     }
 

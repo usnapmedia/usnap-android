@@ -2,6 +2,8 @@ package com.samsao.snapzi.fan_page;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,21 +12,21 @@ import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.Campaigns;
-import com.samsao.snapzi.api.entity.CampaignsList;
+import com.samsao.snapzi.api.entity.Campaign;
+import com.samsao.snapzi.api.entity.CampaignList;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
+import icepick.Icepick;
+import icepick.Icicle;
 
 public class FanPageActivity extends ActionBarActivity {
+
+    private final static String EXTRA_CAMPAIGNS = "com.samsao.snapzi.fan_page.FanPageActivity";
 
     @InjectView(R.id.activity_fan_page_viewPager)
     public ViewPager mViewPager;
@@ -32,11 +34,10 @@ public class FanPageActivity extends ActionBarActivity {
     public PagerSlidingTabStrip mTabs;
     @InjectView(R.id.activity_fan_page_toolbar)
     public Toolbar mToolbar;
-    private FanPageAdapter mFanPageAdapter;
-    private ArrayList<FanPageFragment> mFanPageFragments;
-    private ApiService mApiService = new ApiService();;
-    private List<Campaigns> mCampaignsList;
+    @Icicle
+    public CampaignList mCampaigns;
 
+    private FanPageAdapter mFanPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +45,18 @@ public class FanPageActivity extends ActionBarActivity {
         setContentView(R.layout.activity_fan_page);
         ButterKnife.inject(this);
         setupToolbar();
-        mCampaignsList = new ArrayList<>();
-        mFanPageFragments = new ArrayList<>();
-        mFanPageAdapter = new FanPageAdapter(getFragmentManager(), mFanPageFragments);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            mCampaigns = intent.getParcelableExtra(EXTRA_CAMPAIGNS);
+        }
+
+        // restore saved state
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
+
+        mFanPageAdapter = new FanPageAdapter(getFragmentManager(), mCampaigns);
         mViewPager.setAdapter(mFanPageAdapter);
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.activity_fan_page_viewPager_pagerTabStrip);
         // Bind the tabs to the ViewPager
@@ -67,31 +77,17 @@ public class FanPageActivity extends ActionBarActivity {
 
             }
         });
-        getCampaigns();
     }
 
-    public void getCampaigns() {
-        mApiService.getCampaigns(new Callback<CampaignsList>() {
-            @Override
-            public void success(CampaignsList campaignsList, Response response) {
-                setCampaignsList(campaignsList.getResponse());
-                initCampaigns();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Timber.e("Error Fetching Campaigns!");
-            }
-        });
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
-    public void initCampaigns() {
-        for (int i = 0; i < mCampaignsList.size(); i++) {
-            Campaigns campaigns = mCampaignsList.get(i);
-            mFanPageFragments.add(FanPageFragment.newInstance(campaigns.getName(), campaigns.getBannerImgUrl()));
-        }
-    }
-
+    /**
+     * Setup the toolbar for this activity
+     */
     public void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -100,16 +96,28 @@ public class FanPageActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    public void setCampaignsList(List<Campaigns> campaignsList) {
-        mCampaignsList = campaignsList;
+    /**
+     * Helper method to start this activity
+     * @param list
+     */
+    public static void start(Context context, CampaignList list) {
+        Intent intent = new Intent(context, FanPageActivity.class);
+        intent.putExtra(EXTRA_CAMPAIGNS, list);
+        context.startActivity(intent);
     }
 
-    public static class FanPageAdapter extends FragmentStatePagerAdapter{
-        private final ArrayList<FanPageFragment> mFanPageFragments;
+    public static class FanPageAdapter extends FragmentStatePagerAdapter {
+        /**
+         * List of fragments (campaigns) in the activity
+         */
+        private List<WeakReference<CampaignFragment>> mFanPageFragments;
 
-        public FanPageAdapter(FragmentManager fragmentManager, ArrayList<FanPageFragment> fanPageFragments) {
+        public FanPageAdapter(FragmentManager fragmentManager, CampaignList list) {
             super(fragmentManager);
-            this.mFanPageFragments = fanPageFragments;
+            mFanPageFragments = new ArrayList<>();
+            for (Campaign campaign : list.getResponse()) {
+                mFanPageFragments.add(new WeakReference<>(CampaignFragment.newInstance(campaign.getName(), campaign.getBannerImgUrl())));
+            }
         }
 
         @Override
@@ -119,13 +127,12 @@ public class FanPageActivity extends ActionBarActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return mFanPageFragments.get(position);
+            return mFanPageFragments.get(position).get();
         }
-
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFanPageFragments.get(position).getName();
+            return mFanPageFragments.get(position).get().getName();
         }
     }
 }

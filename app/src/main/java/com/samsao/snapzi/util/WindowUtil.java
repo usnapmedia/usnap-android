@@ -9,10 +9,6 @@ import android.content.res.Configuration;
  * Created by vlegault on 15-04-08.
  */
 public class WindowUtil {
-
-    private final static String LOG_TAG = WindowUtil.class.getSimpleName();
-
-
     /**
      * Unlocks passed activity screen orientation.
      * @param activity

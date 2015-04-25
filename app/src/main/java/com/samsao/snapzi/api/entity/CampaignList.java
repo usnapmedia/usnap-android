@@ -1,35 +1,33 @@
 package com.samsao.snapzi.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author jingsilu
  * @since 2015-04-24
  */
 
+@ParcelablePlease
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "count",
         "response"
 })
-public class CampaignsList {
+public class CampaignList implements Parcelable {
 
     @JsonProperty("count")
-    private Integer count;
+    public Integer count;
     @JsonProperty("response")
-    private List<Campaigns> response = new ArrayList<>();
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    public List<Campaign> response = new ArrayList<>();
 
     /**
      *
@@ -57,7 +55,7 @@ public class CampaignsList {
      * The response
      */
     @JsonProperty("response")
-    public List<Campaigns> getResponse() {
+    public List<Campaign> getResponse() {
         return response;
     }
 
@@ -67,18 +65,30 @@ public class CampaignsList {
      * The response
      */
     @JsonProperty("response")
-    public void setResponse(List<Campaigns> response) {
+    public void setResponse(List<Campaign> response) {
         this.response = response;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        CampaignListParcelablePlease.writeToParcel(this, dest, flags);
     }
 
+    public static final Creator<CampaignList> CREATOR = new Creator<CampaignList>() {
+        public CampaignList createFromParcel(Parcel source) {
+            CampaignList target = new CampaignList();
+            CampaignListParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public CampaignList[] newArray(int size) {
+            return new CampaignList[size];
+        }
+    };
 }

@@ -4,7 +4,7 @@
 
 package com.samsao.snapzi.api;
 
-import com.samsao.snapzi.api.entity.CampaignsList;
+import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
 
@@ -42,6 +42,6 @@ public interface SnapziApi {
     public void getLiveFeed(Callback<FeedImageList> callback);
 
     @GET("/campaigns")
-    public void getCampaigns(Callback<CampaignsList> callback);
+    public void getCampaigns(Callback<CampaignList> callback);
 
 }
