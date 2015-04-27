@@ -22,7 +22,7 @@ import butterknife.InjectView;
  */
 public class CampaignFragment extends Fragment{
 
-    @InjectView(R.id.fragment_fan_page_bannerImageView)
+    @InjectView(R.id.fragment_fan_campaign_banner)
     public ImageView mImageView;
 
     private Campaign mCampaign;
@@ -42,7 +42,7 @@ public class CampaignFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fan_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_campaign, container, false);
         ButterKnife.inject(this, view);
         // TODO add placeHolder and errorHolder
         if (!TextUtils.isEmpty(mCampaign.getBannerImgUrl())) {
