@@ -8,11 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImage;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 
@@ -22,11 +28,14 @@ import timber.log.Timber;
  */
 public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFeedViewHolder> {
 
+    private Context mContext;
     private List<FeedImage> mImageLiveFeedList;
-    private Listener mListener;
+    // TODO inject me
+    private ApiService mApiService = new ApiService();
 
-    public LiveFeedAdapter(Listener listener) {
-        mListener = listener;
+    public LiveFeedAdapter(Context context) {
+        mContext = context;
+        mImageLiveFeedList = null;
     }
 
     @Override
@@ -41,7 +50,6 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
     @Override
     public void onBindViewHolder(LiveFeedViewHolder liveFeedViewHolder, int position) {
         FeedImage imgLiveFeed = mImageLiveFeedList.get(position);
-
 
         if (position < (getItemCount() - 1)) {
             liveFeedViewHolder.itemView.setPadding(0,0,10,0);
@@ -66,27 +74,31 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
     }
 
 
-    public class LiveFeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        ImageView mImgIcon;
+    public class LiveFeedViewHolder extends RecyclerView.ViewHolder {
+        private ImageView mImgIcon;
 
         public LiveFeedViewHolder(View v) {
             super(v);
-            mImgIcon = (ImageView) v.findViewById(R.id.img_view_id);
-            v.setOnClickListener(this);
-        }
+            mImgIcon = (ImageView) v;
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO show loading dialog
+                    // fetch campaigns and start FanPageActivity
+                    mApiService.getCampaigns(new Callback<CampaignList>() {
+                        @Override
+                        public void success(CampaignList campaignList, Response response) {
+                            FanPageActivity.start(mContext, campaignList);
+                        }
 
-        @Override
-        public void onClick(View view) {
-            if (mListener != null) {
-                mListener.onItemClick(view, getAdapterPosition());
-            } else {
-                Timber.e("Fragment is destroyed!");
-            }
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Timber.e("Error Fetching Campaigns!");
+                        }
+                    });
+                }
+            });
         }
-    }
-
-    public interface Listener {
-        public void onItemClick(View view, int position);
     }
 }
 

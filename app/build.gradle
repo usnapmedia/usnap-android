@@ -149,4 +149,5 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
     compile 'com.mobsandgeeks:android-saripaar:1.0.3'
     compile 'net.danlew:android.joda:2.7.2'
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }
