@@ -1,6 +1,6 @@
 package com.samsao.snapzi.util;
 
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
@@ -177,13 +177,40 @@ public class VideoUtil {
     }
 
     /**
+     * Get video width
+     *
+     * @param videoPath
+     * @return video width in pixel
+     */
+    public static int getVideoWidth(String videoPath) {
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(videoPath);
+        String width = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+        metaRetriever.release();
+        return Integer.valueOf(width);
+    }
+
+    /**
+     * Get video height
+     *
+     * @param videoPath
+     * @return video height in pixel
+     */
+    public static int getVideoHeight(String videoPath) {
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(videoPath);
+        String height = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+        metaRetriever.release();
+        return Integer.valueOf(height);
+    }
+
+    /**
      * Tells if the provided video is portrait oriented
      *
      * @param videoPath
      * @return true if video is portrait oriented
      */
     public static boolean isVideoPortraitOriented(String videoPath) {
-        // Get video size
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
         metaRetriever.setDataSource(videoPath);
         String rotation = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
@@ -195,5 +222,4 @@ public class VideoUtil {
             return true;
         }
     }
-
 }

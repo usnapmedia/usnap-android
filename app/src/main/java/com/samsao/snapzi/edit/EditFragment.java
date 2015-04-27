@@ -36,6 +36,7 @@ import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.util.VideoUtil;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -474,17 +475,45 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
     public void onOptionsNextSelected() {
         // Merge layers
         ArrayList<Bitmap> bitmapLayers = new ArrayList<Bitmap>();
+        float mediaWidth, mediaHeight;
 
-        // Source image bitmap
-        Bitmap imageBitmap = ((BitmapDrawable) mImageContainer.getDrawable()).getBitmap();
-        bitmapLayers.add(imageBitmap);
+        // Get media size in pixel (adjusted to the media container's aspect ratio)
+        if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+            // Source image bitmap
+            Bitmap imageBitmap = ((BitmapDrawable) mImageContainer.getDrawable()).getBitmap();
+            bitmapLayers.add(imageBitmap);
+            mediaWidth = (float) imageBitmap.getWidth();
+            mediaHeight = (float) imageBitmap.getHeight();
+        } else {
+            int videoWidth, videoHeight;
+            float videoAspectRatio, videoContainerAspectRatio;
+
+            if (VideoUtil.isVideoPortraitOriented(mListener.getMediaPath())) {
+                videoWidth = VideoUtil.getVideoHeight(mListener.getMediaPath());
+                videoHeight = VideoUtil.getVideoWidth(mListener.getMediaPath());
+            } else {
+                videoWidth = VideoUtil.getVideoWidth(mListener.getMediaPath());
+                videoHeight = VideoUtil.getVideoHeight(mListener.getMediaPath());
+            }
+            videoAspectRatio = (float) videoWidth / (float) videoHeight;
+            videoContainerAspectRatio = (float) mVideoContainer.getWidth() / (float) mVideoContainer.getHeight();
+
+            // calculate video final size
+            if (videoAspectRatio < videoContainerAspectRatio) {
+                mediaWidth = videoWidth;
+                mediaHeight = (int) ((float) videoHeight / videoContainerAspectRatio);
+            } else {
+                mediaWidth = (int) ((float) videoWidth / videoContainerAspectRatio);
+                mediaHeight = videoHeight;
+            }
+        }
 
         // Draw annotation bitmap
         Bitmap drawAnnotationBitmap = mDrawAnnotationContainer.obtainBitmap();
         if (drawAnnotationBitmap != null) {
             float drawAnnotationScaleFactor = Math.max(
-                    (float) imageBitmap.getWidth() / (float) drawAnnotationBitmap.getWidth(),
-                    (float) imageBitmap.getHeight() / (float) drawAnnotationBitmap.getHeight());
+                    mediaWidth / (float) drawAnnotationBitmap.getWidth(),
+                    mediaHeight / (float) drawAnnotationBitmap.getHeight());
             drawAnnotationBitmap = PhotoUtil.scaleBitmap(drawAnnotationBitmap, drawAnnotationScaleFactor, drawAnnotationScaleFactor);
             bitmapLayers.add(drawAnnotationBitmap);
         }
@@ -495,8 +524,8 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
         mTextAnnotationContainer.draw(canvas);
         if (textAnnotationBitmap != null) {
             float textAnnotationScaleFactor = Math.max(
-                    (float) imageBitmap.getWidth() / (float) textAnnotationBitmap.getWidth(),
-                    (float) imageBitmap.getHeight() / (float) textAnnotationBitmap.getHeight());
+                    mediaWidth / (float) textAnnotationBitmap.getWidth(),
+                    mediaHeight / (float) textAnnotationBitmap.getHeight());
             textAnnotationBitmap = PhotoUtil.scaleBitmap(textAnnotationBitmap, textAnnotationScaleFactor, textAnnotationScaleFactor);
             bitmapLayers.add(textAnnotationBitmap);
         }
