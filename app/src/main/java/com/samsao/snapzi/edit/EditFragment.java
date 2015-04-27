@@ -31,7 +31,6 @@ import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.tools.ToolDraw;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
-import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
 import com.samsao.snapzi.util.PhotoUtil;
@@ -55,7 +54,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 
-public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
+public class EditFragment extends Fragment {
 
     public static final String FRAGMENT_TAG = "com.samsao.snapzi.edit.EditFragment";
     private final int ANIMATION_DURATION = 300;
@@ -139,7 +138,7 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLiveFeedAdapter = new LiveFeedAdapter(this);
+        mLiveFeedAdapter = new LiveFeedAdapter(getActivity());
     }
 
     @Override
@@ -289,7 +288,6 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
     @Override
     public void onPause() {
         super.onPause();
-
         if (mListener.getEditMode().equals(EditActivity.VIDEO_MODE)) {
             mVideoContainer.removeView(mVideoPreview);
             mVideoPreview = null;
@@ -669,12 +667,6 @@ public class EditFragment extends Fragment implements LiveFeedAdapter.Listener {
     public void showOverlays() {
         showMenu();
         showToolbarAndLiveFeed();
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-        Intent intent = new Intent(getActivity(), FanPageActivity.class);
-        startActivity(intent);
     }
 
     public interface Listener {

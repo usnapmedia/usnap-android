@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.api.exception.ApiException;
@@ -204,11 +205,19 @@ public class ApiService {
     }
 
     /**
-     * get the live feed images
+     * Get the live feed images
      * @param callback
      */
     public void getLiveFeed(Callback<FeedImageList> callback) {
         mApiService.getLiveFeed(callback);
+    }
+
+    /**
+     * Get the campaigns
+     *@param callback
+     */
+    public void getCampaigns(Callback<CampaignList> callback) {
+        mApiService.getCampaigns(callback);
     }
 }
 

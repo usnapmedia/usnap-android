@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
         "response"
 })
-public class  Response {
+public class Response {
     @JsonProperty("response")
     private String response;
 

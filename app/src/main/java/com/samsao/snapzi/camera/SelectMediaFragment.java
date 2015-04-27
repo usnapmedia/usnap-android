@@ -10,7 +10,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
@@ -21,11 +20,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +30,6 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.EditActivity;
-import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
@@ -51,7 +47,7 @@ import timber.log.Timber;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaFragment extends Fragment implements PickMediaDialogFragment.PickMediaDialogListener, LiveFeedAdapter.Listener,
+public class SelectMediaFragment extends Fragment implements PickMediaDialogFragment.PickMediaDialogListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
@@ -142,7 +138,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mLiveFeedAdapter = new LiveFeedAdapter(this);
+        mLiveFeedAdapter = new LiveFeedAdapter(getActivity());
         mRecyclerView.setAdapter(mLiveFeedAdapter);
         getFeedImage();
     }
@@ -575,12 +571,6 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-        Intent intent = new Intent(getActivity(), FanPageActivity.class);
-        startActivity(intent);
     }
 
     @Override
