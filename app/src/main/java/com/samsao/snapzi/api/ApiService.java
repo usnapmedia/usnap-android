@@ -209,6 +209,10 @@ public class ApiService {
         mApiService.login(username, password, callback);
     }
 
+    public void register(String username, String password,String email,String firstName,String lastName, String birthday,Callback<Response> callback) {
+        mApiService.register(username,password,email,firstName,lastName,birthday,callback);
+    }
+
     /**
      * Get the live feed images
      *

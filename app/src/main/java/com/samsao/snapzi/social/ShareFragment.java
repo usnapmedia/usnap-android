@@ -2,6 +2,7 @@ package com.samsao.snapzi.social;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -23,10 +24,13 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.authentication.AuthenticationActivity;
 import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.util.KeyboardUtil;
+import com.samsao.snapzi.util.PreferenceManager;
+import com.samsao.snapzi.util.UserManager;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.sromku.simple.fb.Permission;
@@ -47,7 +51,9 @@ import retrofit.client.Response;
 
 
 public class ShareFragment extends SocialNetworkFragment implements ProgressDialogFragment.Listener {
-    private final String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
+    public final static String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
+    public final static String SHARE_FRAGMENT_TAG="com.samsao.snapzi.ShareFragment.SHARE_FRAGMENT_TAG";
+    public final static int SHARE_FRAGMENT_REQUEST_CODE = 0;
 
     @InjectView(R.id.fragment_share_facebook)
     public Button mFacebookBtn;
@@ -68,10 +74,14 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public TextView mCommentCharactersCountTextView;
 
     private Listener mListener;
-    private ProgressDialogFragment mProgressDialogFragment;
+    public static ProgressDialogFragment mProgressDialogFragment;
+    private String mImagePath;
+    private String mCommentText;
 
     // TODO inject me
     private ApiService mApiService = new ApiService();
+    private PreferenceManager mPreferenceManager = new PreferenceManager();
+    private UserManager mUserManager = new UserManager(mPreferenceManager);
 
     /**
      * Use this factory method to create a new instance of
@@ -86,6 +96,41 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
     public ShareFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch(requestCode) {
+            case SHARE_FRAGMENT_REQUEST_CODE:
+                dismissProgressDialog();
+                if (resultCode == Activity.RESULT_OK) {
+                    mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+                        @Override
+                        public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
+                            // TODO translation
+                            //Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
+                            SelectMediaActivity.start(getActivity());
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            // TODO translation
+                            Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -405,24 +450,37 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     @OnClick(R.id.fragment_share_share_btn)
     public void share() {
         showProgressDialog();
-        mApiService.sharePicture(mListener.getImagePath(), mCommentEditText.getText().toString(), new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
-            @Override
-            public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
-                dismissProgressDialog();
-                // TODO translation
-                Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
-                SelectMediaActivity.start(getActivity());
-                getActivity().finish();
-            }
+        mImagePath = mListener.getImagePath();
+        mCommentText = mCommentEditText.getText().toString();
+        ShareActivity.setCommentText(mCommentText);
+        mUserManager.removeUsername();
 
-            @Override
-            public void failure(RetrofitError error) {
-                dismissProgressDialog();
-                // TODO translation
-                Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        boolean isLogin = mUserManager.isLogged();
+        if (!isLogin) {
+            Intent intent = new Intent(getActivity(),AuthenticationActivity.class);
+            startActivityForResult(intent, SHARE_FRAGMENT_REQUEST_CODE);
+
+        } else {
+            mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+                @Override
+                public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
+                    dismissProgressDialog();
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
+                    SelectMediaActivity.start(getActivity());
+                    getActivity().finish();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    dismissProgressDialog();
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
+
 
     /**
      * Show progress dialog

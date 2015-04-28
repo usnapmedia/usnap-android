@@ -1,12 +1,34 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.samsao.snapzi.authentication.view.LoginFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <com.samsao.snapzi.authentication.view.LoginView
-        android:id="@+id/fragment_login_login_view"
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/fragment_login_user_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="USERNAME"
+        app:met_floatingLabel="highlight"
+        app:met_singleLineEllipsis="true"/>
 
-</FrameLayout>
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/fragment_login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="PASSWORD"
+        app:met_floatingLabel="highlight"
+        app:met_singleLineEllipsis="true"/>
+
+    <Button
+        android:id="@+id/fragment_login_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOGIN"
+        android:layout_gravity="center"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"/>
+
+</LinearLayout>

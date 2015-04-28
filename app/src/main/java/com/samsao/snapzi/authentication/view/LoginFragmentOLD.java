@@ -35,10 +35,10 @@ import retrofit.RetrofitError;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link LoginFragmentOLD#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+public class LoginFragmentOLD extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     // TODO inject me
     public ApiService mApiService = new ApiService();
@@ -56,12 +56,12 @@ public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSe
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
+    public static LoginFragmentOLD newInstance() {
+        LoginFragmentOLD fragment = new LoginFragmentOLD();
         return fragment;
     }
 
-    public LoginFragment() {
+    public LoginFragmentOLD() {
         // Required empty public constructor
     }
 
@@ -72,7 +72,7 @@ public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login_oldold, container, false);
         ButterKnife.inject(this, view);
         mLoginView.setLoginCallback(new LoginView.LoginCallback() {
             @Override
@@ -124,16 +124,16 @@ public class LoginFragment extends Fragment implements DatePickerDialog.OnDateSe
                         DateTimeFormatter dateTimeFormatter = getDateFormatter();
                         try {
                             DateTime dateTime = dateTimeFormatter.parseDateTime(date);
-                            DatePickerFragment.newInstance(LoginFragment.this,
+                            DatePickerFragment.newInstance(LoginFragmentOLD.this,
                                     dateTime.getYear(),
                                     dateTime.getMonthOfYear(),
                                     dateTime.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
                         } catch (IllegalArgumentException e) {
                             // error in string format
-                            DatePickerFragment.newInstance(LoginFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                            DatePickerFragment.newInstance(LoginFragmentOLD.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
                         }
                     } else {
-                        DatePickerFragment.newInstance(LoginFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                        DatePickerFragment.newInstance(LoginFragmentOLD.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
                     }
                 }
             }
