@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -106,13 +105,8 @@ public class ShareFragment extends SocialNetworkFragment {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            if (!TextUtils.isEmpty(mCommentEditText.getText())) {
-                                KeyboardUtil.hideKeyboard(v);
-                                v.clearFocus();
-                                return false;
-                            } else {
-                                return true;
-                            }
+                            KeyboardUtil.hideKeyboard(v);
+                            return true;
                         }
                         return false;
                     }
@@ -245,8 +239,6 @@ public class ShareFragment extends SocialNetworkFragment {
                 public void onLogin() {
                     setFacebookAccessToken();
                     setFacebookBtn(true);
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -318,8 +310,6 @@ public class ShareFragment extends SocialNetworkFragment {
                 public void success(Result<TwitterSession> twitterSessionResult) {
                     setTwitterAccessToken();
                     setTwitterBtn(true);
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Twitter login success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -347,8 +337,6 @@ public class ShareFragment extends SocialNetworkFragment {
                 public void onSuccess() {
                     setGooglePlusAccessToken();
                     setGooglePlusBtn(true);
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
