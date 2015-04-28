@@ -6,11 +6,7 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
-
-import org.joda.time.DateTime;
 
 /**
  * @author jingsilu
@@ -43,11 +39,13 @@ public class Campaign implements Parcelable {
     @JsonProperty("banner_img_url")
     public String bannerImgUrl;
     @JsonProperty("start_date")
-    @JsonDeserialize(using = CustomJsonDateTimeDeserializer.class)
-    public DateTime startDate;
+    // FIXME
+//    @JsonDeserialize(using = CustomJsonDateTimeDeserializer.class)
+    public String startDate;
     @JsonProperty("end_date")
-    @JsonDeserialize(using = CustomJsonDateTimeDeserializer.class)
-    public DateTime endDate;
+    // FIXME
+//    @JsonDeserialize(using = CustomJsonDateTimeDeserializer.class)
+    public String endDate;
     @JsonProperty("prize")
     public String prize;
     @JsonProperty("rules")
@@ -159,7 +157,7 @@ public class Campaign implements Parcelable {
      * The startDate
      */
     @JsonProperty("start_date")
-    public DateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
@@ -169,7 +167,7 @@ public class Campaign implements Parcelable {
      * The start_date
      */
     @JsonProperty("start_date")
-    public void setStartDate(DateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
@@ -179,7 +177,7 @@ public class Campaign implements Parcelable {
      * The endDate
      */
     @JsonProperty("end_date")
-    public DateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
@@ -189,7 +187,7 @@ public class Campaign implements Parcelable {
      * The end_date
      */
     @JsonProperty("end_date")
-    public void setEndDate(DateTime endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
