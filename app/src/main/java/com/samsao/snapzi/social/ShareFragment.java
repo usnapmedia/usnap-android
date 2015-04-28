@@ -106,6 +106,7 @@ public class ShareFragment extends SocialNetworkFragment {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             KeyboardUtil.hideKeyboard(v);
+                            mCommentCharactersCountTextView.requestFocus();
                             return true;
                         }
                         return false;
