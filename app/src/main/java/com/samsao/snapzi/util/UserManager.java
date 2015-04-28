@@ -130,7 +130,7 @@ public class UserManager {
      * Clear the username in preferences
      *
      */
-    private void removeUsername() {
+    public void removeUsername() {
         mPreferenceManager.removeUsername();
     }
 

@@ -1,4 +1,4 @@
-package com.samsao.snapzi.fan_page;
+package com.samsao.snapzi.authentication;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,43 +9,30 @@ import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.api.entity.CampaignList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
-import icepick.Icicle;
 
-public class FanPageActivity extends ActionBarActivity {
 
-    private final static String EXTRA_CAMPAIGNS = "com.samsao.snapzi.fan_page.FanPageActivity.EXTRA_CAMPAIGNS";
-
-    @InjectView(R.id.activity_fan_page_toolbar)
+public class AuthenticationActivity extends ActionBarActivity {
+    @InjectView(R.id.activity_authentication_toolbar)
     public Toolbar mToolbar;
 
-    @InjectView(R.id.activity_fan_page_tabs)
+    @InjectView(R.id.activity_authentication_tabs)
     public PagerSlidingTabStrip mTabs;
 
-    @InjectView(R.id.activity_fan_page_view_pager)
+    @InjectView(R.id.activity_authentication_view_pager)
     public ViewPager mViewPager;
 
-    @Icicle
-    public CampaignList mCampaigns;
-
-    private CampaignAdapter mCampaignAdapter;
-
+    private AuthenticationAdapter mAuthenticationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fan_page);
+        setContentView(R.layout.activity_authentication);
         ButterKnife.inject(this);
         setupToolbar();
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            mCampaigns = intent.getParcelableExtra(EXTRA_CAMPAIGNS);
-        }
 
         // restore saved state
         if (savedInstanceState != null) {
@@ -53,8 +40,8 @@ public class FanPageActivity extends ActionBarActivity {
         }
 
         // Set campaign adapter
-        mCampaignAdapter = new CampaignAdapter(getFragmentManager(), mCampaigns);
-        mViewPager.setAdapter(mCampaignAdapter);
+        mAuthenticationAdapter = new AuthenticationAdapter(getFragmentManager());
+        mViewPager.setAdapter(mAuthenticationAdapter);
 
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
@@ -78,12 +65,6 @@ public class FanPageActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -94,25 +75,32 @@ public class FanPageActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
     /**
      * Setup the toolbar for this activity
      */
-    public void setupToolbar() {
+    private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
     }
 
     /**
      * Helper method to start this activity
      *
-     * @param campaigns
      */
-    public static void start(Context context, CampaignList campaigns) {
-        Intent intent = new Intent(context, FanPageActivity.class);
-        intent.putExtra(EXTRA_CAMPAIGNS, campaigns);
+    public static void start(Context context) {
+        Intent intent = new Intent(context, AuthenticationActivity.class);
         context.startActivity(intent);
     }
+
+
 }
