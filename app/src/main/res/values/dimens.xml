@@ -34,7 +34,4 @@
     <dimen name="fragment_campaign_image_height">102dp</dimen>
     <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
 
-    <!--Share-->
-    <dimen name="fragment_share_image_height">128dp</dimen>
-
 </resources>

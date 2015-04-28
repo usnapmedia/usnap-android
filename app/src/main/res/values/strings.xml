@@ -32,8 +32,8 @@
     <string name="sharing">Sharing</string>
     <string name="share_add_comment_hint">Add comment</string>
     <plurals name="character_plural">
-        <item quantity="one">%1$d character</item>
-        <item quantity="other">%1$d characters</item>
+        <item quantity="one">%d character</item>
+        <item quantity="other">%d characters</item>
     </plurals>
 
 

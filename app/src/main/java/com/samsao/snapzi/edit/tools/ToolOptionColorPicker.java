@@ -140,6 +140,6 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
      * Interface for the tool callback
      */
     public interface ToolCallback {
-        public abstract void onColorSelected(int color);
+        void onColorSelected(int color);
     }
 }

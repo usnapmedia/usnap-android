@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 
 
@@ -14,7 +15,7 @@ import com.samsao.snapzi.SnapziApplication;
 @ParcelablePlease
 public class ToolOptionTextColor extends ToolOptionColorPicker implements Parcelable {
 
-    public final static int DEFAULT_COLOR = SnapziApplication.getContext().getResources().getColor(android.R.color.white);
+    public final static int DEFAULT_COLOR = SnapziApplication.getContext().getResources().getColor(R.color.primary);
 
     public ToolOptionTextColor() {
         super();
