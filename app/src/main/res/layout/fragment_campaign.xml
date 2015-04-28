@@ -3,67 +3,80 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--Campaign banner-->
     <ImageView
         android:id="@+id/fragment_campaign_banner"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fragment_campaign_banner_height"
         android:scaleType="centerCrop" />
 
-    <RelativeLayout
+    <!--Top 10-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="TOP 10" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="SEE ALL" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|bottom"
+                android:text="TOP 10"
+                android:textColor="@color/dark_gray" />
 
-    </RelativeLayout>
+            <Button
+                style="@style/AppButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="SEE ALL"
+                android:textColor="@android:color/white" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_campaign_top_campaign_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_campaign_image_height"
-        android:paddingBottom="@dimen/elements_vertical_margin"
-        android:paddingLeft="@dimen/elements_horizontal_margin"
-        android:paddingRight="@dimen/elements_horizontal_margin"
-        android:paddingTop="@dimen/elements_vertical_margin" />
+        </FrameLayout>
 
-    <RelativeLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_campaign_top_campaign_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fragment_campaign_image_height" />
+
+    </LinearLayout>
+
+    <!--Latest uploads-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="LATEST UPLOADS" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="SEE ALL" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|bottom"
+                android:text="LATEST UPLOADS"
+                android:textColor="@color/dark_gray" />
 
-    </RelativeLayout>
+            <Button
+                style="@style/AppButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="SEE ALL"
+                android:textColor="@android:color/white" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_campaign_latest_uploads_grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_campaign_image_height"
-        android:paddingBottom="@dimen/elements_vertical_margin"
-        android:paddingLeft="@dimen/elements_horizontal_margin"
-        android:paddingRight="@dimen/elements_horizontal_margin"
-        android:paddingTop="@dimen/elements_vertical_margin" />
+        </FrameLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_campaign_latest_uploads_grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 </LinearLayout>

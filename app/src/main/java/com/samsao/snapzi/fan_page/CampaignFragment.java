@@ -21,6 +21,8 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,18 +37,19 @@ public class CampaignFragment extends Fragment{
     @InjectView(R.id.fragment_campaign_banner)
     public ImageView mBannerImage;
 
-    @InjectView(R.id.fragment_campaign_top_campaign_recycler_view)
-    public RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
+    @InjectView(R.id.fragment_campaign_top_campaign_container)
+    public RecyclerView mTopCampaignContainer;
     private TopCampaignAdapter mTopCampaignAdapter;
-    private ApiService mApiService = new ApiService();
-
-    private Campaign mCampaign;
 
     @InjectView(R.id.fragment_campaign_latest_uploads_grid_view)
     public RecyclerView mLatestUploadsRecyclerView;
-    private GridLayoutManager mLatestUploadsLayoutManager;
     LatestUploadsAdapter mLatestUploadsAdapter;
+
+    @Icicle
+    public Campaign mCampaign;
+
+    private ApiService mApiService = new ApiService();
+
 
     public static CampaignFragment newInstance(Campaign campaign) {
         CampaignFragment campaignFragment = new CampaignFragment();
@@ -64,6 +67,12 @@ public class CampaignFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_campaign, container, false);
         ButterKnife.inject(this, view);
+
+        // restore saved state
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
+
         // TODO add placeHolder and errorHolder
         if (!TextUtils.isEmpty(mCampaign.getBannerImgUrl())) {
             Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mBannerImage);
@@ -74,15 +83,28 @@ public class CampaignFragment extends Fragment{
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
 
     private void initTopCampaign() {
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mTopCampaignContainer.setHasFixedSize(true);
+
+        // Set horizontal scroll for top campaigns
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mTopCampaignContainer.setLayoutManager(linearLayoutManager);
 
         mTopCampaignAdapter = new TopCampaignAdapter(getActivity());
-        mRecyclerView.setAdapter(mTopCampaignAdapter);
+        mTopCampaignContainer.setAdapter(mTopCampaignAdapter);
         getTopCampaign();
     }
 
@@ -102,8 +124,8 @@ public class CampaignFragment extends Fragment{
 
     private void initLatestUploads() {
         mLatestUploadsRecyclerView.setHasFixedSize(true);
-        mLatestUploadsLayoutManager = new GridLayoutManager(getActivity(),4);
-        mLatestUploadsRecyclerView.setLayoutManager(mLatestUploadsLayoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),4);
+        mLatestUploadsRecyclerView.setLayoutManager(gridLayoutManager);
         mLatestUploadsAdapter = new LatestUploadsAdapter(getActivity());
         mLatestUploadsRecyclerView.setAdapter(mLatestUploadsAdapter);
         getLiveFeed();
@@ -121,12 +143,6 @@ public class CampaignFragment extends Fragment{
                 Timber.e("Error Fetching Latest Uploads Data!");
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
     }
 
     public void setCampaign(Campaign campaign) {
