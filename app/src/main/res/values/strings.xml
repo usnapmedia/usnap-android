@@ -59,9 +59,9 @@
     <string name="latest_uploads">Latest uploads</string>
     <string name="see_all">See all</string>
     <plurals name="likes_plural">
-        <item quantity="zero">No likes</item>
-        <item quantity="one">%d like</item>
-        <item quantity="other">%d likes</item>
+        <item quantity="zero">No pts</item>
+        <item quantity="one">%d pt</item>
+        <item quantity="other">%d pts</item>
     </plurals>
 
     <!--Errors-->

@@ -43,12 +43,14 @@ public class SnapziApplication extends Application {
         // initialize facebook configuration
         Permission[] permissions = new Permission[] {
                 Permission.PUBLIC_PROFILE,
+                Permission.PUBLISH_ACTION
         };
 
         SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
                 .setAppId(getResources().getString(R.string.facebook_app_id))
                 .setNamespace(getResources().getString(R.string.facebook_app_namespace))
                 .setPermissions(permissions)
+                .setAskForAllPermissionsAtOnce(true)
                 .build();
         SimpleFacebook.setConfiguration(configuration);
 

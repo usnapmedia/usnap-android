@@ -42,6 +42,7 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
         TopCampaign topCampaign = mTopCampaignList.get(position);
         // TODO setup the view holder with the TopCampaign object
         Picasso.with(mContext).load(topCampaign.getUrl()).into(topCampaignViewHolder.mImageView);
+        topCampaignViewHolder.setLikesCount(topCampaign.getFbLikes());
     }
 
     @Override
