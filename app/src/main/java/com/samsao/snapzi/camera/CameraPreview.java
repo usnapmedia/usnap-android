@@ -516,15 +516,15 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             mOrientationListener = new OrientationEventListener(getContext(), SensorManager.SENSOR_DELAY_NORMAL) {
                 public void onOrientationChanged(int orientation) {
                     if (orientation >= 0) { // if valid orientation
-                        int newPreviewOrientation = (360 - mCameraBuiltInOrientationOffset + orientation) % 360;
+                        int newPreviewOrientation = (mCameraBuiltInOrientationOffset - orientation) % 360;
                         int previewOrientationDelta = newPreviewOrientation - mLastPreviewOrientation;
 
                         if ((previewOrientationDelta > (180 - PREVIEW_ORIENTATION_THRESHOLD_DEG) &&
                                 previewOrientationDelta < (180 + PREVIEW_ORIENTATION_THRESHOLD_DEG)) ||
-                                (previewOrientationDelta < (-180 - PREVIEW_ORIENTATION_THRESHOLD_DEG) &&
-                                        previewOrientationDelta > (-180 + PREVIEW_ORIENTATION_THRESHOLD_DEG))) {
+                                (previewOrientationDelta > (-180 - PREVIEW_ORIENTATION_THRESHOLD_DEG) &&
+                                        previewOrientationDelta < (-180 + PREVIEW_ORIENTATION_THRESHOLD_DEG))) {
                             mLastPreviewOrientation = getPreviewOrientation();
-                            mCamera.setDisplayOrientation(mLastPreviewOrientation);
+                            mCamera.setDisplayOrientation(getPreviewOrientation());
                         }
                     }
                 }
@@ -550,6 +550,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
         }
 
+        setCameraId(getCameraId());
         resizeToFitContainerView();
         return getCameraId();
     }
