@@ -14,6 +14,7 @@ import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.api.entity.TopCampaignList;
 import com.samsao.snapzi.api.exception.ApiException;
 import com.samsao.snapzi.api.exception.HostUnreachableException;
 import com.samsao.snapzi.api.exception.InternalServerErrorException;
@@ -246,5 +247,14 @@ public class ApiService {
                 new TypedString(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : ""),
                 callback);
     }
+
+    /**
+     * Get the top campaign
+     * @param callback
+     */
+    public void getTopCampaign(Callback<TopCampaignList> callback) {
+        mApiService.getTopCampaign(callback);
+    }
+
 }
 

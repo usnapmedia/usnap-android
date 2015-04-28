@@ -7,6 +7,7 @@ package com.samsao.snapzi.api;
 import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.api.entity.TopCampaignList;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -47,6 +48,9 @@ public interface SnapziApi {
 
     @GET("/campaigns")
     public void getCampaigns(Callback<CampaignList> callback);
+    @GET("/feed/top")
+    public void getTopCampaign(Callback<TopCampaignList> callback);
+
 
     @Multipart
     @POST("/share")

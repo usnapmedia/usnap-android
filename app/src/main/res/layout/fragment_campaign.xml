@@ -9,18 +9,61 @@
         android:layout_height="@dimen/fragment_campaign_image_height"
         android:scaleType="centerCrop"/>
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TOP 10"
+        android:layout_alignParentLeft="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEE ALL"
+        android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_campaign_top_campaign_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fragment_campaign_image_height"
+        android:paddingBottom="@dimen/elements_vertical_margin"
+        android:paddingLeft="@dimen/elements_horizontal_margin"
+        android:paddingRight="@dimen/elements_horizontal_margin"
+        android:paddingTop="@dimen/elements_vertical_margin" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAllCaps="true"
-            android:text="@string/top_10"/>
+            android:text="LATEST UPLOADS"
+            android:layout_alignParentLeft="true"/>
 
-    </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEE ALL"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_campaign_latest_uploads_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fragment_campaign_image_height"
+        android:paddingBottom="@dimen/elements_vertical_margin"
+        android:paddingLeft="@dimen/elements_horizontal_margin"
+        android:paddingRight="@dimen/elements_horizontal_margin"
+        android:paddingTop="@dimen/elements_vertical_margin" />
+
 
 </LinearLayout>
