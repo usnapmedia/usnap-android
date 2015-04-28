@@ -1,29 +1,62 @@
 package com.samsao.snapzi.social;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.samsao.snapzi.R;
 
 import icepick.Icepick;
 import icepick.Icicle;
 
 public class ShareActivity extends SocialNetworkActivity implements ShareFragment.Listener {
-    public static final String EXTRA_URI = "com.samsao.snapzi.social.ShareActivity.EXTRA_URI";
+
+    /**
+     * Constants
+     */
+    private final String LOG_TAG = getClass().getSimpleName();
+    public static final String EXTRA_MEDIA_TYPE = "com.samsao.snapzi.social.SocialNetworkActivity.EXTRA_MEDIA_TYPE";
+    public static final String EXTRA_IMAGE_PATH = "com.samsao.snapzi.social.SocialNetworkActivity.EXTRA_IMAGE_PATH";
+    public static final String EXTRA_VIDEO_PATH = "com.samsao.snapzi.social.SocialNetworkActivity.EXTRA_VIDEO_PATH";
+    public static final String TYPE_IMAGE = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_IMAGE";
+    public static final String TYPE_VIDEO = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_VIDEO";
 
     private ShareFragment mShareFragment;
+
     @Icicle
-    public Uri mImageUri;
+    public String mMediaType;
+    @Icicle
+    public String mImagePath;
+    @Icicle
+    public String mVideoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Intent intent = getIntent();
         if (intent != null) {
-            mImageUri = intent.getParcelableExtra(EXTRA_URI);
+            mMediaType = intent.getStringExtra(EXTRA_MEDIA_TYPE);
+            mImagePath = intent.getStringExtra(EXTRA_IMAGE_PATH);
+            if(mMediaType.equals(TYPE_VIDEO)){
+                mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
+            }
         }
+
         // restore saved state
-        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
+
+        if (mMediaType == null || !(mMediaType.equals(TYPE_IMAGE) || mMediaType.equals(TYPE_VIDEO))) {
+            Log.e(LOG_TAG, "Unrecognized share mode was provided, closing ShareActivity");
+            Toast.makeText(this,
+                    getResources().getString(R.string.error_unknown),
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         if (savedInstanceState == null) {
             // Create a new Fragment to be placed in the activity layout
@@ -57,7 +90,17 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     }
 
     @Override
-    public Uri getImageUri() {
-        return mImageUri;
+    public String getMediaType() {
+        return mMediaType;
+    }
+
+    @Override
+    public String getImagePath() {
+        return mImagePath;
+    }
+
+    @Override
+    public String getVideoPath() {
+        return mVideoPath;
     }
 }

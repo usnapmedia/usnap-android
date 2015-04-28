@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
+import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.tools.ToolDraw;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
@@ -278,9 +279,9 @@ public class EditFragment extends Fragment {
             if (mVideoPreview == null) {
                 mVideoPreview = new VideoPreview(getActivity(), mListener.getMediaPath());
             }
-            mVideoContainer.setVisibility(View.VISIBLE);
             mImageContainer.setVisibility(View.GONE);
             mVideoContainer.addView(mVideoPreview);
+            mVideoContainer.setVisibility(View.VISIBLE);
         }
         getFeedImage();
     }
@@ -475,6 +476,8 @@ public class EditFragment extends Fragment {
         ArrayList<Bitmap> bitmapLayers = new ArrayList<Bitmap>();
         float mediaWidth, mediaHeight;
 
+        // TODO add loading screen
+
         // Get media size in pixel (adjusted to the media container's aspect ratio)
         if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
             // Source image bitmap
@@ -530,18 +533,36 @@ public class EditFragment extends Fragment {
 
         // Combine images
         Bitmap finalImage = PhotoUtil.combineBitmapsIntoOne(bitmapLayers);
-        // TODO add loading screen
-        PhotoUtil.saveImage(finalImage, mListener.getMediaPath(), new SaveImageCallback() {
+
+        // Set image destination path
+        String imageDestinationPath;
+        if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+            imageDestinationPath = mListener.getMediaPath();
+        } else {
+            imageDestinationPath = CameraHelper.getDefaultImageFilePath();
+        }
+
+        PhotoUtil.saveImage(finalImage, imageDestinationPath, new SaveImageCallback() {
             @Override
-            public void onSuccess(String destFilePath) {
-                Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
+            public void onSuccess(String imageDestinationPath) {
                 Intent intent = new Intent(getActivity(), ShareActivity.class);
-                intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
+
+                intent.putExtra(ShareActivity.EXTRA_IMAGE_PATH, imageDestinationPath); // Keep image in both cases
+                if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+                    intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_IMAGE);
+                } else {
+                    intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_VIDEO);
+                    intent.putExtra(ShareActivity.EXTRA_VIDEO_PATH, mListener.getMediaPath());
+                }
+
+                // TODO stop loading screen
+
                 startActivity(intent);
             }
 
             @Override
             public void onFailure() {
+                // TODO stop loading screen on error
             }
         });
     }
