@@ -12,12 +12,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.api.entity.Campaign;
 import com.samsao.snapzi.api.entity.CampaignList;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,10 +29,12 @@ public class FanPageActivity extends ActionBarActivity {
     public PagerSlidingTabStrip mTabs;
     @InjectView(R.id.activity_fan_page_toolbar)
     public Toolbar mToolbar;
+
     @Icicle
     public CampaignList mCampaigns;
 
     private FanPageAdapter mFanPageAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,24 +55,15 @@ public class FanPageActivity extends ActionBarActivity {
 
         mFanPageAdapter = new FanPageAdapter(getFragmentManager(), mCampaigns);
         mViewPager.setAdapter(mFanPageAdapter);
-        mTabs = (PagerSlidingTabStrip) findViewById(R.id.activity_fan_page_viewPager_pagerTabStrip);
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override
-            public void onPageSelected(int position) {
-
-            }
-
+            public void onPageSelected(int position) {}
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
     }
 
@@ -117,33 +105,33 @@ public class FanPageActivity extends ActionBarActivity {
         context.startActivity(intent);
     }
 
+
+
     public static class FanPageAdapter extends FragmentStatePagerAdapter {
         /**
-         * List of fragments (campaigns) in the activity
+         * List of campaigns
          */
-        private List<WeakReference<CampaignFragment>> mFanPageFragments;
+        private CampaignList mCampaignList;
 
         public FanPageAdapter(FragmentManager fragmentManager, CampaignList list) {
             super(fragmentManager);
-            mFanPageFragments = new ArrayList<>();
-            for (Campaign campaign : list.getResponse()) {
-                mFanPageFragments.add(new WeakReference<>(CampaignFragment.newInstance(campaign)));
-            }
+            mCampaignList = list;
         }
 
         @Override
         public int getCount() {
-            return mFanPageFragments.size();
+            return mCampaignList.getResponse().size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return mFanPageFragments.get(position).get();
+            return CampaignFragment.newInstance(mCampaignList.getResponse().get(position));
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFanPageFragments.get(position).get().getName();
+            return mCampaignList.getResponse().get(position).getName();
         }
+
     }
 }
