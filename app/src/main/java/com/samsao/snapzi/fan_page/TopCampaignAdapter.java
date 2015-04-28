@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.TopCampaign;
@@ -22,7 +21,6 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
 
     private Context mContext;
     private List<TopCampaign> mTopCampaignList;
-    // TODO inject me
 
     public TopCampaignAdapter(Context context) {
         mContext = context;
@@ -41,16 +39,8 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
     @Override
     public void onBindViewHolder(TopCampaignViewHolder topCampaignViewHolder, int position) {
         TopCampaign topCampaign = mTopCampaignList.get(position);
-
-        if (position < (getItemCount() -1)) {
-            topCampaignViewHolder.itemView.setPadding(0,0,10,0);
-        } else {
-            topCampaignViewHolder.itemView.setPadding(0,0,0,0);
-        }
-
-        Context context = topCampaignViewHolder.mImageView.getContext();
-        Picasso.with(context).load(topCampaign.getUrl()).into(topCampaignViewHolder.mImageView);
-        topCampaignViewHolder.mTextView.setText(topCampaign.getEmail());
+        // TODO setup the view holder with the TopCampaign object
+        Picasso.with(mContext).load(topCampaign.getUrl()).into(topCampaignViewHolder.mImageView);
     }
 
     @Override
@@ -66,12 +56,10 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
 
     public class TopCampaignViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
-        private TextView mTextView;
 
         public TopCampaignViewHolder(View v) {
             super(v);
             mImageView = (ImageView) v.findViewById(R.id.view_top_campaign_img_view_id);
-            mTextView = (TextView) v.findViewById(R.id.view_top_campaign_text_id);
         }
     }
 }

@@ -20,7 +20,6 @@ import java.util.List;
 public class LatestUploadsAdapter extends  RecyclerView.Adapter<LatestUploadsAdapter.LatestUploadsViewHolder>{
     private Context mContext;
     private List<FeedImage> mLatestUploadsList;
-    // TODO inject me
 
     public LatestUploadsAdapter(Context context) {
         mContext = context;
@@ -39,15 +38,7 @@ public class LatestUploadsAdapter extends  RecyclerView.Adapter<LatestUploadsAda
     @Override
     public void onBindViewHolder(LatestUploadsViewHolder latestUploadsViewHolderViewHolder, int position) {
         FeedImage latestUploads = mLatestUploadsList.get(position);
-
-        if (position < (getItemCount() -1)) {
-            latestUploadsViewHolderViewHolder.itemView.setPadding(0,0,10,0);
-        } else {
-            latestUploadsViewHolderViewHolder.itemView.setPadding(0,0,0,0);
-        }
-
-        Context context = latestUploadsViewHolderViewHolder.mImageView.getContext();
-        Picasso.with(context).load(latestUploads.getUrl()).into(latestUploadsViewHolderViewHolder.mImageView);
+        Picasso.with(mContext).load(latestUploads.getUrl()).into((ImageView)latestUploadsViewHolderViewHolder.itemView);
     }
 
     @Override
@@ -62,11 +53,9 @@ public class LatestUploadsAdapter extends  RecyclerView.Adapter<LatestUploadsAda
     }
 
     public class LatestUploadsViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mImageView;
 
-        public LatestUploadsViewHolder(View v) {
-            super(v);
-            mImageView = (ImageView) v.findViewById(R.id.view_latest_uploads_image);
+        public LatestUploadsViewHolder(View itemView) {
+            super(itemView);
         }
     }
 }

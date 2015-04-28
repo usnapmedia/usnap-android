@@ -1,8 +1,8 @@
 package com.samsao.snapzi.fan_page;
 
 import android.app.Fragment;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,8 +41,9 @@ public class CampaignFragment extends Fragment{
     public RecyclerView mTopCampaignContainer;
     private TopCampaignAdapter mTopCampaignAdapter;
 
-    @InjectView(R.id.fragment_campaign_latest_uploads_grid_view)
+    @InjectView(R.id.fragment_campaign_latest_uploads_recyclerView)
     public RecyclerView mLatestUploadsRecyclerView;
+    private GridLayoutManager mLatestUploadsLayoutManager;
     LatestUploadsAdapter mLatestUploadsAdapter;
 
     @Icicle
@@ -57,12 +58,6 @@ public class CampaignFragment extends Fragment{
         return campaignFragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_campaign, container, false);
@@ -95,9 +90,11 @@ public class CampaignFragment extends Fragment{
         Icepick.saveInstanceState(this, outState);
     }
 
+    /**
+     * Initialize the top 10 uploads
+     */
     private void initTopCampaign() {
         mTopCampaignContainer.setHasFixedSize(true);
-
         // Set horizontal scroll for top campaigns
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -105,9 +102,21 @@ public class CampaignFragment extends Fragment{
 
         mTopCampaignAdapter = new TopCampaignAdapter(getActivity());
         mTopCampaignContainer.setAdapter(mTopCampaignAdapter);
+        mTopCampaignContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) == 0) {
+                    outRect.left = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
+                }
+                outRect.right = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
+            }
+        });
         getTopCampaign();
     }
 
+    /**
+     * Get the top 10 shares from the backend
+     */
     private void getTopCampaign() {
         mApiService.getTopCampaign(new Callback<TopCampaignList>() {
             @Override
@@ -122,15 +131,21 @@ public class CampaignFragment extends Fragment{
         });
     }
 
+    /**
+     * Initialize the latest uploads grid
+     */
     private void initLatestUploads() {
         mLatestUploadsRecyclerView.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),4);
-        mLatestUploadsRecyclerView.setLayoutManager(gridLayoutManager);
+        mLatestUploadsLayoutManager = new GridLayoutManager(getActivity(),4);
+        mLatestUploadsRecyclerView.setLayoutManager(mLatestUploadsLayoutManager);
         mLatestUploadsAdapter = new LatestUploadsAdapter(getActivity());
         mLatestUploadsRecyclerView.setAdapter(mLatestUploadsAdapter);
         getLiveFeed();
     }
 
+    /**
+     * Get the latest uploads pictures from the backend
+     */
     private void getLiveFeed() {
         mApiService.getLiveFeed(new Callback<FeedImageList>() {
             @Override
