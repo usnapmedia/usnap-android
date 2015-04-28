@@ -32,7 +32,6 @@
     <dimen name="fragment_select_media_latest_image_size">60dp</dimen>
 
     <!--Campaign-->
-    <dimen name="fragment_campaign_image_height">102dp</dimen>
     <dimen name="fragment_campaign_banner_height">140dp</dimen>
     <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
 
