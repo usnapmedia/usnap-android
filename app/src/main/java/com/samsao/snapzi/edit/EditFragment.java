@@ -115,7 +115,6 @@ public class EditFragment extends Fragment {
         }
     };
 
-
     /**
      * TODO inject me
      */

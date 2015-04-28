@@ -12,7 +12,11 @@ import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
+import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 
 /**
  * @author jfcartier
@@ -43,5 +47,16 @@ public interface SnapziApi {
 
     @GET("/campaigns")
     public void getCampaigns(Callback<CampaignList> callback);
+
+    @Multipart
+    @POST("/share")
+    public void share(@Part("image_data") TypedFile image,
+                         @Part("meta") TypedString meta,
+                         @Part("text") TypedString text,
+                         @Part("fb") TypedString fbToken,
+                         @Part("tw_key") TypedString twitterToken,
+                         @Part("tw_secret") TypedString twitterSecret,
+                         @Part("gp") TypedString googlePlusToken,
+                         Callback<Response> callback);
 
 }

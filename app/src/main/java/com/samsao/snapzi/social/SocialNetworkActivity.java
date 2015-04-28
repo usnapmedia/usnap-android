@@ -220,7 +220,8 @@ public class SocialNetworkActivity extends ActionBarActivity implements Facebook
      * Set the twitter access token in preferences
      */
     public void setTwitterAccessToken() {
-        mUserManager.setTwitterAccessToken(Twitter.getSessionManager().getActiveSession().getAuthToken().token);
+        mUserManager.setTwitterAccessToken(Twitter.getSessionManager().getActiveSession().getAuthToken().token,
+                Twitter.getSessionManager().getActiveSession().getAuthToken().secret);
     }
 
     /**

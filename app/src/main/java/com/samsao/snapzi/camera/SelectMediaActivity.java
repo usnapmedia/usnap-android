@@ -1,6 +1,7 @@
 package com.samsao.snapzi.camera;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -227,5 +228,13 @@ public class SelectMediaActivity extends ActionBarActivity implements SelectMedi
         startActivity(editIntent);
     }
 
-
+    /**
+     * Helper method to start this activity
+     * @param context
+     */
+    public static void start(Context context) {
+        Intent intent = new Intent(context, SelectMediaActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
 }

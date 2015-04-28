@@ -23,6 +23,7 @@ public class PreferenceManager {
     private final String PREFERENCES_FILE_KEY = "com.samsao.snapzi.PREFERENCE_FILE_KEY";
     private final String FACEBOOK_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.FACEBOOK_ACCESS_TOKEN_KEY";
     private final String TWITTER_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.TWITTER_ACCESS_TOKEN_KEY";
+    private final String TWITTER_ACCESS_SECRET_KEY = "com.samsao.snapzi.preference.TWITTER_ACCESS_SECRET_KEY";
     private final String GPLUS_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.GPLUS_ACCESS_TOKEN_KEY";
     private final String USERNAME_KEY = "com.samsao.snapzi.preference.USERNAME_KEY";
     private final String PASSWORD_KEY = "com.samsao.snapzi.preference.PASSWORD_KEY";
@@ -157,6 +158,29 @@ public class PreferenceManager {
      */
     public void removeTwitterAccessToken() {
         getEditor().remove(TWITTER_ACCESS_TOKEN_KEY).apply();
+    }
+
+    /**
+     * Get twitter secret
+     * @return
+     */
+    public String getTwitterSecret() {
+        return getString(TWITTER_ACCESS_SECRET_KEY, null);
+    }
+
+    /**
+     * Set twitter secret
+     * @param twitterSecret
+     */
+    public void setTwitterSecret(String twitterSecret) {
+        putString(TWITTER_ACCESS_SECRET_KEY, twitterSecret).apply();
+    }
+
+    /**
+     * Remove twitter secret
+     */
+    public void removeTwitterSecret() {
+        getEditor().remove(TWITTER_ACCESS_SECRET_KEY).apply();
     }
 
     /**

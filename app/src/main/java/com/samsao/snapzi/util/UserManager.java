@@ -57,12 +57,22 @@ public class UserManager {
     }
 
     /**
+     * Returns the twitter secret
+     * @return
+     */
+    public String getTwitterSecret() {
+        return mPreferenceManager.getTwitterSecret();
+    }
+
+    /**
      * Set the twitter access token in preferences
      *
      * @param token
+     * @param secret
      */
-    public void setTwitterAccessToken(String token) {
+    public void setTwitterAccessToken(String token, String secret) {
         mPreferenceManager.setTwitterAccessToken(token);
+        mPreferenceManager.setTwitterSecret(secret);
     }
 
     /**
@@ -71,6 +81,7 @@ public class UserManager {
      */
     public void removeTwitterAccessToken() {
         mPreferenceManager.removeTwitterAccessToken();
+        mPreferenceManager.removeTwitterSecret();
     }
 
     /**

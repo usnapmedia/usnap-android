@@ -19,6 +19,9 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
@@ -37,6 +40,7 @@ import java.io.File;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.RetrofitError;
 
 
 public class ShareFragment extends SocialNetworkFragment {
@@ -68,6 +72,11 @@ public class ShareFragment extends SocialNetworkFragment {
 
     // TODO inject me
     private UserManager mUserManager = new UserManager(new PreferenceManager());
+
+    /**
+     * TODO inject me
+     */
+    private ApiService mApiService = new ApiService();
 
     /**
      * Use this factory method to create a new instance of
@@ -338,7 +347,22 @@ public class ShareFragment extends SocialNetworkFragment {
 
     @OnClick(R.id.fragment_share_share_btn)
     public void share() {
-        Toast.makeText(getActivity(), "TODO: share", Toast.LENGTH_SHORT).show();
+        // TODO show loading dialog
+        mApiService.sharePicture(mListener.getImagePath(), mCommentEditText.getText().toString(), new retrofit.Callback<Response>() {
+            @Override
+            public void success(Response response, retrofit.client.Response response2) {
+                // TODO translation
+                Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
+                SelectMediaActivity.start(getActivity());
+                getActivity().finish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                // TODO translation
+                Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public interface Listener {

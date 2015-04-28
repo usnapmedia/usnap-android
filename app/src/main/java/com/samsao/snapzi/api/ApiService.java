@@ -25,12 +25,12 @@ import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 
 import retrofit.Callback;
 import retrofit.ErrorHandler;
@@ -40,6 +40,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.converter.JacksonConverter;
+import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 import timber.log.Timber;
 
 /**
@@ -164,6 +166,7 @@ public class ApiService {
 
     /**
      * Get a request error message
+     *
      * @param error
      * @return
      */
@@ -191,11 +194,12 @@ public class ApiService {
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
             throw new UnauthorizedException();
         }
-        return Base64.encodeToString(new String("Basic " + username + ":" + password).getBytes(Charset.forName("UTF-8")), Base64.DEFAULT);
+        return "Basic " + Base64.encodeToString(String.format("%s:%s", username, password).getBytes(), Base64.NO_WRAP);
     }
 
     /**
      * Login
+     *
      * @param username
      * @param password
      * @param callback
@@ -206,6 +210,7 @@ public class ApiService {
 
     /**
      * Get the live feed images
+     *
      * @param callback
      */
     public void getLiveFeed(Callback<FeedImageList> callback) {
@@ -214,10 +219,32 @@ public class ApiService {
 
     /**
      * Get the campaigns
-     *@param callback
+     *
+     * @param callback
      */
     public void getCampaigns(Callback<CampaignList> callback) {
         mApiService.getCampaigns(callback);
+    }
+
+    /**
+     * Share a picture
+     *
+     * @param imagePath
+     * @param text
+     * @param callback
+     */
+    public void sharePicture(String imagePath, String text, Callback<Response> callback) {
+        // FIXME
+        mUserManager.setUsername("sleiman@tanios.ca");
+        mUserManager.setPassword("slem8992");
+        mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
+                new TypedString("tayeule"),
+                new TypedString(text),
+                new TypedString(!TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : ""),
+                new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : ""),
+                new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterSecret()) ? mUserManager.getTwitterSecret() : ""),
+                new TypedString(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : ""),
+                callback);
     }
 }
 
