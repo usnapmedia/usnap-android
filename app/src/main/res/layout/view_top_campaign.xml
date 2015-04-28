@@ -19,6 +19,7 @@
         android:textColor="@android:color/black"/>
 
     <TextView
+        android:id="@+id/view_top_campaign_likes_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/font_size_small"

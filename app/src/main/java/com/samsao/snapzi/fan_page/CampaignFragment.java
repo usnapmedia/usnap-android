@@ -44,7 +44,7 @@ public class CampaignFragment extends Fragment{
     @InjectView(R.id.fragment_campaign_latest_uploads_recyclerView)
     public RecyclerView mLatestUploadsRecyclerView;
     private GridLayoutManager mLatestUploadsLayoutManager;
-    LatestUploadsAdapter mLatestUploadsAdapter;
+    private LatestUploadsAdapter mLatestUploadsAdapter;
 
     @Icicle
     public Campaign mCampaign;
@@ -135,11 +135,20 @@ public class CampaignFragment extends Fragment{
      * Initialize the latest uploads grid
      */
     private void initLatestUploads() {
-        mLatestUploadsRecyclerView.setHasFixedSize(true);
-        mLatestUploadsLayoutManager = new GridLayoutManager(getActivity(),4);
+//        mLatestUploadsRecyclerView.setHasFixedSize(true);
+        mLatestUploadsLayoutManager = new GridLayoutManager(getActivity(), 4);
         mLatestUploadsRecyclerView.setLayoutManager(mLatestUploadsLayoutManager);
         mLatestUploadsAdapter = new LatestUploadsAdapter(getActivity());
         mLatestUploadsRecyclerView.setAdapter(mLatestUploadsAdapter);
+        mLatestUploadsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.top = (int) getResources().getDimension(R.dimen.elements_quarter_horizontal_margin);
+                outRect.right = (int) getResources().getDimension(R.dimen.elements_quarter_horizontal_margin);
+                outRect.bottom = (int) getResources().getDimension(R.dimen.elements_quarter_horizontal_margin);
+                outRect.left = (int) getResources().getDimension(R.dimen.elements_quarter_horizontal_margin);
+            }
+        });
         getLiveFeed();
     }
 
