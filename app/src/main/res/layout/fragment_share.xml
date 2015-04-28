@@ -27,17 +27,17 @@
             android:layout_height="256dp"
             android:layout_marginRight="@dimen/elements_half_horizontal_margin">
 
-            <ImageView
-                android:id="@+id/fragment_share_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitStart"/>
-
             <FrameLayout
                 android:id="@+id/fragment_share_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="invisible"/>
+
+            <ImageView
+                android:id="@+id/fragment_share_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitStart"/>
 
         </FrameLayout>
 
