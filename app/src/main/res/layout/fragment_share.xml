@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +9,7 @@
         android:id="@+id/fragment_share_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_gray"/>
+        android:background="@color/dark_gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,13 +30,14 @@
                 android:id="@+id/fragment_share_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"/>
+                android:scaleType="centerCrop"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/fragment_share_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitStart"/>
+                android:scaleType="centerCrop" />
 
         </FrameLayout>
 
@@ -54,14 +54,14 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:gravity="top"
-                android:imeOptions="actionDone"
                 android:hint="@string/share_add_comment_hint"
+                android:imeOptions="actionDone"
                 android:inputType="textFilter"
-                android:minLines="3"
                 android:maxLength="150"
+                android:minLines="3"
                 android:scrollbars="vertical"
                 android:textColor="@color/dark_gray"
-                android:textColorHint="@color/text_hint"/>
+                android:textColorHint="@color/text_hint" />
 
             <TextView
                 android:id="@+id/fragment_share_comment_characters_textView"
@@ -73,7 +73,7 @@
                 android:singleLine="true"
                 android:textColor="@color/primary_light"
                 android:textSize="@dimen/font_size_small"
-                tools:text="132 characters"/>
+                tools:text="132 characters" />
 
         </LinearLayout>
 
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"
-                android:text="Facebook"/>
+                android:text="Facebook" />
 
             <Button
                 android:id="@+id/fragment_share_twitter"
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"
-                android:text="Twitter"/>
+                android:text="Twitter" />
 
         </LinearLayout>
 
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"
-                android:text="Google+"/>
+                android:text="Google+" />
 
             <Button
                 android:id="@+id/fragment_share_pinterest"
@@ -139,7 +139,7 @@
                 android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"
                 android:text="Pinterest"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -153,7 +153,7 @@
             style="@style/AppButton"
             android:layout_gravity="bottom"
             android:layout_marginTop="@dimen/elements_vertical_margin"
-            android:text="@string/action_share"/>
+            android:text="@string/action_share" />
 
     </LinearLayout>
 
