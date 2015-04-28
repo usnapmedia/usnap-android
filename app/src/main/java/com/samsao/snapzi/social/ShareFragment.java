@@ -6,20 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.util.PreferenceManager;
-import com.samsao.snapzi.util.UserManager;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.sromku.simple.fb.Permission;
@@ -38,29 +35,21 @@ import butterknife.OnClick;
 public class ShareFragment extends SocialNetworkFragment {
 
     @InjectView(R.id.fragment_share_facebook)
-    public Switch mFacebookSwitch;
+    public Button mFacebookBtn;
     @InjectView(R.id.fragment_share_twitter)
-    public Switch mTwitterSwitch;
+    public Button mTwitterBtn;
     @InjectView(R.id.fragment_share_gplus)
-    public Switch mGooglePlusSwitch;
+    public Button mGooglePlusBtn;
     @InjectView(R.id.fragment_share_comment_editText)
     public EditText mCommentEditText;
     @InjectView(R.id.fragment_share_toolbar)
     public Toolbar mToolbar;
     @InjectView(R.id.fragment_share_image)
     public ImageView mImage;
+    @InjectView(R.id.fragment_share_comment_characters_textView)
+    public TextView mCharactersCountTextView;
 
     private Listener mListener;
-
-    /**
-     * Switches onChange listeners
-     */
-    private CompoundButton.OnCheckedChangeListener mFacebookSwitchOnCheckedChangeListener;
-    private CompoundButton.OnCheckedChangeListener mTwitterSwitchOnCheckedChangeListener;
-    private CompoundButton.OnCheckedChangeListener mGooglePlusSwitchOnCheckedChangeListener;
-
-    // TODO inject me
-    private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     /**
      * Use this factory method to create a new instance of
@@ -91,137 +80,7 @@ public class ShareFragment extends SocialNetworkFragment {
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .into(mImage);
 
-        mFacebookSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    loginWithFacebook(new OnLoginListener() {
-                        @Override
-                        public void onLogin() {
-                            setFacebookAccessToken();
-                            mFacebookSwitch.setChecked(true);
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onNotAcceptingPermissions(Permission.Type type) {
-                            removeFacebookAccessToken();
-                            mFacebookSwitch.setOnCheckedChangeListener(null);
-                            mFacebookSwitch.setChecked(false);
-                            mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Facebook login failed: user did not accept permissions", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onThinking() {
-
-                        }
-
-                        @Override
-                        public void onException(Throwable throwable) {
-                            removeFacebookAccessToken();
-                            mFacebookSwitch.setOnCheckedChangeListener(null);
-                            mFacebookSwitch.setChecked(false);
-                            mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Facebook login failed: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onFail(String error) {
-                            removeFacebookAccessToken();
-                            mFacebookSwitch.setOnCheckedChangeListener(null);
-                            mFacebookSwitch.setChecked(false);
-                            mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Facebook login failed: " + error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    logoutFromFacebook(new OnLogoutListener() {
-                        @Override
-                        public void onLogout() {
-
-                        }
-
-                        @Override
-                        public void onThinking() {
-
-                        }
-
-                        @Override
-                        public void onException(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onFail(String s) {
-
-                        }
-                    });
-                }
-            }
-        };
-
-        mTwitterSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    loginWithTwitter(new Callback<TwitterSession>() {
-                        @Override
-                        public void success(Result<TwitterSession> twitterSessionResult) {
-                            setTwitterAccessToken();
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Twitter login success", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void failure(TwitterException e) {
-                            removeTwitterAccessToken();
-                            mTwitterSwitch.setOnCheckedChangeListener(null);
-                            mTwitterSwitch.setChecked(false);
-                            mTwitterSwitch.setOnCheckedChangeListener(mTwitterSwitchOnCheckedChangeListener);
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    logoutFromTwitter();
-                }
-            }
-        };
-
-        mGooglePlusSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    loginWithGooglePlus(new OnGooglePlusLoginListener() {
-                        @Override
-                        public void onSuccess() {
-                            setGooglePlusAccessToken();
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onFail() {
-                            removeGooglePlusAccessToken();
-                            mGooglePlusSwitch.setOnCheckedChangeListener(null);
-                            mGooglePlusSwitch.setChecked(false);
-                            mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Google+ login failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    disconnectFromGooglePlus();
-                }
-            }
-        };
-
-        initializeSwitches();
+        initializeSocialNetworks();
         return view;
     }
 
@@ -262,36 +121,45 @@ public class ShareFragment extends SocialNetworkFragment {
     }
 
     /**
-     * Initializes the switches
+     * Initializes the social network buttons
      */
-    protected void initializeSwitches() {
-        initializeFacebookSwitch();
-        initializeTwitterSwitch();
-        initializeGooglePlusSwitch();
+    protected void initializeSocialNetworks() {
+        setFacebookBtn(isFacebookConnected());
+        setTwitterBtn(isTwitterConnected());
+        setGooglePlusBtn(isGooglePlusConnected());
     }
 
     /**
-     * Initializes the Facebook switch
+     * Set the Facebook Button
      */
-    protected void initializeFacebookSwitch() {
-        mFacebookSwitch.setChecked(isFacebookConnected());
-        mFacebookSwitch.setOnCheckedChangeListener(mFacebookSwitchOnCheckedChangeListener);
+    protected void setFacebookBtn(boolean connected) {
+        if (connected) {
+            enableSocialNetworkBtn(mFacebookBtn);
+        } else {
+            disableSocialNetworkBtn(mFacebookBtn);
+        }
     }
 
     /**
-     * Initializes the Twitter switch
+     * Set the Twitter Button
      */
-    protected void initializeTwitterSwitch() {
-        mTwitterSwitch.setChecked(isTwitterConnected());
-        mTwitterSwitch.setOnCheckedChangeListener(mTwitterSwitchOnCheckedChangeListener);
+    protected void setTwitterBtn(boolean connected) {
+        if (connected) {
+            enableSocialNetworkBtn(mTwitterBtn);
+        } else {
+            disableSocialNetworkBtn(mTwitterBtn);
+        }
     }
 
     /**
-     * Initializes the Google+ switch
+     * Set the Google+ Button
      */
-    protected void initializeGooglePlusSwitch() {
-        mGooglePlusSwitch.setChecked(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()));
-        mGooglePlusSwitch.setOnCheckedChangeListener(mGooglePlusSwitchOnCheckedChangeListener);
+    protected void setGooglePlusBtn(boolean connected) {
+        if (connected) {
+            enableSocialNetworkBtn(mGooglePlusBtn);
+        } else {
+            disableSocialNetworkBtn(mGooglePlusBtn);
+        }
     }
 
     /**
@@ -302,7 +170,158 @@ public class ShareFragment extends SocialNetworkFragment {
             ((ActionBarActivity)getActivity()).setSupportActionBar(mToolbar);
         }
         ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+    }
+
+
+    /**
+     * Toggle Facebook ON/OFF
+     */
+    @OnClick(R.id.fragment_share_facebook)
+    public void toggleFacebook() {
+        if (!isFacebookConnected()) {
+            loginWithFacebook(new OnLoginListener() {
+                @Override
+                public void onLogin() {
+                    setFacebookAccessToken();
+                    setFacebookBtn(true);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNotAcceptingPermissions(Permission.Type type) {
+                    removeFacebookAccessToken();
+                    setFacebookBtn(false);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Facebook login failed: user did not accept permissions", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onThinking() {
+
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    removeFacebookAccessToken();
+                    setFacebookBtn(false);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Facebook login failed: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFail(String error) {
+                    removeFacebookAccessToken();
+                    setFacebookBtn(false);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Facebook login failed: " + error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            logoutFromFacebook(new OnLogoutListener() {
+                @Override
+                public void onLogout() {
+                    setFacebookBtn(false);
+                }
+
+                @Override
+                public void onThinking() {
+
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    setFacebookBtn(true);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Facebook logout failed: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFail(String s) {
+                    setFacebookBtn(true);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Facebook logout failed: " + s, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * Toggle Twitter ON/OFF
+     */
+    @OnClick(R.id.fragment_share_twitter)
+    public void toggleTwitter() {
+        if (!isTwitterConnected()) {
+            loginWithTwitter(new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> twitterSessionResult) {
+                    setTwitterAccessToken();
+                    setTwitterBtn(true);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Twitter login success", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void failure(TwitterException e) {
+                    removeTwitterAccessToken();
+                    setTwitterBtn(false);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Twitter login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            logoutFromTwitter();
+            setTwitterBtn(false);
+        }
+    }
+
+    /**
+     * Toggle G+ ON/OFF
+     */
+    @OnClick(R.id.fragment_share_gplus)
+    public void toggleGooglePlus() {
+        if (!isGooglePlusConnected()) {
+            loginWithGooglePlus(new OnGooglePlusLoginListener() {
+                @Override
+                public void onSuccess() {
+                    setGooglePlusAccessToken();
+                    setGooglePlusBtn(true);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFail() {
+                    removeGooglePlusAccessToken();
+                    setGooglePlusBtn(false);
+                    // TODO translation
+                    Toast.makeText(getActivity(), "Google+ login failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            setGooglePlusBtn(false);
+        }
+    }
+
+    /**
+     * Enables a social network button
+     * @param btn
+     */
+    public void enableSocialNetworkBtn(Button btn) {
+        //noinspection deprecation
+        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        btn.setTextColor(getResources().getColor(android.R.color.white));
+    }
+
+    /**
+     * Disables a social network button
+     * @param btn
+     */
+    public void disableSocialNetworkBtn(Button btn) {
+        //noinspection deprecation
+        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        btn.setTextColor(getResources().getColor(R.color.medium_gray));
     }
 
     @OnClick(R.id.fragment_share_share_btn)
