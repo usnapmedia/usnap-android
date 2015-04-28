@@ -30,6 +30,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.edit.EditActivity;
+import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.WindowUtil;
@@ -48,7 +49,8 @@ import timber.log.Timber;
  * @since 15-03-17
  */
 public class SelectMediaFragment extends Fragment implements PickMediaDialogFragment.PickMediaDialogListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>,
+        ProgressDialogFragment.Listener {
 
     /**
      * Constants
@@ -65,7 +67,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     private CountDownTimer mVideoCaptureCountdownTimer;
 
     private PickMediaDialogFragment mPickMediaDialogFragment;
-    private SavingImageProgressDialogFragment mSavingImageProgressDialog;
+    private ProgressDialogFragment mSavingImageProgressDialog;
 
     @InjectView(R.id.fragment_select_media_livefeed_recycler_view)
     public RecyclerView mRecyclerView;
@@ -597,9 +599,12 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
     }
 
+    /**
+     * Show SavingImageProgressDialog
+     */
     public void showSavingImageProgressDialog() {
         if (mSavingImageProgressDialog == null) {
-            mSavingImageProgressDialog = SavingImageProgressDialogFragment.newInstance(getActivity(), this);
+            mSavingImageProgressDialog = ProgressDialogFragment.newInstance(this, R.string.action_processing_image_text);
             mSavingImageProgressDialog.setCancelable(false);
         }
 
@@ -613,11 +618,17 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
     /**
      * Hide SavingImageProgressDialog
-     * FIXME use DialogFragment
      */
     public void dismissSavingImageProgressDialog() {
         if (getFragmentManager().findFragmentByTag(SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG) != null) {
             mSavingImageProgressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onProgressDialogCancel() {
+        PhotoUtil.cancelSaveImage();
+        // Restart camera preview
+        initializeCamera();
     }
 }

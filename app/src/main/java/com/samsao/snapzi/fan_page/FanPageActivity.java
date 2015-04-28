@@ -1,11 +1,8 @@
 package com.samsao.snapzi.fan_page;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,24 +18,27 @@ import icepick.Icicle;
 
 public class FanPageActivity extends ActionBarActivity {
 
-    private final static String EXTRA_CAMPAIGNS = "com.samsao.snapzi.fan_page.FanPageActivity";
+    private final static String EXTRA_CAMPAIGNS = "com.samsao.snapzi.fan_page.FanPageActivity.EXTRA_CAMPAIGNS";
 
-    @InjectView(R.id.activity_fan_page_viewPager)
-    public ViewPager mViewPager;
-    @InjectView(R.id.activity_fan_page_viewPager_pagerTabStrip)
-    public PagerSlidingTabStrip mTabs;
     @InjectView(R.id.activity_fan_page_toolbar)
     public Toolbar mToolbar;
+
+    @InjectView(R.id.activity_fan_page_tabs)
+    public PagerSlidingTabStrip mTabs;
+
+    @InjectView(R.id.activity_fan_page_view_pager)
+    public ViewPager mViewPager;
 
     @Icicle
     public CampaignList mCampaigns;
 
-    private FanPageAdapter mFanPageAdapter;
+    private CampaignAdapter mCampaignAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_fan_page);
         ButterKnife.inject(this);
         setupToolbar();
@@ -53,17 +53,28 @@ public class FanPageActivity extends ActionBarActivity {
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
 
-        mFanPageAdapter = new FanPageAdapter(getFragmentManager(), mCampaigns);
-        mViewPager.setAdapter(mFanPageAdapter);
+        // Set campaign adapter
+        mCampaignAdapter = new CampaignAdapter(getFragmentManager(), mCampaigns);
+        mViewPager.setAdapter(mCampaignAdapter);
+
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
+        mTabs.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
+        mTabs.setTextColorResource(android.R.color.white);
+        mTabs.setIndicatorColorResource(android.R.color.white);
+        mTabs.setDividerColorResource(android.R.color.white);
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
             @Override
-            public void onPageSelected(int position) {}
+            public void onPageSelected(int position) {
+            }
+
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
     }
 
@@ -97,41 +108,12 @@ public class FanPageActivity extends ActionBarActivity {
 
     /**
      * Helper method to start this activity
-     * @param list
+     *
+     * @param campaigns
      */
-    public static void start(Context context, CampaignList list) {
+    public static void start(Context context, CampaignList campaigns) {
         Intent intent = new Intent(context, FanPageActivity.class);
-        intent.putExtra(EXTRA_CAMPAIGNS, list);
+        intent.putExtra(EXTRA_CAMPAIGNS, campaigns);
         context.startActivity(intent);
-    }
-
-
-
-    public static class FanPageAdapter extends FragmentStatePagerAdapter {
-        /**
-         * List of campaigns
-         */
-        private CampaignList mCampaignList;
-
-        public FanPageAdapter(FragmentManager fragmentManager, CampaignList list) {
-            super(fragmentManager);
-            mCampaignList = list;
-        }
-
-        @Override
-        public int getCount() {
-            return mCampaignList.getResponse().size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return CampaignFragment.newInstance(mCampaignList.getResponse().get(position));
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mCampaignList.getResponse().get(position).getName();
-        }
-
     }
 }

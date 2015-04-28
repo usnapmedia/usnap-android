@@ -30,7 +30,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".social.ShareActivity"
-            android:label="@string/action_share"
+            android:label="@string/sharing"
             android:screenOrientation="portrait" />
         <activity
             android:name=".authentication.LoginActivity"

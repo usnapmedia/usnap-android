@@ -6,22 +6,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.edit.VideoPreview;
-import com.samsao.snapzi.util.PreferenceManager;
-import com.samsao.snapzi.util.UserManager;
+import com.samsao.snapzi.edit.util.ProgressDialogFragment;
+import com.samsao.snapzi.util.KeyboardUtil;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.sromku.simple.fb.Permission;
@@ -41,7 +46,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class ShareFragment extends SocialNetworkFragment {
+public class ShareFragment extends SocialNetworkFragment implements ProgressDialogFragment.Listener {
+    private final String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
 
     @InjectView(R.id.fragment_share_facebook)
     public Button mFacebookBtn;
@@ -58,11 +64,13 @@ public class ShareFragment extends SocialNetworkFragment {
     private VideoPreview mVideoPreview;
     @InjectView(R.id.fragment_share_image)
     public ImageView mImage;
+    @InjectView(R.id.fragment_share_comment_characters_textView)
+    public TextView mCommentCharactersCountTextView;
 
     private Listener mListener;
+    private ProgressDialogFragment mProgressDialogFragment;
 
     // TODO inject me
-    private UserManager mUserManager = new UserManager(new PreferenceManager());
     private ApiService mApiService = new ApiService();
 
     /**
@@ -94,6 +102,41 @@ public class ShareFragment extends SocialNetworkFragment {
                 .noPlaceholder()
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .into(mImage);
+
+        mCommentEditText.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            KeyboardUtil.hideKeyboard(v);
+                            mCommentCharactersCountTextView.requestFocus();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+        mCommentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int count = mCommentEditText.getText().toString().length();
+                if (count == 0) {
+                    mCommentCharactersCountTextView.setVisibility(View.INVISIBLE);
+                } else {
+                    mCommentCharactersCountTextView.setVisibility(View.VISIBLE);
+                    mCommentCharactersCountTextView.setText(getResources().getQuantityString(R.plurals.character_plural, count, count));
+                }
+            }
+        });
 
         initializeSocialNetworks();
         return view;
@@ -200,8 +243,6 @@ public class ShareFragment extends SocialNetworkFragment {
                 public void onLogin() {
                     setFacebookAccessToken();
                     setFacebookBtn(true);
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Facebook login success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -273,8 +314,6 @@ public class ShareFragment extends SocialNetworkFragment {
                 public void success(Result<TwitterSession> twitterSessionResult) {
                     setTwitterAccessToken();
                     setTwitterBtn(true);
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Twitter login success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -302,8 +341,6 @@ public class ShareFragment extends SocialNetworkFragment {
                 public void onSuccess() {
                     setGooglePlusAccessToken();
                     setGooglePlusBtn(true);
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Google+ login success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -360,17 +397,18 @@ public class ShareFragment extends SocialNetworkFragment {
      */
     public void disableSocialNetworkBtn(Button btn) {
         //noinspection deprecation
-        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
         btn.setTextColor(getResources().getColor(R.color.medium_gray));
     }
 
 
     @OnClick(R.id.fragment_share_share_btn)
     public void share() {
-        // TODO show loading dialog
+        showProgressDialog();
         mApiService.sharePicture(mListener.getImagePath(), mCommentEditText.getText().toString(), new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
+                dismissProgressDialog();
                 // TODO translation
                 Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
                 SelectMediaActivity.start(getActivity());
@@ -379,10 +417,40 @@ public class ShareFragment extends SocialNetworkFragment {
 
             @Override
             public void failure(RetrofitError error) {
+                dismissProgressDialog();
                 // TODO translation
                 Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Show progress dialog
+     */
+    public void showProgressDialog() {
+        if (mProgressDialogFragment == null) {
+            // FIXME wont work with French
+            mProgressDialogFragment = ProgressDialogFragment.newInstance(this, getString(R.string.sharing) + "...");
+            mProgressDialogFragment.setCancelable(false);
+        }
+
+        if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
+            mProgressDialogFragment.show(getFragmentManager(), PROGRESS_DIALOG_FRAGMENT_TAG);
+        }
+    }
+
+    /**
+     * Hide progress dialog
+     */
+    public void dismissProgressDialog() {
+        if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) != null) {
+            mProgressDialogFragment.dismiss();
+        }
+    }
+
+    @Override
+    public void onProgressDialogCancel() {
+        // nothing to do
     }
 
     public interface Listener {

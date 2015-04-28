@@ -46,5 +46,6 @@ public class KeyboardUtil {
     public static void hideKeyboard(View view) {
         InputMethodManager inputManager = (InputMethodManager) SnapziApplication.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        view.clearFocus();
     }
 }
