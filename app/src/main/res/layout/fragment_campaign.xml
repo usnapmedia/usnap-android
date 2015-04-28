@@ -79,6 +79,8 @@
         android:layout_marginTop="@dimen/elements_vertical_margin"
         android:background="@drawable/bg_section_top_border"
         android:paddingBottom="@dimen/elements_quarter_horizontal_margin"
-        android:paddingTop="@dimen/elements_quarter_horizontal_margin"/>
+        android:paddingTop="@dimen/elements_quarter_horizontal_margin"
+        android:paddingLeft="@dimen/elements_quarter_horizontal_margin"
+        android:paddingRight="@dimen/elements_quarter_horizontal_margin"/>
 
 </LinearLayout>

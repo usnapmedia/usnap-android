@@ -4,8 +4,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="48dp"
     android:layout_height="48dp"
-    android:paddingLeft="@dimen/elements_quarter_horizontal_margin"
-    android:paddingRight="@dimen/elements_quarter_horizontal_margin"
-    android:paddingBottom="@dimen/elements_quarter_horizontal_margin"
-    android:paddingTop="@dimen/elements_quarter_horizontal_margin"
     android:scaleType="centerCrop"/>
