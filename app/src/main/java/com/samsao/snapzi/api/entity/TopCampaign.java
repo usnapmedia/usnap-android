@@ -55,7 +55,7 @@ public class TopCampaign {
     @JsonProperty("tw_image_id")
     private Object twImageId;
     @JsonProperty("fb_likes")
-    private Object fbLikes;
+    private Integer fbLikes;
     @JsonProperty("fb")
     private Object fb;
     @JsonProperty("tw_key")
@@ -257,7 +257,7 @@ public class TopCampaign {
      * The fbLikes
      */
     @JsonProperty("fb_likes")
-    public Object getFbLikes() {
+    public Integer getFbLikes() {
         return fbLikes;
     }
 
@@ -267,7 +267,7 @@ public class TopCampaign {
      * The fb_likes
      */
     @JsonProperty("fb_likes")
-    public void setFbLikes(Object fbLikes) {
+    public void setFbLikes(Integer fbLikes) {
         this.fbLikes = fbLikes;
     }
 
