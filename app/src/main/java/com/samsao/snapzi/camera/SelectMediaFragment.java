@@ -599,6 +599,9 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         getActivity().startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
     }
 
+    /**
+     * Show SavingImageProgressDialog
+     */
     public void showSavingImageProgressDialog() {
         if (mSavingImageProgressDialog == null) {
             mSavingImageProgressDialog = ProgressDialogFragment.newInstance(this, R.string.action_processing_image_text);
