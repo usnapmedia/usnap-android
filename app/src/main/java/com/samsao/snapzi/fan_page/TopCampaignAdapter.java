@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.TopCampaign;
@@ -56,10 +57,20 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
 
     public class TopCampaignViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
+        private TextView mLikesCount;
 
         public TopCampaignViewHolder(View v) {
             super(v);
             mImageView = (ImageView) v.findViewById(R.id.view_top_campaign_img_view_id);
+            mLikesCount = (TextView) v.findViewById(R.id.view_top_campaign_likes_count);
+        }
+
+        public void setLikesCount(Integer count) {
+            // FIXME to remove
+            if (count == null) {
+                count = 10;
+            }
+            mLikesCount.setText(mContext.getResources().getQuantityString(R.plurals.likes_plural, count, count));
         }
     }
 }

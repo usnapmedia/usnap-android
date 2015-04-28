@@ -14,8 +14,8 @@
     <string name="birthday">birthday</string>
 
     <!--Social Networks-->
-    <string name="facebook_app_id" translatable="false">284759385065022</string>
-    <string name="facebook_app_namespace" translatable="false">wink-talent</string>
+    <string name="facebook_app_id" translatable="false">465899996898725</string>
+    <string name="facebook_app_namespace" translatable="false">usnap-poster</string>
     <string name="twitter_api_key" translatable="false">xWN8D23Qr6E0gJJFpthMXjbKX</string>
     <string name="twitter_api_secret" translatable="false">CJy9NakTiTNlfFkKByYg2YJe1UzmWw43PN7qrKEixJOWFV2MYM</string>
 
@@ -58,6 +58,11 @@
     <string name="top_10">Top 10</string>
     <string name="latest_uploads">Latest uploads</string>
     <string name="see_all">See all</string>
+    <plurals name="likes_plural">
+        <item quantity="zero">No likes</item>
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
 
     <!--Errors-->
     <string name="error_empty_username">username is required</string>

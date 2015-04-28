@@ -44,7 +44,7 @@ public class CampaignFragment extends Fragment{
     @InjectView(R.id.fragment_campaign_latest_uploads_recyclerView)
     public RecyclerView mLatestUploadsRecyclerView;
     private GridLayoutManager mLatestUploadsLayoutManager;
-    LatestUploadsAdapter mLatestUploadsAdapter;
+    private LatestUploadsAdapter mLatestUploadsAdapter;
 
     @Icicle
     public Campaign mCampaign;
