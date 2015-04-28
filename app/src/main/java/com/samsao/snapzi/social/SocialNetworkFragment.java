@@ -3,7 +3,10 @@ package com.samsao.snapzi.social;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.text.TextUtils;
 
+import com.samsao.snapzi.util.PreferenceManager;
+import com.samsao.snapzi.util.UserManager;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 import com.sromku.simple.fb.listeners.OnLogoutListener;
 import com.twitter.sdk.android.core.Callback;
@@ -30,6 +33,9 @@ public class SocialNetworkFragment extends Fragment {
      * Attached activity providing Google+ signin
      */
     private GooglePlusProvider mGooglePlusProvider;
+
+    // TODO inject me
+    private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     @Override
     public void onAttach(Activity activity) {
@@ -165,5 +171,14 @@ public class SocialNetworkFragment extends Fragment {
      */
     protected void removeGooglePlusAccessToken() {
         mGooglePlusProvider.removeGooglePlusAccessToken();
+    }
+
+    /**
+     * Is the user logged with Google+?
+     *
+     * @return
+     */
+    protected boolean isGooglePlusConnected() {
+        return!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken());
     }
 }
