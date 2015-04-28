@@ -59,6 +59,10 @@ public class FanPageActivity extends ActionBarActivity {
 
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
+        mTabs.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
+        mTabs.setTextColorResource(android.R.color.white);
+        mTabs.setIndicatorColorResource(android.R.color.white);
+        mTabs.setDividerColorResource(android.R.color.transparent);
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

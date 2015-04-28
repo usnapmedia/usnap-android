@@ -32,8 +32,8 @@ import timber.log.Timber;
  */
 public class CampaignFragment extends Fragment{
 
-    @InjectView(R.id.fragment_fan_campaign_banner)
-    public ImageView mImageView;
+    @InjectView(R.id.fragment_campaign_banner)
+    public ImageView mBannerImage;
 
     @InjectView(R.id.fragment_campaign_top_campaign_recycler_view)
     public RecyclerView mRecyclerView;
@@ -66,7 +66,7 @@ public class CampaignFragment extends Fragment{
         ButterKnife.inject(this, view);
         // TODO add placeHolder and errorHolder
         if (!TextUtils.isEmpty(mCampaign.getBannerImgUrl())) {
-            Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mImageView);
+            Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mBannerImage);
         }
 
         initTopCampaign();
