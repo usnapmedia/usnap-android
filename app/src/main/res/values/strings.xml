@@ -15,8 +15,8 @@
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">284759385065022</string>
     <string name="facebook_app_namespace" translatable="false">wink-talent</string>
-    <string name="twitter_api_key" translatable="false">iig0OuJF0qucK8EXENTg4DPCF</string>
-    <string name="twitter_api_secret" translatable="false">lrkVewgFN0Rnw1GGx6yMxWvhktQxfujJBRHGpkqw7Nd5XKcu7q</string>
+    <string name="twitter_api_key" translatable="false">xWN8D23Qr6E0gJJFpthMXjbKX</string>
+    <string name="twitter_api_secret" translatable="false">CJy9NakTiTNlfFkKByYg2YJe1UzmWw43PN7qrKEixJOWFV2MYM</string>
 
     <!--Select Media-->
     <string name="action_select_media">Select Media</string>
