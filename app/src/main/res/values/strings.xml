@@ -56,6 +56,8 @@
 
     <!--Campaigns-->
     <string name="top_10">Top 10</string>
+    <string name="latest_uploads">Latest uploads</string>
+    <string name="see_all">See all</string>
 
     <!--Errors-->
     <string name="error_empty_username">username is required</string>

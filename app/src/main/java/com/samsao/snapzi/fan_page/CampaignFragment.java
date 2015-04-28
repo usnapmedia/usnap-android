@@ -43,10 +43,10 @@ public class CampaignFragment extends Fragment{
 
     private Campaign mCampaign;
 
-    @InjectView(R.id.fragment_campaign_latest_uploads_grid_view)
+    @InjectView(R.id.fragment_campaign_latest_uploads_recyclerView)
     public RecyclerView mLatestUploadsRecyclerView;
     private GridLayoutManager mLatestUploadsLayoutManager;
-    LatestUploadsAdapter mLatestUploadsAdapter;
+    private LatestUploadsAdapter mLatestUploadsAdapter;
 
     public static CampaignFragment newInstance(Campaign campaign) {
         CampaignFragment campaignFragment = new CampaignFragment();
@@ -57,6 +57,7 @@ public class CampaignFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -75,6 +76,9 @@ public class CampaignFragment extends Fragment{
     }
 
 
+    /**
+     * Initialize the top 10 uploads
+     */
     private void initTopCampaign() {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -86,6 +90,9 @@ public class CampaignFragment extends Fragment{
         getTopCampaign();
     }
 
+    /**
+     * Get the top 10 shares from the backend
+     */
     private void getTopCampaign() {
         mApiService.getTopCampaign(new Callback<TopCampaignList>() {
             @Override
@@ -100,15 +107,21 @@ public class CampaignFragment extends Fragment{
         });
     }
 
+    /**
+     * Initialize the latest uploads grid
+     */
     private void initLatestUploads() {
-        mLatestUploadsRecyclerView.setHasFixedSize(true);
-        mLatestUploadsLayoutManager = new GridLayoutManager(getActivity(),4);
+//        mLatestUploadsRecyclerView.setHasFixedSize(true);
+        mLatestUploadsLayoutManager = new GridLayoutManager(getActivity(), 3);
         mLatestUploadsRecyclerView.setLayoutManager(mLatestUploadsLayoutManager);
         mLatestUploadsAdapter = new LatestUploadsAdapter(getActivity());
         mLatestUploadsRecyclerView.setAdapter(mLatestUploadsAdapter);
         getLiveFeed();
     }
 
+    /**
+     * Get the latest uploads pictures from the backend
+     */
     private void getLiveFeed() {
         mApiService.getLiveFeed(new Callback<FeedImageList>() {
             @Override
