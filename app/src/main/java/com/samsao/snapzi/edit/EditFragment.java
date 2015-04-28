@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
+import com.samsao.snapzi.camera.CameraHelper;
 import com.samsao.snapzi.edit.tools.Tool;
 import com.samsao.snapzi.edit.tools.ToolDraw;
 import com.samsao.snapzi.edit.util.TextAnnotationEditText;
@@ -35,6 +36,7 @@ import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.social.ShareActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
+import com.samsao.snapzi.util.VideoUtil;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -277,9 +279,9 @@ public class EditFragment extends Fragment {
             if (mVideoPreview == null) {
                 mVideoPreview = new VideoPreview(getActivity(), mListener.getMediaPath());
             }
-            mVideoContainer.setVisibility(View.VISIBLE);
             mImageContainer.setVisibility(View.GONE);
             mVideoContainer.addView(mVideoPreview);
+            mVideoContainer.setVisibility(View.VISIBLE);
         }
         getFeedImage();
     }
@@ -472,17 +474,47 @@ public class EditFragment extends Fragment {
     public void onOptionsNextSelected() {
         // Merge layers
         ArrayList<Bitmap> bitmapLayers = new ArrayList<Bitmap>();
+        float mediaWidth, mediaHeight;
 
-        // Source image bitmap
-        Bitmap imageBitmap = ((BitmapDrawable) mImageContainer.getDrawable()).getBitmap();
-        bitmapLayers.add(imageBitmap);
+        // TODO add loading screen
+
+        // Get media size in pixel (adjusted to the media container's aspect ratio)
+        if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+            // Source image bitmap
+            Bitmap imageBitmap = ((BitmapDrawable) mImageContainer.getDrawable()).getBitmap();
+            bitmapLayers.add(imageBitmap);
+            mediaWidth = (float) imageBitmap.getWidth();
+            mediaHeight = (float) imageBitmap.getHeight();
+        } else {
+            int videoWidth, videoHeight;
+            float videoAspectRatio, videoContainerAspectRatio;
+
+            if (VideoUtil.isVideoPortraitOriented(mListener.getMediaPath())) {
+                videoWidth = VideoUtil.getVideoHeight(mListener.getMediaPath());
+                videoHeight = VideoUtil.getVideoWidth(mListener.getMediaPath());
+            } else {
+                videoWidth = VideoUtil.getVideoWidth(mListener.getMediaPath());
+                videoHeight = VideoUtil.getVideoHeight(mListener.getMediaPath());
+            }
+            videoAspectRatio = (float) videoWidth / (float) videoHeight;
+            videoContainerAspectRatio = (float) mVideoContainer.getWidth() / (float) mVideoContainer.getHeight();
+
+            // calculate video final size
+            if (videoAspectRatio < videoContainerAspectRatio) {
+                mediaWidth = videoWidth;
+                mediaHeight = (int) ((float) videoHeight / videoContainerAspectRatio);
+            } else {
+                mediaWidth = (int) ((float) videoWidth / videoContainerAspectRatio);
+                mediaHeight = videoHeight;
+            }
+        }
 
         // Draw annotation bitmap
         Bitmap drawAnnotationBitmap = mDrawAnnotationContainer.obtainBitmap();
         if (drawAnnotationBitmap != null) {
             float drawAnnotationScaleFactor = Math.max(
-                    (float) imageBitmap.getWidth() / (float) drawAnnotationBitmap.getWidth(),
-                    (float) imageBitmap.getHeight() / (float) drawAnnotationBitmap.getHeight());
+                    mediaWidth / (float) drawAnnotationBitmap.getWidth(),
+                    mediaHeight / (float) drawAnnotationBitmap.getHeight());
             drawAnnotationBitmap = PhotoUtil.scaleBitmap(drawAnnotationBitmap, drawAnnotationScaleFactor, drawAnnotationScaleFactor);
             bitmapLayers.add(drawAnnotationBitmap);
         }
@@ -493,26 +525,44 @@ public class EditFragment extends Fragment {
         mTextAnnotationContainer.draw(canvas);
         if (textAnnotationBitmap != null) {
             float textAnnotationScaleFactor = Math.max(
-                    (float) imageBitmap.getWidth() / (float) textAnnotationBitmap.getWidth(),
-                    (float) imageBitmap.getHeight() / (float) textAnnotationBitmap.getHeight());
+                    mediaWidth / (float) textAnnotationBitmap.getWidth(),
+                    mediaHeight / (float) textAnnotationBitmap.getHeight());
             textAnnotationBitmap = PhotoUtil.scaleBitmap(textAnnotationBitmap, textAnnotationScaleFactor, textAnnotationScaleFactor);
             bitmapLayers.add(textAnnotationBitmap);
         }
 
         // Combine images
         Bitmap finalImage = PhotoUtil.combineBitmapsIntoOne(bitmapLayers);
-        // TODO add loading screen
-        PhotoUtil.saveImage(finalImage, mListener.getMediaPath(), new SaveImageCallback() {
+
+        // Set image destination path
+        String imageDestinationPath;
+        if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+            imageDestinationPath = mListener.getMediaPath();
+        } else {
+            imageDestinationPath = CameraHelper.getDefaultImageFilePath();
+        }
+
+        PhotoUtil.saveImage(finalImage, imageDestinationPath, new SaveImageCallback() {
             @Override
-            public void onSuccess(String destFilePath) {
-                Uri imageUri = Uri.fromFile(new File(mListener.getMediaPath()));
+            public void onSuccess(String imageDestinationPath) {
                 Intent intent = new Intent(getActivity(), ShareActivity.class);
-                intent.putExtra(ShareActivity.EXTRA_URI, imageUri);
+
+                intent.putExtra(ShareActivity.EXTRA_IMAGE_PATH, imageDestinationPath); // Keep image in both cases
+                if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+                    intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_IMAGE);
+                } else {
+                    intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_VIDEO);
+                    intent.putExtra(ShareActivity.EXTRA_VIDEO_PATH, mListener.getMediaPath());
+                }
+
+                // TODO stop loading screen
+
                 startActivity(intent);
             }
 
             @Override
             public void onFailure() {
+                // TODO stop loading screen on error
             }
         });
     }

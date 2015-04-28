@@ -13,11 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.picasso.MemoryPolicy;
@@ -29,6 +31,8 @@ import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+
+import java.io.File;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,8 +51,11 @@ public class ShareFragment extends SocialNetworkFragment {
     public EditText mCommentEditText;
     @InjectView(R.id.fragment_share_toolbar)
     public Toolbar mToolbar;
+    @InjectView(R.id.fragment_share_video)
+    public FrameLayout mVideoContainer;
+    private VideoPreview mVideoPreview;
     @InjectView(R.id.fragment_share_image)
-    public ImageView mImage;
+    public ImageView mImageContainer;
 
     private Listener mListener;
 
@@ -86,10 +93,11 @@ public class ShareFragment extends SocialNetworkFragment {
         setupToolbar();
 
         // load the image
-        Picasso.with(getActivity()).load(mListener.getImageUri())
+        Uri imageUri = Uri.fromFile(new File(mListener.getImagePath()));
+        Picasso.with(getActivity()).load(imageUri)
                 .noPlaceholder()
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                .into(mImage);
+                .into(mImageContainer);
 
         mFacebookSwitchOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -232,6 +240,29 @@ public class ShareFragment extends SocialNetworkFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
+            // load the video
+            if (mVideoPreview == null) {
+                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+            }
+            mVideoContainer.addView(mVideoPreview);
+            mVideoContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
+            mVideoContainer.removeView(mVideoPreview);
+            mVideoPreview = null;
+        }
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -299,10 +330,10 @@ public class ShareFragment extends SocialNetworkFragment {
      */
     public void setupToolbar() {
         if (mToolbar != null) {
-            ((ActionBarActivity)getActivity()).setSupportActionBar(mToolbar);
+            ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
         }
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @OnClick(R.id.fragment_share_share_btn)
@@ -311,6 +342,10 @@ public class ShareFragment extends SocialNetworkFragment {
     }
 
     public interface Listener {
-        Uri getImageUri();
+        String getMediaType();
+
+        String getImagePath();
+
+        String getVideoPath();
     }
 }
