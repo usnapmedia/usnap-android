@@ -42,7 +42,7 @@ public class AuthenticationActivity extends ActionBarActivity {
         // Set campaign adapter
         mAuthenticationAdapter = new AuthenticationAdapter(getFragmentManager());
         mViewPager.setAdapter(mAuthenticationAdapter);
-
+        mTabs.setShouldExpand(true);
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
         mTabs.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
@@ -90,7 +90,7 @@ public class AuthenticationActivity extends ActionBarActivity {
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-
+        getSupportActionBar().setTitle("REGISTRATION");
     }
 
     /**

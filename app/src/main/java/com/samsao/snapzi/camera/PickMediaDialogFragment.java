@@ -2,7 +2,6 @@ package com.samsao.snapzi.camera;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -15,22 +14,20 @@ import com.samsao.snapzi.R;
  * @since 2015-04-22
  */
 public class PickMediaDialogFragment extends DialogFragment {
-    private Context mContext;
     private PickMediaDialogListener mPickMediaDialogListener;
     private Button mPickImageButton;
     private Button mPickVideoButton;
 
-    public static PickMediaDialogFragment newInstance(PickMediaDialogListener listener, Context context) {
+    public static PickMediaDialogFragment newInstance(PickMediaDialogListener listener) {
         PickMediaDialogFragment mPickMediaDialogFragment = new PickMediaDialogFragment();
         mPickMediaDialogFragment.setPickMediaDialogListener(listener);
-        mPickMediaDialogFragment.setContext(context);
         return mPickMediaDialogFragment;
     }
 
     //android.R.style.AppTheme.DialogTheme
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Dialog dialog = new Dialog(mContext);
+        final Dialog dialog = new Dialog(getActivity());
 
         dialog.setTitle(R.string.action_select_media_type_title);
         dialog.setContentView(R.layout.dialog_select_media_type);
@@ -66,10 +63,6 @@ public class PickMediaDialogFragment extends DialogFragment {
 
     public void setPickMediaDialogListener(PickMediaDialogListener mListener) {
         mPickMediaDialogListener = mListener;
-    }
-
-    public void setContext(Context context) {
-        mContext = context;
     }
 
     public interface PickMediaDialogListener {
