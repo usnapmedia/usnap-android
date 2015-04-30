@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
@@ -33,7 +34,6 @@ import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -68,6 +68,9 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
     @InjectView(R.id.fragment_register_birthday)
     public MaterialEditText mMaterialEditTextBirthday;
 
+    @InjectView(R.id.fragment_register_sign_up_button)
+    public Button mButton;
+
     private ApiService mApiService = new ApiService();
 
     private Validator mValidator;
@@ -94,6 +97,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_register,container,false);
         ButterKnife.inject(this, v);
+        mButton.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
         mMaterialEditTextBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -115,6 +119,13 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 showBirthdayDatePicker(mDate);
             } 
         });
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateSignupInformation();
+            }
+        });
+
         return v;
     }
 
@@ -197,7 +208,9 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         ((MaterialEditText)failedView).setError(message);
     }
 
-    @OnClick(R.id.fragment_register_sign_up_button)
+    /**
+     * validate the sign up information when the sign up button is clicked.
+     */
     public void validateSignupInformation() {
         mValidator.validate();
     }

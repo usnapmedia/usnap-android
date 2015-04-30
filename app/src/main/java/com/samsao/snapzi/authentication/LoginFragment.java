@@ -42,6 +42,7 @@ public class LoginFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, v);
+        mButton.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

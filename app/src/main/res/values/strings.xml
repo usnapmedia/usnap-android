@@ -86,4 +86,16 @@
     <string name="title_activity_share">ShareActivity</string>
     <string name="title_activity_fan_page">FanPage</string>
     <string name="action_settings">Settings</string>
+
+    <!--Registration/Login-->
+    <string name="fragment_login_username">USERNAME</string>
+    <string name="fragment_login_password">PASSWORD</string>
+    <string name="fragment_login_login_button">LOGIN</string>
+    <string name="fragment_register_first_name">FIRST NAME</string>
+    <string name="fragment_register_last_name">LAST NAME</string>
+    <string name="fragment_register_email">EMAIL</string>
+    <string name="fragment_register_username">USERNAME</string>
+    <string name="fragment_register_password">PASSWORD</string>
+    <string name="fragment_register_birthday">BIRTHDAY</string>
+    <string name="fragment_register_sign_up_button">SIGN UP</string>
 </resources>
