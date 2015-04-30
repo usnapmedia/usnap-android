@@ -14,7 +14,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
-import com.samsao.snapzi.camera.SelectMediaActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,6 +42,7 @@ public class LoginFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, v);
+        mButton.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment{
                     @Override
                     public void failure(RetrofitError error) {
                         Toast.makeText(getActivity(), "Login Failure!", Toast.LENGTH_SHORT).show();
-                        SelectMediaActivity.start(getActivity());
+                        AuthenticationActivity.start(getActivity());
                         getActivity().finish();
                     }
                 });

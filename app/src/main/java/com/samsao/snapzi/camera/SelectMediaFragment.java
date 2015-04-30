@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
@@ -132,11 +134,20 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     }
 
     public void initLiveFeed() {
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) != 0) {
+                    outRect.left = (int) getResources().getDimension(R.dimen.elements_quarter_horizontal_margin);
+                } else {
+                    super.getItemOffsets(outRect, view, parent, state);
+                }
+            }
+        });
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mLiveFeedAdapter = new LiveFeedAdapter(getActivity());
         mRecyclerView.setAdapter(mLiveFeedAdapter);
         getFeedImage();
@@ -534,7 +545,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
      */
     public void showPickMediaDialog() {
         if (mPickMediaDialogFragment == null) {
-            mPickMediaDialogFragment = PickMediaDialogFragment.newInstance(this, getActivity());
+            mPickMediaDialogFragment = PickMediaDialogFragment.newInstance(this);
         }
         if (getFragmentManager().findFragmentByTag(PICK_MEDIA_DIALOG_FRAGMENT_TAG) == null) {
             mPickMediaDialogFragment.show(getFragmentManager(), PICK_MEDIA_DIALOG_FRAGMENT_TAG);

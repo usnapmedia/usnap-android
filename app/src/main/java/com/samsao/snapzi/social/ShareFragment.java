@@ -2,6 +2,7 @@ package com.samsao.snapzi.social;
 
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,10 +51,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class ShareFragment extends SocialNetworkFragment implements ProgressDialogFragment.Listener {
-    public final static String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.social.SocialNetworkFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
-    public final static String SHARE_FRAGMENT_TAG="com.samsao.snapzi.ShareFragment.SHARE_FRAGMENT_TAG";
-    public final static int SHARE_FRAGMENT_REQUEST_CODE = 0;
+public class ShareFragment extends SocialNetworkFragment implements ProgressDialogFragment.Listener, ShareLoginDialogFragment.ShareDialogListener {
+    public final static String SHARE_FRAGMENT_TAG = "com.samsao.snapzi.ShareFragment.SHARE_FRAGMENT_TAG";
+    private final int SHARE_FRAGMENT_REQUEST_CODE = 0;
+
 
     @InjectView(R.id.fragment_share_facebook)
     public Button mFacebookBtn;
@@ -74,7 +75,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public TextView mCommentCharactersCountTextView;
 
     private Listener mListener;
-    public static ProgressDialogFragment mProgressDialogFragment;
+    private ProgressDialogFragment mProgressDialogFragment;
+    private ShareLoginDialogFragment mShareLoginDialogFragment;
     private String mImagePath;
     private String mCommentText;
 
@@ -98,34 +100,26 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setRetainInstance(true);
+//        if (savedInstanceState != null) {
+//            mShareLoginDialogFragment = (ShareLoginDialogFragment) getFragmentManager().findFragmentByTag(ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG);
+//            if (mShareLoginDialogFragment != null) {
+//                mShareLoginDialogFragment.setShareDialogListener(this);
+//            }
+//        }
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        switch(requestCode) {
+        switch (requestCode) {
             case SHARE_FRAGMENT_REQUEST_CODE:
                 dismissProgressDialog();
                 if (resultCode == Activity.RESULT_OK) {
-                    mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
-                        @Override
-                        public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
-                            // TODO translation
-                            //Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
-                            SelectMediaActivity.start(getActivity());
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            // TODO translation
-                            Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    share();
                 }
                 break;
             default:
@@ -185,6 +179,29 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
         initializeSocialNetworks();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
+            // load the video
+            if (mVideoPreview == null) {
+                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+            }
+            mVideoContainer.addView(mVideoPreview);
+            mVideoContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
+            mVideoContainer.removeView(mVideoPreview);
+            mVideoPreview = null;
+        }
     }
 
     @Override
@@ -275,7 +292,6 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
-
 
     /**
      * Toggle Facebook ON/OFF
@@ -402,29 +418,6 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
-            // load the video
-            if (mVideoPreview == null) {
-                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
-            }
-            mVideoContainer.addView(mVideoPreview);
-            mVideoContainer.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
-            mVideoContainer.removeView(mVideoPreview);
-            mVideoPreview = null;
-        }
-    }
-
     /**
      * Enables a social network button
      *
@@ -438,6 +431,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
     /**
      * Disables a social network button
+     *
      * @param btn
      */
     public void disableSocialNetworkBtn(Button btn) {
@@ -446,10 +440,11 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         btn.setTextColor(getResources().getColor(R.color.medium_gray));
     }
 
-
     @OnClick(R.id.fragment_share_share_btn)
-    public void share() {
-        showProgressDialog();
+    /**
+     * When the share button is clicked
+     */
+    public void onShareBtnClick() {
         mImagePath = mListener.getImagePath();
         mCommentText = mCommentEditText.getText().toString();
         ShareActivity.setCommentText(mCommentText);
@@ -457,30 +452,56 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
         boolean isLogin = mUserManager.isLogged();
         if (!isLogin) {
-            Intent intent = new Intent(getActivity(),AuthenticationActivity.class);
-            startActivityForResult(intent, SHARE_FRAGMENT_REQUEST_CODE);
-
+            showLoginDialog();
         } else {
-            mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
-                @Override
-                public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
-                    dismissProgressDialog();
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
-                    SelectMediaActivity.start(getActivity());
-                    getActivity().finish();
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    dismissProgressDialog();
-                    // TODO translation
-                    Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            share();
         }
     }
 
+    /**
+     * Show the login dialog
+     */
+    private void showLoginDialog() {
+        if (mShareLoginDialogFragment == null) {
+            mShareLoginDialogFragment = ShareLoginDialogFragment.newInstance(this);
+        }
+        if (getFragmentManager().findFragmentByTag(ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG) == null) {
+            mShareLoginDialogFragment.show(getFragmentManager(), ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG);
+        }
+    }
+
+    /**
+     * Dismiss login dialog
+     */
+    public void dismissLoginDialog() {
+        if (getFragmentManager().findFragmentByTag(ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG) != null) {
+            mShareLoginDialogFragment.dismiss();
+        }
+    }
+
+    /**
+     * Share the media on the backend
+     */
+    public void share() {
+        showProgressDialog();
+        mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+            @Override
+            public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
+                dismissProgressDialog();
+                // TODO translation
+                Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
+                SelectMediaActivity.start(getActivity());
+                getActivity().finish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                dismissProgressDialog();
+                // TODO translation
+                Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     /**
      * Show progress dialog
@@ -492,8 +513,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             mProgressDialogFragment.setCancelable(false);
         }
 
-        if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
-            mProgressDialogFragment.show(getFragmentManager(), PROGRESS_DIALOG_FRAGMENT_TAG);
+        if (getFragmentManager().findFragmentByTag(ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
+            mProgressDialogFragment.show(getFragmentManager(), ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG);
         }
     }
 
@@ -501,14 +522,29 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
      * Hide progress dialog
      */
     public void dismissProgressDialog() {
-        if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) != null) {
+        if (getFragmentManager().findFragmentByTag(ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG) != null) {
             mProgressDialogFragment.dismiss();
         }
     }
 
     @Override
+    /**
+     * When the progress dialog gets cancelled
+     */
     public void onProgressDialogCancel() {
         // nothing to do
+    }
+
+    @Override
+    public void onLoginButtonClick(DialogFragment dialog) {
+        Intent intent = new Intent(getActivity(), AuthenticationActivity.class);
+        startActivityForResult(intent, SHARE_FRAGMENT_REQUEST_CODE);
+        dismissLoginDialog();
+    }
+
+    @Override
+    public void onCancelButtonClick(DialogFragment dialog) {
+        dismissLoginDialog();
     }
 
     public interface Listener {
