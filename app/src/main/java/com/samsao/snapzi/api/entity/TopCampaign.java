@@ -17,79 +17,35 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "id",
         "email",
-        "image_data",
-        "meta",
-        "text",
-        "filename",
+        "username",
         "url",
-        "fb_image_id",
-        "tw_image_id",
+        "thumb_url",
+        "text",
         "fb_likes",
-        "fb",
-        "tw_key",
-        "tw_secret",
-        "gp",
-        "status",
-        "app_id"
+        "campaign_id",
+        "usnap_score"
 })
 
 public class TopCampaign {
-    @JsonProperty("id")
-    private String id;
     @JsonProperty("email")
     private String email;
-    @JsonProperty("image_data")
-    private String imageData;
-    @JsonProperty("meta")
-    private String meta;
-    @JsonProperty("text")
-    private String text;
-    @JsonProperty("filename")
-    private String filename;
+    @JsonProperty("username")
+    private String username;
     @JsonProperty("url")
     private String url;
-    @JsonProperty("fb_image_id")
-    private Object fbImageId;
-    @JsonProperty("tw_image_id")
-    private Object twImageId;
+    @JsonProperty("thumb_url")
+    private Object thumbUrl;
+    @JsonProperty("text")
+    private Object text;
     @JsonProperty("fb_likes")
-    private Integer fbLikes;
-    @JsonProperty("fb")
-    private Object fb;
-    @JsonProperty("tw_key")
-    private Object twKey;
-    @JsonProperty("tw_secret")
-    private Object twSecret;
-    @JsonProperty("gp")
-    private Object gp;
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("app_id")
-    private Object appId;
+    private String fbLikes;
+    @JsonProperty("campaign_id")
+    private String campaignId;
+    @JsonProperty("usnap_score")
+    private Object usnapScore;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    /**
-     *
-     * @return
-     * The id
-     */
-    @JsonProperty("id")
-    public String getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     * The id
-     */
-    @JsonProperty("id")
-    public void setId(String id) {
-        this.id = id;
-    }
 
     /**
      *
@@ -114,81 +70,21 @@ public class TopCampaign {
     /**
      *
      * @return
-     * The imageData
+     * The username
      */
-    @JsonProperty("image_data")
-    public String getImageData() {
-        return imageData;
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
     }
 
     /**
      *
-     * @param imageData
-     * The image_data
+     * @param username
+     * The username
      */
-    @JsonProperty("image_data")
-    public void setImageData(String imageData) {
-        this.imageData = imageData;
-    }
-
-    /**
-     *
-     * @return
-     * The meta
-     */
-    @JsonProperty("meta")
-    public String getMeta() {
-        return meta;
-    }
-
-    /**
-     *
-     * @param meta
-     * The meta
-     */
-    @JsonProperty("meta")
-    public void setMeta(String meta) {
-        this.meta = meta;
-    }
-
-    /**
-     *
-     * @return
-     * The text
-     */
-    @JsonProperty("text")
-    public String getText() {
-        return text;
-    }
-
-    /**
-     *
-     * @param text
-     * The text
-     */
-    @JsonProperty("text")
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    /**
-     *
-     * @return
-     * The filename
-     */
-    @JsonProperty("filename")
-    public String getFilename() {
-        return filename;
-    }
-
-    /**
-     *
-     * @param filename
-     * The filename
-     */
-    @JsonProperty("filename")
-    public void setFilename(String filename) {
-        this.filename = filename;
+    @JsonProperty("username")
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -214,41 +110,41 @@ public class TopCampaign {
     /**
      *
      * @return
-     * The fbImageId
+     * The thumbUrl
      */
-    @JsonProperty("fb_image_id")
-    public Object getFbImageId() {
-        return fbImageId;
+    @JsonProperty("thumb_url")
+    public Object getThumbUrl() {
+        return thumbUrl;
     }
 
     /**
      *
-     * @param fbImageId
-     * The fb_image_id
+     * @param thumbUrl
+     * The thumb_url
      */
-    @JsonProperty("fb_image_id")
-    public void setFbImageId(Object fbImageId) {
-        this.fbImageId = fbImageId;
+    @JsonProperty("thumb_url")
+    public void setThumbUrl(Object thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 
     /**
      *
      * @return
-     * The twImageId
+     * The text
      */
-    @JsonProperty("tw_image_id")
-    public Object getTwImageId() {
-        return twImageId;
+    @JsonProperty("text")
+    public Object getText() {
+        return text;
     }
 
     /**
      *
-     * @param twImageId
-     * The tw_image_id
+     * @param text
+     * The text
      */
-    @JsonProperty("tw_image_id")
-    public void setTwImageId(Object twImageId) {
-        this.twImageId = twImageId;
+    @JsonProperty("text")
+    public void setText(Object text) {
+        this.text = text;
     }
 
     /**
@@ -257,7 +153,7 @@ public class TopCampaign {
      * The fbLikes
      */
     @JsonProperty("fb_likes")
-    public Integer getFbLikes() {
+    public String getFbLikes() {
         return fbLikes;
     }
 
@@ -267,128 +163,48 @@ public class TopCampaign {
      * The fb_likes
      */
     @JsonProperty("fb_likes")
-    public void setFbLikes(Integer fbLikes) {
+    public void setFbLikes(String fbLikes) {
         this.fbLikes = fbLikes;
     }
 
     /**
      *
      * @return
-     * The fb
+     * The campaignId
      */
-    @JsonProperty("fb")
-    public Object getFb() {
-        return fb;
+    @JsonProperty("campaign_id")
+    public String getCampaignId() {
+        return campaignId;
     }
 
     /**
      *
-     * @param fb
-     * The fb
+     * @param campaignId
+     * The campaign_id
      */
-    @JsonProperty("fb")
-    public void setFb(Object fb) {
-        this.fb = fb;
-    }
-
-    /**
-     *
-     * @return
-     * The twKey
-     */
-    @JsonProperty("tw_key")
-    public Object getTwKey() {
-        return twKey;
-    }
-
-    /**
-     *
-     * @param twKey
-     * The tw_key
-     */
-    @JsonProperty("tw_key")
-    public void setTwKey(Object twKey) {
-        this.twKey = twKey;
+    @JsonProperty("campaign_id")
+    public void setCampaignId(String campaignId) {
+        this.campaignId = campaignId;
     }
 
     /**
      *
      * @return
-     * The twSecret
+     * The usnapScore
      */
-    @JsonProperty("tw_secret")
-    public Object getTwSecret() {
-        return twSecret;
+    @JsonProperty("usnap_score")
+    public Object getUsnapScore() {
+        return usnapScore;
     }
 
     /**
      *
-     * @param twSecret
-     * The tw_secret
+     * @param usnapScore
+     * The usnap_score
      */
-    @JsonProperty("tw_secret")
-    public void setTwSecret(Object twSecret) {
-        this.twSecret = twSecret;
-    }
-
-    /**
-     *
-     * @return
-     * The gp
-     */
-    @JsonProperty("gp")
-    public Object getGp() {
-        return gp;
-    }
-
-    /**
-     *
-     * @param gp
-     * The gp
-     */
-    @JsonProperty("gp")
-    public void setGp(Object gp) {
-        this.gp = gp;
-    }
-
-    /**
-     *
-     * @return
-     * The status
-     */
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     *
-     * @param status
-     * The status
-     */
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    /**
-     *
-     * @return
-     * The appId
-     */
-    @JsonProperty("app_id")
-    public Object getAppId() {
-        return appId;
-    }
-
-    /**
-     *
-     * @param appId
-     * The app_id
-     */
-    @JsonProperty("app_id")
-    public void setAppId(Object appId) {
-        this.appId = appId;
+    @JsonProperty("usnap_score")
+    public void setUsnapScore(Object usnapScore) {
+        this.usnapScore = usnapScore;
     }
 
     @JsonAnyGetter
@@ -400,5 +216,4 @@ public class TopCampaign {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
-
 }

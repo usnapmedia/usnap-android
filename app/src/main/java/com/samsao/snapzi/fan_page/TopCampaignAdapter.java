@@ -71,14 +71,18 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
 
         public void setup(final TopCampaign campaign) {
             Picasso.with(mContext).load(campaign.getUrl()).into(mImageView);
-            setLikesCount(campaign.getFbLikes());
+            //setLikesCount(campaign.getFbLikes());
             mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-//                    intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_PATH, mPhotoPathList.get());
-//                    intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_TEXT, mPhotoTextList.get(index));
-                    //intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_USERNAME, mPhotoUserNameList.get(index));
+                    intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
+                    if (campaign.getText() != null) {
+                        intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
+                    }
+                    if (campaign.getUsername() != null) {
+                        intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
+                    }
                     mContext.startActivity(intent);
                 }
             });

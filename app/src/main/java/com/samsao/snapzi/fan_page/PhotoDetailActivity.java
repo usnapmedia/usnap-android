@@ -54,8 +54,7 @@ public class PhotoDetailActivity extends ActionBarActivity {
         if (intent != null) {
             mPhotoPath = intent.getStringExtra(EXTRA_PHOTO_PATH);
             mText = intent.getStringExtra(EXTRA_PHOTO_TEXT);
-            //mUsername = intent.getStringExtra(EXTRA_PHOTO_USERNAME);
-            System.out.println("PhotoDetailActivity: "+mPhotoPath);
+            mUsername = intent.getStringExtra(EXTRA_PHOTO_USERNAME);
         }
 
         // restore saved state
@@ -64,7 +63,7 @@ public class PhotoDetailActivity extends ActionBarActivity {
         }
 
         Picasso.with(this).load(mPhotoPath).into(mImageView);
-        //mUserNameTextView.setText(mUsername);
+        mUserNameTextView.setText(mUsername);
         mDescriptionTextView.setText(mText);
     }
 

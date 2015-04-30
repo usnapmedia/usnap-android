@@ -112,13 +112,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 showBirthdayDatePicker(mMaterialEditTextBirthday.getText().toString());
             }
         });
-        mMaterialEditTextBirthday.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Calendar c = Calendar.getInstance();
-                String mDate = c.getTime().toString();
-                showBirthdayDatePicker(mDate);
-            } 
-        });
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -206,6 +200,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         Toast.makeText(getActivity(), "Registration invalid! Please try it again!", Toast.LENGTH_LONG).show();
         String message = failedRule.getFailureMessage();
         ((MaterialEditText)failedView).setError(message);
+        failedView.requestFocus();
     }
 
     /**
