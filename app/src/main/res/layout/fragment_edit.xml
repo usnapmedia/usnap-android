@@ -22,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_brush"/>
 
     <FrameLayout
         android:id="@+id/fragment_edit_text_annotation_container"

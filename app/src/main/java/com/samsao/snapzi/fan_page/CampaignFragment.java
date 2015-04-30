@@ -58,6 +58,9 @@ public class CampaignFragment extends Fragment{
         return campaignFragment;
     }
 
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_campaign, container, false);
@@ -76,6 +79,11 @@ public class CampaignFragment extends Fragment{
         initTopCampaign();
         initLatestUploads();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

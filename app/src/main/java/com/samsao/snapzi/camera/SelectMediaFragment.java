@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
@@ -20,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -84,17 +82,16 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     private CameraPreview mCameraPreview;
 
     @InjectView(R.id.fragment_select_media_flash_setup_button)
-    public Button mFlashSetupButton;
+    public ImageView mFlashSetupButton;
 
     @InjectView(R.id.fragment_select_media_video_countdown)
     public TextView mVideoCountdown;
 
     @InjectView(R.id.fragment_select_media_flip_camera_button)
-    public Button mFlipCameraButton;
+    public ImageView mFlipCameraButton;
 
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
-
 
     /**
      * Use this factory method to create a new instance of
@@ -356,20 +353,20 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
      * @param flashMode
      */
     private void updateFlashButton(String flashMode) {
-        switch (flashMode) {
-            case Camera.Parameters.FLASH_MODE_AUTO:
-                mFlashSetupButton.setText("AUTO");
-                break;
-            case Camera.Parameters.FLASH_MODE_OFF:
-                mFlashSetupButton.setText("OFF");
-                break;
-            case Camera.Parameters.FLASH_MODE_ON:
-                mFlashSetupButton.setText("ON");
-                break;
-            default:
-                mFlashSetupButton.setText("FLASH");
-                break;
-        }
+//        switch (flashMode) {
+//            case Camera.Parameters.FLASH_MODE_AUTO:
+//                mFlashSetupButton.setText("AUTO");
+//                break;
+//            case Camera.Parameters.FLASH_MODE_OFF:
+//                mFlashSetupButton.setText("OFF");
+//                break;
+//            case Camera.Parameters.FLASH_MODE_ON:
+//                mFlashSetupButton.setText("ON");
+//                break;
+//            default:
+//                mFlashSetupButton.setText("FLASH");
+//                break;
+//        }
     }
 
     /**

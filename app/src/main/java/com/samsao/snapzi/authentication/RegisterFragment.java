@@ -51,7 +51,6 @@ public class RegisterFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_register,container,false);
         ButterKnife.inject(this, v);
-        //mButton = (Button) v.findViewById(R.id.fragment_register_sign_up_button);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,8 +100,4 @@ public class RegisterFragment extends Fragment{
     public String getBirthday() {
         return mMaterialEditTextBirthday.getText().toString();
     }
-
-
-
-
 }
