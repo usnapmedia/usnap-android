@@ -88,7 +88,6 @@
             android:layout_height="@dimen/fragment_select_media_latest_image"
             android:layout_gravity="start|bottom"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@color/black_alpha"
             android:padding="@dimen/elements_half_vertical_margin">
 
