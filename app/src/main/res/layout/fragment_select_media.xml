@@ -22,21 +22,25 @@
             android:id="@+id/fragment_select_media_livefeed_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/live_feed_layout_height"
-            android:layout_marginTop="@dimen/elements_half_vertical_margin"
             android:background="@color/black_alpha"
             android:padding="@dimen/elements_half_vertical_margin" />
 
         <!--Camera top controls-->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/elements_vertical_margin">
 
-            <Button
+            <ImageView
                 android:id="@+id/fragment_select_media_flash_setup_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_gravity="start|center_vertical"
                 android:visibility="invisible"
+                android:background="@drawable/bg_btn_circle"
+                android:src="@drawable/ic_flash"
+                android:scaleType="center"
                 tools:visibility="visible" />
 
             <TextView
@@ -46,12 +50,15 @@
                 android:layout_gravity="center"
                 android:textColor="@android:color/holo_red_dark" />
 
-            <Button
+            <ImageView
                 android:id="@+id/fragment_select_media_flip_camera_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_gravity="end|center_vertical"
-                android:text="FLIP"
+                android:src="@drawable/ic_camera"
+                android:background="@drawable/bg_btn_circle"
+                android:scaleType="center"
                 android:visibility="invisible"
                 tools:visibility="visible" />
 
@@ -63,6 +70,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_gravity="bottom">
 
         <com.samsao.snapzi.camera.ProgressButton
@@ -78,7 +86,7 @@
             android:layout_width="@dimen/fragment_select_media_latest_image"
             android:layout_height="@dimen/fragment_select_media_latest_image"
             android:layout_gravity="start|bottom"
-            android:layout_margin="@dimen/elements_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:background="@color/black_alpha"
             android:padding="@dimen/elements_half_vertical_margin">
 

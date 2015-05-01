@@ -76,7 +76,7 @@ public class ToolOptionBrightness extends ToolOption implements Parcelable {
 
     @Override
     public int getImageResource() {
-        return 0;
+        return R.drawable.ic_brightness;
     }
 
     @Override

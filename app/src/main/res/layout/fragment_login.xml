@@ -1,34 +1,48 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_login_user_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="USERNAME"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+        android:orientation="vertical"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_login_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="PASSWORD"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+    <LinearLayout style="@style/AuthenticationLinearLayout"
+                  android:background="@drawable/bg_section_bottom_border">
 
-    <Button
-        android:id="@+id/fragment_login_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LOGIN"
-        android:layout_gravity="center"
-        android:paddingTop="30dp"
-        android:paddingBottom="30dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            style="@style/LoginEditText"
+            android:inputType="textNoSuggestions"
+            android:id="@+id/fragment_login_user_name"
+            android:hint="@string/username"/>
 
-</LinearLayout>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            style="@style/LoginEditText"
+            android:inputType="textPassword"
+            android:fontFamily="sans-serif"
+            android:id="@+id/fragment_login_password"
+            android:hint="@string/password"/>
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/elements_vertical_margin"
+            android:gravity="center_horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/fragment_login_login_button"
+                style="@style/AppButton"
+                android:layout_width="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="6"
+                android:text="@string/action_login"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

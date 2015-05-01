@@ -5,13 +5,14 @@
     <!--Login-->
     <string name="action_login">login</string>
     <string name="action_signup">sign up</string>
-    <string name="username">username</string>
-    <string name="password">password</string>
-    <string name="reset_password">reset password</string>
-    <string name="first_name">first name</string>
-    <string name="last_name">last name</string>
-    <string name="email">email</string>
-    <string name="birthday">birthday</string>
+    <string name="action_register">register</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="first_name">FIRST NAME</string>
+    <string name="last_name">LAST NAME</string>
+    <string name="email">EMAIL</string>
+    <string name="birthday">BIRTHDAY</string>
+    <string name="authentication">Authentication</string>
 
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">465899996898725</string>
@@ -32,6 +33,7 @@
     <string name="action_share">Share</string>
     <string name="sharing">Sharing</string>
     <string name="share_add_comment_hint">Add comment</string>
+    <string name="action_prompting_login_text">You are not logged in! Please Login/Register!</string>
     <plurals name="character_plural">
         <item quantity="one">%d character</item>
         <item quantity="other">%d characters</item>
@@ -97,4 +99,5 @@
     <string name="title_activity_share">ShareActivity</string>
     <string name="title_activity_fan_page">FanPage</string>
     <string name="action_settings">Settings</string>
+
 </resources>

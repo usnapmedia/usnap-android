@@ -17,7 +17,8 @@ import com.samsao.snapzi.SnapziApplication;
  * @author jingsilu
  * @since 2015-04-23
  */
-public class ProgressDialogFragment extends DialogFragment{
+public class ProgressDialogFragment extends DialogFragment {
+    public final static String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.edit.util.ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
     private String mText;
     private Listener mListener;
 

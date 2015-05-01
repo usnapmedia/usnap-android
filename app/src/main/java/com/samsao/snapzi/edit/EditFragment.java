@@ -213,9 +213,18 @@ public class EditFragment extends Fragment {
      * This method initializes the live feed
      */
     public void initLiveFeed() {
+        mLiveFeedLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mLiveFeedRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) != 0) {
+                    outRect.left = (int) getResources().getDimension(R.dimen.elements_quarter_horizontal_margin);
+                } else {
+                    super.getItemOffsets(outRect, view, parent, state);
+                }
+            }
+        });
         mLiveFeedRecyclerView.setHasFixedSize(true);
-        mLiveFeedLayoutManager = new LinearLayoutManager(getActivity());
-        mLiveFeedLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mLiveFeedRecyclerView.setLayoutManager(mLiveFeedLayoutManager);
         mLiveFeedRecyclerView.setAdapter(mLiveFeedAdapter);
     }

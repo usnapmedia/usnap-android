@@ -47,7 +47,7 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     @Override
     public int getImageResource() {
-        return 0;
+        return R.drawable.ic_type;
     }
 
     @Override
