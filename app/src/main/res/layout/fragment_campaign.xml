@@ -5,7 +5,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <!--Campaign banner-->
         <ImageView
@@ -53,7 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                layout="@layout/view_fragment_campaign_top_10_cardview" />
+                layout="@layout/view_fragment_campaign_cardview" />
 
             <include
                 android:id="@+id/view_fragment_campaign_top_10_card_2"
@@ -61,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                layout="@layout/view_fragment_campaign_top_10_cardview" />
+                layout="@layout/view_fragment_campaign_cardview" />
 
             <include
                 android:id="@+id/view_fragment_campaign_top_10_card_3"
@@ -69,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                layout="@layout/view_fragment_campaign_top_10_cardview" />
+                layout="@layout/view_fragment_campaign_cardview" />
 
         </LinearLayout>
 
@@ -98,17 +99,38 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_campaign_latest_uploads_recyclerView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/elements_vertical_margin"
-            android:layout_weight="1"
-            android:background="@drawable/bg_section_top_border"
-            android:paddingBottom="@dimen/elements_quarter_horizontal_margin"
-            android:paddingLeft="@dimen/elements_quarter_horizontal_margin"
-            android:paddingRight="@dimen/elements_quarter_horizontal_margin"
-            android:paddingTop="@dimen/elements_quarter_horizontal_margin"/>
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/view_fragment_campaign_latest_uploads_card_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                layout="@layout/view_fragment_campaign_cardview" />
+
+            <include
+                android:id="@+id/view_fragment_campaign_latest_uploads_card_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/elements_horizontal_margin"
+                layout="@layout/view_fragment_campaign_cardview" />
+
+            <include
+                android:id="@+id/view_fragment_campaign_latest_uploads_card_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/elements_horizontal_margin"
+                layout="@layout/view_fragment_campaign_cardview" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

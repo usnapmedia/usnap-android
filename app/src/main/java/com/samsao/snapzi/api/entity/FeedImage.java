@@ -48,7 +48,7 @@ public class FeedImage {
     @JsonProperty("fb_image_id")
     private String fbImageId;
     @JsonProperty("fb_likes")
-    private String fbLikes;
+    private Integer fbLikes;
     @JsonProperty("fb")
     private Object fb;
     @JsonProperty("tw")
@@ -224,7 +224,7 @@ public class FeedImage {
      * The fbLikes
      */
     @JsonProperty("fb_likes")
-    public String getFbLikes() {
+    public Integer getFbLikes() {
         return fbLikes;
     }
 
@@ -234,7 +234,7 @@ public class FeedImage {
      * The fb_likes
      */
     @JsonProperty("fb_likes")
-    public void setFbLikes(String fbLikes) {
+    public void setFbLikes(Integer fbLikes) {
         this.fbLikes = fbLikes;
     }
 
