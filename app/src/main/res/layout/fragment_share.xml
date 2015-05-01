@@ -46,7 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true">
 
             <EditText
                 android:id="@+id/fragment_share_comment_editText"
@@ -68,8 +70,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:singleLine="true"
                 android:textColor="@color/primary_light"
                 android:textSize="@dimen/font_size_small"

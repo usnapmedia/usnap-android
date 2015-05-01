@@ -100,21 +100,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         // Required empty public constructor
     }
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
-//        if (savedInstanceState != null) {
-//            mShareLoginDialogFragment = (ShareLoginDialogFragment) getFragmentManager().findFragmentByTag(ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG);
-//            if (mShareLoginDialogFragment != null) {
-//                mShareLoginDialogFragment.setShareDialogListener(this);
-//            }
-//        }
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         switch (requestCode) {
             case SHARE_FRAGMENT_REQUEST_CODE:
                 dismissProgressDialog();
@@ -148,7 +135,6 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             KeyboardUtil.hideKeyboard(v);
-                            mCommentCharactersCountTextView.requestFocus();
                             return true;
                         }
                         return false;
@@ -448,8 +434,6 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         mImagePath = mListener.getImagePath();
         mCommentText = mCommentEditText.getText().toString();
         ShareActivity.setCommentText(mCommentText);
-        // FIXME remove me
-        mUserManager.removeUsername();
 
         boolean isLogin = mUserManager.isLogged();
         if (!isLogin) {
@@ -489,7 +473,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
                 dismissProgressDialog();
-                // TODO translation
+                // TODO string resource
                 Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
                 SelectMediaActivity.start(getActivity());
                 getActivity().finish();
@@ -498,7 +482,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             @Override
             public void failure(RetrofitError error) {
                 dismissProgressDialog();
-                // TODO translation
+                // TODO string resource
                 Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
