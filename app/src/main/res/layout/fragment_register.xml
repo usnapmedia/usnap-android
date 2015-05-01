@@ -1,66 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:isScrollContainer="true">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_register_first_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="FIRST NAME"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+        android:orientation="vertical"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_register_last_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="LAST NAME"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+        <LinearLayout
+            style="@style/AuthenticationLinearLayout"
+            android:background="@drawable/bg_section_bottom_border">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_register_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="EMAIL"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/fragment_register_first_name"
+                style="@style/LoginEditText"
+                android:inputType="textPersonName"
+                android:hint="@string/first_name"/>
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_register_user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="USERNAME"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/fragment_register_last_name"
+                style="@style/LoginEditText"
+                android:inputType="textPersonName"
+                android:hint="@string/last_name"/>
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_register_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="PASSWORD"
-        app:met_floatingLabel="highlight"
-        app:met_singleLineEllipsis="true"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/fragment_register_email"
+                style="@style/LoginEditText"
+                android:hint="@string/email"/>
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/fragment_register_birthday"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="BIRTHDAY"
-        app:met_floatingLabel="highlight"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/fragment_register_user_name"
+                style="@style/LoginEditText"
+                android:inputType="textNoSuggestions"
+                android:hint="@string/username"/>
 
-    <Button
-        android:id="@+id/fragment_register_sign_up_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SIGN UP"
-        android:layout_gravity="center"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/fragment_register_password"
+                style="@style/LoginEditText"
+                android:inputType="textPassword"
+                android:fontFamily="sans-serif"
+                android:hint="@string/password"/>
 
-</LinearLayout>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/fragment_register_birthday"
+                style="@style/LoginEditText"
+                android:textIsSelectable="true"
+                android:cursorVisible="false"
+                android:inputType="text"
+                android:hint="@string/birthday"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/elements_vertical_margin"
+            android:gravity="center_horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/fragment_register_sign_up_button"
+                style="@style/AppButton"
+                android:layout_width="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="6"
+                android:text="@string/action_signup"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

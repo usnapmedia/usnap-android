@@ -51,13 +51,6 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
     @Override
     public void onBindViewHolder(LiveFeedViewHolder liveFeedViewHolder, int position) {
         FeedImage imgLiveFeed = mImageLiveFeedList.get(position);
-
-        if (position < (getItemCount() - 1)) {
-            liveFeedViewHolder.itemView.setPadding(0,0,10,0);
-        } else {
-            liveFeedViewHolder.itemView.setPadding(0,0,0,0);
-        }
-
         Context context = liveFeedViewHolder.mImgIcon.getContext();
         // TODO add an error image and a placeholder
         Picasso.with(context).load(imgLiveFeed.getUrl()).into(liveFeedViewHolder.mImgIcon);

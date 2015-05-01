@@ -24,7 +24,7 @@ import retrofit.mime.TypedString;
  * @since 2014-05-29
  */
 public interface SnapziApi {
-    // TODO fix fields
+    // FIXME add api_key
     @FormUrlEncoded
     @POST("/register")
     public void register(@Field("username") String username,
@@ -32,7 +32,7 @@ public interface SnapziApi {
                          @Field("email") String email,
                          @Field("first_name") String firstName,
                          @Field("last_name") String lastName,
-                         @Field("birthday") String birthday,
+                         @Field("dob") String birthday,
                          Callback<Response> callback);
 
 
@@ -50,7 +50,6 @@ public interface SnapziApi {
     public void getCampaigns(Callback<CampaignList> callback);
     @GET("/feed/top")
     public void getTopCampaign(Callback<TopCampaignList> callback);
-
 
     @Multipart
     @POST("/share")

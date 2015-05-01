@@ -80,7 +80,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
     @Override
     public int getImageResource() {
-        return 0;
+        return R.drawable.ic_colour;
     }
 
     /**
