@@ -6,15 +6,19 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.CampaignList;
+import com.samsao.snapzi.profile.ProfileActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
+
 
 public class FanPageActivity extends ActionBarActivity {
 
@@ -22,6 +26,9 @@ public class FanPageActivity extends ActionBarActivity {
 
     @InjectView(R.id.activity_fan_page_toolbar)
     public Toolbar mToolbar;
+
+    @InjectView(R.id.activity_fan_page_profile_button)
+    public ImageButton mProfileButton;
 
     @InjectView(R.id.activity_fan_page_tabs)
     public PagerSlidingTabStrip mTabs;
@@ -51,6 +58,13 @@ public class FanPageActivity extends ActionBarActivity {
         if (savedInstanceState != null) {
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
+
+        mProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileActivity.start(FanPageActivity.this);
+            }
+        });
 
         // Set campaign adapter
         mCampaignAdapter = new CampaignAdapter(getFragmentManager(), mCampaigns);

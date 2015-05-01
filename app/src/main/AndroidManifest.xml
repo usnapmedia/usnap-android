@@ -46,6 +46,10 @@
         <activity
             android:name=".fan_page.FanPageActivity"
             android:label="@string/app_name" />
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

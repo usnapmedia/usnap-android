@@ -185,11 +185,6 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -198,15 +193,9 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement CameraProvider");
+                    + " must implement SelectMediaProvider");
         }
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
 
     /**
      * Setup view's buttons listener to their corresponding behavior.

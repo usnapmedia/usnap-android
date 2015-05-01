@@ -1,0 +1,149 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context="com.samsao.snapzi.profile.ProfileFragment">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/fragment_profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/dark_gray">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_gravity="start|center_vertical"
+            android:adjustViewBounds="true"
+            android:src="@drawable/white_logo" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <!--User info-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fragment_profile_user_info_container_height"
+        android:orientation="horizontal"
+        android:padding="@dimen/fragment_profile_user_info_container_padding">
+
+        <!--Letter tile-->
+        <FrameLayout
+            android:id="@+id/fragment_profile_letter_tile_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <FrameLayout
+                android:id="@+id/fragment_profile_letter_tile_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/profile_letter_tile_gradient" />
+
+            <TextView
+                android:id="@+id/fragment_profile_letter_tile_letter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:includeFontPadding="false"
+                android:maxLength="1"
+                android:textAllCaps="true" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/fragment_profile_user_info_container_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/fragment_profile_user_info_container_padding">
+
+                <!--Shares-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/fragment_profile_share_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/fragment_profile_user_info_count_size"
+                        tools:text="123" />
+
+                    <TextView
+                        android:id="@+id/fragment_profile_share_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="@dimen/fragment_profile_user_info_label_size"
+                        tools:text="SHARES" />
+
+                </LinearLayout>
+
+                <!--Separator-->
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/medium_gray" />
+
+                <!--Score-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/fragment_profile_score_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/fragment_profile_user_info_count_size"
+                        tools:text="456" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:text="@string/profile_score"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="@dimen/fragment_profile_user_info_label_size" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profile_setting_button_background"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="8dp"
+                android:text="@string/profile_settings"
+                android:textColor="@drawable/profile_setting_button_text_color" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

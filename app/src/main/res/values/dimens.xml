@@ -32,7 +32,13 @@
     <dimen name="fragment_select_media_latest_image_size">60dp</dimen>
 
     <!--Campaign-->
-    <dimen name="fragment_campaign_banner_height">140dp</dimen>
+    <dimen name="fragment_campaign_banner_height">144dp</dimen>
     <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
+
+    <!--Profile-->
+    <dimen name="fragment_profile_user_info_container_padding">16dp</dimen>
+    <dimen name="fragment_profile_user_info_container_height">144dp</dimen>
+    <dimen name="fragment_profile_user_info_count_size">24sp</dimen>
+    <dimen name="fragment_profile_user_info_label_size">14sp</dimen>
 
 </resources>
