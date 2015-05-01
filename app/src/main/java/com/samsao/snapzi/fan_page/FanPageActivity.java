@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ImageButton;
+import android.view.Menu;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
@@ -26,9 +25,6 @@ public class FanPageActivity extends ActionBarActivity {
 
     @InjectView(R.id.activity_fan_page_toolbar)
     public Toolbar mToolbar;
-
-    @InjectView(R.id.activity_fan_page_profile_button)
-    public ImageButton mProfileButton;
 
     @InjectView(R.id.activity_fan_page_tabs)
     public PagerSlidingTabStrip mTabs;
@@ -58,13 +54,6 @@ public class FanPageActivity extends ActionBarActivity {
         if (savedInstanceState != null) {
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
-
-        mProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProfileActivity.start(FanPageActivity.this);
-            }
-        });
 
         // Set campaign adapter
         mCampaignAdapter = new CampaignAdapter(getFragmentManager(), mCampaigns);
@@ -98,10 +87,19 @@ public class FanPageActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_fan_page, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.activity_fan_page_menu_profile:
+                ProfileActivity.start(FanPageActivity.this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

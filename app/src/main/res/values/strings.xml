@@ -79,6 +79,9 @@
     <!--Photo details-->
     <string name="photo">Photo</string>
 
+    <!--Profile-->
+    <string name="profile">Profile</string>
+
     <!--Errors-->
     <string name="error_empty_username">username is required</string>
     <string name="error_empty_email">email is required</string>
@@ -97,8 +100,5 @@
     <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
     <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
-    <string name="title_activity_share">ShareActivity</string>
-    <string name="title_activity_fan_page">FanPage</string>
-    <string name="action_settings">Settings</string>
 
 </resources>
