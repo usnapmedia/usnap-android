@@ -75,7 +75,7 @@ public class ToolOptionContrast extends ToolOption implements Parcelable {
 
     @Override
     public int getImageResource() {
-        return 0;
+        return R.drawable.ic_contrast;
     }
 
     @Override

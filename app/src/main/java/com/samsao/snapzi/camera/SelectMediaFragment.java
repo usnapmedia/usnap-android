@@ -10,7 +10,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
@@ -364,6 +363,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
      * @param flashMode
      */
     private void updateFlashButton(String flashMode) {
+        // TODO change drawable
 //        switch (flashMode) {
 //            case Camera.Parameters.FLASH_MODE_AUTO:
 //                mFlashSetupButton.setText("AUTO");

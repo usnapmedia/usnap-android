@@ -28,7 +28,7 @@ public class ToolFilters extends Tool implements Parcelable {
 
     @Override
     public int getImageResource() {
-        return 0;
+        return R.drawable.ic_adjust;
     }
 
     @Override
