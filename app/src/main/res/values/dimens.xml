@@ -41,7 +41,6 @@
     <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
 
     <!--Profile-->
-    <dimen name="fragment_profile_user_info_container_padding">16dp</dimen>
     <dimen name="fragment_profile_user_info_container_height">144dp</dimen>
     <dimen name="fragment_profile_user_info_button_padding">9dp</dimen>
     <dimen name="fragment_profile_top_campaign_item_image_size">100dp</dimen>

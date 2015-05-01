@@ -19,6 +19,7 @@ import com.samsao.snapzi.api.entity.FeedImage;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.TopCampaign;
 import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -266,8 +267,7 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_contest_btn)
     public void enterContest() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: enter contest", Toast.LENGTH_SHORT).show();
+        SelectMediaActivity.start(getActivity());
     }
 
     /**

@@ -3,6 +3,7 @@ package com.samsao.snapzi.profile;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,6 @@ import java.util.List;
  * @since 2015-04-30
  */
 public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.TopCampaignViewHolder> {
-
-    /**
-     * Constants
-     */
-    private final String LOG_TAG = getClass().getSimpleName();
-
     private Context mContext;
     private List<TopCampaign> mTopCampaignList;
 
@@ -86,9 +81,9 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
             Picasso.with(mContext).load(topCampaign.getUrl()).into(mImageView);
 
             setName(topCampaign.getUsername());
-            setShareCount(Integer.valueOf(topCampaign.getFbLikes()));
+            setShareCount(topCampaign.getFbLikes());
             //setDescription(topCampaign.getText().toString());
-            if (topCampaign.getText() != null && !topCampaign.getText().toString().isEmpty()) {
+            if (!TextUtils.isEmpty(topCampaign.getText())) {
                 mDescription.setText(topCampaign.getText().toString());
             } else {
                 //FIXME to remove
@@ -116,7 +111,7 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
         }
 
         public void setName(String name) {
-            if (name != null && !name.isEmpty()) {
+            if (!TextUtils.isEmpty(name)) {
                 mName.setText(name);
             } else {
                 //FIXME to remove
@@ -134,7 +129,7 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
         }
 
         public void setDescription(String description) {
-            if (description != null && !description.isEmpty()) {
+            if (!TextUtils.isEmpty(description)) {
                 mDescription.setText(description);
             } else {
                 //FIXME to remove
