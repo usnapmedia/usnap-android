@@ -52,7 +52,7 @@ import retrofit.client.Response;
 
 
 public class ShareFragment extends SocialNetworkFragment implements ProgressDialogFragment.Listener, ShareLoginDialogFragment.ShareDialogListener {
-    public final static String SHARE_FRAGMENT_TAG = "com.samsao.snapzi.ShareFragment.SHARE_FRAGMENT_TAG";
+    public final static String SHARE_FRAGMENT_TAG = "com.samsao.snapzi.ShareFragment.PHOTO_DETAILS_FRAGMENT_TAG";
     private final int SHARE_FRAGMENT_REQUEST_CODE = 0;
 
 
@@ -433,7 +433,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public void onShareBtnClick() {
         mImagePath = mListener.getImagePath();
         mCommentText = mCommentEditText.getText().toString();
-        ShareActivity.setCommentText(mCommentText);
+        mListener.setCommentText(mCommentText);
 
         boolean isLogin = mUserManager.isLogged();
         if (!isLogin) {
@@ -534,9 +534,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
     public interface Listener {
         String getMediaType();
-
         String getImagePath();
-
         String getVideoPath();
+        void setCommentText(String commentText);
     }
 }
