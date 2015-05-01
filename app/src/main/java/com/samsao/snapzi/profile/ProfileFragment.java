@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -128,6 +129,14 @@ public class ProfileFragment extends Fragment {
         // Setup my feed button
         setupMyFeedButton();
 
+        mTopCampaignsContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) != 0) {
+                    outRect.top = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
+                }
+            }
+        });
         showTopCampaigns();
 
         return view;
@@ -256,15 +265,6 @@ public class ProfileFragment extends Fragment {
 
         mTopCampaignAdapter = new TopCampaignAdapter(getActivity());
         mTopCampaignsContainer.setAdapter(mTopCampaignAdapter);
-
-        /*mTopCampaignsContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                if (parent.getChildAdapterPosition(view) != 0) {
-                    outRect.top = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
-                }
-            }
-        });*/
 
         getTopCampaigns();
     }

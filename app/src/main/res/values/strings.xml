@@ -78,6 +78,9 @@
     <string name="profile_campaigns">Campaigns</string>
     <string name="profile_my_feed">My feed</string>
 
+    <!--Photo details-->
+    <string name="photo">Photo</string>
+
     <!--Errors-->
     <string name="error_empty_username">username is required</string>
     <string name="error_empty_email">email is required</string>

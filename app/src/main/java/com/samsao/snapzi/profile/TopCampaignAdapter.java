@@ -3,18 +3,16 @@ package com.samsao.snapzi.profile;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.TopCampaign;
-import com.samsao.snapzi.fan_page.PhotoDetailActivity;
+import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.text.MessageFormat;
@@ -53,11 +51,6 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
     public void onBindViewHolder(TopCampaignViewHolder topCampaignViewHolder, int position) {
         TopCampaign topCampaign = mTopCampaignList.get(position);
         topCampaignViewHolder.setup(topCampaign);
-        if (position != 0) {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) topCampaignViewHolder.getContainer().getLayoutParams();
-            params.topMargin = (int) mContext.getResources().getDimension(R.dimen.elements_half_horizontal_margin);
-            topCampaignViewHolder.getContainer().setLayoutParams(params);
-        }
     }
 
     @Override
@@ -105,13 +98,13 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
             mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-                    intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_PATH, topCampaign.getUrl());
+                    Intent intent = new Intent(mContext, PhotoDetailsActivity.class);
+                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, topCampaign.getUrl());
                     if (topCampaign.getText() != null) {
-                        intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_TEXT, topCampaign.getText().toString());
+                        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, topCampaign.getText().toString());
                     }
                     if (topCampaign.getUsername() != null) {
-                        intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_USERNAME, topCampaign.getUsername());
+                        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, topCampaign.getUsername());
                     }
                     mContext.startActivity(intent);
                 }
