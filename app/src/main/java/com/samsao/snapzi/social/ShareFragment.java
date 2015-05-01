@@ -433,7 +433,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public void onShareBtnClick() {
         mImagePath = mListener.getImagePath();
         mCommentText = mCommentEditText.getText().toString();
-        ShareActivity.setCommentText(mCommentText);
+        mListener.setCommentText(mCommentText);
 
         boolean isLogin = mUserManager.isLogged();
         if (!isLogin) {
@@ -534,9 +534,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
     public interface Listener {
         String getMediaType();
-
         String getImagePath();
-
         String getVideoPath();
+        void setCommentText(String commentText);
     }
 }

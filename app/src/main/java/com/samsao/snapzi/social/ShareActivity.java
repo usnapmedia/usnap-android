@@ -1,6 +1,5 @@
 package com.samsao.snapzi.social;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,17 +24,16 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     public static final String TYPE_IMAGE = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_IMAGE";
     public static final String TYPE_VIDEO = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_VIDEO";
 
-    private ShareFragment mShareFragment;
-
     @Icicle
     public String mMediaType;
     @Icicle
     public String mImagePath;
     @Icicle
     public String mVideoPath;
-    public static String mCommentText;
+    @Icicle
+    public String mCommentText;
 
-    FragmentManager mFragmentManager;
+    private ShareFragment mShareFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +47,6 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
                 mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
             }
         }
-        mFragmentManager = getFragmentManager();
         // restore saved state
         if (savedInstanceState != null) {
             Icepick.restoreInstanceState(this, savedInstanceState);
@@ -58,7 +55,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
             mVideoPath = savedInstanceState.getString(EXTRA_VIDEO_PATH);
             mCommentText = savedInstanceState.getString(EXTRA_COMMENT_TEXT);
 
-            mShareFragment = (ShareFragment) mFragmentManager.findFragmentByTag(ShareFragment.SHARE_FRAGMENT_TAG);
+            mShareFragment = (ShareFragment) getFragmentManager().findFragmentByTag(ShareFragment.SHARE_FRAGMENT_TAG);
         }
 
         if (mMediaType == null || !(mMediaType.equals(TYPE_IMAGE) || mMediaType.equals(TYPE_VIDEO))) {
@@ -70,18 +67,9 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         }
 
         if (savedInstanceState == null) {
-
-            mShareFragment = (ShareFragment) mFragmentManager.findFragmentByTag(ShareFragment.SHARE_FRAGMENT_TAG);
-            if (mShareFragment == null) {
-                // Create a new Fragment to be placed in the activity layout
-                mShareFragment = ShareFragment.newInstance();
-
-                // Add the fragment
-
-            }
+            mShareFragment = ShareFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, mShareFragment, ShareFragment.SHARE_FRAGMENT_TAG).commit();
         }
-        //getFragmentManager().beginTransaction().replace(android.R.id.content, mShareFragment, SocialNetworkFragment.SOCIAL_NETWORK_TAG).commit();
-        getFragmentManager().beginTransaction().replace(android.R.id.content, mShareFragment, ShareFragment.SHARE_FRAGMENT_TAG).commit();
     }
 
 
@@ -126,7 +114,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         return mVideoPath;
     }
 
-    public static void setCommentText(String commentText) {
+    public void setCommentText(String commentText) {
         mCommentText = commentText;
     }
 
