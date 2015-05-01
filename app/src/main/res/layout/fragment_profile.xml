@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
                         android:textColor="@color/blue"
-                        android:textSize="@dimen/fragment_profile_user_info_count_size"
+                        android:textSize="@dimen/font_size_extra_large"
                         tools:text="123" />
 
                     <TextView
@@ -91,7 +91,7 @@
                         android:includeFontPadding="false"
                         android:textAllCaps="true"
                         android:textColor="@color/primary_dark"
-                        android:textSize="@dimen/fragment_profile_user_info_label_size"
+                        android:textSize="@dimen/font_size_medium"
                         tools:text="SHARES" />
 
                 </LinearLayout>
@@ -116,7 +116,7 @@
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
                         android:textColor="@color/blue"
-                        android:textSize="@dimen/fragment_profile_user_info_count_size"
+                        android:textSize="@dimen/font_size_extra_large"
                         tools:text="456" />
 
                     <TextView
@@ -126,13 +126,14 @@
                         android:text="@string/profile_score"
                         android:textAllCaps="true"
                         android:textColor="@color/primary_dark"
-                        android:textSize="@dimen/fragment_profile_user_info_label_size" />
+                        android:textSize="@dimen/font_size_medium" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
             <Button
+                android:id="@+id/fragment_profile_setting_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/profile_setting_button_background"
@@ -143,6 +144,32 @@
                 android:textColor="@drawable/profile_setting_button_text_color" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/holo_red_dark"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/fragment_profile_contest_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/profile_feed_button_background"
+            android:text="@string/profile_contests"
+            android:textColor="@drawable/profile_feed_button_text_color" />
+
+        <Button
+            android:id="@+id/fragment_profile_my_feed_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/profile_feed_button_background"
+            android:text="@string/profile_my_feed"
+            android:textColor="@drawable/profile_feed_button_text_color" />
 
     </LinearLayout>
 

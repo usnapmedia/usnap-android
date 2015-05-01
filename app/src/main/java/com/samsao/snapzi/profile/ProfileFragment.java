@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.util.PreferenceManager;
@@ -55,6 +57,15 @@ public class ProfileFragment extends Fragment {
     @InjectView(R.id.fragment_profile_score_count)
     TextView mScoreCount;
 
+    @InjectView(R.id.fragment_profile_setting_button)
+    TextView mSettingButton;
+
+    @InjectView(R.id.fragment_profile_contest_button)
+    Button mContestButton;
+
+    @InjectView(R.id.fragment_profile_my_feed_button)
+    Button mMyFeedButton;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -78,9 +89,53 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.inject(this, view);
 
+        // Setup toolbar
         mProfileProvider.setupToolbar(mToolbar);
 
         // Setup tile letter
+        setupTileLetter();
+
+        // Setup share count
+        setupShareCount();
+
+        // Setup score count
+        setupScoreCount();
+
+        // Setup setting button
+        setupSettingButton();
+
+        // Setup contests button
+        setupContestsButton();
+
+        // Setup my feed button
+        setupMyFeedButton();
+
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mProfileProvider = (ProfileProvider) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement ProfileProvider");
+        }
+    }
+
+    /**
+     * Setup tile letter
+     */
+    private void setupTileLetter() {
         mLetterTileContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -104,38 +159,71 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+    }
 
-        // Setup share count
+    /**
+     * Setup share count
+     */
+    private void setupShareCount() {
         //FIXME set real share count
         int shareCount = (int) (Math.random() * 1000.0f);
         mShareCount.setText(String.valueOf(shareCount));
         String fmt = getResources().getString(R.string.profile_share_plural);
         mShareLabel.setText(MessageFormat.format(fmt, shareCount));
+    }
 
-        // Setup score count
+    /**
+     * Setup score count
+     */
+    private void setupScoreCount() {
         //FIXME set real score
         int score = (int) (Math.random() * 1000.0f);
         mScoreCount.setText(String.valueOf(score));
-
-        return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
+    private void setupSettingButton() {
+        mSettingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
+                Toast.makeText(getActivity(), "TODO go to setting", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    /**
+     * Setup contest button
+     */
+    private void setupContestsButton() {
+        mContestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContest();
+            }
+        });
+    }
 
-        try {
-            mProfileProvider = (ProfileProvider) activity;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString()
-                    + " must implement ProfileProvider");
-        }
+    /**
+     * Setup user feed button
+     */
+    private void setupMyFeedButton() {
+        mMyFeedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showUserFeed();
+            }
+        });
+    }
+
+    private void showContest() {
+        mContestButton.setSelected(true);
+        mMyFeedButton.setSelected(false);
+
+
+    }
+
+    private void showUserFeed() {
+        mContestButton.setSelected(false);
+        mMyFeedButton.setSelected(true);
     }
 }

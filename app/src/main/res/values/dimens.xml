@@ -38,7 +38,5 @@
     <!--Profile-->
     <dimen name="fragment_profile_user_info_container_padding">16dp</dimen>
     <dimen name="fragment_profile_user_info_container_height">144dp</dimen>
-    <dimen name="fragment_profile_user_info_count_size">24sp</dimen>
-    <dimen name="fragment_profile_user_info_label_size">14sp</dimen>
 
 </resources>
