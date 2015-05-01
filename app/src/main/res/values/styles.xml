@@ -78,11 +78,12 @@
         <item name="android:background">@drawable/bg_circle_medium</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/font_size_large</item>
+        <item name="android:textSize">@dimen/font_size_extra_large</item>
     </style>
 
     <style name="CircleTextViewSmall" parent="CircleTextViewMedium">
         <item name="android:background">@drawable/bg_circle_small</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
     </style>
 
 </resources>

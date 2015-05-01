@@ -3,6 +3,7 @@ package com.samsao.snapzi.fan_page;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -80,6 +82,10 @@ public class PhotoDetailsFragment extends Fragment {
         }
         // TODO set time textview
         // TODO hide social networks
+        Typeface fontawesome = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/fontawesome.ttf");
+        mFacebookTextView.setTypeface(fontawesome);
+        mTwitterTextView.setTypeface(fontawesome);
+        mGooglePlusTextView.setTypeface(fontawesome);
 
         return view;
     }
