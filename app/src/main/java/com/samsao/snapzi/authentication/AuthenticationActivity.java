@@ -90,7 +90,6 @@ public class AuthenticationActivity extends ActionBarActivity {
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle("REGISTRATION");
     }
 
     /**

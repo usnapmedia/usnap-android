@@ -251,8 +251,10 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 mDayOfMonth = c.get(Calendar.DAY_OF_MONTH);
             }
 
-            // Create a new instance of TimePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, mYear, mMonthOfYear, mDayOfMonth);
+            // Create a new instance of DatePickerDialog and return it
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, mYear, mMonthOfYear, mDayOfMonth);
+            datePickerDialog.getDatePicker().setMaxDate(DateTime.now().getMillis());
+            return datePickerDialog;
         }
 
         @Override

@@ -12,6 +12,7 @@
     <string name="last_name">LAST NAME</string>
     <string name="email">EMAIL</string>
     <string name="birthday">BIRTHDAY</string>
+    <string name="authentication">Authentication</string>
 
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">465899996898725</string>

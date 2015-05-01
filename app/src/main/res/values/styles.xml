@@ -50,7 +50,6 @@
         <item name="met_floatingLabelAnimating">true</item>
         <item name="met_textColor">@color/dark_gray</item>
         <item name="met_textColorHint">@color/text_hint</item>
-        <item name="met_singleLineEllipsis">true</item>
     </style>
 
     <style name="SignupEditText" parent="LoginEditText">

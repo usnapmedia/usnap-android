@@ -448,6 +448,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         mImagePath = mListener.getImagePath();
         mCommentText = mCommentEditText.getText().toString();
         ShareActivity.setCommentText(mCommentText);
+        // FIXME remove me
         mUserManager.removeUsername();
 
         boolean isLogin = mUserManager.isLogged();

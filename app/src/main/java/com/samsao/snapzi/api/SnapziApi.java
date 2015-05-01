@@ -24,7 +24,7 @@ import retrofit.mime.TypedString;
  * @since 2014-05-29
  */
 public interface SnapziApi {
-    // TODO fix fields
+    // FIXME add api_key
     @FormUrlEncoded
     @POST("/register")
     public void register(@Field("username") String username,

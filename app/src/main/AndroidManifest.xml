@@ -34,7 +34,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".authentication.AuthenticationActivity"
-            android:label="@string/action_login" />
+            android:label="@string/authentication" />
         <activity
             android:name=".camera.SelectMediaActivity"
             android:label="@string/action_select_media"
