@@ -71,6 +71,19 @@
         <item name="android:background">@drawable/sel_app_btn</item>
     </style>
 
+    <style name="AppSmallButton" parent="Widget.AppCompat.Button.Small">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/sel_app_btn</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
+        <item name="android:paddingLeft">@dimen/elements_half_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/elements_half_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/elements_half_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/elements_half_vertical_margin</item>
+        <item name="android:minHeight">24dp</item>
+    </style>
+
     <style name="CircleTextViewMedium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -84,6 +97,15 @@
     <style name="CircleTextViewSmall" parent="CircleTextViewMedium">
         <item name="android:background">@drawable/bg_circle_small</item>
         <item name="android:textSize">@dimen/font_size_small</item>
+    </style>
+
+    <style name="AppCardView" parent="AppCardViewBase" />
+
+    <style name="AppCardViewBase">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardElevation">@dimen/cardview_elevation</item>
     </style>
 
 </resources>
