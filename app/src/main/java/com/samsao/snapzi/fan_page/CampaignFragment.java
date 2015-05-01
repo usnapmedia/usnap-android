@@ -1,26 +1,33 @@
 package com.samsao.snapzi.fan_page;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Campaign;
 import com.samsao.snapzi.api.entity.FeedImageList;
+import com.samsao.snapzi.api.entity.TopCampaign;
 import com.samsao.snapzi.api.entity.TopCampaignList;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import retrofit.Callback;
@@ -36,10 +43,12 @@ public class CampaignFragment extends Fragment{
 
     @InjectView(R.id.fragment_campaign_banner)
     public ImageView mBannerImage;
-
-    @InjectView(R.id.fragment_campaign_top_campaign_container)
-    public RecyclerView mTopCampaignContainer;
-    private TopCampaignAdapter mTopCampaignAdapter;
+    @InjectView(R.id.view_fragment_campaign_top_10_card_1)
+    public CardView mTop10CardView1;
+    @InjectView(R.id.view_fragment_campaign_top_10_card_2)
+    public CardView mTop10CardView2;
+    @InjectView(R.id.view_fragment_campaign_top_10_card_3)
+    public CardView mTop10CardView3;
 
     @InjectView(R.id.fragment_campaign_latest_uploads_recyclerView)
     public RecyclerView mLatestUploadsRecyclerView;
@@ -51,15 +60,11 @@ public class CampaignFragment extends Fragment{
 
     private ApiService mApiService = new ApiService();
 
-
     public static CampaignFragment newInstance(Campaign campaign) {
         CampaignFragment campaignFragment = new CampaignFragment();
         campaignFragment.setCampaign(campaign);
         return campaignFragment;
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,7 +81,7 @@ public class CampaignFragment extends Fragment{
             Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mBannerImage);
         }
 
-        initTopCampaign();
+        getTopSnaps();
         initLatestUploads();
         return view;
     }
@@ -99,42 +104,75 @@ public class CampaignFragment extends Fragment{
     }
 
     /**
-     * Initialize the top 10 uploads
+     * Get the top 10 snaps from the backend
      */
-    private void initTopCampaign() {
-        mTopCampaignContainer.setHasFixedSize(true);
-        // Set horizontal scroll for top campaigns
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mTopCampaignContainer.setLayoutManager(linearLayoutManager);
-
-        mTopCampaignAdapter = new TopCampaignAdapter(getActivity());
-        mTopCampaignContainer.setAdapter(mTopCampaignAdapter);
-        mTopCampaignContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                if (parent.getChildAdapterPosition(view) == 0) {
-                    outRect.left = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
-                }
-                outRect.right = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
-            }
-        });
-        getTopCampaign();
-    }
-
-    /**
-     * Get the top 10 shares from the backend
-     */
-    private void getTopCampaign() {
+    private void getTopSnaps() {
         mApiService.getTopCampaign(new Callback<TopCampaignList>() {
             @Override
             public void success(TopCampaignList topCampaignList, Response response) {
-                mTopCampaignAdapter.setTopCampaignList(topCampaignList.getResponse());
+                List<TopCampaign> topCampaigns = topCampaignList.getResponse();
+                TopCampaign campaign;
+                try {
+                    campaign = topCampaigns.get(1);
+                    setTopSnapCard(campaign, mTop10CardView1);
+                } catch (IndexOutOfBoundsException e) {
+                    // TODO hide layout
+                    mTop10CardView1.setVisibility(View.INVISIBLE);
+                    mTop10CardView2.setVisibility(View.INVISIBLE);
+                    mTop10CardView3.setVisibility(View.INVISIBLE);
+                }
+                try {
+                    campaign = topCampaigns.get(2);
+                    setTopSnapCard(campaign, mTop10CardView2);
+                } catch (IndexOutOfBoundsException e) {
+                    mTop10CardView2.setVisibility(View.INVISIBLE);
+                    mTop10CardView3.setVisibility(View.INVISIBLE);
+                }
+                try {
+                    campaign = topCampaigns.get(3);
+                    setTopSnapCard(campaign, mTop10CardView3);
+                } catch (IndexOutOfBoundsException e) {
+                    mTop10CardView3.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Timber.e("Error Fetching Top Campaign Data!");
+                Timber.e("Error Fetching Top Campaign Data: " + error.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Set a top snap cardView according to a snap
+     * @param campaign
+     * @param cardView
+     */
+    private void setTopSnapCard(final TopCampaign campaign, final CardView cardView) {
+        final ImageView imageView = (ImageView) cardView.findViewById(R.id.view_top_campaign_img_view_id);
+        final TextView nameTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_name);
+        final TextView likesCountTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_likes_count);
+
+        Picasso.with(getActivity()).load(campaign.getUrl()).fit().centerCrop().into(imageView);
+        if (!TextUtils.isEmpty(campaign.getEmail())) {
+            nameTextView.setText(campaign.getEmail());
+        }
+        if (campaign.getUsnapScore() != null) {
+            likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, campaign.getUsnapScore(), campaign.getUsnapScore()));
+        }
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PhotoDetailsActivity.class);
+                intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
+                if (!TextUtils.isEmpty(campaign.getText())) {
+                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
+                }
+                if (!TextUtils.isEmpty(campaign.getUsername())) {
+                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
+                }
+                startActivity(intent);
             }
         });
     }
@@ -179,6 +217,18 @@ public class CampaignFragment extends Fragment{
 
     public void setCampaign(Campaign campaign) {
         mCampaign = campaign;
+    }
+
+    @OnClick(R.id.fragment_campaign_see_all_top_10_btn)
+    public void seeAllTop10() {
+        // TODO
+        Toast.makeText(getActivity(), "TODO: see all top 10", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.fragment_campaign_see_all_latest_uploads_btn)
+    public void seeAllLatestUploads() {
+        // TODO
+        Toast.makeText(getActivity(), "TODO: see all latest uploads", Toast.LENGTH_SHORT).show();
     }
 
     /**

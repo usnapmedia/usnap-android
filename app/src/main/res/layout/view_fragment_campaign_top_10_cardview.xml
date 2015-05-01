@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    style="@style/AppCardView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="@dimen/elements_vertical_margin">
+
+        <com.samsao.snapzi.fan_page.view.SquareImageView
+            android:id="@+id/view_top_campaign_img_view_id"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/view_top_campaign_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sleiman Tanios"
+            android:textSize="@dimen/font_size_small"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/view_top_campaign_likes_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_small"
+            android:text="345 pts"
+            android:textColor="@color/medium_gray"/>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

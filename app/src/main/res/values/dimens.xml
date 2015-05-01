@@ -19,6 +19,8 @@
     <dimen name="elements_double_horizontal_margin">32dp</dimen>
     <dimen name="elements_quadruple_horizontal_margin">64dp</dimen>
 
+    <dimen name="cardview_elevation">4dp</dimen>
+
     <!--Select Media-->
     <dimen name="select_media_btn_size">72dp</dimen>
 
@@ -35,7 +37,7 @@
     <dimen name="fragment_select_media_latest_image_size">60dp</dimen>
 
     <!--Campaign-->
-    <dimen name="fragment_campaign_banner_height">144dp</dimen>
+    <dimen name="fragment_campaign_banner_height">192dp</dimen>
     <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
 
     <!--Profile-->
