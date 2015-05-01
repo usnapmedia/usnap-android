@@ -75,13 +75,13 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
             mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, PhotoDetailActivity.class);
-                    intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
+                    Intent intent = new Intent(mContext, PhotoDetailsActivity.class);
+                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
                     if (campaign.getText() != null) {
-                        intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
+                        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
                     }
                     if (campaign.getUsername() != null) {
-                        intent.putExtra(PhotoDetailActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
+                        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
                     }
                     mContext.startActivity(intent);
                 }

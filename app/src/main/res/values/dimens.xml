@@ -19,6 +19,9 @@
     <dimen name="elements_double_horizontal_margin">32dp</dimen>
     <dimen name="elements_quadruple_horizontal_margin">64dp</dimen>
 
+    <!--Select Media-->
+    <dimen name="select_media_btn_size">72dp</dimen>
+
     <!-- Photo edit -->
     <dimen name="photo_edit_menu_size">108dp</dimen>
     <dimen name="photo_edit_menu_image_size">64dp</dimen>

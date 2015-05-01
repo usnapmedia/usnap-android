@@ -76,6 +76,9 @@
     <string name="profile_score">Score</string>
     <string name="profile_settings">Settings</string>
 
+    <!--Photo details-->
+    <string name="photo">Photo</string>
+
     <!--Errors-->
     <string name="error_empty_username">username is required</string>
     <string name="error_empty_email">email is required</string>
