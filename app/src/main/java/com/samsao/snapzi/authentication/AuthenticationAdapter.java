@@ -17,9 +17,9 @@ public class AuthenticationAdapter extends FragmentStatePagerAdapter{
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return RegisterFragment.newInstance();
-            case 1:
                 return LoginFragment.newInstance();
+            case 1:
+                return RegisterFragment.newInstance();
             default:
                 return null;
         }
@@ -34,9 +34,9 @@ public class AuthenticationAdapter extends FragmentStatePagerAdapter{
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return RegisterFragment.getName();
-            case 1:
                 return LoginFragment.getName();
+            case 1:
+                return RegisterFragment.getName();
             default:
                 return "";
         }

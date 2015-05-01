@@ -14,7 +14,7 @@
 
         <LinearLayout
             style="@style/AuthenticationLinearLayout"
-            android:background="@drawable/bg_section_bottom_border">
+            android:background="@drawable/bg_section">
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/fragment_register_first_name"
