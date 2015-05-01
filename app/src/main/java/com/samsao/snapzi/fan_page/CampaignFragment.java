@@ -266,6 +266,12 @@ public class CampaignFragment extends Fragment{
         Toast.makeText(getActivity(), "TODO: see all latest uploads", Toast.LENGTH_SHORT).show();
     }
 
+    @OnClick(R.id.fragment_campaign_contest_btn)
+    public void enterContest() {
+        // TODO
+        Toast.makeText(getActivity(), "TODO: enter contest", Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * Returns the campaign's name
      * @return

@@ -65,6 +65,7 @@
         <item quantity="one">%d pt</item>
         <item quantity="other">%d pts</item>
     </plurals>
+    <string name="enter_contest">Enter contest</string>
 
     <!--Profile-->
     <plurals name="profile_share_plural">

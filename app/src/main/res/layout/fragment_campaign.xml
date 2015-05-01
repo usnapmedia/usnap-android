@@ -2,6 +2,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,26 +52,26 @@
 
             <include
                 android:id="@+id/view_fragment_campaign_top_10_card_1"
+                layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                layout="@layout/view_fragment_campaign_cardview" />
+                android:layout_weight="1"/>
 
             <include
                 android:id="@+id/view_fragment_campaign_top_10_card_2"
+                layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                layout="@layout/view_fragment_campaign_cardview" />
+                android:layout_weight="1"/>
 
             <include
                 android:id="@+id/view_fragment_campaign_top_10_card_3"
+                layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                layout="@layout/view_fragment_campaign_cardview" />
+                android:layout_weight="1"/>
 
         </LinearLayout>
 
@@ -109,28 +110,46 @@
 
             <include
                 android:id="@+id/view_fragment_campaign_latest_uploads_card_1"
+                layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                layout="@layout/view_fragment_campaign_cardview" />
+                android:layout_weight="1"/>
 
             <include
                 android:id="@+id/view_fragment_campaign_latest_uploads_card_2"
+                layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                layout="@layout/view_fragment_campaign_cardview" />
+                android:layout_weight="1"/>
 
             <include
                 android:id="@+id/view_fragment_campaign_latest_uploads_card_3"
+                layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                layout="@layout/view_fragment_campaign_cardview" />
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/elements_horizontal_margin"
+            android:gravity="center_horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/fragment_campaign_contest_btn"
+                style="@style/AppButton"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:text="@string/enter_contest"/>
 
         </LinearLayout>
 
     </LinearLayout>
+
 </ScrollView>
