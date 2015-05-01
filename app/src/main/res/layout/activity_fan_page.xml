@@ -16,13 +16,6 @@
             android:layout_gravity="start|center_vertical"
             android:src="@drawable/white_logo" />
 
-        <ImageButton
-            android:id="@+id/activity_fan_page_profile_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
-            android:src="@drawable/ic_person_white_24dp" />
-
     </android.support.v7.widget.Toolbar>
 
     <com.astuetz.PagerSlidingTabStrip

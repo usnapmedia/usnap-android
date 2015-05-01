@@ -1,14 +1,8 @@
 package com.samsao.snapzi.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author jingsilu
@@ -35,17 +29,15 @@ public class TopCampaign {
     @JsonProperty("url")
     private String url;
     @JsonProperty("thumb_url")
-    private Object thumbUrl;
+    private String thumbUrl;
     @JsonProperty("text")
-    private Object text;
+    private String text;
     @JsonProperty("fb_likes")
-    private String fbLikes;
+    private Integer fbLikes;
     @JsonProperty("campaign_id")
     private String campaignId;
     @JsonProperty("usnap_score")
-    private Object usnapScore;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Integer usnapScore;
 
     /**
      *
@@ -113,7 +105,7 @@ public class TopCampaign {
      * The thumbUrl
      */
     @JsonProperty("thumb_url")
-    public Object getThumbUrl() {
+    public String getThumbUrl() {
         return thumbUrl;
     }
 
@@ -123,7 +115,7 @@ public class TopCampaign {
      * The thumb_url
      */
     @JsonProperty("thumb_url")
-    public void setThumbUrl(Object thumbUrl) {
+    public void setThumbUrl(String thumbUrl) {
         this.thumbUrl = thumbUrl;
     }
 
@@ -133,7 +125,7 @@ public class TopCampaign {
      * The text
      */
     @JsonProperty("text")
-    public Object getText() {
+    public String getText() {
         return text;
     }
 
@@ -143,7 +135,7 @@ public class TopCampaign {
      * The text
      */
     @JsonProperty("text")
-    public void setText(Object text) {
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -153,7 +145,7 @@ public class TopCampaign {
      * The fbLikes
      */
     @JsonProperty("fb_likes")
-    public String getFbLikes() {
+    public Integer getFbLikes() {
         return fbLikes;
     }
 
@@ -163,7 +155,7 @@ public class TopCampaign {
      * The fb_likes
      */
     @JsonProperty("fb_likes")
-    public void setFbLikes(String fbLikes) {
+    public void setFbLikes(Integer fbLikes) {
         this.fbLikes = fbLikes;
     }
 
@@ -193,7 +185,7 @@ public class TopCampaign {
      * The usnapScore
      */
     @JsonProperty("usnap_score")
-    public Object getUsnapScore() {
+    public Integer getUsnapScore() {
         return usnapScore;
     }
 
@@ -203,17 +195,7 @@ public class TopCampaign {
      * The usnap_score
      */
     @JsonProperty("usnap_score")
-    public void setUsnapScore(Object usnapScore) {
+    public void setUsnapScore(Integer usnapScore) {
         this.usnapScore = usnapScore;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 }

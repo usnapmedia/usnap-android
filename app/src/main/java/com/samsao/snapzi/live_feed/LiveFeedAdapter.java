@@ -88,7 +88,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
                         @Override
                         public void failure(RetrofitError error) {
                             Toast.makeText(mContext, "Error fetching campaigns: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                            Timber.e("Error Fetching Campaigns!");
+                            Timber.e("Error Fetching Campaigns: " + error.getMessage());
                         }
                     });
                 }
