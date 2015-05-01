@@ -32,7 +32,7 @@ public interface SnapziApi {
                          @Field("email") String email,
                          @Field("first_name") String firstName,
                          @Field("last_name") String lastName,
-                         @Field("birthday") String birthday,
+                         @Field("dob") String birthday,
                          Callback<Response> callback);
 
 
@@ -50,7 +50,6 @@ public interface SnapziApi {
     public void getCampaigns(Callback<CampaignList> callback);
     @GET("/feed/top")
     public void getTopCampaign(Callback<TopCampaignList> callback);
-
 
     @Multipart
     @POST("/share")

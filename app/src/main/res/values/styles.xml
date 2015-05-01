@@ -29,51 +29,15 @@
     </style>
     
     <!--styles for register/login-->
-    <style name="authentication_linearlayout">
+    <style name="AuthenticationLinearLayout">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:paddingLeft">@dimen/elements_vertical_margin</item>
-        <item name="android:paddingRight">@dimen/elements_vertical_margin</item>
-        <item name="android:paddingTop">@dimen/elements_horizontal_margin</item>
-        <item name="android:paddingBottom">@dimen/elements_horizontal_margin</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
     </style>
-
-    <style name="fragment_login_button">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:paddingTop">@dimen/elements_vertical_margin</item>
-        <item name="android:paddingBottom">@dimen/elements_vertical_margin</item>
-        <item name="android:paddingLeft">@dimen/elements_quadruple_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/elements_quadruple_horizontal_margin</item>
-        <item name="android:layout_marginTop">@dimen/elements_vertical_margin</item>
-    </style>
-
-    <style name="fragment_register_button">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:paddingTop">@dimen/elements_vertical_margin</item>
-        <item name="android:paddingBottom">@dimen/elements_vertical_margin</item>
-        <item name="android:paddingLeft">@dimen/elements_quadruple_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/elements_quadruple_horizontal_margin</item>
-        <item name="android:layout_marginTop">@dimen/elements_double_vertical_margin</item>
-    </style>
-
-    <style name="fragment_login_MaterialEditText">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="met_floatingLabel">highlight</item>
-        <item name="met_singleLineEllipsis">true</item>
-    </style>
-
-    <style name="fragment_register_MaterialEditText">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="met_floatingLabel">highlight</item>
-    </style>
-    <!--The End: styles for register/login-->
 
     <style name="LoginEditText" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
@@ -86,6 +50,7 @@
         <item name="met_floatingLabelAnimating">true</item>
         <item name="met_textColor">@color/dark_gray</item>
         <item name="met_textColorHint">@color/text_hint</item>
+        <item name="met_singleLineEllipsis">true</item>
     </style>
 
     <style name="SignupEditText" parent="LoginEditText">

@@ -5,13 +5,13 @@
     <!--Login-->
     <string name="action_login">login</string>
     <string name="action_signup">sign up</string>
-    <string name="username">username</string>
-    <string name="password">password</string>
-    <string name="reset_password">reset password</string>
-    <string name="first_name">first name</string>
-    <string name="last_name">last name</string>
-    <string name="email">email</string>
-    <string name="birthday">birthday</string>
+    <string name="action_register">register</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="first_name">FIRST NAME</string>
+    <string name="last_name">LAST NAME</string>
+    <string name="email">EMAIL</string>
+    <string name="birthday">BIRTHDAY</string>
 
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">465899996898725</string>
@@ -87,15 +87,4 @@
     <string name="title_activity_fan_page">FanPage</string>
     <string name="action_settings">Settings</string>
 
-    <!--Registration/Login-->
-    <string name="fragment_login_username">USERNAME</string>
-    <string name="fragment_login_password">PASSWORD</string>
-    <string name="fragment_login_login_button">LOGIN</string>
-    <string name="fragment_register_first_name">FIRST NAME</string>
-    <string name="fragment_register_last_name">LAST NAME</string>
-    <string name="fragment_register_email">EMAIL</string>
-    <string name="fragment_register_username">USERNAME</string>
-    <string name="fragment_register_password">PASSWORD</string>
-    <string name="fragment_register_birthday">BIRTHDAY</string>
-    <string name="fragment_register_sign_up_button">SIGN UP</string>
 </resources>

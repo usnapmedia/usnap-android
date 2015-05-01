@@ -2,20 +2,45 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent">
 
-    <LinearLayout style="@style/authentication_linearlayout">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout style="@style/AuthenticationLinearLayout"
+                  android:background="@drawable/bg_section_bottom_border">
+
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/fragment_login_MaterialEditText"
+            style="@style/LoginEditText"
+            android:inputType="textNoSuggestions"
             android:id="@+id/fragment_login_user_name"
-            android:hint="@string/fragment_login_username"/>
+            android:hint="@string/username"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            style="@style/fragment_login_MaterialEditText"
+            style="@style/LoginEditText"
+            android:inputType="textPassword"
+            android:fontFamily="sans-serif"
             android:id="@+id/fragment_login_password"
-            android:hint="@string/fragment_login_password"/>
+            android:hint="@string/password"/>
 
-        <Button
-            style="@style/fragment_login_button"
-            android:id="@+id/fragment_login_login_button"
-            android:text="@string/fragment_login_login_button"/>
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/elements_vertical_margin"
+            android:gravity="center_horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/fragment_login_login_button"
+                style="@style/AppButton"
+                android:layout_width="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="6"
+                android:text="@string/action_login"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

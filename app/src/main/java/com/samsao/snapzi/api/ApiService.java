@@ -209,8 +209,18 @@ public class ApiService {
         mApiService.login(username, password, callback);
     }
 
-    public void register(String username, String password,String email,String firstName,String lastName, String birthday,Callback<Response> callback) {
-        mApiService.register(username,password,email,firstName,lastName,birthday,callback);
+    /**
+     * Register
+     * @param username
+     * @param password
+     * @param email
+     * @param firstName
+     * @param lastName
+     * @param birthday
+     * @param callback
+     */
+    public void register(String username, String password, String email, String firstName, String lastName, String birthday, Callback<Response> callback) {
+        mApiService.register(username, password, email, firstName, lastName, birthday, callback);
     }
 
     /**
@@ -239,9 +249,6 @@ public class ApiService {
      * @param callback
      */
     public void sharePicture(String imagePath, String text, Callback<Response> callback) {
-        // FIXME
-        mUserManager.setUsername("sleiman@tanios.ca");
-        mUserManager.setPassword("slem8992");
         mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
                 new TypedString("tayeule"),
                 new TypedString(text),
@@ -254,6 +261,7 @@ public class ApiService {
 
     /**
      * Get the top campaign
+     *
      * @param callback
      */
     public void getTopCampaign(Callback<TopCampaignList> callback) {
