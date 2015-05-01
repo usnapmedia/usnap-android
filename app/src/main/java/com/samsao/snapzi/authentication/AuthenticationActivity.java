@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.KeyboardUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -45,7 +46,7 @@ public class AuthenticationActivity extends ActionBarActivity {
         mTabs.setShouldExpand(true);
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
-        mTabs.setBackgroundColor(getResources().getColor(R.color.fan_page_tab_blue));
+        mTabs.setBackgroundColor(getResources().getColor(R.color.primary));
         mTabs.setTextColorResource(android.R.color.white);
         mTabs.setIndicatorColorResource(android.R.color.white);
         mTabs.setDividerColorResource(android.R.color.white);
@@ -56,6 +57,7 @@ public class AuthenticationActivity extends ActionBarActivity {
 
             @Override
             public void onPageSelected(int position) {
+                KeyboardUtil.hideKeyboard(AuthenticationActivity.this);
             }
 
             @Override

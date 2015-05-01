@@ -9,8 +9,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
  * @since 2015-04-28
  */
 public class AuthenticationAdapter extends FragmentStatePagerAdapter{
-
-
     public AuthenticationAdapter(FragmentManager fm) {
         super(fm);
     }

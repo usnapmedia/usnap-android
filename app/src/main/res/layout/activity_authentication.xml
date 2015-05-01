@@ -11,8 +11,9 @@
 
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/activity_authentication_tabs"
+        style="@style/PagerSlidingTabStrip"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?attr/actionBarSize"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/activity_authentication_view_pager"
