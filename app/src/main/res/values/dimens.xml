@@ -38,5 +38,6 @@
     <!--Profile-->
     <dimen name="fragment_profile_user_info_container_padding">16dp</dimen>
     <dimen name="fragment_profile_user_info_container_height">144dp</dimen>
+    <dimen name="fragment_profile_user_info_button_padding">9dp</dimen>
 
 </resources>

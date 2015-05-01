@@ -198,7 +198,7 @@ public class ProfileFragment extends Fragment {
         mContestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContest();
+                showContests();
             }
         });
     }
@@ -215,7 +215,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void showContest() {
+    private void showContests() {
         mContestButton.setSelected(true);
         mMyFeedButton.setSelected(false);
 

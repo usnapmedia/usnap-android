@@ -139,7 +139,7 @@
                 android:background="@drawable/profile_setting_button_background"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
-                android:padding="8dp"
+                android:padding="@dimen/fragment_profile_user_info_button_padding"
                 android:text="@string/profile_settings"
                 android:textColor="@drawable/profile_setting_button_text_color" />
 
@@ -149,25 +149,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/holo_red_dark"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/fragment_profile_contest_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/profile_feed_button_background"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="@dimen/fragment_profile_user_info_button_padding"
             android:text="@string/profile_contests"
             android:textColor="@drawable/profile_feed_button_text_color" />
 
         <Button
             android:id="@+id/fragment_profile_my_feed_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/profile_feed_button_background"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="@dimen/fragment_profile_user_info_button_padding"
             android:text="@string/profile_my_feed"
             android:textColor="@drawable/profile_feed_button_text_color" />
 
