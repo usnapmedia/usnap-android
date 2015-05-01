@@ -75,7 +75,7 @@
     <string name="profile_share_plural">{0,choice,0#Share|1#Share|1&lt;Shares}</string>
     <string name="profile_score">Score</string>
     <string name="profile_settings">Settings</string>
-    <string name="profile_contests">Contests</string>
+    <string name="profile_campaigns">Campaigns</string>
     <string name="profile_my_feed">My feed</string>
 
     <!--Errors-->

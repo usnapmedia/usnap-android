@@ -2,7 +2,10 @@ package com.samsao.snapzi.profile;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -15,12 +18,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.TopCampaignList;
 import com.samsao.snapzi.util.PreferenceManager;
 
 import java.text.MessageFormat;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 
 /**
@@ -60,11 +69,20 @@ public class ProfileFragment extends Fragment {
     @InjectView(R.id.fragment_profile_setting_button)
     TextView mSettingButton;
 
-    @InjectView(R.id.fragment_profile_contest_button)
-    Button mContestButton;
+    @InjectView(R.id.fragment_profile_campaigns_button)
+    Button mCampaignsButton;
 
     @InjectView(R.id.fragment_profile_my_feed_button)
     Button mMyFeedButton;
+
+    @InjectView(R.id.fragment_profile_top_campaigns_container)
+    RecyclerView mTopCampaignsContainer;
+    private TopCampaignAdapter mTopCampaignAdapter;
+
+    @InjectView(R.id.fragment_profile_my_feed_container)
+    RecyclerView mMyFeedContainer;
+
+    private ApiService mApiService = new ApiService();
 
 
     /**
@@ -110,6 +128,8 @@ public class ProfileFragment extends Fragment {
         // Setup my feed button
         setupMyFeedButton();
 
+        showTopCampaigns();
+
         return view;
     }
 
@@ -154,7 +174,7 @@ public class ProfileFragment extends Fragment {
                 if (username != null && !username.isEmpty()) {
                     mLetterTileLetter.setText(preferenceManager.getUsername());
                 } else {
-                    mLetterTileLetter.setText("SNAPZI");
+                    mLetterTileLetter.setText("pelvish");
                 }
 
             }
@@ -168,8 +188,8 @@ public class ProfileFragment extends Fragment {
         //FIXME set real share count
         int shareCount = (int) (Math.random() * 1000.0f);
         mShareCount.setText(String.valueOf(shareCount));
-        String fmt = getResources().getString(R.string.profile_share_plural);
-        mShareLabel.setText(MessageFormat.format(fmt, shareCount));
+        String label = getResources().getString(R.string.profile_share_plural);
+        mShareLabel.setText(MessageFormat.format(label, shareCount));
     }
 
     /**
@@ -195,10 +215,12 @@ public class ProfileFragment extends Fragment {
      * Setup contest button
      */
     private void setupContestsButton() {
-        mContestButton.setOnClickListener(new View.OnClickListener() {
+        mCampaignsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContests();
+                if (!mCampaignsButton.isSelected()) {
+                    showTopCampaigns();
+                }
             }
         });
     }
@@ -210,20 +232,68 @@ public class ProfileFragment extends Fragment {
         mMyFeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showUserFeed();
+                if (!mMyFeedButton.isSelected()) {
+                    showUserFeed();
+                }
             }
         });
     }
 
-    private void showContests() {
-        mContestButton.setSelected(true);
+    /**
+     * Show top campaigns list view
+     */
+    private void showTopCampaigns() {
         mMyFeedButton.setSelected(false);
+        mCampaignsButton.setSelected(true);
+        mMyFeedContainer.setVisibility(View.GONE);
+        mTopCampaignsContainer.setVisibility(View.VISIBLE);
+        mTopCampaignsContainer.setHasFixedSize(true);
 
+        // Set vertical scroll for top campaigns
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mTopCampaignsContainer.setLayoutManager(linearLayoutManager);
 
+        mTopCampaignAdapter = new TopCampaignAdapter(getActivity());
+        mTopCampaignsContainer.setAdapter(mTopCampaignAdapter);
+
+        /*mTopCampaignsContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if (parent.getChildAdapterPosition(view) != 0) {
+                    outRect.top = (int) getResources().getDimension(R.dimen.elements_half_horizontal_margin);
+                }
+            }
+        });*/
+
+        getTopCampaigns();
     }
 
     private void showUserFeed() {
-        mContestButton.setSelected(false);
+        mCampaignsButton.setSelected(false);
         mMyFeedButton.setSelected(true);
+        mTopCampaignsContainer.setVisibility(View.GONE);
+        mMyFeedContainer.setVisibility(View.VISIBLE);
+        mMyFeedContainer.setHasFixedSize(true);
+
+        //TODO
+        Toast.makeText(getActivity(), "TODO", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Get the top 10 shares from the backend
+     */
+    private void getTopCampaigns() {
+        mApiService.getTopCampaign(new Callback<TopCampaignList>() {
+            @Override
+            public void success(TopCampaignList topCampaignList, Response response) {
+                mTopCampaignAdapter.setTopCampaignList(topCampaignList.getResponse());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching Top Campaign Data!");
+            }
+        });
     }
 }

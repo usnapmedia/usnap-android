@@ -147,13 +147,14 @@
 
     </LinearLayout>
 
+    <!--Feed buttons-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/fragment_profile_contest_button"
+            android:id="@+id/fragment_profile_campaigns_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -161,7 +162,7 @@
             android:minHeight="0dp"
             android:minWidth="0dp"
             android:padding="@dimen/fragment_profile_user_info_button_padding"
-            android:text="@string/profile_contests"
+            android:text="@string/profile_campaigns"
             android:textColor="@drawable/profile_feed_button_text_color" />
 
         <Button
@@ -177,5 +178,21 @@
             android:textColor="@drawable/profile_feed_button_text_color" />
 
     </LinearLayout>
+
+    <!--Top campaigns container-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_profile_top_campaigns_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_gray"
+        android:visibility="gone" />
+
+    <!--User feed container-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_profile_my_feed_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_gray"
+        android:visibility="gone" />
 
 </LinearLayout>

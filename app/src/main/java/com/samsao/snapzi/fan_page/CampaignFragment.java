@@ -28,6 +28,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+
 /**
  * @author jingsilu
  * @since 2015-04-24
@@ -58,9 +59,6 @@ public class CampaignFragment extends Fragment{
         return campaignFragment;
     }
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_campaign, container, false);
@@ -82,11 +80,6 @@ public class CampaignFragment extends Fragment{
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
@@ -102,7 +95,6 @@ public class CampaignFragment extends Fragment{
      * Initialize the top 10 uploads
      */
     private void initTopCampaign() {
-        mTopCampaignContainer.setHasFixedSize(true);
         // Set horizontal scroll for top campaigns
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);

@@ -74,6 +74,17 @@ public class PhotoDetailActivity extends ActionBarActivity {
         Icepick.saveInstanceState(this, outState);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void setupToolbar() {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
