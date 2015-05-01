@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -112,6 +113,12 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
             }
         });
 
+        mMaterialEditTextFirstName.setTypeface(getFont());
+        mMaterialEditTextLastName.setTypeface(getFont());
+        mMaterialEditTextEmail.setTypeface(getFont());
+        mMaterialEditTextUserName.setTypeface(getFont());
+        mMaterialEditTextPassword.setTypeface(getFont());
+        mMaterialEditTextBirthday.setTypeface(getFont());
         return v;
     }
 
@@ -204,6 +211,10 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         failedView.requestFocus();
     }
 
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
+    }
 
     /**
      * Returns the date formatter for birthday

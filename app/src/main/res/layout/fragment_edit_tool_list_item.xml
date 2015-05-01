@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center">
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:geekui="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center">
 
     <ImageView
         android:id="@+id/fragment_edit_tool_image"
@@ -12,12 +13,13 @@
         android:layout_height="@dimen/photo_edit_menu_image_size"
         android:scaleType="center"/>
 
-    <TextView
+    <com.samsao.snapzi.util.CustomFontTextView
         android:id="@+id/fragment_edit_tool_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textColor="@android:color/white"
-        tools:text="draw" />
+        tools:text="draw"
+        geekui:TextView_customTypeFace="fonts/GothamHTF-Book.ttf"/>
 
 </LinearLayout>
