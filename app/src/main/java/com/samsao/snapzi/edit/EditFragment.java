@@ -198,7 +198,7 @@ public class EditFragment extends Fragment {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 if (parent.getChildAdapterPosition(view) != 0) {
-                    outRect.left = (int) getResources().getDimension(R.dimen.elements_horizontal_margin);
+                    outRect.left = (int) getResources().getDimension(R.dimen.elements_double_horizontal_margin);
                 } else {
                     super.getItemOffsets(outRect, view, parent, state);
                 }

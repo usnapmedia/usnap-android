@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.util.StringUtil;
 
 /**
  * @author jingsilu
@@ -25,8 +26,9 @@ public class ShareLoginDialogFragment extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.action_prompting_login_text)
-                .setPositiveButton(R.string.action_login, new DialogInterface.OnClickListener() {
+
+        builder.setMessage(StringUtil.getAppFontString(R.string.action_prompting_login_text))
+                .setPositiveButton(StringUtil.getAppFontString(R.string.action_login), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mShareDialogListener.onLoginButtonClick(ShareLoginDialogFragment.this);
                     }

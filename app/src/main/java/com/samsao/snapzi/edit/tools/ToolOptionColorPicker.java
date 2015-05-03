@@ -91,8 +91,8 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         if (mColorPickerDialog == null) {
             mColorPickerDialog = new MaterialDialog.Builder(mTool.getToolFragment().getActivity())
                     .customView(R.layout.dialog_color_picker, false)
-                    .positiveText(android.R.string.ok)
-                    .negativeText(android.R.string.cancel)
+                    .positiveText(StringUtil.getAppFontString(android.R.string.ok))
+                    .negativeText(StringUtil.getAppFontString(android.R.string.cancel))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
