@@ -152,4 +152,5 @@ dependencies {
     compile 'net.danlew:android.joda:2.7.2'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.ivankocijan:MagicViews:2.0.1@aar'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 }

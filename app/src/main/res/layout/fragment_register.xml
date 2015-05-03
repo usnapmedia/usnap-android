@@ -70,7 +70,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="6"
                 android:text="@string/action_signup"
-                app:customTypeFace="fonts/GothamHTF-Book.ttf"/>
+                app:typeFace="GothamHTF-Book.ttf"/>
 
         </LinearLayout>
 

@@ -16,10 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,11 +57,11 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
 
     @InjectView(R.id.fragment_share_facebook)
-    public Button mFacebookBtn;
+    public LinearLayout mFacebookBtn;
     @InjectView(R.id.fragment_share_twitter)
-    public Button mTwitterBtn;
+    public LinearLayout mTwitterBtn;
     @InjectView(R.id.fragment_share_gplus)
-    public Button mGooglePlusBtn;
+    public LinearLayout mGooglePlusBtn;
     @InjectView(R.id.fragment_share_comment_editText)
     public EditText mCommentEditText;
     @InjectView(R.id.fragment_share_toolbar)
@@ -407,23 +407,27 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     /**
      * Enables a social network button
      *
-     * @param btn
+     * @param linearLayout
      */
-    public void enableSocialNetworkBtn(Button btn) {
+    public void enableSocialNetworkBtn(LinearLayout linearLayout) {
         //noinspection deprecation
-        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
-        btn.setTextColor(getResources().getColor(android.R.color.white));
+        linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
+        }
     }
 
     /**
      * Disables a social network button
      *
-     * @param btn
+     * @param linearLayout
      */
-    public void disableSocialNetworkBtn(Button btn) {
+    public void disableSocialNetworkBtn(LinearLayout linearLayout) {
         //noinspection deprecation
-        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
-        btn.setTextColor(getResources().getColor(R.color.medium_gray));
+        linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
+        }
     }
 
     @OnClick(R.id.fragment_share_share_btn)
