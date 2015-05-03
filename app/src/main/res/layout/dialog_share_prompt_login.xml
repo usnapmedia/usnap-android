@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:geekui="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:orientation="vertical"
@@ -9,11 +9,11 @@
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin">
 
-    <com.samsao.snapzi.util.CustomFontTextView
+    <com.ivankocijan.magicviews.views.MagicTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/action_prompting_login_text"
-        geekui:TextView_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+        app:typeFace="GothamHTF-Book.ttf"/>
 
 </LinearLayout>

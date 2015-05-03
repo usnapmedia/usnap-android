@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:geekui="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
@@ -9,29 +9,28 @@
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin">
 
-    <com.samsao.snapzi.util.CustomFontTextView
+    <com.ivankocijan.magicviews.views.MagicTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/action_select_media_type_text"
-        geekui:TextView_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+        app:typeFace="GothamHTF-Book.ttf"/>
 
-    <com.samsao.snapzi.util.CustomFontButton
+    <com.ivankocijan.magicviews.views.MagicButton
         android:id="@+id/dialog_select_media_type_pick_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/action_select_media_type_pick_image"
-        geekui:Button_customTypeFace="fonts/GothamHTF-Book.ttf"
-        android:paddingTop="@dimen/elements_vertical_margin"
+        app:typeFace="GothamHTF-Book.ttf"
+        android:layout_marginTop="@dimen/elements_vertical_margin"
         android:gravity="center"/>
 
-    <com.samsao.snapzi.util.CustomFontButton
+    <com.ivankocijan.magicviews.views.MagicButton
         android:id="@+id/dialog_select_media_type_pick_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/action_select_media_type_pick_video"
-        geekui:Button_customTypeFace="fonts/GothamHTF-Book.ttf"
-        android:paddingTop="@dimen/elements_vertical_margin"
+        app:typeFace="GothamHTF-Book.ttf"
         android:gravity="center"/>
 
 </LinearLayout>

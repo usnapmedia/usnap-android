@@ -1,5 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:geekui="http://schemas.android.com/apk/res-auto"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -25,7 +25,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.samsao.snapzi.util.CustomFontTextView
+            <com.ivankocijan.magicviews.views.MagicTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -33,15 +33,15 @@
                 android:text="@string/top_10"
                 android:textAllCaps="true"
                 android:textSize="@dimen/font_size_large"
-                geekui:TextView_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+                app:typeFace="GothamHTF-Book.ttf"/>
 
-            <com.samsao.snapzi.util.CustomFontButton
+            <com.ivankocijan.magicviews.views.MagicButton
                 android:id="@+id/fragment_campaign_see_all_top_10_btn"
                 style="@style/AppSmallButton"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:text="@string/see_all"
-                geekui:Button_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+                app:typeFace="GothamHTF-Book.ttf"/>
 
         </LinearLayout>
 
@@ -85,7 +85,7 @@
             android:layout_marginTop="@dimen/elements_vertical_margin"
             android:orientation="horizontal">
 
-            <com.samsao.snapzi.util.CustomFontTextView
+            <com.ivankocijan.magicviews.views.MagicTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -93,15 +93,15 @@
                 android:text="@string/latest_uploads"
                 android:textAllCaps="true"
                 android:textSize="@dimen/font_size_large"
-                geekui:TextView_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+                app:typeFace="GothamHTF-Book.ttf"/>
 
-            <com.samsao.snapzi.util.CustomFontButton
+            <com.ivankocijan.magicviews.views.MagicButton
                 android:id="@+id/fragment_campaign_see_all_latest_uploads_btn"
                 style="@style/AppSmallButton"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:text="@string/see_all"
-                geekui:Button_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+                app:typeFace="GothamHTF-Book.ttf"/>
 
         </LinearLayout>
 
@@ -146,13 +146,13 @@
             android:gravity="center_horizontal"
             android:weightSum="10">
 
-            <com.samsao.snapzi.util.CustomFontButton
+            <com.ivankocijan.magicviews.views.MagicButton
                 android:id="@+id/fragment_campaign_contest_btn"
                 style="@style/AppButton"
                 android:layout_width="0dp"
                 android:layout_weight="4"
                 android:text="@string/enter_contest"
-                geekui:Button_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+                app:typeFace="GothamHTF-Book.ttf"/>
 
         </LinearLayout>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:geekui="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:orientation="horizontal"
@@ -15,13 +15,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical" />
 
-    <com.samsao.snapzi.util.CustomFontTextView
+    <com.ivankocijan.magicviews.views.MagicTextView
         android:id="@+id/dialog_fragment_progress_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/elements_horizontal_margin"
         android:text="@string/loading"
-        geekui:TextView_customTypeFace="fonts/GothamHTF-Book.ttf"/>
+        app:typeFace="GothamHTF-Book.ttf"/>
 
 </LinearLayout>
