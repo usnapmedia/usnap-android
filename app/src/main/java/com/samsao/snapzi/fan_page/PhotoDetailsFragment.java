@@ -87,6 +87,10 @@ public class PhotoDetailsFragment extends Fragment {
         mTwitterTextView.setTypeface(fontawesome);
         mGooglePlusTextView.setTypeface(fontawesome);
 
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        mUserNameTextView.setTypeface(fontText);
+        mFirstLetterTextView.setTypeface(fontText);
+        mDescriptionTextView.setTypeface(fontText);
         return view;
     }
 

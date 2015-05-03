@@ -184,7 +184,6 @@ public class ProfileFragment extends Fragment {
                 } else {
                     mLetterTileLetter.setText("pelvish");
                 }
-
             }
         });
     }
