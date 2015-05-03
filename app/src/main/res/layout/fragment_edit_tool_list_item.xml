@@ -8,9 +8,8 @@
 
     <ImageView
         android:id="@+id/fragment_edit_tool_image"
-        android:layout_width="@dimen/photo_edit_menu_image_size"
-        android:layout_height="@dimen/photo_edit_menu_image_size"
-        android:scaleType="center"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/fragment_edit_tool_name"
