@@ -32,7 +32,7 @@ public class StringUtil {
         SpannableStringBuilder sBuilder = new SpannableStringBuilder();
         sBuilder.append(SnapziApplication.getContext().getString(resId));
         CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf"));
-        sBuilder.setSpan(typefaceSpan, 0, sBuilder.length()-1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        sBuilder.setSpan(typefaceSpan, 0, sBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         return sBuilder;
     }
 }

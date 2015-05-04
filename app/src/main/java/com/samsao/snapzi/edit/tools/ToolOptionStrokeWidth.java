@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
+import com.samsao.snapzi.R;
 
 
 /**
@@ -43,7 +44,15 @@ public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
 
     @Override
     public int getImageResource() {
-        return 0;
+        if (mStrokeWidth == STROKE_WIDTH_SMALL) {
+            return R.drawable.stroke_width_small;
+        } else if (mStrokeWidth == STROKE_WIDTH_MEDIUM) {
+            return R.drawable.stroke_width_medium;
+        } else if (mStrokeWidth == STROKE_WIDTH_LARGE) {
+            return R.drawable.stroke_width_large;
+        } else {
+            return 0;
+        }
     }
 
     public float getStrokeWidth() {

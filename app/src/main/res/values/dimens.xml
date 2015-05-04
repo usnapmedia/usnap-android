@@ -27,6 +27,10 @@
     <!-- Photo edit -->
     <dimen name="photo_edit_menu_size">96dp</dimen>
     <dimen name="photo_edit_menu_image_size">64dp</dimen>
+    <dimen name="photo_edit_stroke_size_small">30dp</dimen>
+    <dimen name="photo_edit_stroke_size_medium">40dp</dimen>
+    <dimen name="photo_edit_stroke_size_large">50dp</dimen>
+
 
     <!-- Live feed -->
     <dimen name="live_feed_layout_height">72dp</dimen>
