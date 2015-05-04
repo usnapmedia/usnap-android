@@ -13,6 +13,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.CampaignList;
+import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.profile.ProfileActivity;
 
 import butterknife.ButterKnife;
@@ -109,6 +110,9 @@ public class FanPageActivity extends ActionBarActivity {
                 return true;
             case R.id.activity_fan_page_menu_profile:
                 ProfileActivity.start(FanPageActivity.this);
+                return true;
+            case R.id.activity_fan_page_menu_camera:
+                SelectMediaActivity.start(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
