@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.util.StringUtil;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -136,6 +137,7 @@ public class PhotoDetailsFragment extends Fragment {
         }
         mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mListener.getSupportActionBar().setDisplayShowTitleEnabled(true);
+        mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.photo));
     }
 
     public interface Listener {

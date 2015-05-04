@@ -6,7 +6,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,6 +31,7 @@ import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
+import com.samsao.snapzi.util.StringUtil;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -273,10 +274,11 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
      */
     public void setupToolbar() {
         if (mToolbar != null) {
-            ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
+            mListener.setSupportActionBar(mToolbar);
         }
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mListener.getSupportActionBar().setDisplayShowTitleEnabled(true);
+        mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.sharing));
     }
 
     /**
@@ -541,5 +543,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         String getImagePath();
         String getVideoPath();
         void setCommentText(String commentText);
+        ActionBar getSupportActionBar();
+        void setSupportActionBar(Toolbar toolbar);
     }
 }

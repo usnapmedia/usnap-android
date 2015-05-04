@@ -12,6 +12,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.util.KeyboardUtil;
+import com.samsao.snapzi.util.StringUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -100,6 +101,7 @@ public class AuthenticationActivity extends ActionBarActivity {
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.authentication));
     }
 
     /**

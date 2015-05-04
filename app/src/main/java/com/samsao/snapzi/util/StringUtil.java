@@ -28,11 +28,11 @@ public class StringUtil {
      * @param resId
      * @return
      */
-    public static String getAppFontString(int resId) {
+    public static SpannableStringBuilder getAppFontString(int resId) {
         SpannableStringBuilder sBuilder = new SpannableStringBuilder();
         sBuilder.append(SnapziApplication.getContext().getString(resId));
         CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf"));
         sBuilder.setSpan(typefaceSpan, 0, sBuilder.length()-1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        return sBuilder.toString();
+        return sBuilder;
     }
 }

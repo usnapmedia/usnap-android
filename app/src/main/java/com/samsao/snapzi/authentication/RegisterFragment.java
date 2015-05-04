@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -72,6 +73,9 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
     @Required(order = 8)
     @InjectView(R.id.fragment_register_birthday)
     public MaterialEditText mMaterialEditTextBirthday;
+
+    @InjectView(R.id.fragment_register_sign_up_button)
+    public Button mRegisterBtn;
 
     private ApiService mApiService = new ApiService();
     private Validator mValidator;

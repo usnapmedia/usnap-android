@@ -10,7 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -248,10 +248,10 @@ public class EditFragment extends Fragment {
      */
     public void setupToolbar() {
         if (mToolbar != null) {
-            ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
+            mListener.setSupportActionBar(mToolbar);
         }
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mListener.getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
@@ -700,21 +700,15 @@ public class EditFragment extends Fragment {
 
     public interface Listener {
         String getEditMode();
-
         void saveBitmap(Bitmap bitmap);
-
         void resetMenu();
-
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome);
-
         ArrayList<Tool> getTools();
-
         void setTools(ArrayList<Tool> tools);
-
         Tool getCurrentTool();
-
         void setCurrentTool(Tool currentTool);
-
         String getMediaPath();
+        ActionBar getSupportActionBar();
+        void setSupportActionBar(Toolbar toolbar);
     }
 }
