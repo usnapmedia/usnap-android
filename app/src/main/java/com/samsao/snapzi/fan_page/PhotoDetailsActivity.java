@@ -1,9 +1,13 @@
 package com.samsao.snapzi.fan_page;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
+
+import com.samsao.snapzi.api.entity.FeedImage;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -75,5 +79,22 @@ public class PhotoDetailsActivity extends ActionBarActivity implements PhotoDeta
 
     public String getUsername() {
         return mUsername;
+    }
+
+    /**
+     * Helper to start the activity
+     * @param image
+     * @param context
+     */
+    public static void start(FeedImage image, Context context) {
+        Intent intent = new Intent(context, PhotoDetailsActivity.class);
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getUrl());
+        if (!TextUtils.isEmpty(image.getText())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
+        }
+        if (!TextUtils.isEmpty(image.getEmail())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
+        }
+        context.startActivity(intent);
     }
 }

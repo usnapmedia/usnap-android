@@ -248,15 +248,7 @@ public class CampaignFragment extends Fragment {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PhotoDetailsActivity.class);
-                intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getUrl());
-                if (!TextUtils.isEmpty(image.getText())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
-                }
-                if (!TextUtils.isEmpty(image.getEmail())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
-                }
-                startActivity(intent);
+                PhotoDetailsActivity.start(image, getActivity());
             }
         });
     }
