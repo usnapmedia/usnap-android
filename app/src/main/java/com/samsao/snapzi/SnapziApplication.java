@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.ivankocijan.magicviews.MagicViews;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
@@ -13,6 +14,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import io.fabric.sdk.android.Fabric;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * @author jfcartier
@@ -56,6 +58,16 @@ public class SnapziApplication extends Application {
 
         // initialize jodatime
         JodaTimeAndroid.init(this);
+
+        // initialize magic views
+        MagicViews.setFontFolderPath(this, "fonts");
+
+        // initialize calligraphy
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
     }
 
     /**

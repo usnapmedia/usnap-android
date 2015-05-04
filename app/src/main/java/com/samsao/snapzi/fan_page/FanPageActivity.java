@@ -2,6 +2,7 @@ package com.samsao.snapzi.fan_page;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -10,7 +11,9 @@ import android.view.Menu;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.CampaignList;
+import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.profile.ProfileActivity;
 
 import butterknife.ButterKnife;
@@ -78,6 +81,13 @@ public class FanPageActivity extends ActionBarActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        //setTypeface(android.graphics.Typeface typeface, int style)
+        mTabs.setTypeface(getFont(),0);
+    }
+
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
     }
 
     @Override
@@ -100,6 +110,9 @@ public class FanPageActivity extends ActionBarActivity {
                 return true;
             case R.id.activity_fan_page_menu_profile:
                 ProfileActivity.start(FanPageActivity.this);
+                return true;
+            case R.id.activity_fan_page_menu_camera:
+                SelectMediaActivity.start(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

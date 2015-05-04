@@ -6,21 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImage;
-import com.samsao.snapzi.fan_page.FanPageActivity;
+import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 
 /**
@@ -51,9 +44,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
     @Override
     public void onBindViewHolder(LiveFeedViewHolder liveFeedViewHolder, int position) {
         FeedImage imgLiveFeed = mImageLiveFeedList.get(position);
-        Context context = liveFeedViewHolder.mImgIcon.getContext();
-        // TODO add an error image and a placeholder
-        Picasso.with(context).load(imgLiveFeed.getUrl()).into(liveFeedViewHolder.mImgIcon);
+        liveFeedViewHolder.setup(imgLiveFeed);
     }
 
     @Override
@@ -71,26 +62,19 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
     public class LiveFeedViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImgIcon;
 
-        public LiveFeedViewHolder(View v) {
-            super(v);
-            mImgIcon = (ImageView) v;
-            v.setOnClickListener(new View.OnClickListener() {
+        public LiveFeedViewHolder(View view) {
+            super(view);
+            mImgIcon = (ImageView) view;
+
+        }
+
+        public void setup(final FeedImage image) {
+            // TODO add an error image and a placeholder
+            Picasso.with(mContext).load(image.getUrl()).into(mImgIcon);
+            mImgIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO show loading dialog
-                    // fetch campaigns and start FanPageActivity
-                    mApiService.getCampaigns(new Callback<CampaignList>() {
-                        @Override
-                        public void success(CampaignList campaignList, Response response) {
-                            FanPageActivity.start(mContext, campaignList);
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Toast.makeText(mContext, "Error fetching campaigns: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                            Timber.e("Error Fetching Campaigns: " + error.getMessage());
-                        }
-                    });
+                    PhotoDetailsActivity.start(image, mContext);
                 }
             });
         }

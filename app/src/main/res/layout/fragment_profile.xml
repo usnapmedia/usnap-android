@@ -1,10 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical"
-    tools:context="com.samsao.snapzi.profile.ProfileFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white"
+              android:orientation="vertical"
+              tools:context="com.samsao.snapzi.profile.ProfileFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/fragment_profile_toolbar"
@@ -45,7 +46,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/profile_letter_tile_gradient" />
 
-            <TextView
+            <com.ivankocijan.magicviews.views.MagicTextView
                 android:id="@+id/fragment_profile_letter_tile_letter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +54,8 @@
                 android:includeFontPadding="false"
                 android:maxLength="1"
                 android:textAllCaps="true"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                app:typeFace="GothamHTF-Book.ttf"/>
 
         </FrameLayout>
 
@@ -79,16 +81,17 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:id="@+id/fragment_profile_share_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
                         android:textColor="@color/blue"
                         android:textSize="@dimen/font_size_extra_large"
-                        tools:text="123" />
+                        tools:text="123"
+                        app:typeFace="GothamHTF-Book.ttf"/>
 
-                    <TextView
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:id="@+id/fragment_profile_share_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -96,7 +99,8 @@
                         android:textAllCaps="true"
                         android:textColor="@color/primary_dark"
                         android:textSize="@dimen/font_size_medium"
-                        tools:text="SHARES" />
+                        tools:text="SHARES"
+                        app:typeFace="GothamHTF-Book.ttf"/>
 
                 </LinearLayout>
 
@@ -114,38 +118,37 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:id="@+id/fragment_profile_score_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
                         android:textColor="@color/blue"
                         android:textSize="@dimen/font_size_extra_large"
-                        tools:text="456" />
+                        tools:text="456"
+                        app:typeFace="GothamHTF-Book.ttf"/>
 
-                    <TextView
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
                         android:text="@string/profile_score"
                         android:textAllCaps="true"
                         android:textColor="@color/primary_dark"
-                        android:textSize="@dimen/font_size_medium" />
+                        android:textSize="@dimen/font_size_medium"
+                        app:typeFace="GothamHTF-Book.ttf"/>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <Button
+            <com.ivankocijan.magicviews.views.MagicButton
                 android:id="@+id/fragment_profile_setting_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/AppButton"
                 android:background="@drawable/profile_setting_button_background"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="@dimen/fragment_profile_user_info_button_padding"
                 android:text="@string/profile_settings"
-                android:textColor="@drawable/profile_setting_button_text_color" />
+                android:textColor="@drawable/profile_setting_button_text_color"
+                app:typeFace="GothamHTF-Book.ttf" />
 
         </LinearLayout>
 
@@ -157,29 +160,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <com.ivankocijan.magicviews.views.MagicButton
             android:id="@+id/fragment_profile_campaigns_button"
+            style="@style/AppButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/profile_feed_button_background"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="@dimen/fragment_profile_user_info_button_padding"
             android:text="@string/profile_campaigns"
-            android:textColor="@drawable/profile_feed_button_text_color" />
+            android:textColor="@drawable/profile_feed_button_text_color"
+            app:typeFace="GothamHTF-Book.ttf"/>
 
-        <Button
+        <com.ivankocijan.magicviews.views.MagicButton
             android:id="@+id/fragment_profile_my_feed_button"
+            style="@style/AppButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/profile_feed_button_background"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="@dimen/fragment_profile_user_info_button_padding"
             android:text="@string/profile_my_feed"
-            android:textColor="@drawable/profile_feed_button_text_color" />
+            android:textColor="@drawable/profile_feed_button_text_color"
+            app:typeFace="GothamHTF-Book.ttf"/>
 
     </LinearLayout>
 

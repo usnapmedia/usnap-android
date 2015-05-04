@@ -2,6 +2,7 @@ package com.samsao.snapzi.fan_page;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Campaign;
 import com.samsao.snapzi.api.entity.FeedImage;
@@ -139,6 +141,11 @@ public class CampaignFragment extends Fragment {
         });
     }
 
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
+    }
+
     /**
      * Set a top snap cardView according to a snap
      *
@@ -157,6 +164,8 @@ public class CampaignFragment extends Fragment {
         if (campaign.getUsnapScore() != null) {
             likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, campaign.getUsnapScore(), campaign.getUsnapScore()));
         }
+        nameTextView.setTypeface(getFont());
+        likesCountTextView.setTypeface(getFont());
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,18 +242,13 @@ public class CampaignFragment extends Fragment {
             likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, image.getFbLikes(), image.getFbLikes()));
         }
 
+        nameTextView.setTypeface(getFont());
+        likesCountTextView.setTypeface(getFont());
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PhotoDetailsActivity.class);
-                intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getUrl());
-                if (!TextUtils.isEmpty(image.getText())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
-                }
-                if (!TextUtils.isEmpty(image.getEmail())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
-                }
-                startActivity(intent);
+                PhotoDetailsActivity.start(image, getActivity());
             }
         });
     }

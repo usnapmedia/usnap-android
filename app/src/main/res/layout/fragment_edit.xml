@@ -75,7 +75,6 @@
                 android:id="@+id/fragment_edit_livefeed_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/live_feed_layout_height"
-                android:layout_marginTop="@dimen/elements_half_vertical_margin"
                 android:background="@color/black_alpha"
                 android:paddingBottom="@dimen/elements_half_vertical_margin"
                 android:paddingLeft="@dimen/elements_horizontal_margin"

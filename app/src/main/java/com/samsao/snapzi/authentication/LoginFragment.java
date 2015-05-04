@@ -2,6 +2,7 @@ package com.samsao.snapzi.authentication;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,15 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, v);
+
+        mMaterialEditTextUserName.setTypeface(getFont());
+        mMaterialEditTextPassword.setTypeface(getFont());
         return v;
+    }
+
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
     }
 
     @OnClick(R.id.fragment_login_login_button)

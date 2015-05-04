@@ -2,6 +2,7 @@ package com.samsao.snapzi.profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.TopCampaign;
 import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
 import com.squareup.picasso.Picasso;
@@ -75,6 +77,9 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
             mName = (TextView) view.findViewById(R.id.fragment_profile_top_campaign_item_name);
             mShareCount = (TextView) view.findViewById(R.id.fragment_profile_top_campaign_item_share_count);
             mDescription = (TextView) view.findViewById(R.id.fragment_profile_top_campaign_item_description);
+            mName.setTypeface(getFont());
+            mShareCount.setTypeface(getFont());
+            mDescription.setTypeface(getFont());
         }
 
         public void setup(final TopCampaign topCampaign) {
@@ -135,6 +140,11 @@ public class TopCampaignAdapter extends RecyclerView.Adapter<TopCampaignAdapter.
                 //FIXME to remove
                 mDescription.setText("Pelvish Preshley lorem ipsum tatoum pitoum");
             }
+        }
+
+        private Typeface getFont() {
+            Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+            return fontText;
         }
     }
 }

@@ -11,6 +11,7 @@
         <item name="colorAccent">@color/accent</item>
         <item name="colorControlHighlight">@color/control_highlight</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:textColor">@color/dark_gray</item>
         <item name="android:windowBackground">@color/light_gray</item>
         <item name="android:textSize">@dimen/font_size_medium</item>
@@ -108,4 +109,13 @@
         <item name="cardElevation">@dimen/cardview_elevation</item>
     </style>
 
+    <!--CustomFontTextView-->
+    <declare-styleable name="CustomFontTextView">
+        <attr name="TextView_customTypeFace" format="string" />
+    </declare-styleable>
+
+    <!--CustomFontButton-->
+    <declare-styleable name="CustomFontButton">
+        <attr name="Button_customTypeFace" format="string" />
+    </declare-styleable>
 </resources>

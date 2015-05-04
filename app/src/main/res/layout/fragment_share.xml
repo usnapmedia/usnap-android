@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -50,7 +51,7 @@
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true">
 
-            <EditText
+            <com.ivankocijan.magicviews.views.MagicEditText
                 android:id="@+id/fragment_share_comment_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,9 +64,10 @@
                 android:minLines="3"
                 android:scrollbars="vertical"
                 android:textColor="@color/dark_gray"
-                android:textColorHint="@color/text_hint" />
+                android:textColorHint="@color/text_hint"
+                app:typeFace="GothamHTF-Book.ttf"/>
 
-            <TextView
+            <com.ivankocijan.magicviews.views.MagicTextView
                 android:id="@+id/fragment_share_comment_characters_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +75,8 @@
                 android:singleLine="true"
                 android:textColor="@color/primary_light"
                 android:textSize="@dimen/font_size_small"
-                tools:text="132 characters" />
+                tools:text="132 characters"
+                app:typeFace="GothamHTF-Book.ttf" />
 
         </LinearLayout>
 
@@ -96,23 +99,63 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <LinearLayout
                 android:id="@+id/fragment_share_facebook"
                 style="@style/AppButton"
+                android:orientation="horizontal"
+                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/elements_half_horizontal_margin"
-                android:layout_weight="1"
-                android:text="Facebook" />
+                android:layout_weight="1">
 
-            <Button
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typeFace="fontawesome.ttf"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_large"
+                    android:text="\uf230"/>
+
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:text="Facebook"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    app:typeFace="GothamHTF-Book.ttf"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/fragment_share_twitter"
                 style="@style/AppButton"
+                android:orientation="horizontal"
+                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:layout_weight="1"
-                android:text="Twitter" />
+                android:layout_weight="1" >
+
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typeFace="fontawesome.ttf"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_large"
+                    android:text="\uf081"/>
+
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:text="Twitter"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    app:typeFace="GothamHTF-Book.ttf"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -122,24 +165,65 @@
             android:layout_marginTop="@dimen/elements_vertical_margin"
             android:orientation="horizontal">
 
-            <Button
+            <LinearLayout
                 android:id="@+id/fragment_share_gplus"
                 style="@style/AppButton"
+                android:orientation="horizontal"
+                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/elements_half_horizontal_margin"
-                android:layout_weight="1"
-                android:text="Google+" />
+                android:layout_weight="1" >
 
-            <Button
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typeFace="fontawesome.ttf"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_large"
+                    android:text="\uf0d4"/>
+
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:id="@+id/fragment_share_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:text="Google+"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    app:typeFace="GothamHTF-Book.ttf"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/fragment_share_pinterest"
                 style="@style/AppButton"
+                android:orientation="horizontal"
+                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"
-                android:text="Pinterest"
-                android:visibility="invisible" />
+                android:visibility="invisible">
+
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typeFace="fontawesome.ttf"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_large"
+                    android:text="\uf0d3"/>
+
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:text="Pinterest"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    app:typeFace="GothamHTF-Book.ttf"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -148,12 +232,13 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <com.ivankocijan.magicviews.views.MagicButton
             android:id="@+id/fragment_share_share_btn"
             style="@style/AppButton"
             android:layout_gravity="bottom"
             android:layout_marginTop="@dimen/elements_vertical_margin"
-            android:text="@string/action_share" />
+            android:text="@string/action_share"
+            app:typeFace="GothamHTF-Book.ttf"/>
 
     </LinearLayout>
 

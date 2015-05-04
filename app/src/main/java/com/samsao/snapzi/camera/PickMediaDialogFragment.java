@@ -4,10 +4,15 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 
 import com.samsao.snapzi.R;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan;
+import uk.co.chrisjenx.calligraphy.TypefaceUtils;
 
 /**
  * @author jingsilu
@@ -29,7 +34,12 @@ public class PickMediaDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Dialog dialog = new Dialog(getActivity());
 
-        dialog.setTitle(R.string.action_select_media_type_title);
+        SpannableStringBuilder sBuilder = new SpannableStringBuilder();
+        sBuilder.append(getString(R.string.action_select_media_type_title));
+        CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(getResources().getAssets(), "fonts/GothamHTF-Book.ttf"));
+        sBuilder.setSpan(typefaceSpan, 0, sBuilder.length()-1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+        dialog.setTitle(sBuilder);
         dialog.setContentView(R.layout.dialog_select_media_type);
 
         mPickImageButton = (Button) dialog.findViewById(R.id.dialog_select_media_type_pick_image);

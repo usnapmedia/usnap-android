@@ -2,6 +2,7 @@ package com.samsao.snapzi.authentication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -9,7 +10,9 @@ import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.util.KeyboardUtil;
+import com.samsao.snapzi.util.StringUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -64,6 +67,12 @@ public class AuthenticationActivity extends ActionBarActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        mTabs.setTypeface(getFont(),0);
+    }
+
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
     }
 
     @Override
@@ -92,6 +101,7 @@ public class AuthenticationActivity extends ActionBarActivity {
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.authentication));
     }
 
     /**

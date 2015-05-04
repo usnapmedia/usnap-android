@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
+import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 
 import java.util.Locale;
@@ -73,7 +74,15 @@ public class ToolOptionTextTypeFace extends ToolOption implements Parcelable {
 
     @Override
     public int getImageResource() {
-        return 0;
+        if (mTypeFaceName.equals(DEFAULT_TYPEFACE_NAME)) {
+            return R.drawable.ic_roboto;
+        } else if (mTypeFaceName.equals(FUTURA_TYPEFACE_NAME)) {
+            return R.drawable.ic_futura;
+        } else if (mTypeFaceName.equals(GEORGIA_TYPEFACE_NAME)) {
+            return R.drawable.ic_georgia;
+        } else {
+            return R.drawable.ic_impact;
+        }
     }
 
     public ToolOptionTextTypeFace setTypeFaceName(String typeFaceName) {

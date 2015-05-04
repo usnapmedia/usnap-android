@@ -6,7 +6,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,10 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +31,7 @@ import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
+import com.samsao.snapzi.util.StringUtil;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -57,11 +58,11 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
 
     @InjectView(R.id.fragment_share_facebook)
-    public Button mFacebookBtn;
+    public LinearLayout mFacebookBtn;
     @InjectView(R.id.fragment_share_twitter)
-    public Button mTwitterBtn;
+    public LinearLayout mTwitterBtn;
     @InjectView(R.id.fragment_share_gplus)
-    public Button mGooglePlusBtn;
+    public LinearLayout mGooglePlusBtn;
     @InjectView(R.id.fragment_share_comment_editText)
     public EditText mCommentEditText;
     @InjectView(R.id.fragment_share_toolbar)
@@ -273,10 +274,11 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
      */
     public void setupToolbar() {
         if (mToolbar != null) {
-            ((ActionBarActivity) getActivity()).setSupportActionBar(mToolbar);
+            mListener.setSupportActionBar(mToolbar);
         }
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mListener.getSupportActionBar().setDisplayShowTitleEnabled(true);
+        mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.sharing));
     }
 
     /**
@@ -407,23 +409,27 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     /**
      * Enables a social network button
      *
-     * @param btn
+     * @param linearLayout
      */
-    public void enableSocialNetworkBtn(Button btn) {
+    public void enableSocialNetworkBtn(LinearLayout linearLayout) {
         //noinspection deprecation
-        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
-        btn.setTextColor(getResources().getColor(android.R.color.white));
+        linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
+        }
     }
 
     /**
      * Disables a social network button
      *
-     * @param btn
+     * @param linearLayout
      */
-    public void disableSocialNetworkBtn(Button btn) {
+    public void disableSocialNetworkBtn(LinearLayout linearLayout) {
         //noinspection deprecation
-        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
-        btn.setTextColor(getResources().getColor(R.color.medium_gray));
+        linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
+        }
     }
 
     @OnClick(R.id.fragment_share_share_btn)
@@ -537,5 +543,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         String getImagePath();
         String getVideoPath();
         void setCommentText(String commentText);
+        ActionBar getSupportActionBar();
+        void setSupportActionBar(Toolbar toolbar);
     }
 }
