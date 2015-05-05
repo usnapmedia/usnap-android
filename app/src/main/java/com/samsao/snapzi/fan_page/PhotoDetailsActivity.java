@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.samsao.snapzi.api.entity.FeedImage;
+import com.samsao.snapzi.api.entity.TopCampaign;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -94,6 +95,23 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
         }
         if (!TextUtils.isEmpty(image.getEmail())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
+        }
+        context.startActivity(intent);
+    }
+
+    /**
+     * Helper to start the activity
+     * @param campaign
+     * @param context
+     */
+    public static void start(TopCampaign campaign, Context context) {
+        Intent intent = new Intent(context, PhotoDetailsActivity.class);
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
+        if (!TextUtils.isEmpty(campaign.getText())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
+        }
+        if (!TextUtils.isEmpty(campaign.getUsername())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
         }
         context.startActivity(intent);
     }

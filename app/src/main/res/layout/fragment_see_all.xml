@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.samsao.snapzi.seeall.SeeAllActivityFragment">
+              tools:context="com.samsao.snapzi.seeall.SeeAllFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/fragment_see_all_toolbar"
@@ -24,6 +24,6 @@
         android:id="@+id/fragment_see_all_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/elements_half_vertical_margin"/>
+        android:padding="@dimen/elements_quarter_vertical_margin"/>
 
 </LinearLayout>

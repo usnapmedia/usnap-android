@@ -1,7 +1,6 @@
 package com.samsao.snapzi.fan_page;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -171,15 +170,7 @@ public class CampaignFragment extends Fragment {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PhotoDetailsActivity.class);
-                intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
-                if (!TextUtils.isEmpty(campaign.getText())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
-                }
-                if (!TextUtils.isEmpty(campaign.getUsername())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
-                }
-                startActivity(intent);
+                PhotoDetailsActivity.start(campaign, getActivity());
             }
         });
     }

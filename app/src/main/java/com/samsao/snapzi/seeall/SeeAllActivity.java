@@ -16,7 +16,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SeeAllActivity extends AppCompatActivity implements SeeAllActivityFragment.Listener {
+public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.Listener {
     private final static String EXTRA_MODE = "com.samsao.snapzi.seeall.SeeAllActivity.EXTRA_MODE";
     private final static int SEE_ALL_TOP_10 = 0;
     private final static int SEE_ALL_LATEST = 1;
@@ -25,7 +25,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllActivityF
     @Icicle
     public Integer mMode;
 
-    private SeeAllActivityFragment mSeeAllActivityFragment;
+    private SeeAllFragment mSeeAllFragment;
     // TODO inject me
     private ApiService mApiService = new ApiService();
 
@@ -39,8 +39,8 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllActivityF
             } else {
                 mMode = SEE_ALL_TOP_10;
             }
-            mSeeAllActivityFragment = SeeAllActivityFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, mSeeAllActivityFragment, SeeAllActivityFragment.FRAGMENT_TAG).commit();
+            mSeeAllFragment = SeeAllFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, mSeeAllFragment, SeeAllFragment.FRAGMENT_TAG).commit();
         } else {
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
@@ -54,7 +54,9 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllActivityF
                 mApiService.getTopCampaign(new Callback<TopCampaignList>() {
                     @Override
                     public void success(TopCampaignList topCampaignList, Response response) {
-
+                        if (mSeeAllFragment != null) {
+                            mSeeAllFragment.setTop10AdapterData(topCampaignList.getResponse());
+                        }
                     }
 
                     @Override
@@ -69,7 +71,9 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllActivityF
                 mApiService.getLiveFeed(new Callback<FeedImageList>() {
                     @Override
                     public void success(FeedImageList feedImageList, Response response) {
-
+                        if (mSeeAllFragment != null) {
+                            mSeeAllFragment.setLatestUploadsAdapterData(feedImageList.getResponse());
+                        }
                     }
 
                     @Override
@@ -89,8 +93,8 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllActivityF
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (mSeeAllActivityFragment != null) {
-                    mSeeAllActivityFragment.onOptionsItemSelected(item);
+                if (mSeeAllFragment != null) {
+                    mSeeAllFragment.onOptionsItemSelected(item);
                 } else {
                     finish();
                 }
