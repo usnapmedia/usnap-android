@@ -1,7 +1,7 @@
 package com.samsao.snapzi;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.samsao.snapzi.api.ApiService;
@@ -14,7 +14,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     // TODO inject me
     private ApiService mApiService = new ApiService();
 

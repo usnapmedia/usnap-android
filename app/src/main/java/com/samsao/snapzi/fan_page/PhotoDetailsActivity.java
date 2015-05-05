@@ -3,11 +3,12 @@ package com.samsao.snapzi.fan_page;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.samsao.snapzi.api.entity.FeedImage;
+import com.samsao.snapzi.api.entity.TopCampaign;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -16,7 +17,7 @@ import icepick.Icicle;
  * @author jingsilu
  * @since 2015-04-30
  */
-public class PhotoDetailsActivity extends ActionBarActivity implements PhotoDetailsFragment.Listener {
+public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDetailsFragment.Listener {
     public final static String EXTRA_PHOTO_PATH = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_PATH";
     public final static String EXTRA_PHOTO_TEXT = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_TEXT";
     public final static String EXTRA_PHOTO_USERNAME = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_USERNAME";
@@ -94,6 +95,23 @@ public class PhotoDetailsActivity extends ActionBarActivity implements PhotoDeta
         }
         if (!TextUtils.isEmpty(image.getEmail())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
+        }
+        context.startActivity(intent);
+    }
+
+    /**
+     * Helper to start the activity
+     * @param campaign
+     * @param context
+     */
+    public static void start(TopCampaign campaign, Context context) {
+        Intent intent = new Intent(context, PhotoDetailsActivity.class);
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
+        if (!TextUtils.isEmpty(campaign.getText())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
+        }
+        if (!TextUtils.isEmpty(campaign.getUsername())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
         }
         context.startActivity(intent);
     }

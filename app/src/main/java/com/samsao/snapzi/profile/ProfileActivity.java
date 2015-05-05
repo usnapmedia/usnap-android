@@ -3,48 +3,30 @@ package com.samsao.snapzi.profile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
-import icepick.Icepick;
 
 
 /**
  * @author vlegault
  * @since 15-04-30
  */
-public class ProfileActivity extends ActionBarActivity implements ProfileProvider {
+public class ProfileActivity extends AppCompatActivity implements ProfileProvider {
 
     /**
      * Constants
      */
-    private final String LOG_TAG = getClass().getSimpleName();
-
     private ProfileFragment mProfileFragment;
-
-    public Toolbar mToolbar;
-
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // restore saved state
-        if (savedInstanceState != null) {
-            Icepick.restoreInstanceState(this, savedInstanceState);
-        }
-
         if (mProfileFragment == null) {
             mProfileFragment = ProfileFragment.newInstance();
             getFragmentManager().beginTransaction().replace(android.R.id.content, mProfileFragment).commit();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
-
     }
 
     @Override

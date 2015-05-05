@@ -1,7 +1,6 @@
 package com.samsao.snapzi.fan_page;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
@@ -22,6 +20,7 @@ import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.TopCampaign;
 import com.samsao.snapzi.api.entity.TopCampaignList;
 import com.samsao.snapzi.camera.SelectMediaActivity;
+import com.samsao.snapzi.seeall.SeeAllActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -61,6 +60,7 @@ public class CampaignFragment extends Fragment {
     @Icicle
     public Campaign mCampaign;
 
+    // TODO inject me
     private ApiService mApiService = new ApiService();
 
     public static CampaignFragment newInstance(Campaign campaign) {
@@ -170,15 +170,7 @@ public class CampaignFragment extends Fragment {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PhotoDetailsActivity.class);
-                intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
-                if (!TextUtils.isEmpty(campaign.getText())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
-                }
-                if (!TextUtils.isEmpty(campaign.getUsername())) {
-                    intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
-                }
-                startActivity(intent);
+                PhotoDetailsActivity.start(campaign, getActivity());
             }
         });
     }
@@ -259,14 +251,12 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_see_all_top_10_btn)
     public void seeAllTop10() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: see all top 10", Toast.LENGTH_SHORT).show();
+        SeeAllActivity.startTop10(getActivity());
     }
 
     @OnClick(R.id.fragment_campaign_see_all_latest_uploads_btn)
     public void seeAllLatestUploads() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: see all latest uploads", Toast.LENGTH_SHORT).show();
+        SeeAllActivity.startLatestUploads(getActivity());
     }
 
     @OnClick(R.id.fragment_campaign_contest_btn)

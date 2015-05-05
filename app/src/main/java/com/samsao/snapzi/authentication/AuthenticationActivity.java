@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -19,7 +19,7 @@ import butterknife.InjectView;
 import icepick.Icepick;
 
 
-public class AuthenticationActivity extends ActionBarActivity {
+public class AuthenticationActivity extends AppCompatActivity {
     @InjectView(R.id.activity_authentication_toolbar)
     public Toolbar mToolbar;
 

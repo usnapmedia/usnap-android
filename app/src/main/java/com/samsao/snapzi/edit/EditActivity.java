@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -28,7 +28,7 @@ import icepick.Icepick;
 import icepick.Icicle;
 
 
-public class EditActivity extends ActionBarActivity implements EditFragment.Listener {
+public class EditActivity extends AppCompatActivity implements EditFragment.Listener {
 
     /**
      * Constants

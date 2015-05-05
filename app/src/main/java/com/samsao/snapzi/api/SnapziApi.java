@@ -27,39 +27,40 @@ public interface SnapziApi {
     // FIXME add api_key
     @FormUrlEncoded
     @POST("/register")
-    public void register(@Field("username") String username,
-                         @Field("password") String password,
-                         @Field("email") String email,
-                         @Field("first_name") String firstName,
-                         @Field("last_name") String lastName,
-                         @Field("dob") String birthday,
-                         Callback<Response> callback);
+    void register(@Field("username") String username,
+                  @Field("password") String password,
+                  @Field("email") String email,
+                  @Field("first_name") String firstName,
+                  @Field("last_name") String lastName,
+                  @Field("dob") String birthday,
+                  Callback<Response> callback);
 
 
     // TODO rename email to username
     @FormUrlEncoded
     @POST("/login")
-    public void login(@Field("email") String username,
-                      @Field("password") String password,
-                      Callback<Response> callback);
+    void login(@Field("email") String username,
+               @Field("password") String password,
+               Callback<Response> callback);
 
     @GET("/feed/live")
-    public void getLiveFeed(Callback<FeedImageList> callback);
+    void getLiveFeed(Callback<FeedImageList> callback);
 
     @GET("/campaigns")
-    public void getCampaigns(Callback<CampaignList> callback);
+    void getCampaigns(Callback<CampaignList> callback);
+
     @GET("/feed/top")
-    public void getTopCampaign(Callback<TopCampaignList> callback);
+    void getTopCampaign(Callback<TopCampaignList> callback);
 
     @Multipart
     @POST("/share")
-    public void share(@Part("image_data") TypedFile image,
-                         @Part("meta") TypedString meta,
-                         @Part("text") TypedString text,
-                         @Part("fb") TypedString fbToken,
-                         @Part("tw_key") TypedString twitterToken,
-                         @Part("tw_secret") TypedString twitterSecret,
-                         @Part("gp") TypedString googlePlusToken,
-                         Callback<Response> callback);
+    void share(@Part("image_data") TypedFile image,
+               @Part("meta") TypedString meta,
+               @Part("text") TypedString text,
+               @Part("fb") TypedString fbToken,
+               @Part("tw_key") TypedString twitterToken,
+               @Part("tw_secret") TypedString twitterSecret,
+               @Part("gp") TypedString googlePlusToken,
+               Callback<Response> callback);
 
 }

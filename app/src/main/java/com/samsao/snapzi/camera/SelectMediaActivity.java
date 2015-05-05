@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,7 +25,7 @@ import icepick.Icicle;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaActivity extends ActionBarActivity implements SelectMediaProvider {
+public class SelectMediaActivity extends AppCompatActivity implements SelectMediaProvider {
 
     /**
      * Constants

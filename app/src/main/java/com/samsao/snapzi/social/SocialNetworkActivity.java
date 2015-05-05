@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.Session;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -31,7 +31,7 @@ import java.io.IOException;
  * @author jfcartier
  * @since 15-03-13
  */
-public class SocialNetworkActivity extends ActionBarActivity implements FacebookProvider,
+public class SocialNetworkActivity extends AppCompatActivity implements FacebookProvider,
         TwitterProvider,
         GooglePlusProvider,
         GoogleApiClient.ConnectionCallbacks,
