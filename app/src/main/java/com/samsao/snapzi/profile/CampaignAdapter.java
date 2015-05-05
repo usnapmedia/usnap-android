@@ -1,5 +1,6 @@
 package com.samsao.snapzi.profile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Campaign;
+import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.squareup.picasso.Picasso;
 
 import java.text.MessageFormat;
@@ -48,8 +50,15 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
 
     @Override
     public CampaignViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View mTopCampaignView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_profile_top_campaign_item, parent, false);
-        return new CampaignViewHolder(mTopCampaignView);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_profile_top_campaign_item, parent, false);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SelectMediaActivity.start(mContext);
+                ((Activity)mContext).finish();
+            }
+        });
+        return new CampaignViewHolder(view);
     }
 
     public void setCampaignList(List<Campaign> list) {
