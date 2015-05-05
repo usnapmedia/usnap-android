@@ -111,7 +111,7 @@ public class CampaignFragment extends Fragment {
                 List<TopCampaign> topCampaigns = topCampaignList.getResponse();
                 TopCampaign campaign;
                 try {
-                    campaign = topCampaigns.get(1);
+                    campaign = topCampaigns.get(0);
                     setTopSnapCard(campaign, mTop10CardView1);
                 } catch (IndexOutOfBoundsException e) {
                     // TODO hide layout
@@ -120,14 +120,14 @@ public class CampaignFragment extends Fragment {
                     mTop10CardView3.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    campaign = topCampaigns.get(2);
+                    campaign = topCampaigns.get(1);
                     setTopSnapCard(campaign, mTop10CardView2);
                 } catch (IndexOutOfBoundsException e) {
                     mTop10CardView2.setVisibility(View.INVISIBLE);
                     mTop10CardView3.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    campaign = topCampaigns.get(3);
+                    campaign = topCampaigns.get(2);
                     setTopSnapCard(campaign, mTop10CardView3);
                 } catch (IndexOutOfBoundsException e) {
                     mTop10CardView3.setVisibility(View.INVISIBLE);
@@ -185,7 +185,7 @@ public class CampaignFragment extends Fragment {
                 List<FeedImage> feedImages = latestUploadsList.getResponse();
                 FeedImage image;
                 try {
-                    image = feedImages.get(1);
+                    image = feedImages.get(0);
                     setLatestUploadCard(image, mLatestUploadsCardView1);
                 } catch (IndexOutOfBoundsException e) {
                     // TODO hide layout
@@ -194,14 +194,14 @@ public class CampaignFragment extends Fragment {
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    image = feedImages.get(2);
+                    image = feedImages.get(1);
                     setLatestUploadCard(image, mLatestUploadsCardView2);
                 } catch (IndexOutOfBoundsException e) {
                     mLatestUploadsCardView2.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    image = feedImages.get(3);
+                    image = feedImages.get(2);
                     setLatestUploadCard(image, mLatestUploadsCardView3);
                 } catch (IndexOutOfBoundsException e) {
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
