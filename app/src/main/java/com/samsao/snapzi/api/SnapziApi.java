@@ -36,10 +36,9 @@ public interface SnapziApi {
                   Callback<Response> callback);
 
 
-    // TODO rename email to username
     @FormUrlEncoded
     @POST("/login")
-    void login(@Field("email") String username,
+    void login(@Field("username") String username,
                @Field("password") String password,
                Callback<Response> callback);
 
