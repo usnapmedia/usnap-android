@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="oval">
-    <size
-        android:width="@dimen/photo_edit_stroke_size_large"
-        android:height="@dimen/photo_edit_stroke_size_large" />
-    <solid android:color="@color/black_alpha" />
-</shape>

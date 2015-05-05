@@ -45,11 +45,11 @@ public class ToolOptionStrokeWidth extends ToolOption implements Parcelable {
     @Override
     public int getImageResource() {
         if (mStrokeWidth == STROKE_WIDTH_SMALL) {
-            return R.drawable.stroke_width_small;
+            return R.drawable.ic_brush_small;
         } else if (mStrokeWidth == STROKE_WIDTH_MEDIUM) {
-            return R.drawable.stroke_width_medium;
+            return R.drawable.ic_brush_medium;
         } else if (mStrokeWidth == STROKE_WIDTH_LARGE) {
-            return R.drawable.stroke_width_large;
+            return R.drawable.ic_brush_large;
         } else {
             return 0;
         }
