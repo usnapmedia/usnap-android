@@ -3,7 +3,7 @@ package com.samsao.snapzi.fan_page;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -16,7 +16,7 @@ import icepick.Icicle;
  * @author jingsilu
  * @since 2015-04-30
  */
-public class PhotoDetailsActivity extends ActionBarActivity implements PhotoDetailsFragment.Listener {
+public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDetailsFragment.Listener {
     public final static String EXTRA_PHOTO_PATH = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_PATH";
     public final static String EXTRA_PHOTO_TEXT = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_TEXT";
     public final static String EXTRA_PHOTO_USERNAME = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_USERNAME";

@@ -1,7 +1,7 @@
 package com.samsao.snapzi.edit;
 
 import android.os.Parcel;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -28,7 +28,7 @@ public class MenuStateView extends MenuState {
     }
 
     @Override
-    public MenuStateView setActivity(ActionBarActivity activity) {
+    public MenuStateView setActivity(AppCompatActivity activity) {
         mActivity = new WeakReference<>(activity);
         return this;
     }

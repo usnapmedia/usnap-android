@@ -1,7 +1,7 @@
 package com.samsao.snapzi.edit;
 
 import android.os.Parcelable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -15,11 +15,11 @@ import java.lang.ref.WeakReference;
  */
 public abstract class MenuState implements Parcelable {
     @ParcelableNoThanks
-    protected WeakReference<ActionBarActivity> mActivity;
+    protected WeakReference<AppCompatActivity> mActivity;
 
     public abstract void onCreateOptionsMenu(MenuInflater menuInflater, Menu menu);
 
-    public MenuState setActivity(ActionBarActivity activity) {
+    public MenuState setActivity(AppCompatActivity activity) {
         mActivity = new WeakReference<>(activity);
         return this;
     }

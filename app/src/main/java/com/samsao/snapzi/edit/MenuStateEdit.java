@@ -2,7 +2,7 @@ package com.samsao.snapzi.edit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -77,7 +77,7 @@ public class MenuStateEdit extends MenuState implements Parcelable {
     }
 
     @Override
-    public MenuStateEdit setActivity(ActionBarActivity activity) {
+    public MenuStateEdit setActivity(AppCompatActivity activity) {
         mActivity = new WeakReference<>(activity);
         return this;
     }

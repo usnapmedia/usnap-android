@@ -103,5 +103,8 @@
     <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
     <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
+    <string name="title_activity_see_all">SeeAllActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

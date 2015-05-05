@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
@@ -22,6 +21,7 @@ import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.TopCampaign;
 import com.samsao.snapzi.api.entity.TopCampaignList;
 import com.samsao.snapzi.camera.SelectMediaActivity;
+import com.samsao.snapzi.seeall.SeeAllActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -61,6 +61,7 @@ public class CampaignFragment extends Fragment {
     @Icicle
     public Campaign mCampaign;
 
+    // TODO inject me
     private ApiService mApiService = new ApiService();
 
     public static CampaignFragment newInstance(Campaign campaign) {
@@ -259,14 +260,12 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_see_all_top_10_btn)
     public void seeAllTop10() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: see all top 10", Toast.LENGTH_SHORT).show();
+        SeeAllActivity.startTop10(getActivity());
     }
 
     @OnClick(R.id.fragment_campaign_see_all_latest_uploads_btn)
     public void seeAllLatestUploads() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: see all latest uploads", Toast.LENGTH_SHORT).show();
+        SeeAllActivity.startLatestUploads(getActivity());
     }
 
     @OnClick(R.id.fragment_campaign_contest_btn)
