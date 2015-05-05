@@ -80,6 +80,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     private ShareLoginDialogFragment mShareLoginDialogFragment;
     private String mImagePath;
     private String mCommentText;
+    private int mCampaignId;
 
     // TODO inject me
     private ApiService mApiService = new ApiService();
@@ -203,6 +204,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
         try {
             mListener = (Listener) activity;
+            mCampaignId = mListener.getCampaignId();
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -481,7 +483,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
                 dismissProgressDialog();
                 // TODO string resource
                 Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
-                SelectMediaActivity.start(getActivity());
+                SelectMediaActivity.start(getActivity(),null);
                 getActivity().finish();
             }
 
@@ -539,6 +541,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     }
 
     public interface Listener {
+        int getCampaignId();
         String getMediaType();
         String getImagePath();
         String getVideoPath();

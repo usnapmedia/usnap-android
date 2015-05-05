@@ -20,6 +20,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
     private final static String EXTRA_MODE = "com.samsao.snapzi.seeall.SeeAllActivity.EXTRA_MODE";
     private final static int SEE_ALL_TOP_10 = 0;
     private final static int SEE_ALL_LATEST = 1;
+    public final static String EXTRA_CAMPAIGN_ID = "com.samsao.snapzi.seeall.SeeAllActivity.EXTRA_CAMPAIGN_ID";
 
     // mode to know what images to fetch
     @Icicle
@@ -29,6 +30,8 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
     // TODO inject me
     private ApiService mApiService = new ApiService();
 
+    private int mCampaignId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
             Intent intent = getIntent();
             if (intent != null) {
                 mMode = intent.getIntExtra(EXTRA_MODE, SEE_ALL_TOP_10);
+                mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID,0);
             } else {
                 mMode = SEE_ALL_TOP_10;
             }
@@ -51,7 +55,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         super.onResume();
         switch (mMode) {
             case SEE_ALL_TOP_10:
-                mApiService.getTopCampaign(new Callback<TopCampaignList>() {
+                mApiService.getTopCampaign(mCampaignId,new Callback<TopCampaignList>() {
                     @Override
                     public void success(TopCampaignList topCampaignList, Response response) {
                         if (mSeeAllFragment != null) {
@@ -68,7 +72,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
                 });
                 break;
             case SEE_ALL_LATEST:
-                mApiService.getLiveFeed(new Callback<FeedImageList>() {
+                mApiService.getLiveFeed(mCampaignId,new Callback<FeedImageList>() {
                     @Override
                     public void success(FeedImageList feedImageList, Response response) {
                         if (mSeeAllFragment != null) {
@@ -108,8 +112,11 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
      * Helper method to start this activity in top 10 mode
      * @param context
      */
-    public static void startTop10(Context context) {
+    public static void startTop10(Context context, Integer campaignId) {
         Intent intent = new Intent(context, SeeAllActivity.class);
+        if (campaignId != null) {
+            intent.putExtra(EXTRA_CAMPAIGN_ID, campaignId);
+        }
         intent.putExtra(EXTRA_MODE, SEE_ALL_TOP_10);
         context.startActivity(intent);
     }

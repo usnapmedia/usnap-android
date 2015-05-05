@@ -39,7 +39,11 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
     public static final String IMAGE_MODE = "com.samsao.snapzi.edit.EditActivity.IMAGE_MODE";
     public static final String VIDEO_MODE = "com.samsao.snapzi.edit.EditActivity.VIDEO_MODE";
 
+    public static final String EXTRA_CAMPAIGN_ID = "com.samsao.snapzi.edit.EditActivity.EXTRA_CAMPAIGN_ID";
+
     private EditFragment mEditFragment;
+
+    private int mCampaignId;
 
     @Icicle
     public String mEditMode;
@@ -63,6 +67,7 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
         if (intent != null) {
             mEditMode = intent.getStringExtra(EXTRA_EDIT_MODE);
             mMediaPath = intent.getStringExtra(EXTRA_MEDIA_PATH);
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
         }
 
         // restore saved state
@@ -217,6 +222,11 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
     public void showEditMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome) {
         mMenuState = new MenuStateEdit().setShowDone(showDone).setShowClear(showClear).setShowUndo(showUndo).setShowHome(showHome).setActivity(this);
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public int getCampaignId() {
+        return mCampaignId;
     }
 
     @Override

@@ -23,6 +23,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     public static final String EXTRA_COMMENT_TEXT = "com.samsao.snapzi.social.SocialNetworkActivity.EXTRA_COMMENT_TEXT";
     public static final String TYPE_IMAGE = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_IMAGE";
     public static final String TYPE_VIDEO = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_VIDEO";
+    public static final String EXTRA_CAMPAIGN_ID = "com.samsao.snapzi.social.ShareActivity.EXTRA_CAMPAIGN_ID";
 
     @Icicle
     public String mMediaType;
@@ -35,6 +36,8 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
 
     private ShareFragment mShareFragment;
 
+    private int mCampaignId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         if (intent != null) {
             mMediaType = intent.getStringExtra(EXTRA_MEDIA_TYPE);
             mImagePath = intent.getStringExtra(EXTRA_IMAGE_PATH);
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID,0);
             if(mMediaType.equals(TYPE_VIDEO)){
                 mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
             }
@@ -97,6 +101,11 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public int getCampaignId() {
+        return mCampaignId;
     }
 
     @Override

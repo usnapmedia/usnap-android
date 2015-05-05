@@ -26,6 +26,7 @@ import java.util.List;
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.CampaignViewHolder> {
     private Context mContext;
     private List<Campaign> mCampaignList;
+    private int mCampaignId;
 
 
     public CampaignAdapter(Context context) {
@@ -45,6 +46,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
     @Override
     public void onBindViewHolder(CampaignViewHolder campaignViewHolder, int position) {
         Campaign campaign = mCampaignList.get(position);
+        mCampaignId = campaign.getId();
         campaignViewHolder.setup(campaign);
     }
 
@@ -54,7 +56,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SelectMediaActivity.start(mContext);
+                SelectMediaActivity.start(mContext, mCampaignId);
                 ((Activity)mContext).finish();
             }
         });
