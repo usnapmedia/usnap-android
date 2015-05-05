@@ -78,6 +78,16 @@
     <string name="profile_settings">Settings</string>
     <string name="profile_campaigns">Campaigns</string>
     <string name="profile_my_feed">My feed</string>
+    <string name="settings">Settings</string>
+    <string name="fragment_settings_personal">PERSONAL</string>
+    <string name="fragment_settings_social">SOCIAL</string>
+    <string name="fragment_settings_support">SUPPORT</string>
+    <string name="fragment_settings_name_hint">Name</string>
+    <string name="fragment_settings_birthday_hint">Birthday(DD/MM/YYYY)</string>
+    <string name="fragment_settings_save_settings">SAVE SETTINGS</string>
+    <string name="fragment_settings_help_center">HELP CENTER</string>
+    <string name="fragment_settings_report_a_problem">REPORT A PROBLEM</string>
+    <string name="fragment_settings_log_out">LOG OUT</string>
 
     <!--Photo details-->
     <string name="photo">Photo</string>

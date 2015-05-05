@@ -211,8 +211,7 @@ public class ProfileFragment extends Fragment {
         mSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                Toast.makeText(getActivity(), "TODO go to setting", Toast.LENGTH_LONG).show();
+               SettingsActivity.start(getActivity());
             }
         });
     }
