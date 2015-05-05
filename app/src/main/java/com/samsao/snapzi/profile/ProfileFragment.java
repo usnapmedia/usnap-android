@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.util.PreferenceManager;
 
 import java.text.MessageFormat;
@@ -77,13 +77,12 @@ public class ProfileFragment extends Fragment {
 
     @InjectView(R.id.fragment_profile_top_campaigns_container)
     RecyclerView mTopCampaignsContainer;
-    private TopCampaignAdapter mTopCampaignAdapter;
+    private CampaignAdapter mCampaignAdapter;
 
     @InjectView(R.id.fragment_profile_my_feed_container)
     RecyclerView mMyFeedContainer;
 
     private ApiService mApiService = new ApiService();
-
 
     /**
      * Use this factory method to create a new instance of
@@ -261,10 +260,10 @@ public class ProfileFragment extends Fragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mTopCampaignsContainer.setLayoutManager(linearLayoutManager);
 
-        mTopCampaignAdapter = new TopCampaignAdapter(getActivity());
-        mTopCampaignsContainer.setAdapter(mTopCampaignAdapter);
+        mCampaignAdapter = new CampaignAdapter(getActivity());
+        mTopCampaignsContainer.setAdapter(mCampaignAdapter);
 
-        getTopCampaigns();
+        getCampaigns();
     }
 
     private void showUserFeed() {
@@ -279,13 +278,13 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Get the top 10 shares from the backend
+     * Get the campaigns from the backend
      */
-    private void getTopCampaigns() {
-        mApiService.getTopCampaign(new Callback<TopCampaignList>() {
+    private void getCampaigns() {
+        mApiService.getCampaigns(new Callback<CampaignList>() {
             @Override
-            public void success(TopCampaignList topCampaignList, Response response) {
-                mTopCampaignAdapter.setTopCampaignList(topCampaignList.getResponse());
+            public void success(CampaignList campaignList, Response response) {
+                mCampaignAdapter.setCampaignList(campaignList.getResponse());
             }
 
             @Override
