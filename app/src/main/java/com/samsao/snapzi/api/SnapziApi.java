@@ -54,7 +54,6 @@ public interface SnapziApi {
     @Multipart
     @POST("/share")
     void share(@Part("image_data") TypedFile image,
-               @Part("meta") TypedString meta,
                @Part("text") TypedString text,
                @Part("fb") TypedString fbToken,
                @Part("tw_key") TypedString twitterToken,

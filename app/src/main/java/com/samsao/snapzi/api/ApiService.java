@@ -250,7 +250,6 @@ public class ApiService {
      */
     public void sharePicture(String imagePath, String text, Callback<Response> callback) {
         mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
-                new TypedString("tayeule"),
                 new TypedString(text),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : ""),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : ""),
