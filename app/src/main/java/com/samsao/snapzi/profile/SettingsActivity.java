@@ -23,7 +23,16 @@ public class SettingsActivity extends SocialNetworkActivity implements SettingsF
         }
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
     public static void start(Context context) {

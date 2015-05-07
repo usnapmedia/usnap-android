@@ -1,23 +1,33 @@
 package com.samsao.snapzi.profile;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.ViewTreeObserver;
+import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivankocijan.magicviews.views.MagicButton;
-import com.ivankocijan.magicviews.views.MagicEditText;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.social.OnGooglePlusLoginListener;
 import com.samsao.snapzi.social.SocialNetworkFragment;
+import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.StringUtil;
 import com.samsao.snapzi.util.UserManager;
@@ -29,6 +39,13 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.lang.ref.WeakReference;
+import java.util.Calendar;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,18 +54,27 @@ import butterknife.OnClick;
  * @author jingsilu
  * @since 2015-05-05
  */
-public class SettingsFragment extends SocialNetworkFragment {
+public class SettingsFragment extends SocialNetworkFragment implements DatePickerDialog.OnDateSetListener  {
+    private final String DATE_FORMAT = "yyyy-MM-dd";
+    private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.SettingsFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
+
+    private DateTime mBirthDayDate;
+
     private PreferenceManager mPreferenceManager = new PreferenceManager();
     private UserManager mUserManager = new UserManager(mPreferenceManager);
 
     @InjectView(R.id.fragment_settings_name_editText)
-    public MagicEditText mName;
+    public MaterialEditText mName;
 
     @InjectView(R.id.fragment_settings_birthday_editText)
-    public MagicEditText mBirthday;
+    public MaterialEditText mBirthday;
 
-    @InjectView(R.id.fragment_settings_image_id)
-    public ImageView mImageView;
+    @InjectView(R.id.fragment_settings_letter_tile_container)
+    FrameLayout mLetterTileContainer;
+    @InjectView(R.id.fragment_settings_letter_tile_background)
+    FrameLayout mLetterTileBackground;
+    @InjectView(R.id.fragment_settings_letter_tile_letter)
+    TextView mLetterTileLetter;
 
     @InjectView(R.id.fragment_settings_help_center_btn)
     public MagicButton mHelpCenterBtn;
@@ -80,10 +106,45 @@ public class SettingsFragment extends SocialNetworkFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.inject(this, view);
+
+        mName.setTypeface(getFont());
+        mBirthday.setTypeface(getFont());
+
+        mBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBirthdayDatePicker(mBirthday.getText().toString());
+            }
+        });
         setupToolbar();
+        // Setup tile letter
+        setupTitleLetter();
         initializeSocialNetworks();
         return view;
     }
+
+    private void showBirthdayDatePicker(String date) {
+        KeyboardUtil.hideKeyboard(getActivity());
+        if (getFragmentManager().findFragmentByTag(DATE_PICKER_DIALOG_FRAGMENT_TAG) == null) {
+            if (!TextUtils.isEmpty(date)) {
+                DateTimeFormatter dateTimeFormatter = getDateFormatter();
+                try {
+                    mBirthDayDate = dateTimeFormatter.parseDateTime(date);
+                    DatePickerFragment.newInstance(SettingsFragment.this,
+                            mBirthDayDate.getYear(),
+                            mBirthDayDate.getMonthOfYear(),
+                            mBirthDayDate.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+
+                } catch (IllegalArgumentException e) {
+                    // error in string format
+                    DatePickerFragment.newInstance(SettingsFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                }
+            } else {
+                DatePickerFragment.newInstance(SettingsFragment.this).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+            }
+        }
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -235,8 +296,10 @@ public class SettingsFragment extends SocialNetworkFragment {
 
     @OnClick(R.id.fragment_settings_save_btn)
     public void saveSettings() {
-        //TODO save settings
-        Toast.makeText(getActivity(),"TODO save settings",Toast.LENGTH_SHORT);
+        String name = mName.getText().toString();
+        String birthday = mBirthday.getText().toString();
+        //TODO update user
+        Toast.makeText(getActivity(),"TODO update user",Toast.LENGTH_SHORT);
     }
 
     @OnClick(R.id.fragment_settings_help_center_btn)
@@ -324,10 +387,127 @@ public class SettingsFragment extends SocialNetworkFragment {
         }
     }
 
+    /**
+     * Setup title letter
+     */
+    private void setupTitleLetter() {
+        mLetterTileContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Adapt tile background size to container
+                int letterTileContainerShortestSideSize =
+                        Math.max(mLetterTileContainer.getWidth(), mLetterTileContainer.getHeight());
+                mLetterTileBackground.getLayoutParams().width = letterTileContainerShortestSideSize;
+                mLetterTileBackground.getLayoutParams().height = letterTileContainerShortestSideSize;
+                mLetterTileBackground.requestLayout();
+
+                // Set tile letter
+                PreferenceManager preferenceManager = new PreferenceManager();
+                mLetterTileLetter.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float) letterTileContainerShortestSideSize * 0.8f);
+                // FIXME remove null case or find a better logic
+                String username = preferenceManager.getUsername();
+                if (username != null && !username.isEmpty()) {
+                    mLetterTileLetter.setText(preferenceManager.getUsername());
+                } else {
+                    mLetterTileLetter.setText("pelvish");
+                }
+            }
+        });
+    }
+
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
+    }
+
     public interface Listener {
         ActionBar getSupportActionBar();
         void setSupportActionBar(Toolbar toolbar);
     }
 
+    /**
+     * Returns the date formatter for birthday
+     *
+     * @return
+     */
+    private DateTimeFormatter getDateFormatter() {
+        return DateTimeFormat.forPattern(DATE_FORMAT);
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+        DateTime dateTime = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
+        mBirthday.setText(getDateFormatter().print(dateTime));
+    }
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        private Integer mYear;
+        private Integer mMonthOfYear;
+        private Integer mDayOfMonth;
+        private WeakReference<DatePickerDialog.OnDateSetListener> mListener;
+
+        public static DatePickerFragment newInstance(DatePickerDialog.OnDateSetListener listener) {
+            DatePickerFragment fragment = new DatePickerFragment();
+            fragment.setListener(listener);
+            return fragment;
+        }
+
+        public static DatePickerFragment newInstance(DatePickerDialog.OnDateSetListener listener, int year, int monthOfYear, int dayOfMonth) {
+            DatePickerFragment fragment = DatePickerFragment.newInstance(listener);
+            fragment.setYear(year);
+            fragment.setMonthOfYear(monthOfYear);
+            fragment.setDayOfMonth(dayOfMonth);
+            return fragment;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default values for the picker
+            if (mYear == null || mMonthOfYear == null || mDayOfMonth == null) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonthOfYear = c.get(Calendar.MONTH);
+                mDayOfMonth = c.get(Calendar.DAY_OF_MONTH);
+            }
+
+            // Create a new instance of DatePickerDialog and return it
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, mYear, mMonthOfYear, mDayOfMonth);
+            datePickerDialog.getDatePicker().setMaxDate(DateTime.now().getMillis());
+            return datePickerDialog;
+        }
+
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            if (mListener != null) {
+                mListener.clear();
+                mListener = null;
+            }
+        }
+
+        public void setYear(Integer year) {
+            mYear = year;
+        }
+
+        public void setMonthOfYear(Integer monthOfYear) {
+            mMonthOfYear = monthOfYear;
+        }
+
+        public void setDayOfMonth(Integer dayOfMonth) {
+            mDayOfMonth = dayOfMonth;
+        }
+
+        public void setListener(DatePickerDialog.OnDateSetListener listener) {
+            mListener = new WeakReference<>(listener);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            if (mListener != null && mListener.get() != null) {
+                mListener.get().onDateSet(view, year, monthOfYear, dayOfMonth);
+            }
+        }
+    }
 
 }

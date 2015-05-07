@@ -83,7 +83,7 @@
     <string name="fragment_settings_social">SOCIAL</string>
     <string name="fragment_settings_support">SUPPORT</string>
     <string name="fragment_settings_name_hint">Name</string>
-    <string name="fragment_settings_birthday_hint">Birthday(DD/MM/YYYY)</string>
+    <string name="fragment_settings_birthday_hint">Birthday</string>
     <string name="fragment_settings_save_settings">SAVE SETTINGS</string>
     <string name="fragment_settings_help_center">HELP CENTER</string>
     <string name="fragment_settings_report_a_problem">REPORT A PROBLEM</string>

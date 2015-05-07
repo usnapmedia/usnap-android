@@ -1,309 +1,340 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/fragment_settings_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/dark_gray" />
-
-    <com.ivankocijan.magicviews.views.MagicTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment_settings_personal"
-        android:textSize="@dimen/font_size_medium"
-        android:textColor="@drawable/profile_setting_button_text_color"
-        android:background="@drawable/profile_setting_button_background"
-        app:typeFace="GothamHTF-Book.ttf"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-       <ImageView
-           android:id="@+id/fragment_settings_image_id"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_alignParentLeft="true"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:orientation="vertical">
-
-            <com.ivankocijan.magicviews.views.MagicEditText
-                android:id="@+id/fragment_settings_name_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:gravity="top"
-                android:padding="@dimen/elements_half_vertical_margin"
-                android:hint="@string/fragment_settings_name_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textFilter"
-                android:maxLength="150"
-                android:minLines="3"
-                android:scrollbars="vertical"
-                android:textColor="@color/dark_gray"
-                android:textColorHint="@color/text_hint"
-                app:typeFace="GothamHTF-Book.ttf"/>
-
-            <com.ivankocijan.magicviews.views.MagicEditText
-                android:id="@+id/fragment_settings_birthday_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:gravity="top"
-                android:padding="@dimen/elements_half_vertical_margin"
-                android:layout_marginTop="@dimen/elements_half_vertical_margin"
-                android:hint="@string/fragment_settings_birthday_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textFilter"
-                android:maxLength="150"
-                android:minLines="3"
-                android:scrollbars="vertical"
-                android:textColor="@color/dark_gray"
-                android:textColorHint="@color/text_hint"
-                app:typeFace="GothamHTF-Book.ttf"/>
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    <com.ivankocijan.magicviews.views.MagicTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment_settings_social"
-        android:textSize="@dimen/font_size_medium"
-        android:textColor="@drawable/profile_setting_button_text_color"
-        android:background="@drawable/profile_setting_button_background"
-        app:typeFace="GothamHTF-Book.ttf"/>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+          android:orientation="vertical"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/fragment_settings_facebook"
-            style="@style/AppButton"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/elements_half_horizontal_margin"
-            android:layout_weight="1">
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typeFace="fontawesome.ttf"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/font_size_large"
-                android:text="\uf230"/>
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:text="Facebook"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                app:typeFace="GothamHTF-Book.ttf"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fragment_settings_twitter"
-            style="@style/AppButton"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-            android:layout_weight="1" >
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typeFace="fontawesome.ttf"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/font_size_large"
-                android:text="\uf081"/>
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:text="Twitter"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                app:typeFace="GothamHTF-Book.ttf"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/elements_vertical_margin"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/fragment_settings_gplus"
-            style="@style/AppButton"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/elements_half_horizontal_margin"
-            android:layout_weight="1" >
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typeFace="fontawesome.ttf"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/font_size_large"
-                android:text="\uf0d4"/>
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:id="@+id/fragment_settings_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:text="Google+"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                app:typeFace="GothamHTF-Book.ttf"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fragment_settings_pinterest"
-            style="@style/AppButton"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-            android:layout_weight="1"
-            android:visibility="invisible">
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typeFace="fontawesome.ttf"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/font_size_large"
-                android:text="\uf0d3"/>
-
-            <com.ivankocijan.magicviews.views.MagicTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:text="Pinterest"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                app:typeFace="GothamHTF-Book.ttf"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-    <com.ivankocijan.magicviews.views.MagicButton
-        android:id="@+id/fragment_settings_save_btn"
-        style="@style/AppButton"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/elements_vertical_margin"
-        android:text="@string/fragment_settings_save_settings"
-        app:typeFace="GothamHTF-Book.ttf"/>
-
-    <com.ivankocijan.magicviews.views.MagicTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment_settings_support"
-        android:textSize="@dimen/font_size_medium"
-        android:textColor="@drawable/profile_setting_button_text_color"
-        android:background="@drawable/profile_setting_button_background"
-        app:typeFace="GothamHTF-Book.ttf"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.ivankocijan.magicviews.views.MagicButton
-            android:id="@+id/fragment_settings_help_center_btn"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/fragment_settings_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/profile_setting_button_background"
-            android:text="@string/fragment_settings_help_center"
-            android:textColor="@drawable/profile_setting_button_text_color"
-            android:textSize="@dimen/font_size_medium"
-            app:typeFace="GothamHTF-Book.ttf" />
+            android:background="@color/dark_gray" />
+
+        <com.ivankocijan.magicviews.views.MagicTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_settings_text_view_padding"
+            android:text="@string/fragment_settings_personal"
+            app:typeFace="GothamHTF-Book.ttf"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/elements_vertical_margin"
+            android:paddingTop="@dimen/elements_half_vertical_margin"
+            android:paddingBottom="@dimen/elements_half_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/bg_section"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/fragment_settings_report_a_problem"
-                style="@style/AppButton"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:layout_weight="1">
+            <!--Letter tile-->
+            <FrameLayout
+                android:id="@+id/fragment_settings_letter_tile_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/elements_horizontal_margin">
 
-                <com.ivankocijan.magicviews.views.MagicButton
-                    android:id="@+id/fragment_settings_report_a_problem_btn"
+                <FrameLayout
+                    android:id="@+id/fragment_settings_letter_tile_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:textSize="@dimen/font_size_medium"
-                    android:textColor="@drawable/profile_setting_button_text_color"
-                    android:background="@drawable/profile_setting_button_background"
-                    android:text="@string/fragment_settings_report_a_problem"
-                    app:typeFace="GothamHTF-Book.ttf" />
+                    android:layout_gravity="center"
+                    android:background="@drawable/profile_letter_tile_gradient" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/fragment_settings_log_out"
-                style="@style/AppButton"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                android:layout_weight="1">
-
-                <com.ivankocijan.magicviews.views.MagicButton
-                    android:id="@+id/fragment_settings_log_out_btn"
-                    style="@style/AppButton"
+                <com.ivankocijan.magicviews.views.MagicTextView
+                    android:id="@+id/fragment_settings_letter_tile_letter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="@string/fragment_settings_log_out"
+                    android:layout_gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLength="1"
+                    android:textAllCaps="true"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_size_medium"
-                    app:typeFace="GothamHTF-Book.ttf" />
+                    app:typeFace="GothamHTF-Book.ttf"/>
 
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/fragment_settings_name_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:gravity="top"
+                    android:hint="@string/fragment_settings_name_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="textFilter"
+                    android:maxLength="150"
+                    android:minLines="3"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/dark_gray"
+                    android:textColorHint="@color/text_hint"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/fragment_settings_birthday_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:gravity="top"
+                    android:hint="@string/fragment_settings_birthday_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="textFilter"
+                    android:maxLength="150"
+                    android:minLines="3"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/dark_gray"
+                    android:textColorHint="@color/text_hint"/>
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>>
+        <com.ivankocijan.magicviews.views.MagicTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_settings_text_view_padding"
+            android:text="@string/fragment_settings_social"
+            app:typeFace="GothamHTF-Book.ttf"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/elements_half_vertical_margin"
+            android:paddingBottom="@dimen/elements_half_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/bg_section"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_facebook"
+                    style="@style/AppButton"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1">
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typeFace="fontawesome.ttf"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/font_size_large"
+                        android:text="\uf230"/>
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                        android:text="Facebook"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        app:typeFace="GothamHTF-Book.ttf"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_twitter"
+                    style="@style/AppButton"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1" >
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typeFace="fontawesome.ttf"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/font_size_large"
+                        android:text="\uf081"/>
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                        android:text="Twitter"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        app:typeFace="GothamHTF-Book.ttf"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/elements_half_vertical_margin"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_gplus"
+                    style="@style/AppButton"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1" >
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typeFace="fontawesome.ttf"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/font_size_large"
+                        android:text="\uf0d4"/>
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:id="@+id/fragment_settings_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                        android:text="Google+"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        app:typeFace="GothamHTF-Book.ttf"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_pinterest"
+                    style="@style/AppButton"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1"
+                    android:visibility="invisible">
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typeFace="fontawesome.ttf"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/font_size_large"
+                        android:text="\uf0d3"/>
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                        android:text="Pinterest"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        app:typeFace="GothamHTF-Book.ttf"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <com.ivankocijan.magicviews.views.MagicButton
+                android:id="@+id/fragment_settings_save_btn"
+                style="@style/AppButton"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/elements_half_vertical_margin"
+                android:text="@string/fragment_settings_save_settings"
+                app:typeFace="GothamHTF-Book.ttf"/>
+
+        </LinearLayout>
+
+        <com.ivankocijan.magicviews.views.MagicTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_settings_text_view_padding"
+            android:text="@string/fragment_settings_support"
+            app:typeFace="GothamHTF-Book.ttf"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/elements_half_vertical_margin"
+            android:paddingBottom="@dimen/elements_half_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/bg_section_top_border"
+            android:orientation="vertical">
+
+            <com.ivankocijan.magicviews.views.MagicButton
+                android:id="@+id/fragment_settings_help_center_btn"
+                style="@style/AppButtonAlt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_settings_help_center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/elements_half_vertical_margin"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_report_a_problem"
+                    android:layout_marginRight="@dimen/elements_half_horizontal_margin"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <com.ivankocijan.magicviews.views.MagicButton
+                        android:id="@+id/fragment_settings_report_a_problem_btn"
+                        style="@style/AppButtonAlt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="@string/fragment_settings_report_a_problem"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_log_out"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1">
+
+                    <com.ivankocijan.magicviews.views.MagicButton
+                        android:id="@+id/fragment_settings_log_out_btn"
+                        style="@style/AppButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="@string/fragment_settings_log_out"
+                        android:textColor="@android:color/white"
+                        app:typeFace="GothamHTF-Book.ttf" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

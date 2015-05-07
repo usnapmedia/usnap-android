@@ -72,6 +72,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@drawable/sel_app_btn</item>
+        <item name="typeFace">GothamHTF-Book.ttf</item>
+    </style>
+
+    <style name="AppButtonAlt" parent="AppButton">
+        <item name="android:background">@drawable/profile_setting_button_background</item>
+        <item name="android:textColor">@drawable/profile_setting_button_text_color</item>
     </style>
 
     <style name="AppSmallButton" parent="Widget.AppCompat.Button.Small">
