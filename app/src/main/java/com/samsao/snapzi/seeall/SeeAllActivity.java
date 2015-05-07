@@ -2,19 +2,20 @@ package com.samsao.snapzi.seeall;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
-import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.FeedImageList;
-import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.astuetz.PagerSlidingTabStrip;
+import com.samsao.snapzi.R;
+import com.samsao.snapzi.SnapziApplication;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.Listener {
     private final static String EXTRA_MODE = "com.samsao.snapzi.seeall.SeeAllActivity.EXTRA_MODE";
@@ -23,85 +24,139 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
 
     // mode to know what images to fetch
     @Icicle
-    public Integer mMode;
+    public int mMode;
 
-    private SeeAllFragment mSeeAllFragment;
-    // TODO inject me
-    private ApiService mApiService = new ApiService();
+//    private SeeAllFragment mSeeAllFragment;
+
+
+    @InjectView(R.id.activity_seeall_toolbar)
+    public Toolbar mToolbar;
+
+    @InjectView(R.id.activity_seeall_tabs)
+    public PagerSlidingTabStrip mTabs;
+
+    @InjectView(R.id.activity_seeall_view_pager)
+    public ViewPager mViewPager;
+
+    private SeeAllAdapter mSeeAllAdapter;
+
+    @Icicle
+    public int mCurrentTabPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_seeall);
+        ButterKnife.inject(this);
+
+        setupToolbar();
+
         if (savedInstanceState == null) {
             Intent intent = getIntent();
             if (intent != null) {
                 mMode = intent.getIntExtra(EXTRA_MODE, SEE_ALL_TOP_10);
+
             } else {
                 mMode = SEE_ALL_TOP_10;
             }
-            mSeeAllFragment = SeeAllFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, mSeeAllFragment, SeeAllFragment.FRAGMENT_TAG).commit();
+//            // create the fragment
+//            mSeeAllFragment = SeeAllFragment.newInstance();
+//            getFragmentManager().beginTransaction().replace(android.R.id.content, mSeeAllFragment, SeeAllFragment.FRAGMENT_TAG).commit();
         } else {
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
+
+        //TODO /feed/top/photos
+        //TODO /feed/top/videos
+
+        mSeeAllAdapter = new SeeAllAdapter(getFragmentManager());
+        mViewPager.setAdapter(mSeeAllAdapter);
+
+        // Bind the tabs to the ViewPager
+        mTabs.setViewPager(mViewPager);
+        mTabs.setBackgroundColor(getResources().getColor(R.color.primary));
+        mTabs.setIndicatorColorResource(android.R.color.white);
+        mTabs.setDividerColorResource(android.R.color.white);
+        mTabs.setTextColorResource(android.R.color.white);
+        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                refresh(position);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                refresh(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        //setTypeface(android.graphics.Typeface typeface, int style)
+        mTabs.setTypeface(getFont(),0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        switch (mMode) {
-            case SEE_ALL_TOP_10:
-                mApiService.getTopCampaign(new Callback<TopCampaignList>() {
-                    @Override
-                    public void success(TopCampaignList topCampaignList, Response response) {
-                        if (mSeeAllFragment != null) {
-                            mSeeAllFragment.setTop10AdapterData(topCampaignList.getResponse());
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        // TODO string resource
-                        Toast.makeText(SeeAllActivity.this, "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
-                        SeeAllActivity.this.finish();
-                    }
-                });
-                break;
-            case SEE_ALL_LATEST:
-                mApiService.getLiveFeed(new Callback<FeedImageList>() {
-                    @Override
-                    public void success(FeedImageList feedImageList, Response response) {
-                        if (mSeeAllFragment != null) {
-                            mSeeAllFragment.setLatestUploadsAdapterData(feedImageList.getResponse());
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        // TODO string resource
-                        Toast.makeText(SeeAllActivity.this, "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
-                        SeeAllActivity.this.finish();
-                    }
-                });
-                break;
-            default:
-                break;
-        }
+        refresh(mCurrentTabPosition);
     }
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (mSeeAllFragment != null) {
-                    mSeeAllFragment.onOptionsItemSelected(item);
-                } else {
-                    finish();
-                }
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Remember the current tab position and refresh data according to see_all_mode
+     * @param position
+     */
+
+    private void refresh(int position) {
+        mCurrentTabPosition = position;
+        System.out.println("##################################");
+        switch (position) {
+            case SeeAllAdapter.FRAGMENT_SEE_ALL_PHOTOS:
+                mSeeAllAdapter.refreshPhotos();
+                break;
+            case SeeAllAdapter.FRAGMENT_SEE_ALL_VIDEOS:
+                mSeeAllAdapter.refreshVideos();
+                break;
+            case SeeAllAdapter.FRAGMENT_SEE_ALL_ALL:
+                mSeeAllAdapter.refreshAll();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private Typeface getFont() {
+        Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
+        return fontText;
+    }
+
+    /**
+     * Setup the toolbar for this activity
+     */
+    public void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     /**
@@ -122,5 +177,11 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         Intent intent = new Intent(context, SeeAllActivity.class);
         intent.putExtra(EXTRA_MODE, SEE_ALL_LATEST);
         context.startActivity(intent);
+    }
+
+
+    @Override
+    public int getMode() {
+        return mMode;
     }
 }

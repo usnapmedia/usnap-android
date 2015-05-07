@@ -107,4 +107,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!--See All-->
+    <string name="see_all_photos">PHOTO</string>
+    <string name="see_all_videos">VIDEOS</string>
+    <string name="see_all_all">ALL</string>
+
 </resources>

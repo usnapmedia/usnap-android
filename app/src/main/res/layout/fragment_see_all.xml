@@ -5,21 +5,6 @@
               android:orientation="vertical"
               tools:context="com.samsao.snapzi.seeall.SeeAllFragment">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/fragment_see_all_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/dark_gray">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_gravity="start|center_vertical"
-            android:adjustViewBounds="true"
-            android:src="@drawable/white_logo"/>
-
-    </android.support.v7.widget.Toolbar>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_see_all_recycler_view"
         android:layout_width="match_parent"
