@@ -14,8 +14,7 @@ import java.io.IOException;
  * @author jfcartier
  * @since 15-04-25
  */
-public class CustomJsonDateTimeDeserializer extends JsonDeserializer<DateTime>
-{
+public class CustomJsonDateTimeDeserializer extends JsonDeserializer<DateTime> {
     public CustomJsonDateTimeDeserializer() {
     }
 

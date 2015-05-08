@@ -19,16 +19,18 @@ public class KeyboardUtil {
 
     /**
      * Show soft keyboard for a given view
+     *
      * @param activity
      * @param view
      */
     public static void showKeyboard(Activity activity, View view) {
-        final InputMethodManager inputMethodManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 
     /**
      * Hide soft keyboard
+     *
      * @param activity
      */
     public static void hideKeyboard(Activity activity) {
@@ -41,6 +43,7 @@ public class KeyboardUtil {
 
     /**
      * Hide soft keyboard
+     *
      * @param view
      */
     public static void hideKeyboard(View view) {

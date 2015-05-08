@@ -67,7 +67,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-        mTabs.setTypeface(getFont(),0);
+        mTabs.setTypeface(getFont(), 0);
     }
 
     private Typeface getFont() {
@@ -106,7 +106,6 @@ public class AuthenticationActivity extends AppCompatActivity {
 
     /**
      * Helper method to start this activity
-     *
      */
     public static void start(Context context) {
         Intent intent = new Intent(context, AuthenticationActivity.class);

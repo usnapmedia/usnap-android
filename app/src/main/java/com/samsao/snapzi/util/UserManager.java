@@ -17,6 +17,7 @@ public class UserManager {
 
     /**
      * Check if the user is logged
+     *
      * @return
      */
     public boolean isLogged() {
@@ -25,6 +26,7 @@ public class UserManager {
 
     /**
      * Returns the facebook access token
+     *
      * @return
      */
     public String getFacebookAccessToken() {
@@ -42,7 +44,6 @@ public class UserManager {
 
     /**
      * Clear the facebook access token in preferences
-     *
      */
     public void removeFacebookAccessToken() {
         mPreferenceManager.removeFacebookAccessToken();
@@ -50,6 +51,7 @@ public class UserManager {
 
     /**
      * Returns the twitter access token
+     *
      * @return
      */
     public String getTwitterAccessToken() {
@@ -58,6 +60,7 @@ public class UserManager {
 
     /**
      * Returns the twitter secret
+     *
      * @return
      */
     public String getTwitterSecret() {
@@ -77,7 +80,6 @@ public class UserManager {
 
     /**
      * Clear the twitter access token in preferences
-     *
      */
     public void removeTwitterAccessToken() {
         mPreferenceManager.removeTwitterAccessToken();
@@ -86,6 +88,7 @@ public class UserManager {
 
     /**
      * Returns the google+ access token
+     *
      * @return
      */
     public String getGooglePlusAccessToken() {
@@ -103,7 +106,6 @@ public class UserManager {
 
     /**
      * Clear the google+ access token in preferences
-     *
      */
     public void removeGooglePlusAccessToken() {
         mPreferenceManager.removeGooglePlusAccessToken();
@@ -111,6 +113,7 @@ public class UserManager {
 
     /**
      * Returns the username
+     *
      * @return
      */
     public String getUsername() {
@@ -128,7 +131,6 @@ public class UserManager {
 
     /**
      * Clear the username in preferences
-     *
      */
     public void removeUsername() {
         mPreferenceManager.removeUsername();
@@ -136,6 +138,7 @@ public class UserManager {
 
     /**
      * Returns the password
+     *
      * @return
      */
     public String getPassword() {
@@ -153,7 +156,6 @@ public class UserManager {
 
     /**
      * Clear the password in preferences
-     *
      */
     private void removePassword() {
         mPreferenceManager.removePassword();
@@ -161,6 +163,7 @@ public class UserManager {
 
     /**
      * Logs the user in
+     *
      * @param username
      * @param password
      * @throws IllegalArgumentException

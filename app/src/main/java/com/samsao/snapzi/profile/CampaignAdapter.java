@@ -57,7 +57,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
             @Override
             public void onClick(View v) {
                 SelectMediaActivity.start(mContext, mCampaignId);
-                ((Activity)mContext).finish();
+                ((Activity) mContext).finish();
             }
         });
         return new CampaignViewHolder(view);

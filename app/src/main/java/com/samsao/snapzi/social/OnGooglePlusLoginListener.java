@@ -6,5 +6,6 @@ package com.samsao.snapzi.social;
  */
 public interface OnGooglePlusLoginListener {
     public void onSuccess();
+
     public void onFail();
 }

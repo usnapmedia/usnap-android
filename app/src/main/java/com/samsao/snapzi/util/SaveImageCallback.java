@@ -6,5 +6,6 @@ package com.samsao.snapzi.util;
  */
 public interface SaveImageCallback {
     public void onSuccess(String destFilePath);
+
     public void onFailure();
 }

@@ -46,8 +46,8 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         if (intent != null) {
             mMediaType = intent.getStringExtra(EXTRA_MEDIA_TYPE);
             mImagePath = intent.getStringExtra(EXTRA_IMAGE_PATH);
-            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID,0);
-            if(mMediaType.equals(TYPE_VIDEO)){
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
+            if (mMediaType.equals(TYPE_VIDEO)) {
                 mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
             }
         }
@@ -77,7 +77,6 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     }
 
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -85,7 +84,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         outState.putString(EXTRA_MEDIA_TYPE, mMediaType);
         outState.putString(EXTRA_IMAGE_PATH, mImagePath);
         outState.putString(EXTRA_VIDEO_PATH, mVideoPath);
-        outState.putString(EXTRA_COMMENT_TEXT,mCommentText);
+        outState.putString(EXTRA_COMMENT_TEXT, mCommentText);
     }
 
     @Override

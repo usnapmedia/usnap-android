@@ -31,9 +31,7 @@ public class TopCampaignList {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     *
-     * @return
-     * The count
+     * @return The count
      */
     @JsonProperty("count")
     public Integer getCount() {
@@ -41,9 +39,7 @@ public class TopCampaignList {
     }
 
     /**
-     *
-     * @param count
-     * The count
+     * @param count The count
      */
     @JsonProperty("count")
     public void setCount(Integer count) {
@@ -51,9 +47,7 @@ public class TopCampaignList {
     }
 
     /**
-     *
-     * @return
-     * The response
+     * @return The response
      */
     @JsonProperty("response")
     public List<TopCampaign> getResponse() {
@@ -61,9 +55,7 @@ public class TopCampaignList {
     }
 
     /**
-     *
-     * @param response
-     * The response
+     * @param response The response
      */
     @JsonProperty("response")
     public void setResponse(List<TopCampaign> response) {

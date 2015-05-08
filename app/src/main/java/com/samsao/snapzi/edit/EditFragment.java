@@ -231,7 +231,7 @@ public class EditFragment extends Fragment {
     }
 
     public void getFeedImage() {
-        mApiService.getLiveFeed(mCampaignId,new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mCampaignId, new Callback<FeedImageList>() {
             @Override
             public void success(FeedImageList feedImageList, Response response) {
                 mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
@@ -702,16 +702,27 @@ public class EditFragment extends Fragment {
 
     public interface Listener {
         int getCampaignId();
+
         String getEditMode();
+
         void saveBitmap(Bitmap bitmap);
+
         void resetMenu();
+
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome);
+
         ArrayList<Tool> getTools();
+
         void setTools(ArrayList<Tool> tools);
+
         Tool getCurrentTool();
+
         void setCurrentTool(Tool currentTool);
+
         String getMediaPath();
+
         ActionBar getSupportActionBar();
+
         void setSupportActionBar(Toolbar toolbar);
     }
 }

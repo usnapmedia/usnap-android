@@ -17,9 +17,7 @@ public class Response {
     private String response;
 
     /**
-     *
-     * @return
-     * The response
+     * @return The response
      */
     @JsonProperty("response")
     public String getResponse() {
@@ -27,9 +25,7 @@ public class Response {
     }
 
     /**
-     *
-     * @param response
-     * The response
+     * @param response The response
      */
     @JsonProperty("response")
     public void setResponse(String response) {

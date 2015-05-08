@@ -82,7 +82,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     protected void onResume() {
         super.onResume();
         if (PhotoUtil.isSaveImageInProgress() && mSelectMediaFragment != null) {
-                mSelectMediaFragment.showSavingImageProgressDialog();
+            mSelectMediaFragment.showSavingImageProgressDialog();
         }
     }
 
@@ -113,7 +113,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
             if (CameraHelper.getAvailableDiskSpace(this) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                 Bitmap bitmap = PhotoUtil.applyBitmapOrientationCorrection(this, data.getData());
                 bitmap = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(bitmap, getCameraPreviewAspectRatio());
-                saveImageAndStartEditActivity(bitmap, CameraHelper.getDefaultImageFilePath(),mCampaignId);
+                saveImageAndStartEditActivity(bitmap, CameraHelper.getDefaultImageFilePath(), mCampaignId);
             } else {
                 Toast.makeText(this,
                         getResources().getString(R.string.error_not_enough_available_space),
@@ -141,7 +141,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
                 startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             } else {
                 if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
-                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(),mCampaignId);
+                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(), mCampaignId);
                 } else {
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_video),
@@ -229,7 +229,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
         editIntent.putExtra(EditActivity.EXTRA_EDIT_MODE, editMode);
         editIntent.putExtra(EditActivity.EXTRA_MEDIA_PATH, mediaPath);
         if (campaignId != null) {
-            editIntent.putExtra(EditActivity.EXTRA_CAMPAIGN_ID, (int)campaignId);
+            editIntent.putExtra(EditActivity.EXTRA_CAMPAIGN_ID, (int) campaignId);
         }
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.hideAllButtons();
@@ -240,13 +240,14 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
 
     /**
      * Helper method to start this activity
+     *
      * @param context
      * @param campaignId
      */
     public static void start(Context context, Integer campaignId) {
         Intent intent = new Intent(context, SelectMediaActivity.class);
         if (campaignId != null) {
-            intent.putExtra(EXTRA_CAMPAIGN_ID,(int)campaignId);
+            intent.putExtra(EXTRA_CAMPAIGN_ID, (int) campaignId);
         }
         context.startActivity(intent);
     }

@@ -341,6 +341,7 @@ public class PhotoUtil {
 
     /**
      * Combine Multi Image Into One
+     *
      * @param bitmaps
      * @return
      */

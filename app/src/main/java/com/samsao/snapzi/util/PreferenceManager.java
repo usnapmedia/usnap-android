@@ -116,6 +116,7 @@ public class PreferenceManager {
 
     /**
      * Get facebook access token
+     *
      * @return
      */
     public String getFacebookAccessToken() {
@@ -124,6 +125,7 @@ public class PreferenceManager {
 
     /**
      * Set facebook access token
+     *
      * @param facebookAccessToken
      */
     public void setFacebookAccessToken(String facebookAccessToken) {
@@ -139,6 +141,7 @@ public class PreferenceManager {
 
     /**
      * Get twitter access token
+     *
      * @return
      */
     public String getTwitterAccessToken() {
@@ -147,6 +150,7 @@ public class PreferenceManager {
 
     /**
      * Set twitter access token
+     *
      * @param twitterAccessToken
      */
     public void setTwitterAccessToken(String twitterAccessToken) {
@@ -162,6 +166,7 @@ public class PreferenceManager {
 
     /**
      * Get twitter secret
+     *
      * @return
      */
     public String getTwitterSecret() {
@@ -170,6 +175,7 @@ public class PreferenceManager {
 
     /**
      * Set twitter secret
+     *
      * @param twitterSecret
      */
     public void setTwitterSecret(String twitterSecret) {
@@ -185,6 +191,7 @@ public class PreferenceManager {
 
     /**
      * Get google+ access token
+     *
      * @return
      */
     public String getGooglePlusAccessToken() {
@@ -193,6 +200,7 @@ public class PreferenceManager {
 
     /**
      * Set google+ access token
+     *
      * @param googlePlusAccessToken
      */
     public void setGooglePlusAccessToken(String googlePlusAccessToken) {
@@ -208,6 +216,7 @@ public class PreferenceManager {
 
     /**
      * Get username
+     *
      * @return
      */
     public String getUsername() {
@@ -216,6 +225,7 @@ public class PreferenceManager {
 
     /**
      * Set username
+     *
      * @param username
      */
     public void setUsername(String username) {
@@ -231,6 +241,7 @@ public class PreferenceManager {
 
     /**
      * Get password
+     *
      * @return
      */
     public String getPassword() {
@@ -239,6 +250,7 @@ public class PreferenceManager {
 
     /**
      * Set password
+     *
      * @param password
      */
     public void setPassword(String password) {

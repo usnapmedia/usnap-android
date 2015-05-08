@@ -23,6 +23,7 @@ public abstract class ToolOption implements Parcelable {
 
     /**
      * Select this tool option
+     *
      * @param force If set to TRUE, force selection, that is select the tool even if mIsSelected is true
      * @return
      */
@@ -68,6 +69,7 @@ public abstract class ToolOption implements Parcelable {
 
     /**
      * Get the menu item associated with this tool option
+     *
      * @return
      */
     public MenuItem getMenuItem() {
@@ -96,18 +98,21 @@ public abstract class ToolOption implements Parcelable {
 
     /**
      * Returns the option's name
+     *
      * @return
      */
     public abstract String getName();
 
     /**
      * Returns the option's name
+     *
      * @return
      */
     public abstract int getImageResource();
 
     /**
      * Set the option's tool
+     *
      * @param tool
      * @return
      */

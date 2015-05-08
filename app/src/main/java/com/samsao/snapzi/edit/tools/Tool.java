@@ -114,6 +114,7 @@ public abstract class Tool implements Parcelable {
 
     /**
      * Select this tool
+     *
      * @param force If set to TRUE, force selection, that is select the tool even if mIsSelected is true
      * @return
      */

@@ -63,7 +63,7 @@ public class SocialNetworkActivity extends AppCompatActivity implements Facebook
      * Listener to send Google+ login callbacks
      */
     private OnGooglePlusLoginListener mOnGooglePlusLoginListener;
-    
+
     // TODO inject me
     private UserManager mUserManager = new UserManager(new PreferenceManager());
 
@@ -243,6 +243,7 @@ public class SocialNetworkActivity extends AppCompatActivity implements Facebook
 
     /**
      * Is Google+ connected?
+     *
      * @return
      */
     public boolean isGooglePlusConnected() {

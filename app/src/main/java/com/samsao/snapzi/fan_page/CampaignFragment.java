@@ -179,7 +179,7 @@ public class CampaignFragment extends Fragment {
      * Get the latest uploads pictures from the backend
      */
     private void getLiveFeed() {
-        mApiService.getLiveFeed(mCampaign.getId(),new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mCampaign.getId(), new Callback<FeedImageList>() {
             @Override
             public void success(FeedImageList latestUploadsList, Response response) {
                 List<FeedImage> feedImages = latestUploadsList.getResponse();

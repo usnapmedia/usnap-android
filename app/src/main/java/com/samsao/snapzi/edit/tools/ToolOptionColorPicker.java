@@ -27,7 +27,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
     public ToolOption setTool(Tool tool) {
         super.setTool(tool);
         try {
-            mToolCallback = (ToolCallback)tool;
+            mToolCallback = (ToolCallback) tool;
         } catch (ClassCastException e) {
             throw new ClassCastException("Tool " + tool.getClass().getName() + " must implement ToolOptionColorPicker.ToolCallback");
         }
@@ -36,6 +36,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
     /**
      * We need to override this method because this option can't be selected
+     *
      * @return
      */
     @Override
@@ -85,6 +86,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
     /**
      * Get color picker dialog
+     *
      * @return
      */
     public MaterialDialog getColorPickerDialog() {

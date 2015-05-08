@@ -156,7 +156,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     }
 
     public void getFeedImage() {
-        mApiService.getLiveFeed(mCampaignId,new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mCampaignId, new Callback<FeedImageList>() {
             @Override
             public void success(FeedImageList feedImageList, Response response) {
                 mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
@@ -299,7 +299,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
-                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(),mCampaignId);
+                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(), mCampaignId);
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -496,7 +496,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
                         @Override
                         public void onPictureReady(Bitmap image) {
-                            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath(),mCampaignId);
+                            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath(), mCampaignId);
                         }
                     })
                     .into(mCameraPreviewContainer);

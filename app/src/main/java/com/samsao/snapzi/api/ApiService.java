@@ -211,6 +211,7 @@ public class ApiService {
 
     /**
      * Register
+     *
      * @param username
      * @param password
      * @param email

@@ -6,7 +6,10 @@ package com.samsao.snapzi.edit;
  */
 public interface MenuItem {
     public String getName();
+
     public int getImageResource();
+
     public void onSelected();
+
     public boolean isSelected();
 }

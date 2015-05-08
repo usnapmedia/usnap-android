@@ -9,8 +9,12 @@ import com.twitter.sdk.android.core.TwitterSession;
  */
 public interface TwitterProvider {
     public void loginWithTwitter(Callback<TwitterSession> callback);
+
     public boolean isTwitterConnected();
+
     public void logoutFromTwitter();
+
     public void setTwitterAccessToken();
+
     public void removeTwitterAccessToken();
 }

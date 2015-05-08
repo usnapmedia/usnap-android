@@ -39,7 +39,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
             Intent intent = getIntent();
             if (intent != null) {
                 mMode = intent.getIntExtra(EXTRA_MODE, SEE_ALL_TOP_10);
-                mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID,0);
+                mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
             } else {
                 mMode = SEE_ALL_TOP_10;
             }
@@ -55,7 +55,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         super.onResume();
         switch (mMode) {
             case SEE_ALL_TOP_10:
-                mApiService.getTopCampaign(mCampaignId,new Callback<TopCampaignList>() {
+                mApiService.getTopCampaign(mCampaignId, new Callback<TopCampaignList>() {
                     @Override
                     public void success(TopCampaignList topCampaignList, Response response) {
                         if (mSeeAllFragment != null) {
@@ -72,7 +72,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
                 });
                 break;
             case SEE_ALL_LATEST:
-                mApiService.getLiveFeed(mCampaignId,new Callback<FeedImageList>() {
+                mApiService.getLiveFeed(mCampaignId, new Callback<FeedImageList>() {
                     @Override
                     public void success(FeedImageList feedImageList, Response response) {
                         if (mSeeAllFragment != null) {
@@ -110,6 +110,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
 
     /**
      * Helper method to start this activity in top 10 mode
+     *
      * @param context
      */
     public static void startTop10(Context context, Integer campaignId) {
@@ -123,6 +124,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
 
     /**
      * Helper method to start this activity in latest uploads mode
+     *
      * @param context
      */
     public static void startLatestUploads(Context context) {
