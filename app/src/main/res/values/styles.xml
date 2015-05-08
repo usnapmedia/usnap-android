@@ -117,13 +117,8 @@
         <item name="cardElevation">@dimen/cardview_elevation</item>
     </style>
 
-    <!--CustomFontTextView-->
-    <declare-styleable name="CustomFontTextView">
-        <attr name="TextView_customTypeFace" format="string"/>
-    </declare-styleable>
-
-    <!--CustomFontButton-->
-    <declare-styleable name="CustomFontButton">
-        <attr name="Button_customTypeFace" format="string"/>
+    <!--CustomBannerImageView-->
+    <declare-styleable name="AspectRatioImageView">
+        <attr name="aspect_ratio" format="string"/>
     </declare-styleable>
 </resources>

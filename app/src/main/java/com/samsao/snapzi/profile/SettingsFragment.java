@@ -108,14 +108,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         ButterKnife.inject(this, view);
 
         mName.setTypeface(getFont());
-        mBirthday.setTypeface(getFont());
-
-        mBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBirthdayDatePicker(mBirthday.getText().toString());
-            }
-        });
+        setupDatePicker();
         setupToolbar();
         // Setup tile letter
         setupTitleLetter();
@@ -281,6 +274,35 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         }
     }
 
+    /**
+     * Setup the date picker for birthday
+     */
+    public void setupDatePicker(){
+        mBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showBirthdayDatePicker(mBirthday.getText().toString());
+                }
+            }
+        });
+        mBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBirthdayDatePicker(mBirthday.getText().toString());
+            }
+        });
+
+
+        mBirthday.setTypeface(getFont());
+
+        mBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBirthdayDatePicker(mBirthday.getText().toString());
+            }
+        });
+    }
 
     /**
      * Setup the toolbar
@@ -292,6 +314,14 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mListener.getSupportActionBar().setDisplayShowTitleEnabled(true);
         mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.settings));
+    }
+
+    /**
+     * Pre-fill name and birthday
+     */
+    public void prefillNameBirthday(){
+        String userName = mUserManager.getUsername();
+        //String birthday = mUserManager.getBirthday();
     }
 
     @OnClick(R.id.fragment_settings_save_btn)

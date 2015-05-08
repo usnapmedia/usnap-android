@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -34,7 +35,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     @Icicle
     public String mCommentText;
     @Icicle
-    public int mCampaignId;
+    public Integer mCampaignId;
 
     private ShareFragment mShareFragment;
 
@@ -46,7 +47,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         if (intent != null) {
             mMediaType = intent.getStringExtra(EXTRA_MEDIA_TYPE);
             mImagePath = intent.getStringExtra(EXTRA_IMAGE_PATH);
-            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
             if (mMediaType.equals(TYPE_VIDEO)) {
                 mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
             }
@@ -94,7 +95,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     }
 
     @Override
-    public int getCampaignId() {
+    public Integer getCampaignId() {
         return mCampaignId;
     }
 

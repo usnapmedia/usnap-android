@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -30,7 +31,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
     // TODO inject me
     private ApiService mApiService = new ApiService();
 
-    private int mCampaignId;
+    private Integer mCampaignId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
             Intent intent = getIntent();
             if (intent != null) {
                 mMode = intent.getIntExtra(EXTRA_MODE, SEE_ALL_TOP_10);
-                mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
+                mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
             } else {
                 mMode = SEE_ALL_TOP_10;
             }

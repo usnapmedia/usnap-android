@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.edit.EditActivity;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.util.MediaUtil;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
@@ -53,7 +54,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     public float mCameraPreviewAspectRatio;
 
     @Icicle
-    public int mCampaignId;
+    public Integer mCampaignId;
 
 
     @Override
@@ -75,7 +76,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
         }
 
         Intent intent = getIntent();
-        mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
+        mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
     }
 
     @Override
@@ -253,7 +254,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     }
 
     @Override
-    public int getCampaignId() {
+    public Integer getCampaignId() {
         return mCampaignId;
     }
 }

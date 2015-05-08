@@ -69,7 +69,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     private ProgressDialogFragment mSavingImageProgressDialog;
 
     private Listener mListener;
-    private int mCampaignId;
+    private Integer mCampaignId;
 
     @InjectView(R.id.fragment_select_media_livefeed_recycler_view)
     public RecyclerView mRecyclerView;
@@ -636,6 +636,6 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     }
 
     public static interface Listener {
-        int getCampaignId();
+        Integer getCampaignId();
     }
 }

@@ -16,6 +16,7 @@ import com.samsao.snapzi.edit.tools.ToolCrop;
 import com.samsao.snapzi.edit.tools.ToolDraw;
 import com.samsao.snapzi.edit.tools.ToolFilters;
 import com.samsao.snapzi.edit.tools.ToolText;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.util.PhotoUtil;
 import com.samsao.snapzi.util.SaveImageCallback;
 import com.samsao.snapzi.util.VideoUtil;
@@ -44,7 +45,7 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
     private EditFragment mEditFragment;
 
     @Icicle
-    public int mCampaignId;
+    public Integer mCampaignId;
     @Icicle
     public String mEditMode;
     @Icicle
@@ -67,7 +68,7 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
         if (intent != null) {
             mEditMode = intent.getStringExtra(EXTRA_EDIT_MODE);
             mMediaPath = intent.getStringExtra(EXTRA_MEDIA_PATH);
-            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
         }
 
         // restore saved state
@@ -225,7 +226,7 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
     }
 
     @Override
-    public int getCampaignId() {
+    public Integer getCampaignId() {
         return mCampaignId;
     }
 
