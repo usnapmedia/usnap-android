@@ -43,7 +43,7 @@ public class SnapziApplication extends Application {
         mContext = getApplicationContext();
 
         // initialize facebook configuration
-        Permission[] permissions = new Permission[] {
+        Permission[] permissions = new Permission[]{
                 Permission.PUBLIC_PROFILE,
                 Permission.PUBLISH_ACTION
         };

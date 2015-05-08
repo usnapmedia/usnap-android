@@ -143,12 +143,13 @@ public class ToolText extends Tool implements Parcelable, ToolOptionColorPicker.
 
     /**
      * Returns the text color
+     *
      * @return
      */
     protected int getTextColor() {
         for (ToolOption option : mOptions) {
             if (option instanceof ToolOptionTextColor) {
-                return ((ToolOptionTextColor)option).getColor();
+                return ((ToolOptionTextColor) option).getColor();
             }
         }
         return ToolOptionTextColor.DEFAULT_COLOR;

@@ -77,7 +77,7 @@ public class SeeAllFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                    getActivity().finish();
+                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -108,6 +108,7 @@ public class SeeAllFragment extends Fragment {
 
     /**
      * Set adapter data for latest uploads
+     *
      * @param list
      */
     public void setLatestUploadsAdapterData(List<FeedImage> list) {
@@ -118,6 +119,7 @@ public class SeeAllFragment extends Fragment {
 
     /**
      * Set adapter data for top 10
+     *
      * @param list
      */
     public void setTop10AdapterData(List<TopCampaign> list) {
@@ -128,6 +130,7 @@ public class SeeAllFragment extends Fragment {
 
     public interface Listener {
         ActionBar getSupportActionBar();
+
         void setSupportActionBar(Toolbar toolbar);
     }
 }

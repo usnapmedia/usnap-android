@@ -63,6 +63,7 @@ public class SeeAllTop10Adapter extends RecyclerView.Adapter<SeeAllTop10Adapter.
             mImageView = (ImageView) view;
 
         }
+
         public void setup(final TopCampaign topCampaign) {
             // TODO add an error image and a placeholder
             // TODO replace with thumbUrl

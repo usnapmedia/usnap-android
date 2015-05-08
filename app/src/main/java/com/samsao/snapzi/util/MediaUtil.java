@@ -20,6 +20,7 @@ public class MediaUtil {
 
     /**
      * Gets media type from media's URI
+     *
      * @param context
      * @param mediaUri
      * @return

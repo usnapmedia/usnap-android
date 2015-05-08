@@ -16,6 +16,7 @@ import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
+import retrofit.http.Path;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
 
@@ -42,15 +43,16 @@ public interface SnapziApi {
                @Field("password") String password,
                Callback<Response> callback);
 
-    @GET("/feed/live")
-    void getLiveFeed(Callback<FeedImageList> callback);
+    @GET("/feed/live/{campaign_id}")
+    void getLiveFeed(@Path("campaign_id") int campaignId, Callback<FeedImageList> callback);
 
     @GET("/campaigns")
     void getCampaigns(Callback<CampaignList> callback);
 
-    @GET("/feed/top")
-    void getTopCampaign(Callback<TopCampaignList> callback);
+    @GET("/feed/top/{campaign_id}")
+    void getTopCampaign(@Path("campaign_id") int campaignId, Callback<TopCampaignList> callback);
 
+    // TODO add campaign ID
     @Multipart
     @POST("/share")
     void share(@Part("image_data") TypedFile image,

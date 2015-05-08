@@ -9,8 +9,12 @@ import com.sromku.simple.fb.listeners.OnLogoutListener;
  */
 public interface FacebookProvider {
     public void loginWithFacebook(OnLoginListener onLoginListener);
+
     public boolean isFacebookConnected();
+
     public void logoutFromFacebook(OnLogoutListener onLogoutListener);
+
     public void setFacebookAccessToken();
+
     public void removeFacebookAccessToken();
 }

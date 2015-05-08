@@ -20,7 +20,7 @@ public interface SelectMediaProvider {
 
     public void setCameraPreviewAspectRatio(float cameraPreviewAspectRatio);
 
-    public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath);
+    public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath, final Integer campaignId);
 
-    public void startEditActivity(String isEditPictureMode, String mediaPath);
+    public void startEditActivity(String isEditPictureMode, String mediaPath, final Integer campaignId);
 }

@@ -52,9 +52,7 @@ public class Campaign implements Parcelable {
     public String rules;
 
     /**
-     *
-     * @return
-     * The id
+     * @return The id
      */
     @JsonProperty("id")
     public Integer getId() {
@@ -62,9 +60,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param id
-     * The id
+     * @param id The id
      */
     @JsonProperty("id")
     public void setId(Integer id) {
@@ -72,9 +68,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The appId
+     * @return The appId
      */
     @JsonProperty("app_id")
     public Object getAppId() {
@@ -82,9 +76,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param appId
-     * The app_id
+     * @param appId The app_id
      */
     @JsonProperty("app_id")
     public void setAppId(Integer appId) {
@@ -92,9 +84,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The name
+     * @return The name
      */
     @JsonProperty("name")
     public String getName() {
@@ -102,9 +92,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param name
-     * The name
+     * @param name The name
      */
     @JsonProperty("name")
     public void setName(String name) {
@@ -112,9 +100,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The description
+     * @return The description
      */
     @JsonProperty("description")
     public String getDescription() {
@@ -122,9 +108,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param description
-     * The description
+     * @param description The description
      */
     @JsonProperty("description")
     public void setDescription(String description) {
@@ -132,9 +116,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The bannerImgUrl
+     * @return The bannerImgUrl
      */
     @JsonProperty("banner_img_url")
     public String getBannerImgUrl() {
@@ -142,9 +124,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param bannerImgUrl
-     * The banner_img_url
+     * @param bannerImgUrl The banner_img_url
      */
     @JsonProperty("banner_img_url")
     public void setBannerImgUrl(String bannerImgUrl) {
@@ -152,9 +132,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The startDate
+     * @return The startDate
      */
     @JsonProperty("start_date")
     public String getStartDate() {
@@ -162,9 +140,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param startDate
-     * The start_date
+     * @param startDate The start_date
      */
     @JsonProperty("start_date")
     public void setStartDate(String startDate) {
@@ -172,9 +148,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The endDate
+     * @return The endDate
      */
     @JsonProperty("end_date")
     public String getEndDate() {
@@ -182,9 +156,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param endDate
-     * The end_date
+     * @param endDate The end_date
      */
     @JsonProperty("end_date")
     public void setEndDate(String endDate) {
@@ -192,9 +164,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The prize
+     * @return The prize
      */
     @JsonProperty("prize")
     public String getPrize() {
@@ -202,9 +172,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param prize
-     * The prize
+     * @param prize The prize
      */
     @JsonProperty("prize")
     public void setPrize(String prize) {
@@ -212,9 +180,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The rules
+     * @return The rules
      */
     @JsonProperty("rules")
     public String getRules() {
@@ -222,9 +188,7 @@ public class Campaign implements Parcelable {
     }
 
     /**
-     *
-     * @param rules
-     * The rules
+     * @param rules The rules
      */
     @JsonProperty("rules")
     public void setRules(String rules) {

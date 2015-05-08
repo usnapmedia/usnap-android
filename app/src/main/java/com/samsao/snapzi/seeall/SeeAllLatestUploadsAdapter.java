@@ -63,6 +63,7 @@ public class SeeAllLatestUploadsAdapter extends RecyclerView.Adapter<SeeAllLates
             mImageView = (ImageView) view;
 
         }
+
         public void setup(final FeedImage image) {
             // TODO add an error image and a placeholder
             // TODO replace with thumbUrl

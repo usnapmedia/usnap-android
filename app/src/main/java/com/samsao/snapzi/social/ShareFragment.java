@@ -82,6 +82,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     private ShareLoginDialogFragment mShareLoginDialogFragment;
     private String mImagePath;
     private String mCommentText;
+    private int mCampaignId;
 
     // TODO inject me
     private ApiService mApiService = new ApiService();
@@ -205,6 +206,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
         try {
             mListener = (Listener) activity;
+            mCampaignId = mListener.getCampaignId();
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -417,7 +419,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         //noinspection deprecation
         linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
         }
     }
 
@@ -430,7 +432,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         //noinspection deprecation
         linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
+            ((TextView) linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
         }
     }
 
@@ -477,6 +479,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
      */
     public void share() {
         showProgressDialog();
+        // TODO add campaign ID
         mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
@@ -492,8 +495,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
                     @Override
                     public void failure(RetrofitError error) {
-
-                        SelectMediaActivity.start(getActivity());
+                        SelectMediaActivity.start(getActivity(), mListener.getCampaignId());
                     }
                 });
                 getActivity().finish();
@@ -553,11 +555,18 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     }
 
     public interface Listener {
+        int getCampaignId();
+
         String getMediaType();
+
         String getImagePath();
+
         String getVideoPath();
+
         void setCommentText(String commentText);
+
         ActionBar getSupportActionBar();
+
         void setSupportActionBar(Toolbar toolbar);
     }
 }

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImage;
 import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
 import com.squareup.picasso.Picasso;
@@ -24,8 +23,6 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
     private Context mContext;
     private List<FeedImage> mImageLiveFeedList;
-    // TODO inject me
-    private ApiService mApiService = new ApiService();
 
     public LiveFeedAdapter(Context context) {
         mContext = context;

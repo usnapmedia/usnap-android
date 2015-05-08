@@ -179,6 +179,6 @@ public class SocialNetworkFragment extends Fragment {
      * @return
      */
     protected boolean isGooglePlusConnected() {
-        return!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken());
+        return !TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken());
     }
 }

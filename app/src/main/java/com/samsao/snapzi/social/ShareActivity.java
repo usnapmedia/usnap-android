@@ -23,6 +23,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     public static final String EXTRA_COMMENT_TEXT = "com.samsao.snapzi.social.SocialNetworkActivity.EXTRA_COMMENT_TEXT";
     public static final String TYPE_IMAGE = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_IMAGE";
     public static final String TYPE_VIDEO = "com.samsao.snapzi.social.SocialNetworkActivity.TYPE_VIDEO";
+    public static final String EXTRA_CAMPAIGN_ID = "com.samsao.snapzi.social.ShareActivity.EXTRA_CAMPAIGN_ID";
 
     @Icicle
     public String mMediaType;
@@ -35,6 +36,8 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
 
     private ShareFragment mShareFragment;
 
+    private int mCampaignId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,13 +46,15 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         if (intent != null) {
             mMediaType = intent.getStringExtra(EXTRA_MEDIA_TYPE);
             mImagePath = intent.getStringExtra(EXTRA_IMAGE_PATH);
-            if(mMediaType.equals(TYPE_VIDEO)){
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
+            if (mMediaType.equals(TYPE_VIDEO)) {
                 mVideoPath = intent.getStringExtra(EXTRA_VIDEO_PATH);
             }
         }
         // restore saved state
         if (savedInstanceState != null) {
             Icepick.restoreInstanceState(this, savedInstanceState);
+            // FIXME remove that code, @Icicle does that job
             mMediaType = savedInstanceState.getString(EXTRA_MEDIA_TYPE);
             mImagePath = savedInstanceState.getString(EXTRA_IMAGE_PATH);
             mVideoPath = savedInstanceState.getString(EXTRA_VIDEO_PATH);
@@ -73,15 +78,15 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     }
 
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
+        // FIXME remove that code, @Icicle does exactly this job
         outState.putString(EXTRA_MEDIA_TYPE, mMediaType);
         outState.putString(EXTRA_IMAGE_PATH, mImagePath);
         outState.putString(EXTRA_VIDEO_PATH, mVideoPath);
-        outState.putString(EXTRA_COMMENT_TEXT,mCommentText);
+        outState.putString(EXTRA_COMMENT_TEXT, mCommentText);
     }
 
     @Override
@@ -97,6 +102,11 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public int getCampaignId() {
+        return mCampaignId;
     }
 
     @Override

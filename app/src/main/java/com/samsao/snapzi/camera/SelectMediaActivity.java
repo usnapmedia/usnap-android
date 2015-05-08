@@ -25,7 +25,7 @@ import icepick.Icicle;
  * @author vlegault
  * @since 15-03-17
  */
-public class SelectMediaActivity extends AppCompatActivity implements SelectMediaProvider {
+public class SelectMediaActivity extends AppCompatActivity implements SelectMediaProvider, SelectMediaFragment.Listener {
 
     /**
      * Constants
@@ -39,6 +39,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
     private final CameraPreview.CameraId DEFAULT_CAMERA_ID = CameraPreview.CameraId.CAMERA_FACING_FRONT;
     private final String DEFAULT_CAMERA_FLASH_MODE = Camera.Parameters.FLASH_MODE_OFF;
+    private final static String EXTRA_CAMPAIGN_ID = "com.samsao.snapzi.camera.SelectMediaActivity.EXTRA_CAMPAIGN_ID";
 
     private SelectMediaFragment mSelectMediaFragment;
 
@@ -50,6 +51,10 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
 
     @Icicle
     public float mCameraPreviewAspectRatio;
+
+    @Icicle
+    public int mCampaignId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +73,16 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
             mSelectMediaFragment = SelectMediaFragment.newInstance();
             getFragmentManager().beginTransaction().replace(android.R.id.content, mSelectMediaFragment).commit();
         }
+
+        Intent intent = getIntent();
+        mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, 0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (PhotoUtil.isSaveImageInProgress() && mSelectMediaFragment != null) {
-                mSelectMediaFragment.showSavingImageProgressDialog();
+            mSelectMediaFragment.showSavingImageProgressDialog();
         }
     }
 
@@ -105,7 +113,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
             if (CameraHelper.getAvailableDiskSpace(this) >= MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                 Bitmap bitmap = PhotoUtil.applyBitmapOrientationCorrection(this, data.getData());
                 bitmap = PhotoUtil.getCenterCropBitmapWithTargetAspectRatio(bitmap, getCameraPreviewAspectRatio());
-                saveImageAndStartEditActivity(bitmap, CameraHelper.getDefaultImageFilePath());
+                saveImageAndStartEditActivity(bitmap, CameraHelper.getDefaultImageFilePath(), mCampaignId);
             } else {
                 Toast.makeText(this,
                         getResources().getString(R.string.error_not_enough_available_space),
@@ -133,7 +141,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
                 startActivityForResult(intent, SelectMediaActivity.RESULT_VIDEO_LOADED_FROM_GALLERY);
             } else {
                 if (VideoUtil.getSubVideo(sourceVideoPath, destVideoPath, 0.0, (double) MAXIMUM_VIDEO_DURATION_MS / 1000.0)) {
-                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
+                    startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(), mCampaignId);
                 } else {
                     Toast.makeText(SelectMediaActivity.this,
                             getResources().getString(R.string.error_unable_to_open_video),
@@ -174,7 +182,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     }
 
     @Override
-    public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath) {
+    public void saveImageAndStartEditActivity(Bitmap bitmap, String destFilePath, final Integer campaignId) {
         if (bitmap != null) {
             if (mSelectMediaFragment != null) {
                 mSelectMediaFragment.showSavingImageProgressDialog();
@@ -182,7 +190,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
             PhotoUtil.saveImage(bitmap, destFilePath, new SaveImageCallback() {
                 @Override
                 public void onSuccess(String destFilePath) {
-                    startEditActivity(EditActivity.IMAGE_MODE, destFilePath);
+                    startEditActivity(EditActivity.IMAGE_MODE, destFilePath, campaignId);
                     if (mSelectMediaFragment != null) {
                         mSelectMediaFragment.dismissSavingImageProgressDialog();
                     }
@@ -216,24 +224,36 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     }
 
     @Override
-    public void startEditActivity(String editMode, String mediaPath) {
+    public void startEditActivity(String editMode, String mediaPath, Integer campaignId) {
         Intent editIntent = new Intent(this, EditActivity.class);
         editIntent.putExtra(EditActivity.EXTRA_EDIT_MODE, editMode);
         editIntent.putExtra(EditActivity.EXTRA_MEDIA_PATH, mediaPath);
+        if (campaignId != null) {
+            editIntent.putExtra(EditActivity.EXTRA_CAMPAIGN_ID, (int) campaignId);
+        }
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.hideAllButtons();
             mSelectMediaFragment.releaseCamera();
         }
-
         startActivity(editIntent);
     }
 
     /**
      * Helper method to start this activity
+     *
      * @param context
+     * @param campaignId
      */
-    public static void start(Context context) {
+    public static void start(Context context, Integer campaignId) {
         Intent intent = new Intent(context, SelectMediaActivity.class);
+        if (campaignId != null) {
+            intent.putExtra(EXTRA_CAMPAIGN_ID, (int) campaignId);
+        }
         context.startActivity(intent);
+    }
+
+    @Override
+    public int getCampaignId() {
+        return mCampaignId;
     }
 }

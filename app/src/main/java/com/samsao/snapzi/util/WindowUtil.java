@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 public class WindowUtil {
     /**
      * Unlocks passed activity screen orientation.
+     *
      * @param activity
      */
     public static void unlockScreenOrientation(Activity activity) {
@@ -19,6 +20,7 @@ public class WindowUtil {
 
     /**
      * Locks passed activity screen orientation.
+     *
      * @param activity
      */
     public static void lockScreenOrientation(Activity activity) {

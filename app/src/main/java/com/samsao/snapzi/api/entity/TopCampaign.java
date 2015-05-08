@@ -40,9 +40,7 @@ public class TopCampaign {
     private Integer usnapScore;
 
     /**
-     *
-     * @return
-     * The email
+     * @return The email
      */
     @JsonProperty("email")
     public String getEmail() {
@@ -50,9 +48,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param email
-     * The email
+     * @param email The email
      */
     @JsonProperty("email")
     public void setEmail(String email) {
@@ -60,9 +56,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The username
+     * @return The username
      */
     @JsonProperty("username")
     public String getUsername() {
@@ -70,9 +64,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param username
-     * The username
+     * @param username The username
      */
     @JsonProperty("username")
     public void setUsername(String username) {
@@ -80,9 +72,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The url
+     * @return The url
      */
     @JsonProperty("url")
     public String getUrl() {
@@ -90,9 +80,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param url
-     * The url
+     * @param url The url
      */
     @JsonProperty("url")
     public void setUrl(String url) {
@@ -100,9 +88,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The thumbUrl
+     * @return The thumbUrl
      */
     @JsonProperty("thumb_url")
     public String getThumbUrl() {
@@ -110,9 +96,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param thumbUrl
-     * The thumb_url
+     * @param thumbUrl The thumb_url
      */
     @JsonProperty("thumb_url")
     public void setThumbUrl(String thumbUrl) {
@@ -120,9 +104,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The text
+     * @return The text
      */
     @JsonProperty("text")
     public String getText() {
@@ -130,9 +112,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param text
-     * The text
+     * @param text The text
      */
     @JsonProperty("text")
     public void setText(String text) {
@@ -140,9 +120,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The fbLikes
+     * @return The fbLikes
      */
     @JsonProperty("fb_likes")
     public Integer getFbLikes() {
@@ -150,9 +128,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param fbLikes
-     * The fb_likes
+     * @param fbLikes The fb_likes
      */
     @JsonProperty("fb_likes")
     public void setFbLikes(Integer fbLikes) {
@@ -160,9 +136,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The campaignId
+     * @return The campaignId
      */
     @JsonProperty("campaign_id")
     public String getCampaignId() {
@@ -170,9 +144,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param campaignId
-     * The campaign_id
+     * @param campaignId The campaign_id
      */
     @JsonProperty("campaign_id")
     public void setCampaignId(String campaignId) {
@@ -180,9 +152,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @return
-     * The usnapScore
+     * @return The usnapScore
      */
     @JsonProperty("usnap_score")
     public Integer getUsnapScore() {
@@ -190,9 +160,7 @@ public class TopCampaign {
     }
 
     /**
-     *
-     * @param usnapScore
-     * The usnap_score
+     * @param usnapScore The usnap_score
      */
     @JsonProperty("usnap_score")
     public void setUsnapScore(Integer usnapScore) {

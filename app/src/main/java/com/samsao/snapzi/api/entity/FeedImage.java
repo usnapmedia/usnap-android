@@ -59,9 +59,7 @@ public class FeedImage {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     *
-     * @return
-     * The id
+     * @return The id
      */
     @JsonProperty("id")
     public String getId() {
@@ -69,9 +67,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param id
-     * The id
+     * @param id The id
      */
     @JsonProperty("id")
     public void setId(String id) {
@@ -79,9 +75,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The email
+     * @return The email
      */
     @JsonProperty("email")
     public String getEmail() {
@@ -89,9 +83,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param email
-     * The email
+     * @param email The email
      */
     @JsonProperty("email")
     public void setEmail(String email) {
@@ -99,9 +91,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The imageData
+     * @return The imageData
      */
     @JsonProperty("image_data")
     public String getImageData() {
@@ -109,9 +99,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param imageData
-     * The image_data
+     * @param imageData The image_data
      */
     @JsonProperty("image_data")
     public void setImageData(String imageData) {
@@ -119,9 +107,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The meta
+     * @return The meta
      */
     @JsonProperty("meta")
     public String getMeta() {
@@ -129,9 +115,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param meta
-     * The meta
+     * @param meta The meta
      */
     @JsonProperty("meta")
     public void setMeta(String meta) {
@@ -139,9 +123,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The text
+     * @return The text
      */
     @JsonProperty("text")
     public String getText() {
@@ -149,9 +131,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param text
-     * The text
+     * @param text The text
      */
     @JsonProperty("text")
     public void setText(String text) {
@@ -159,9 +139,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The filename
+     * @return The filename
      */
     @JsonProperty("filename")
     public String getFilename() {
@@ -169,9 +147,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param filename
-     * The filename
+     * @param filename The filename
      */
     @JsonProperty("filename")
     public void setFilename(String filename) {
@@ -179,9 +155,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The url
+     * @return The url
      */
     @JsonProperty("url")
     public String getUrl() {
@@ -189,9 +163,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param url
-     * The url
+     * @param url The url
      */
     @JsonProperty("url")
     public void setUrl(String url) {
@@ -199,9 +171,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The fbImageId
+     * @return The fbImageId
      */
     @JsonProperty("fb_image_id")
     public String getFbImageId() {
@@ -209,9 +179,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param fbImageId
-     * The fb_image_id
+     * @param fbImageId The fb_image_id
      */
     @JsonProperty("fb_image_id")
     public void setFbImageId(String fbImageId) {
@@ -219,9 +187,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The fbLikes
+     * @return The fbLikes
      */
     @JsonProperty("fb_likes")
     public Integer getFbLikes() {
@@ -229,9 +195,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param fbLikes
-     * The fb_likes
+     * @param fbLikes The fb_likes
      */
     @JsonProperty("fb_likes")
     public void setFbLikes(Integer fbLikes) {
@@ -239,9 +203,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The fb
+     * @return The fb
      */
     @JsonProperty("fb")
     public Object getFb() {
@@ -249,9 +211,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param fb
-     * The fb
+     * @param fb The fb
      */
     @JsonProperty("fb")
     public void setFb(Object fb) {
@@ -259,9 +219,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The tw
+     * @return The tw
      */
     @JsonProperty("tw")
     public Object getTw() {
@@ -269,9 +227,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param tw
-     * The tw
+     * @param tw The tw
      */
     @JsonProperty("tw")
     public void setTw(Object tw) {
@@ -279,9 +235,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @return
-     * The gp
+     * @return The gp
      */
     @JsonProperty("gp")
     public Object getGp() {
@@ -289,9 +243,7 @@ public class FeedImage {
     }
 
     /**
-     *
-     * @param gp
-     * The gp
+     * @param gp The gp
      */
     @JsonProperty("gp")
     public void setGp(Object gp) {

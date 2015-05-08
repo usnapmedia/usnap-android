@@ -126,7 +126,9 @@ public class TextAnnotationTouchListener implements View.OnTouchListener {
 
     public interface Callback {
         void hideOverlays();
+
         void showOverlays();
+
         void unlockText();
     }
 }

@@ -70,9 +70,7 @@ public class LatestUploads {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     *
-     * @return
-     * The id
+     * @return The id
      */
     @JsonProperty("id")
     public String getId() {
@@ -80,9 +78,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param id
-     * The id
+     * @param id The id
      */
     @JsonProperty("id")
     public void setId(String id) {
@@ -90,9 +86,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The email
+     * @return The email
      */
     @JsonProperty("email")
     public String getEmail() {
@@ -100,9 +94,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param email
-     * The email
+     * @param email The email
      */
     @JsonProperty("email")
     public void setEmail(String email) {
@@ -110,9 +102,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The imageData
+     * @return The imageData
      */
     @JsonProperty("image_data")
     public String getImageData() {
@@ -120,9 +110,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param imageData
-     * The image_data
+     * @param imageData The image_data
      */
     @JsonProperty("image_data")
     public void setImageData(String imageData) {
@@ -130,9 +118,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The meta
+     * @return The meta
      */
     @JsonProperty("meta")
     public String getMeta() {
@@ -140,9 +126,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param meta
-     * The meta
+     * @param meta The meta
      */
     @JsonProperty("meta")
     public void setMeta(String meta) {
@@ -150,9 +134,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The text
+     * @return The text
      */
     @JsonProperty("text")
     public String getText() {
@@ -160,9 +142,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param text
-     * The text
+     * @param text The text
      */
     @JsonProperty("text")
     public void setText(String text) {
@@ -170,9 +150,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The filename
+     * @return The filename
      */
     @JsonProperty("filename")
     public String getFilename() {
@@ -180,9 +158,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param filename
-     * The filename
+     * @param filename The filename
      */
     @JsonProperty("filename")
     public void setFilename(String filename) {
@@ -190,9 +166,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The url
+     * @return The url
      */
     @JsonProperty("url")
     public String getUrl() {
@@ -200,9 +174,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param url
-     * The url
+     * @param url The url
      */
     @JsonProperty("url")
     public void setUrl(String url) {
@@ -210,9 +182,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The fbImageId
+     * @return The fbImageId
      */
     @JsonProperty("fb_image_id")
     public Object getFbImageId() {
@@ -220,9 +190,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param fbImageId
-     * The fb_image_id
+     * @param fbImageId The fb_image_id
      */
     @JsonProperty("fb_image_id")
     public void setFbImageId(Object fbImageId) {
@@ -230,9 +198,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The twImageId
+     * @return The twImageId
      */
     @JsonProperty("tw_image_id")
     public Object getTwImageId() {
@@ -240,9 +206,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param twImageId
-     * The tw_image_id
+     * @param twImageId The tw_image_id
      */
     @JsonProperty("tw_image_id")
     public void setTwImageId(Object twImageId) {
@@ -250,9 +214,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The fbLikes
+     * @return The fbLikes
      */
     @JsonProperty("fb_likes")
     public Object getFbLikes() {
@@ -260,9 +222,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param fbLikes
-     * The fb_likes
+     * @param fbLikes The fb_likes
      */
     @JsonProperty("fb_likes")
     public void setFbLikes(Object fbLikes) {
@@ -270,9 +230,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The fb
+     * @return The fb
      */
     @JsonProperty("fb")
     public Object getFb() {
@@ -280,9 +238,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param fb
-     * The fb
+     * @param fb The fb
      */
     @JsonProperty("fb")
     public void setFb(Object fb) {
@@ -290,9 +246,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The twKey
+     * @return The twKey
      */
     @JsonProperty("tw_key")
     public Object getTwKey() {
@@ -300,9 +254,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param twKey
-     * The tw_key
+     * @param twKey The tw_key
      */
     @JsonProperty("tw_key")
     public void setTwKey(Object twKey) {
@@ -310,9 +262,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The twSecret
+     * @return The twSecret
      */
     @JsonProperty("tw_secret")
     public Object getTwSecret() {
@@ -320,9 +270,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param twSecret
-     * The tw_secret
+     * @param twSecret The tw_secret
      */
     @JsonProperty("tw_secret")
     public void setTwSecret(Object twSecret) {
@@ -330,9 +278,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The gp
+     * @return The gp
      */
     @JsonProperty("gp")
     public Object getGp() {
@@ -340,9 +286,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param gp
-     * The gp
+     * @param gp The gp
      */
     @JsonProperty("gp")
     public void setGp(Object gp) {
@@ -350,9 +294,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The status
+     * @return The status
      */
     @JsonProperty("status")
     public String getStatus() {
@@ -360,9 +302,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param status
-     * The status
+     * @param status The status
      */
     @JsonProperty("status")
     public void setStatus(String status) {
@@ -370,9 +310,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @return
-     * The appId
+     * @return The appId
      */
     @JsonProperty("app_id")
     public Object getAppId() {
@@ -380,9 +318,7 @@ public class LatestUploads {
     }
 
     /**
-     *
-     * @param appId
-     * The app_id
+     * @param appId The app_id
      */
     @JsonProperty("app_id")
     public void setAppId(Object appId) {

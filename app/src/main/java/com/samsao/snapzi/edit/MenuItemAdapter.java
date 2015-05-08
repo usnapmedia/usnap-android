@@ -17,8 +17,8 @@ import com.samsao.snapzi.SnapziApplication;
 import java.util.ArrayList;
 
 /**
- * @author  jfcartier
- * @since   4/06/2015
+ * @author jfcartier
+ * @since 4/06/2015
  */
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHolder> {
 

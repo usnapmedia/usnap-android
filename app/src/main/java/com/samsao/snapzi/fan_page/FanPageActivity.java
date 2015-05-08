@@ -82,7 +82,7 @@ public class FanPageActivity extends AppCompatActivity {
             }
         });
         //setTypeface(android.graphics.Typeface typeface, int style)
-        mTabs.setTypeface(getFont(),0);
+        mTabs.setTypeface(getFont(), 0);
     }
 
     private Typeface getFont() {
@@ -112,7 +112,7 @@ public class FanPageActivity extends AppCompatActivity {
                 ProfileActivity.start(FanPageActivity.this);
                 return true;
             case R.id.activity_fan_page_menu_camera:
-                SelectMediaActivity.start(this);
+                SelectMediaActivity.start(this, null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

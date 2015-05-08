@@ -37,7 +37,7 @@ public class PickMediaDialogFragment extends DialogFragment {
         SpannableStringBuilder sBuilder = new SpannableStringBuilder();
         sBuilder.append(getString(R.string.action_select_media_type_title));
         CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(getResources().getAssets(), "fonts/GothamHTF-Book.ttf"));
-        sBuilder.setSpan(typefaceSpan, 0, sBuilder.length()-1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        sBuilder.setSpan(typefaceSpan, 0, sBuilder.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
         dialog.setTitle(sBuilder);
         dialog.setContentView(R.layout.dialog_select_media_type);
@@ -77,6 +77,7 @@ public class PickMediaDialogFragment extends DialogFragment {
 
     public interface PickMediaDialogListener {
         public void onPickImageClick(DialogFragment dialog);
+
         public void onPickVideoClick(DialogFragment dialog);
     }
 }

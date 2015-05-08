@@ -96,6 +96,7 @@ public class EditFragment extends Fragment {
     private LinearLayoutManager mMenuLayoutManager;
     private LinearLayoutManager mLiveFeedLayoutManager;
     private Listener mListener;
+    private int mCampaignId;
 
     private ToolDraw mToolDraw;
     private final ViewTreeObserver.OnGlobalLayoutListener mDrawAnnotationGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -230,7 +231,7 @@ public class EditFragment extends Fragment {
     }
 
     public void getFeedImage() {
-        mApiService.getLiveFeed(new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mCampaignId, new Callback<FeedImageList>() {
             @Override
             public void success(FeedImageList feedImageList, Response response) {
                 mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
@@ -263,9 +264,9 @@ public class EditFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         try {
             mListener = (Listener) activity;
+            mCampaignId = mListener.getCampaignId();
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -556,6 +557,7 @@ public class EditFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), ShareActivity.class);
 
                 intent.putExtra(ShareActivity.EXTRA_IMAGE_PATH, imageDestinationPath); // Keep image in both cases
+                intent.putExtra(ShareActivity.EXTRA_CAMPAIGN_ID, mCampaignId);
                 if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
                     intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_IMAGE);
                 } else {
@@ -699,16 +701,28 @@ public class EditFragment extends Fragment {
     }
 
     public interface Listener {
+        int getCampaignId();
+
         String getEditMode();
+
         void saveBitmap(Bitmap bitmap);
+
         void resetMenu();
+
         void showEditMenu(boolean showDone, boolean showClear, boolean showUndo, boolean showHome);
+
         ArrayList<Tool> getTools();
+
         void setTools(ArrayList<Tool> tools);
+
         Tool getCurrentTool();
+
         void setCurrentTool(Tool currentTool);
+
         String getMediaPath();
+
         ActionBar getSupportActionBar();
+
         void setSupportActionBar(Toolbar toolbar);
     }
 }

@@ -13,7 +13,7 @@ import com.samsao.snapzi.util.StringUtil;
  * @author jingsilu
  * @since 2015-04-29
  */
-public class ShareLoginDialogFragment extends DialogFragment{
+public class ShareLoginDialogFragment extends DialogFragment {
     public final static String PROMPT_LOGIN_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.social.ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG";
     private ShareDialogListener mShareDialogListener;
 
@@ -47,6 +47,7 @@ public class ShareLoginDialogFragment extends DialogFragment{
 
     public interface ShareDialogListener {
         public void onLoginButtonClick(DialogFragment dialog);
+
         public void onCancelButtonClick(DialogFragment dialog);
     }
 }

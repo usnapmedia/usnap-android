@@ -105,7 +105,7 @@ public class CampaignFragment extends Fragment {
      * Get the top 10 snaps from the backend
      */
     private void getTopSnaps() {
-        mApiService.getTopCampaign(new Callback<TopCampaignList>() {
+        mApiService.getTopCampaign(mCampaign.getId(), new Callback<TopCampaignList>() {
             @Override
             public void success(TopCampaignList topCampaignList, Response response) {
                 List<TopCampaign> topCampaigns = topCampaignList.getResponse();
@@ -179,7 +179,7 @@ public class CampaignFragment extends Fragment {
      * Get the latest uploads pictures from the backend
      */
     private void getLiveFeed() {
-        mApiService.getLiveFeed(new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mCampaign.getId(), new Callback<FeedImageList>() {
             @Override
             public void success(FeedImageList latestUploadsList, Response response) {
                 List<FeedImage> feedImages = latestUploadsList.getResponse();
@@ -251,7 +251,7 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_see_all_top_10_btn)
     public void seeAllTop10() {
-        SeeAllActivity.startTop10(getActivity());
+        SeeAllActivity.startTop10(getActivity(), mCampaign.getId());
     }
 
     @OnClick(R.id.fragment_campaign_see_all_latest_uploads_btn)
@@ -261,7 +261,7 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_contest_btn)
     public void enterContest() {
-        SelectMediaActivity.start(getActivity());
+        SelectMediaActivity.start(getActivity(), mCampaign.getId());
     }
 
     /**

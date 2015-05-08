@@ -211,6 +211,7 @@ public class ApiService {
 
     /**
      * Register
+     *
      * @param username
      * @param password
      * @param email
@@ -228,8 +229,8 @@ public class ApiService {
      *
      * @param callback
      */
-    public void getLiveFeed(Callback<FeedImageList> callback) {
-        mApiService.getLiveFeed(callback);
+    public void getLiveFeed(int campaignId, Callback<FeedImageList> callback) {
+        mApiService.getLiveFeed(campaignId, callback);
     }
 
     /**
@@ -249,6 +250,7 @@ public class ApiService {
      * @param callback
      */
     public void sharePicture(String imagePath, String text, Callback<Response> callback) {
+        //TODO add campaignId when sharing
         mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
                 new TypedString(text),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : ""),
@@ -263,8 +265,8 @@ public class ApiService {
      *
      * @param callback
      */
-    public void getTopCampaign(Callback<TopCampaignList> callback) {
-        mApiService.getTopCampaign(callback);
+    public void getTopCampaign(int campaignId, Callback<TopCampaignList> callback) {
+        mApiService.getTopCampaign(campaignId, callback);
     }
 
 }

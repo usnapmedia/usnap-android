@@ -84,6 +84,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
 
     /**
      * Helper to start the activity
+     *
      * @param image
      * @param context
      */
@@ -101,6 +102,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
 
     /**
      * Helper to start the activity
+     *
      * @param campaign
      * @param context
      */

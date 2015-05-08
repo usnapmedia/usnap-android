@@ -30,9 +30,7 @@ public class CampaignList implements Parcelable {
     public List<Campaign> response = new ArrayList<>();
 
     /**
-     *
-     * @return
-     * The count
+     * @return The count
      */
     @JsonProperty("count")
     public Integer getCount() {
@@ -40,9 +38,7 @@ public class CampaignList implements Parcelable {
     }
 
     /**
-     *
-     * @param count
-     * The count
+     * @param count The count
      */
     @JsonProperty("count")
     public void setCount(Integer count) {
@@ -50,9 +46,7 @@ public class CampaignList implements Parcelable {
     }
 
     /**
-     *
-     * @return
-     * The response
+     * @return The response
      */
     @JsonProperty("response")
     public List<Campaign> getResponse() {
@@ -60,9 +54,7 @@ public class CampaignList implements Parcelable {
     }
 
     /**
-     *
-     * @param response
-     * The response
+     * @param response The response
      */
     @JsonProperty("response")
     public void setResponse(List<Campaign> response) {

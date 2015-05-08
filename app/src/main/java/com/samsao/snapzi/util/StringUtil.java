@@ -16,6 +16,7 @@ public class StringUtil {
 
     /**
      * Helper method to get a string
+     *
      * @param resId
      * @return
      */
@@ -25,6 +26,7 @@ public class StringUtil {
 
     /**
      * Returns a SpannableString with the app font
+     *
      * @param resId
      * @return
      */

@@ -142,9 +142,13 @@ public class PhotoDetailsFragment extends Fragment {
 
     public interface Listener {
         String getPhotoPath();
+
         String getText();
+
         String getUsername();
+
         void setSupportActionBar(Toolbar toolbar);
+
         ActionBar getSupportActionBar();
     }
 }
