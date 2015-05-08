@@ -46,6 +46,9 @@ public interface SnapziApi {
     @GET("/feed/live/{campaign_id}")
     void getLiveFeed(@Path("campaign_id") Integer campaignId, Callback<FeedImageList> callback);
 
+    @GET("/feed/live/me")
+    void getMyLiveFeed(Callback<FeedImageList> callback);
+
     @GET("/campaigns")
     void getCampaigns(Callback<CampaignList> callback);
 
