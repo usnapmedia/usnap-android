@@ -47,5 +47,7 @@
     <!--Profile-->
     <dimen name="fragment_profile_user_info_container_height">144dp</dimen>
     <dimen name="fragment_profile_top_campaign_item_image_size">100dp</dimen>
+    <!--Settings-->
+    <dimen name="fragment_settings_text_view_padding">10dp</dimen>
 
 </resources>

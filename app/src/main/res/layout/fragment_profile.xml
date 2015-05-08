@@ -106,7 +106,7 @@
 
                 <!--Separator-->
                 <View
-                    android:layout_width="1px"
+                    android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/medium_gray" />
 
@@ -144,11 +144,8 @@
 
             <com.ivankocijan.magicviews.views.MagicButton
                 android:id="@+id/fragment_profile_setting_button"
-                style="@style/AppButton"
-                android:background="@drawable/profile_setting_button_background"
-                android:text="@string/profile_settings"
-                android:textColor="@drawable/profile_setting_button_text_color"
-                app:typeFace="GothamHTF-Book.ttf" />
+                style="@style/AppButtonAlt"
+                android:text="@string/profile_settings" />
 
         </LinearLayout>
 

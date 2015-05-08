@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment {
         mProfileProvider.setupToolbar(mToolbar);
 
         // Setup tile letter
-        setupTileLetter();
+        setupTitleLetter();
 
         // Setup share count
         setupShareCount();
@@ -160,9 +160,9 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Setup tile letter
+     * Setup title letter
      */
-    private void setupTileLetter() {
+    private void setupTitleLetter() {
         mLetterTileContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -211,8 +211,7 @@ public class ProfileFragment extends Fragment {
         mSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                Toast.makeText(getActivity(), "TODO go to setting", Toast.LENGTH_LONG).show();
+               SettingsActivity.start(getActivity());
             }
         });
     }
