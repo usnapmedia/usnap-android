@@ -54,6 +54,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
         // restore saved state
         if (savedInstanceState != null) {
             Icepick.restoreInstanceState(this, savedInstanceState);
+            // FIXME remove that code, @Icicle does that job
             mMediaType = savedInstanceState.getString(EXTRA_MEDIA_TYPE);
             mImagePath = savedInstanceState.getString(EXTRA_IMAGE_PATH);
             mVideoPath = savedInstanceState.getString(EXTRA_VIDEO_PATH);
@@ -81,6 +82,7 @@ public class ShareActivity extends SocialNetworkActivity implements ShareFragmen
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
+        // FIXME remove that code, @Icicle does exactly this job
         outState.putString(EXTRA_MEDIA_TYPE, mMediaType);
         outState.putString(EXTRA_IMAGE_PATH, mImagePath);
         outState.putString(EXTRA_VIDEO_PATH, mVideoPath);

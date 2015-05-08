@@ -53,6 +53,7 @@ public interface SnapziApi {
     @GET("/feed/top/{campaign_id}")
     void getTopCampaign(@Path("campaign_id") int campaignId, Callback<TopCampaignList> callback);
 
+    // TODO add campaign ID
     @Multipart
     @POST("/share")
     void share(@Part("image_data") TypedFile image,
