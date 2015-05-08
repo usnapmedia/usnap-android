@@ -43,8 +43,8 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
 
     private EditFragment mEditFragment;
 
-    private int mCampaignId;
-
+    @Icicle
+    public int mCampaignId;
     @Icicle
     public String mEditMode;
     @Icicle

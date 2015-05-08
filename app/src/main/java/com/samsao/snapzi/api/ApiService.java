@@ -249,7 +249,7 @@ public class ApiService {
      * @param text
      * @param callback
      */
-    public void sharePicture(String imagePath, String text, Callback<Response> callback) {
+    public void sharePicture(String imagePath, String text, Integer campaignId, Callback<Response> callback) {
         //TODO add campaignId when sharing
         mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
                 new TypedString(text),
@@ -257,6 +257,7 @@ public class ApiService {
                 new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : ""),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterSecret()) ? mUserManager.getTwitterSecret() : ""),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : ""),
+                new TypedString(campaignId.toString()),
                 callback);
     }
 
@@ -265,7 +266,7 @@ public class ApiService {
      *
      * @param callback
      */
-    public void getTopCampaign(int campaignId, Callback<TopCampaignList> callback) {
+    public void getTopCampaign(Integer campaignId, Callback<TopCampaignList> callback) {
         mApiService.getTopCampaign(campaignId, callback);
     }
 

@@ -480,7 +480,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public void share() {
         showProgressDialog();
         // TODO add campaign ID
-        mApiService.sharePicture(mImagePath, mCommentText, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+        mApiService.sharePicture(mImagePath, mCommentText, mCampaignId, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
                 dismissProgressDialog();

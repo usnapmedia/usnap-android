@@ -44,13 +44,13 @@ public interface SnapziApi {
                Callback<Response> callback);
 
     @GET("/feed/live/{campaign_id}")
-    void getLiveFeed(@Path("campaign_id") int campaignId, Callback<FeedImageList> callback);
+    void getLiveFeed(@Path("campaign_id") Integer campaignId, Callback<FeedImageList> callback);
 
     @GET("/campaigns")
     void getCampaigns(Callback<CampaignList> callback);
 
     @GET("/feed/top/{campaign_id}")
-    void getTopCampaign(@Path("campaign_id") int campaignId, Callback<TopCampaignList> callback);
+    void getTopCampaign(@Path("campaign_id") Integer campaignId, Callback<TopCampaignList> callback);
 
     // TODO add campaign ID
     @Multipart
@@ -61,6 +61,7 @@ public interface SnapziApi {
                @Part("tw_key") TypedString twitterToken,
                @Part("tw_secret") TypedString twitterSecret,
                @Part("gp") TypedString googlePlusToken,
+               @Part("campaign_id") TypedString campaignId,
                Callback<Response> callback);
 
 }

@@ -44,7 +44,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
             android:layout_weight="1"
             android:orientation="vertical"
@@ -54,7 +54,8 @@
             <com.ivankocijan.magicviews.views.MagicEditText
                 android:id="@+id/fragment_share_comment_editText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="9"
                 android:background="@android:color/white"
                 android:gravity="top"
                 android:hint="@string/share_add_comment_hint"
@@ -63,6 +64,7 @@
                 android:maxLength="150"
                 android:minLines="3"
                 android:scrollbars="vertical"
+                android:textSize="@dimen/font_size_large"
                 android:textColor="@color/dark_gray"
                 android:textColorHint="@color/text_hint"
                 app:typeFace="GothamHTF-Book.ttf"/>
@@ -70,7 +72,8 @@
             <com.ivankocijan.magicviews.views.MagicTextView
                 android:id="@+id/fragment_share_comment_characters_textView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_marginTop="@dimen/elements_vertical_margin"
                 android:singleLine="true"
                 android:textColor="@color/primary_light"
