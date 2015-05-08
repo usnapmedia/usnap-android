@@ -25,10 +25,12 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.authentication.AuthenticationActivity;
 import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.StringUtil;
@@ -481,7 +483,19 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
                 dismissProgressDialog();
                 // TODO string resource
                 Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
-                SelectMediaActivity.start(getActivity());
+                // TODO load the campaigns in the FanPage Activity
+                mApiService.getCampaigns(new retrofit.Callback<CampaignList>() {
+                    @Override
+                    public void success(CampaignList campaignList, Response response) {
+                        FanPageActivity.start(getActivity(), campaignList);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        SelectMediaActivity.start(getActivity());
+                    }
+                });
                 getActivity().finish();
             }
 
