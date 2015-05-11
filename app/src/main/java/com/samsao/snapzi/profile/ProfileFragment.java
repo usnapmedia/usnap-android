@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,11 +16,11 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.CampaignList;
+import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.util.PreferenceManager;
 
 import java.text.MessageFormat;
@@ -82,6 +83,8 @@ public class ProfileFragment extends Fragment {
     @InjectView(R.id.fragment_profile_my_feed_container)
     RecyclerView mMyFeedContainer;
 
+    private MyFeedImagesAdapter mMyFeedImagesAdapter;
+    private GridLayoutManager mGridLayoutManager;
     private ApiService mApiService = new ApiService();
 
     /**
@@ -272,8 +275,22 @@ public class ProfileFragment extends Fragment {
         mMyFeedContainer.setVisibility(View.VISIBLE);
         mMyFeedContainer.setHasFixedSize(true);
 
-        //TODO
-        Toast.makeText(getActivity(), "TODO", Toast.LENGTH_LONG).show();
+        mMyFeedImagesAdapter = new MyFeedImagesAdapter(getActivity());
+        mMyFeedContainer.setAdapter(mMyFeedImagesAdapter);
+        mGridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        mMyFeedContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.top = (int) getResources().getDimension(R.dimen.elements_quarter_vertical_margin);
+                outRect.right = (int) getResources().getDimension(R.dimen.elements_quarter_vertical_margin);
+                outRect.bottom = (int) getResources().getDimension(R.dimen.elements_quarter_vertical_margin);
+                outRect.left = (int) getResources().getDimension(R.dimen.elements_quarter_vertical_margin);
+            }
+        });
+        mMyFeedContainer.setHasFixedSize(true);
+        mMyFeedContainer.setLayoutManager(mGridLayoutManager);
+
+        getMyFeed();
     }
 
     /**
@@ -289,6 +306,20 @@ public class ProfileFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 Timber.e("Error Fetching Top Campaign Data!");
+            }
+        });
+    }
+
+    public void getMyFeed() {
+        mApiService.getMyLiveFeed(new Callback<FeedImageList>() {
+            @Override
+            public void success(FeedImageList feedImageList, Response response) {
+                mMyFeedImagesAdapter.setMyFeedImages(feedImageList.getResponse());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error Fetching My Live Feed Data!");
             }
         });
     }

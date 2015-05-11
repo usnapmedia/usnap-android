@@ -235,6 +235,14 @@ public class ApiService {
     }
 
     /**
+     * Get the live feed of the user
+     */
+    public void getMyLiveFeed(Callback<FeedImageList> callback){
+        //TODO pass user id to get live feed of the user
+        mApiService.getMyLiveFeed(callback);
+    }
+
+    /**
      * Get the campaigns
      *
      * @param callback
