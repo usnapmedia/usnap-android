@@ -17,13 +17,18 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.api.entity.User;
+import com.samsao.snapzi.api.entity.UserList;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 
 /**
@@ -42,6 +47,11 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
     private ApiService mApiService = new ApiService();
     // TODO inject me
     private UserManager mUserManager = new UserManager(new PreferenceManager());
+
+    private String mEmail;
+    private String mFirstName;
+    private String mLastName;
+    private String mBirthday;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -96,6 +106,7 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
                 Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
                 // TODO retrieve account info and add them to preferences
                 mUserManager.login(getUserName(), getPassword());
+                getUserInformation();
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
@@ -112,5 +123,30 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
         String message = failedRule.getFailureMessage();
         ((MaterialEditText) failedView).setError(message);
         failedView.requestFocus();
+    }
+
+    private void getUserInformation() {
+        mApiService.getUserInfo(new Callback<UserList>() {
+            @Override
+            public void success(UserList userList, retrofit.client.Response response) {
+                List<User> userInfo = userList.getResponse();
+                User user = userInfo.get(0);
+                mFirstName = user.getFirstName();
+                mLastName = user.getLastName();
+                mEmail = user.getEmail();
+                mBirthday = user.getDob();
+                saveUserInPreferences(mFirstName, mLastName, mEmail, mBirthday);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "Fail to retrieve user info", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void saveUserInPreferences(String firstName, String lastName, String email, String birthday) {
+        mUserManager.setFirstName(firstName);
+        mUserManager.setLastName(lastName);
+        mUserManager.setEmail(email);
+        mUserManager.setBirthday(birthday);
     }
 }

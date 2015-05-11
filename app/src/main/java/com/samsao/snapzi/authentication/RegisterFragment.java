@@ -86,6 +86,13 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.LoginFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
     private final String DATE_FORMAT = "yyyy-MM-dd";
 
+    private String mUserName;
+    private String mPassword;
+    private String mEmail;
+    private String mFirstName;
+    private String mLastName;
+    private String mBirthday;
+
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
     }
@@ -186,7 +193,14 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
 
     @Override
     public void onValidationSucceeded() {
-        mApiService.register(getUserName(), getPassword(), getEmail(), getFirstName(), getLastName(), getBirthday(), new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+        mUserName = getUserName();
+        mPassword = getPassword();
+        mEmail = getEmail();
+        mFirstName = getFirstName();
+        mLastName = getLastName();
+        mBirthday = getBirthday();
+
+        mApiService.register(mUserName, mPassword, mEmail, mFirstName, mLastName, mBirthday, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
                 // TODO string resources
@@ -194,6 +208,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 Toast.makeText(getActivity(), "Registration Success!", Toast.LENGTH_SHORT).show();
                 // TODO retrieve account info and add them to preferences
                 mUserManager.login(getUserName(), getPassword());
+                saveUserInPreferences(mUserName, mPassword, mEmail, mFirstName, mLastName, mBirthday);
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
@@ -206,6 +221,26 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 getActivity().finish();
             }
         });
+    }
+
+    /**
+     * Save user information into User Preferences(right after registration success)
+     * @param userName
+     * @param password
+     * @param email
+     * @param firstName
+     * @param lastName
+     * @param birthday
+     */
+
+    private void saveUserInPreferences(String userName, String password, String email, String firstName, String lastName, String birthday) {
+        mUserManager.setUsername(userName);
+        mUserManager.setPassword(password);
+        mUserManager.setEmail(email);
+        mUserManager.setFirstName(firstName);
+        mUserManager.setLastName(lastName);
+        mUserManager.setBirthday(birthday);
+        String test = mUserManager.getBirthday();
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.api.entity.UserList;
 import com.samsao.snapzi.api.exception.ApiException;
 import com.samsao.snapzi.api.exception.HostUnreachableException;
 import com.samsao.snapzi.api.exception.InternalServerErrorException;
@@ -268,6 +269,14 @@ public class ApiService {
      */
     public void getTopCampaign(Integer campaignId, Callback<TopCampaignList> callback) {
         mApiService.getTopCampaign(campaignId, callback);
+    }
+
+    /**
+     * Get the currently logged in user's information
+     * @param callback
+     */
+    public void getUserInfo(Callback<UserList> callback) {
+        mApiService.getUserInfo(callback);
     }
 
 }

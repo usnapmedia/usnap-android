@@ -27,6 +27,10 @@ public class PreferenceManager {
     private final String GPLUS_ACCESS_TOKEN_KEY = "com.samsao.snapzi.preference.GPLUS_ACCESS_TOKEN_KEY";
     private final String USERNAME_KEY = "com.samsao.snapzi.preference.USERNAME_KEY";
     private final String PASSWORD_KEY = "com.samsao.snapzi.preference.PASSWORD_KEY";
+    private final String FIRSTNAME_KEY = "com.samsao.snapzi.util.FIRSTNAME_KEY";
+    private final String LASTNAME_KEY = "com.samsao.snapzi.util.LASTNAME_KEY";
+    private final String EMAIL_KEY = "com.samsao.snapzi.util.EMAIL_KEY";
+    private final String BIRTHDAY_KEY = "com.samsao.snapzi.util.BIRTHDAY_KEY";
 
     private SharedPreferences mSharedPreferences;
 
@@ -262,5 +266,105 @@ public class PreferenceManager {
      */
     public void removePassword() {
         getEditor().remove(PASSWORD_KEY).apply();
+    }
+
+    /**
+     * Get FirstName
+     *
+     * @return
+     */
+    public String getFirstName() {
+        return getString(FIRSTNAME_KEY, null);
+    }
+
+    /**
+     * Set FirstName
+     *
+     * @param firstName
+     */
+    public void setFirstName(String firstName) {
+        putString(FIRSTNAME_KEY, firstName).apply();
+    }
+
+    /**
+     * Remove FirstName
+     */
+    public void removeFirstName() {
+        getEditor().remove(FIRSTNAME_KEY).apply();
+    }
+
+    /**
+     * Get LastName
+     *
+     * @return
+     */
+    public String getLastName() {
+        return getString(LASTNAME_KEY, null);
+    }
+
+    /**
+     * Set LastName
+     *
+     * @param lastName
+     */
+    public void setLastName(String lastName) {
+        putString(LASTNAME_KEY, lastName).apply();
+    }
+
+    /**
+     * Remove LastName
+     */
+    public void removeLastName() {
+        getEditor().remove(LASTNAME_KEY).apply();
+    }
+
+    /**
+     * Get Email
+     *
+     * @return
+     */
+    public String getEmail() {
+        return getString(EMAIL_KEY, null);
+    }
+
+    /**
+     * Set Email
+     *
+     * @param email
+     */
+    public void setEmail(String email) {
+        putString(EMAIL_KEY, email).apply();
+    }
+
+    /**
+     * Remove Email
+     */
+    public void removeEmail() {
+        getEditor().remove(EMAIL_KEY).apply();
+    }
+
+    /**
+     * Get Birthday
+     *
+     * @return
+     */
+    public String getBirthday() {
+        return getString(BIRTHDAY_KEY, null);
+    }
+
+    /**
+     * Set Birthday
+     *
+     * @param birthday
+     */
+    public void setBirthday(String birthday) {
+        putString(BIRTHDAY_KEY, birthday).apply();
+    }
+
+    /**
+     * Remove Birthday
+     */
+    public void removeBirthday() {
+        getEditor().remove(BIRTHDAY_KEY).apply();
     }
 }

@@ -162,6 +162,106 @@ public class UserManager {
     }
 
     /**
+     * Returns the FirstName
+     *
+     * @return
+     */
+    public String getFirstName() {
+        return mPreferenceManager.getFirstName();
+    }
+
+    /**
+     * Set the FirstName in preferences
+     *
+     * @param firstname
+     */
+    public void setFirstName(String firstname) {
+        mPreferenceManager.setFirstName(firstname);
+    }
+
+    /**
+     * Clear the FirstName in preferences
+     */
+    public void removeFirstName() {
+        mPreferenceManager.removeFirstName();
+    }
+
+    /**
+     * Returns the LastName
+     *
+     * @return
+     */
+    public String getLastName() {
+        return mPreferenceManager.getLastName();
+    }
+
+    /**
+     * Set the LastName in preferences
+     *
+     * @param lastName
+     */
+    public void setLastName(String lastName) {
+        mPreferenceManager.setLastName(lastName);
+    }
+
+    /**
+     * Clear the LastName in preferences
+     */
+    public void removeLastName() {
+        mPreferenceManager.removeLastName();
+    }
+
+    /**
+     * Returns the Email
+     *
+     * @return
+     */
+    public String getEmail() {
+        return mPreferenceManager.getEmail();
+    }
+
+    /**
+     * Set the Email in preferences
+     *
+     * @param email
+     */
+    public void setEmail(String email) {
+        mPreferenceManager.setEmail(email);
+    }
+
+    /**
+     * Clear the Email in preferences
+     */
+    public void removeEmail() {
+        mPreferenceManager.removeEmail();
+    }
+
+    /**
+     * Returns the Birthday
+     *
+     * @return
+     */
+    public String getBirthday() {
+        return mPreferenceManager.getBirthday();
+    }
+
+    /**
+     * Set the Birthday in preferences
+     *
+     * @param birthday
+     */
+    public void setBirthday(String birthday) {
+        mPreferenceManager.setBirthday(birthday);
+    }
+
+    /**
+     * Clear the Birthday in preferences
+     */
+    public void removeBirthday() {
+        mPreferenceManager.removeBirthday();
+    }
+
+    /**
      * Logs the user in
      *
      * @param username
@@ -182,6 +282,10 @@ public class UserManager {
     public void logout() {
         removeUsername();
         removePassword();
+        removeBirthday();
+        removeEmail();
+        removeFirstName();
+        removeLastName();
         removeFacebookAccessToken();
         removeGooglePlusAccessToken();
         removeTwitterAccessToken();

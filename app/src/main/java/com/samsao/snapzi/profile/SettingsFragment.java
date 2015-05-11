@@ -25,6 +25,7 @@ import com.ivankocijan.magicviews.views.MagicButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.social.OnGooglePlusLoginListener;
 import com.samsao.snapzi.social.SocialNetworkFragment;
 import com.samsao.snapzi.util.KeyboardUtil;
@@ -95,7 +96,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     private Listener mListener;
 
-
+    private ApiService mApiService;
     public static SettingsFragment newInstance() {
         SettingsFragment settingsFragment = new SettingsFragment();
         return settingsFragment;
@@ -109,6 +110,11 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
         mName.setTypeface(getFont());
         mBirthday.setTypeface(getFont());
+
+        String name = mUserManager.getUsername();
+        mName.setText(name);
+        String birthday = mUserManager.getBirthday();
+        mBirthday.setText(birthday);
 
         mBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,8 +304,10 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     public void saveSettings() {
         String name = mName.getText().toString();
         String birthday = mBirthday.getText().toString();
-        //TODO update user
-        Toast.makeText(getActivity(),"TODO update user",Toast.LENGTH_SHORT);
+        mUserManager.setUsername(name);
+        mUserManager.setBirthday(birthday);
+        //TODO update user info at backend
+
     }
 
     @OnClick(R.id.fragment_settings_help_center_btn)
@@ -316,7 +324,12 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     @OnClick(R.id.fragment_settings_log_out_btn)
     public void logout() {
-         mUserManager.logout();
+        mUserManager.logout();
+        //We must remove the text before set hint.
+        mName.setText("");
+        mBirthday.setText("");
+        mName.setHint("Name");
+        mBirthday.setHint("Birthday");
     }
 
     /**

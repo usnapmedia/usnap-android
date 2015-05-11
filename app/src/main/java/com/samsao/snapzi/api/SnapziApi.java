@@ -8,6 +8,7 @@ import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.api.entity.UserList;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -52,7 +53,9 @@ public interface SnapziApi {
     @GET("/feed/top/{campaign_id}")
     void getTopCampaign(@Path("campaign_id") Integer campaignId, Callback<TopCampaignList> callback);
 
-    // TODO add campaign ID
+    @GET("/users/me")
+    void getUserInfo(Callback<UserList> callback);
+
     @Multipart
     @POST("/share")
     void share(@Part("image_data") TypedFile image,
