@@ -278,7 +278,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -289,8 +289,6 @@
             <com.ivankocijan.magicviews.views.MagicButton
                 android:id="@+id/fragment_settings_help_center_btn"
                 style="@style/AppButtonAlt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="@string/fragment_settings_help_center"/>
 
             <LinearLayout
@@ -311,9 +309,6 @@
                     <com.ivankocijan.magicviews.views.MagicButton
                         android:id="@+id/fragment_settings_report_a_problem_btn"
                         style="@style/AppButtonAlt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
                         android:text="@string/fragment_settings_report_a_problem"/>
 
                 </LinearLayout>
@@ -330,13 +325,8 @@
                     <com.ivankocijan.magicviews.views.MagicButton
                         android:id="@+id/fragment_settings_log_out_btn"
                         style="@style/AppButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         android:text="@string/fragment_settings_log_out"
-                        android:textColor="@android:color/white"
-                        app:typeFace="GothamHTF-Book.ttf" />
-
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
 

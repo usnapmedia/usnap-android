@@ -1,7 +1,13 @@
 <resources>
-
     <style name="AppCardView" parent="AppCardViewBase">
         <item name="android:elevation">@dimen/cardview_elevation</item>
     </style>
 
+    <style name="AppButton" parent="AppButtonBase">
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="AppSmallButton" parent="AppSmallButtonBase">
+        <item name="android:stateListAnimator">@null</item>
+    </style>
 </resources>

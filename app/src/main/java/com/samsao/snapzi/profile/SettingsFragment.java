@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivankocijan.magicviews.views.MagicButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
@@ -58,8 +57,7 @@ import butterknife.OnClick;
 public class SettingsFragment extends SocialNetworkFragment implements DatePickerDialog.OnDateSetListener  {
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.SettingsFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
 
-    private DateTime mBirthDayDate;
-
+    // TODO inject me
     private PreferenceManager mPreferenceManager = new PreferenceManager();
     private UserManager mUserManager = new UserManager(mPreferenceManager);
 
@@ -70,17 +68,11 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     public MaterialEditText mBirthday;
 
     @InjectView(R.id.fragment_settings_letter_tile_container)
-    FrameLayout mLetterTileContainer;
+    public FrameLayout mLetterTileContainer;
     @InjectView(R.id.fragment_settings_letter_tile_background)
-    FrameLayout mLetterTileBackground;
+    public FrameLayout mLetterTileBackground;
     @InjectView(R.id.fragment_settings_letter_tile_letter)
-    TextView mLetterTileLetter;
-
-    @InjectView(R.id.fragment_settings_help_center_btn)
-    public MagicButton mHelpCenterBtn;
-
-    @InjectView(R.id.fragment_settings_report_a_problem_btn)
-    public MagicButton mProblemBtn;
+    public TextView mLetterTileLetter;
 
     @InjectView(R.id.fragment_settings_facebook)
     public LinearLayout mFacebookBtn;
@@ -90,7 +82,6 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     public LinearLayout mGooglePlusBtn;
 
     @InjectView(R.id.fragment_settings_toolbar)
-
     public Toolbar mToolbar;
 
     private Listener mListener;
@@ -125,11 +116,11 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
             if (!TextUtils.isEmpty(date)) {
                 DateTimeFormatter dateTimeFormatter = CustomJsonDateTimeDeserializer.getDateFormatter();
                 try {
-                    mBirthDayDate = dateTimeFormatter.parseDateTime(date);
+                    DateTime birthDayDate = dateTimeFormatter.parseDateTime(date);
                     DatePickerFragment.newInstance(SettingsFragment.this,
-                            mBirthDayDate.getYear(),
-                            mBirthDayDate.getMonthOfYear()-1,
-                            mBirthDayDate.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                            birthDayDate.getYear(),
+                            birthDayDate.getMonthOfYear()-1,
+                            birthDayDate.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
 
                 } catch (IllegalArgumentException e) {
                     // error in string format
@@ -329,13 +320,13 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     @OnClick(R.id.fragment_settings_help_center_btn)
     public void helpCenter() {
         //TODO help center
-        Toast.makeText(getActivity(),"TODO help center",Toast.LENGTH_SHORT);
+        Toast.makeText(getActivity(),"TODO help center",Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fragment_settings_report_a_problem_btn)
     public void reportAProblem() {
         //TODO report a problem
-        Toast.makeText(getActivity(),"TODO report a problem",Toast.LENGTH_SHORT);
+        Toast.makeText(getActivity(),"TODO report a problem",Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fragment_settings_log_out_btn)
