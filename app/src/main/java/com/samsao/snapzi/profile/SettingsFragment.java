@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +26,7 @@ import com.ivankocijan.magicviews.views.MagicButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
-import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 import com.samsao.snapzi.social.OnGooglePlusLoginListener;
 import com.samsao.snapzi.social.SocialNetworkFragment;
 import com.samsao.snapzi.util.KeyboardUtil;
@@ -41,7 +42,6 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.ref.WeakReference;
@@ -56,7 +56,6 @@ import butterknife.OnClick;
  * @since 2015-05-05
  */
 public class SettingsFragment extends SocialNetworkFragment implements DatePickerDialog.OnDateSetListener  {
-    private final String DATE_FORMAT = "yyyy-MM-dd";
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.SettingsFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
 
     private DateTime mBirthDayDate;
@@ -96,7 +95,6 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     private Listener mListener;
 
-    private ApiService mApiService;
     public static SettingsFragment newInstance() {
         SettingsFragment settingsFragment = new SettingsFragment();
         return settingsFragment;
@@ -109,19 +107,11 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         ButterKnife.inject(this, view);
 
         mName.setTypeface(getFont());
-        mBirthday.setTypeface(getFont());
-
+        //TODO first name and last name
         String name = mUserManager.getUsername();
         mName.setText(name);
-        String birthday = mUserManager.getBirthday();
-        mBirthday.setText(birthday);
 
-        mBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBirthdayDatePicker(mBirthday.getText().toString());
-            }
-        });
+        setupDatePicker();
         setupToolbar();
         // Setup tile letter
         setupTitleLetter();
@@ -133,12 +123,12 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         KeyboardUtil.hideKeyboard(getActivity());
         if (getFragmentManager().findFragmentByTag(DATE_PICKER_DIALOG_FRAGMENT_TAG) == null) {
             if (!TextUtils.isEmpty(date)) {
-                DateTimeFormatter dateTimeFormatter = getDateFormatter();
+                DateTimeFormatter dateTimeFormatter = CustomJsonDateTimeDeserializer.getDateFormatter();
                 try {
                     mBirthDayDate = dateTimeFormatter.parseDateTime(date);
                     DatePickerFragment.newInstance(SettingsFragment.this,
                             mBirthDayDate.getYear(),
-                            mBirthDayDate.getMonthOfYear(),
+                            mBirthDayDate.getMonthOfYear()-1,
                             mBirthDayDate.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
 
                 } catch (IllegalArgumentException e) {
@@ -291,6 +281,12 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
      * Setup the date picker for birthday
      */
     public void setupDatePicker(){
+        Long birthdayLong = mUserManager.getBirthday();
+        if (birthdayLong != null) {
+            String birthday = CustomJsonDateTimeDeserializer.getDateFormatter().print(birthdayLong);
+            mBirthday.setText(birthday);
+        }
+
         mBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -305,16 +301,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
                 showBirthdayDatePicker(mBirthday.getText().toString());
             }
         });
-
-
         mBirthday.setTypeface(getFont());
-
-        mBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBirthdayDatePicker(mBirthday.getText().toString());
-            }
-        });
     }
 
     /**
@@ -329,20 +316,12 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.settings));
     }
 
-    /**
-     * Pre-fill name and birthday
-     */
-    public void prefillNameBirthday(){
-        String userName = mUserManager.getUsername();
-        //String birthday = mUserManager.getBirthday();
-    }
-
     @OnClick(R.id.fragment_settings_save_btn)
     public void saveSettings() {
         String name = mName.getText().toString();
         String birthday = mBirthday.getText().toString();
         mUserManager.setUsername(name);
-        mUserManager.setBirthday(birthday);
+        mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
         //TODO update user info at backend
 
     }
@@ -475,19 +454,10 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         void setSupportActionBar(Toolbar toolbar);
     }
 
-    /**
-     * Returns the date formatter for birthday
-     *
-     * @return
-     */
-    private DateTimeFormatter getDateFormatter() {
-        return DateTimeFormat.forPattern(DATE_FORMAT);
-    }
-
     @Override
     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         DateTime dateTime = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
-        mBirthday.setText(getDateFormatter().print(dateTime));
+        mBirthday.setText(CustomJsonDateTimeDeserializer.getDateFormatter().print(dateTime));
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -534,6 +504,12 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
                 mListener.clear();
                 mListener = null;
             }
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            super.onDismiss(dialog);
+            KeyboardUtil.hideKeyboard(getActivity());
         }
 
         public void setYear(Integer year) {

@@ -241,7 +241,7 @@ public class UserManager {
      *
      * @return
      */
-    public String getBirthday() {
+    public Long getBirthday() {
         return mPreferenceManager.getBirthday();
     }
 
@@ -250,7 +250,7 @@ public class UserManager {
      *
      * @param birthday
      */
-    public void setBirthday(String birthday) {
+    public void setBirthday(long birthday) {
         mPreferenceManager.setBirthday(birthday);
     }
 

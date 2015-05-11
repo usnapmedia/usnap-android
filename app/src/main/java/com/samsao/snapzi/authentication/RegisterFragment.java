@@ -26,12 +26,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.ref.WeakReference;
@@ -84,7 +84,6 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
     private UserManager mUserManager = new UserManager(new PreferenceManager());
 
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.LoginFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
-    private final String DATE_FORMAT = "yyyy-MM-dd";
 
     private String mUserName;
     private String mPassword;
@@ -137,7 +136,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         KeyboardUtil.hideKeyboard(getActivity());
         if (getFragmentManager().findFragmentByTag(DATE_PICKER_DIALOG_FRAGMENT_TAG) == null) {
             if (!TextUtils.isEmpty(date)) {
-                DateTimeFormatter dateTimeFormatter = getDateFormatter();
+                DateTimeFormatter dateTimeFormatter = CustomJsonDateTimeDeserializer.getDateFormatter();
                 try {
                     mBirthDayDate = dateTimeFormatter.parseDateTime(date);
                     DatePickerFragment.newInstance(RegisterFragment.this,
@@ -239,8 +238,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         mUserManager.setEmail(email);
         mUserManager.setFirstName(firstName);
         mUserManager.setLastName(lastName);
-        mUserManager.setBirthday(birthday);
-        String test = mUserManager.getBirthday();
+        mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
     }
 
     @Override
@@ -255,19 +253,10 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         return fontText;
     }
 
-    /**
-     * Returns the date formatter for birthday
-     *
-     * @return
-     */
-    private DateTimeFormatter getDateFormatter() {
-        return DateTimeFormat.forPattern(DATE_FORMAT);
-    }
-
     @Override
     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         DateTime dateTime = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
-        mMaterialEditTextBirthday.setText(getDateFormatter().print(dateTime));
+        mMaterialEditTextBirthday.setText(CustomJsonDateTimeDeserializer.getDateFormatter().print(dateTime));
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {

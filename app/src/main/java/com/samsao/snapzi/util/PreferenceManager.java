@@ -30,7 +30,9 @@ public class PreferenceManager {
     private final String FIRSTNAME_KEY = "com.samsao.snapzi.util.FIRSTNAME_KEY";
     private final String LASTNAME_KEY = "com.samsao.snapzi.util.LASTNAME_KEY";
     private final String EMAIL_KEY = "com.samsao.snapzi.util.EMAIL_KEY";
-    private final String BIRTHDAY_KEY = "com.samsao.snapzi.util.BIRTHDAY_KEY";
+    private final String BIRTHDAY_KEY = "com.samsao.snapzi.util.BIRTHDAY_LONG_KEY";
+
+    private final long DEFAULT_BIRTHDAY = 0;
 
     private SharedPreferences mSharedPreferences;
 
@@ -348,8 +350,13 @@ public class PreferenceManager {
      *
      * @return
      */
-    public String getBirthday() {
-        return getString(BIRTHDAY_KEY, null);
+    public Long getBirthday() {
+        long birthday = getLong(BIRTHDAY_KEY, DEFAULT_BIRTHDAY);
+        if (birthday == DEFAULT_BIRTHDAY) {
+            return null;
+        } else {
+            return birthday;
+        }
     }
 
     /**
@@ -357,8 +364,8 @@ public class PreferenceManager {
      *
      * @param birthday
      */
-    public void setBirthday(String birthday) {
-        putString(BIRTHDAY_KEY, birthday).apply();
+    public void setBirthday(long birthday) {
+        putLong(BIRTHDAY_KEY, birthday).apply();
     }
 
     /**

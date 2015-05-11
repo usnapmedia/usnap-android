@@ -19,6 +19,7 @@ import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.api.entity.User;
 import com.samsao.snapzi.api.entity.UserList;
+import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
@@ -143,10 +144,18 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
             }
         });
     }
+
+    /**
+     * save user info into user preferences after logged in
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param birthday
+     */
     private void saveUserInPreferences(String firstName, String lastName, String email, String birthday) {
         mUserManager.setFirstName(firstName);
         mUserManager.setLastName(lastName);
         mUserManager.setEmail(email);
-        mUserManager.setBirthday(birthday);
+        mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
     }
 }
