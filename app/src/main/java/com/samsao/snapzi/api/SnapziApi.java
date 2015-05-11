@@ -47,6 +47,9 @@ public interface SnapziApi {
     @GET("/feed/live/{campaign_id}")
     void getLiveFeed(@Path("campaign_id") Integer campaignId, Callback<FeedImageList> callback);
 
+    @GET("/feed/live/me")
+    void getMyLiveFeed(Callback<FeedImageList> callback);
+
     @GET("/campaigns")
     void getCampaigns(Callback<CampaignList> callback);
 
@@ -64,7 +67,7 @@ public interface SnapziApi {
                @Part("tw_key") TypedString twitterToken,
                @Part("tw_secret") TypedString twitterSecret,
                @Part("gp") TypedString googlePlusToken,
-               @Part("campaign_id") TypedString campaignId,
+               @Part("campaign_id") Integer campaignId,
                Callback<Response> callback);
 
 }
