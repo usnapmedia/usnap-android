@@ -31,7 +31,6 @@
 
 
     <style name="PagerSlidingTabStrip">
-        <!--<item name="pstsTabBackground">@drawable/sel_app_btn</item>-->
         <item name="pstsDividerColor">@android:color/white</item>
         <item name="pstsUnderlineColor">@android:color/white</item>
         <item name="pstsUnderlineHeight">0dp</item>

@@ -237,7 +237,7 @@ public class ApiService {
     /**
      * Get the live feed of the user
      */
-    public void getMyLiveFeed(Callback<FeedImageList> callback){
+    public void getMyLiveFeed(Callback<FeedImageList> callback) {
         //TODO pass user id to get live feed of the user
         mApiService.getMyLiveFeed(callback);
     }
@@ -260,7 +260,7 @@ public class ApiService {
      */
     public void sharePicture(String imagePath, String text, Integer campaignId, Callback<Response> callback) {
         //TODO add campaignId when sharing
-        if(campaignId.equals(FanPageActivity.NO_CAMPAIGN_ID)){
+        if (campaignId.equals(FanPageActivity.NO_CAMPAIGN_ID)) {
             campaignId = null;
         }
         mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
