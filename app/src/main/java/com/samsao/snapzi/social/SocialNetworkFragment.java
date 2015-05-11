@@ -3,6 +3,7 @@ package com.samsao.snapzi.social;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.samsao.snapzi.util.PreferenceManager;
@@ -36,6 +37,30 @@ public class SocialNetworkFragment extends Fragment {
 
     // TODO inject me
     private UserManager mUserManager = new UserManager(new PreferenceManager());
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (mUserManager.isLogged()) {
+            if (!isFacebookConnected()) {
+                logoutFromFacebook(new OnLogoutListener() {
+                    @Override
+                    public void onLogout() {}
+                    @Override
+                    public void onThinking() {}
+                    @Override
+                    public void onException(Throwable throwable) {}
+                    @Override
+                    public void onFail(String s) {}
+                });
+                removeFacebookAccessToken();
+
+            } else if (!isTwitterConnected()) {
+                logoutFromTwitter();
+                removeTwitterAccessToken();
+            }
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
