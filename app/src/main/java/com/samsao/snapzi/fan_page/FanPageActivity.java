@@ -25,6 +25,7 @@ import icepick.Icicle;
 public class FanPageActivity extends AppCompatActivity {
 
     private final static String EXTRA_CAMPAIGNS = "com.samsao.snapzi.fan_page.FanPageActivity.EXTRA_CAMPAIGNS";
+    public final static int NO_CAMPAIGN_ID = -1;
 
     @InjectView(R.id.activity_fan_page_toolbar)
     public Toolbar mToolbar;

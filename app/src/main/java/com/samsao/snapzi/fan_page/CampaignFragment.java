@@ -249,6 +249,7 @@ public class CampaignFragment extends Fragment {
         mCampaign = campaign;
     }
 
+
     @OnClick(R.id.fragment_campaign_see_all_top_10_btn)
     public void seeAllTop10() {
         SeeAllActivity.startTop10(getActivity(), mCampaign.getId());

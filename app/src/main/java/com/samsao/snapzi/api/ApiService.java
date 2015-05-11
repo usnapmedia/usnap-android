@@ -22,6 +22,7 @@ import com.samsao.snapzi.api.exception.MalformedUrlException;
 import com.samsao.snapzi.api.exception.NetworkTimeoutException;
 import com.samsao.snapzi.api.exception.RetrofitException;
 import com.samsao.snapzi.api.exception.UnauthorizedException;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.okhttp.OkHttpClient;
@@ -229,7 +230,7 @@ public class ApiService {
      *
      * @param callback
      */
-    public void getLiveFeed(int campaignId, Callback<FeedImageList> callback) {
+    public void getLiveFeed(Integer campaignId, Callback<FeedImageList> callback) {
         mApiService.getLiveFeed(campaignId, callback);
     }
 
@@ -251,13 +252,16 @@ public class ApiService {
      */
     public void sharePicture(String imagePath, String text, Integer campaignId, Callback<Response> callback) {
         //TODO add campaignId when sharing
+        if(campaignId.equals(FanPageActivity.NO_CAMPAIGN_ID)){
+            campaignId = null;
+        }
         mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
                 new TypedString(text),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : ""),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : ""),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterSecret()) ? mUserManager.getTwitterSecret() : ""),
                 new TypedString(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : ""),
-                new TypedString(campaignId.toString()),
+                campaignId,
                 callback);
     }
 

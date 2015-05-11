@@ -96,7 +96,7 @@ public class EditFragment extends Fragment {
     private LinearLayoutManager mMenuLayoutManager;
     private LinearLayoutManager mLiveFeedLayoutManager;
     private Listener mListener;
-    private int mCampaignId;
+    private Integer mCampaignId;
 
     private ToolDraw mToolDraw;
     private final ViewTreeObserver.OnGlobalLayoutListener mDrawAnnotationGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -701,7 +701,7 @@ public class EditFragment extends Fragment {
     }
 
     public interface Listener {
-        int getCampaignId();
+        Integer getCampaignId();
 
         String getEditMode();
 

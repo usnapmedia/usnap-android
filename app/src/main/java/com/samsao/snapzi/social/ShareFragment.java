@@ -82,7 +82,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     private ShareLoginDialogFragment mShareLoginDialogFragment;
     private String mImagePath;
     private String mCommentText;
-    private int mCampaignId;
+    private Integer mCampaignId;
 
     // TODO inject me
     private ApiService mApiService = new ApiService();
@@ -555,7 +555,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     }
 
     public interface Listener {
-        int getCampaignId();
+        Integer getCampaignId();
 
         String getMediaType();
 
