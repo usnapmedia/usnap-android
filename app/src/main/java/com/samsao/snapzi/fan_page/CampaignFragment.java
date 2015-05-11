@@ -257,7 +257,7 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_see_all_latest_uploads_btn)
     public void seeAllLatestUploads() {
-        SeeAllActivity.startLatestUploads(getActivity());
+        SeeAllActivity.startLatestUploads(getActivity(), mCampaign.getId());
     }
 
     @OnClick(R.id.fragment_campaign_contest_btn)
