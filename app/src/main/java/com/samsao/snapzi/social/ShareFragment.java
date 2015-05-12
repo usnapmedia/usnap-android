@@ -53,6 +53,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 
 public class ShareFragment extends SocialNetworkFragment implements ProgressDialogFragment.Listener, ShareLoginDialogFragment.ShareDialogListener {
@@ -510,6 +511,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
                     @Override
                     public void failure(RetrofitError error) {
+                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                         SelectMediaActivity.start(getActivity(), mListener.getCampaignId());
                     }
                 });
@@ -519,8 +521,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             @Override
             public void failure(RetrofitError error) {
                 dismissProgressDialog();
-                // TODO string resource
-                Toast.makeText(getActivity(), "Failure sharing picture: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Timber.e("Failure sharing picture: " + error.getMessage());
             }
         });
     }

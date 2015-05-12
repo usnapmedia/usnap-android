@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
@@ -23,6 +24,7 @@ import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.seeall.SeeAllActivity;
 import com.squareup.picasso.Picasso;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -136,6 +138,7 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Top Campaign Data: " + error.getMessage());
             }
         });
@@ -161,8 +164,12 @@ public class CampaignFragment extends Fragment {
         if (!TextUtils.isEmpty(campaign.getEmail())) {
             nameTextView.setText(campaign.getEmail());
         }
-        if (campaign.getUsnapScore() != null) {
-            likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, campaign.getUsnapScore(), campaign.getUsnapScore()));
+
+        Integer fbLikes = campaign.getFbLikes();
+        if (fbLikes != null) {
+            String fbCount = getActivity().getResources().getString(R.string.top10_snaps_plural);
+            //likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, campaign.getFbLikes(), campaign.getFbLikes()));
+            likesCountTextView.setText(fbLikes + " " + MessageFormat.format(fbCount, fbLikes));
         }
         nameTextView.setTypeface(getFont());
         likesCountTextView.setTypeface(getFont());
@@ -210,6 +217,7 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Latest Uploads Data: " + error.getMessage());
             }
         });
@@ -230,8 +238,10 @@ public class CampaignFragment extends Fragment {
         if (!TextUtils.isEmpty(image.getEmail())) {
             nameTextView.setText(image.getEmail());
         }
-        if (image.getFbLikes() != null) {
-            likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, image.getFbLikes(), image.getFbLikes()));
+        Integer fbLikes = image.getFbLikes();
+        if (fbLikes != null) {
+            String fbCount = getActivity().getResources().getString(R.string.top10_snaps_plural);
+            likesCountTextView.setText(fbLikes + " " + MessageFormat.format(fbCount, fbLikes));
         }
 
         nameTextView.setTypeface(getFont());

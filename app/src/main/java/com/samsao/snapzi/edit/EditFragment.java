@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
@@ -239,7 +240,8 @@ public class EditFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Timber.e("Error Fetching Images!");
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Timber.e("Error Fetching Images! "+ error.getMessage());
             }
         });
     }

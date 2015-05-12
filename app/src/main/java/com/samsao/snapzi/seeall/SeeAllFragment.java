@@ -218,8 +218,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(getActivity(), "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -234,11 +233,9 @@ public class SeeAllFragment extends Fragment {
             public void success(FeedImageList feedImageList, Response response) {
                 SeeAllFragment.this.setLatestUploadsAdapterData(feedImageList.getResponse());
             }
-
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(getActivity(), "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -256,8 +253,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(getActivity(), "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -275,8 +271,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(getActivity(), "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -294,8 +289,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(getActivity(), "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -313,8 +307,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(getActivity(), "Error fetching top 10 snaps", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });

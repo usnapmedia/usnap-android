@@ -102,10 +102,8 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
         mApiService.login(getUserName(), getPassword(), new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(Response response, retrofit.client.Response response2) {
-                // TODO string resource
                 KeyboardUtil.hideKeyboard(getActivity());
-                Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
-                // TODO retrieve account info and add them to preferences
+                Toast.makeText(getActivity(), SnapziApplication.getContext().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                 mUserManager.login(getUserName(), getPassword());
                 getUserInformation();
                 getActivity().setResult(Activity.RESULT_OK);
@@ -140,7 +138,7 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
             }
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "Fail to retrieve user info", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
@@ -305,6 +306,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Top Campaign Data!");
             }
         });
@@ -319,6 +321,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching My Live Feed Data!");
             }
         });

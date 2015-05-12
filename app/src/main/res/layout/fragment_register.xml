@@ -51,6 +51,7 @@
                 android:textIsSelectable="true"
                 android:cursorVisible="false"
                 android:inputType="text"
+                android:focusable="false"
                 android:hint="@string/birthday"/>
 
         </LinearLayout>
