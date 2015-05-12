@@ -13,6 +13,13 @@
     <string name="email">EMAIL</string>
     <string name="birthday">BIRTHDAY</string>
     <string name="authentication">Authentication</string>
+    <string name="login_success">Login Success!</string>
+    <string name="fail_to_retrieve_user_info">Fail to retrieve user info!</string>
+
+    <!--Registration-->
+    <string name="registration_success">Registration Success!</string>
+
+
 
     <!--Social Networks-->
     <string name="facebook_app_id" translatable="false">465899996898725</string>
@@ -67,6 +74,20 @@
     </plurals>
     <string name="enter_contest">Enter contest</string>
 
+    <!--See All-->
+    <string name="error_fetching_top_10_snaps">Error fetching top 10 snaps</string>
+    <string name="see_all_photos">PHOTO</string>
+    <string name="see_all_videos">VIDEOS</string>
+    <string name="see_all_all">ALL</string>
+
+    <!--Top 10 Snaps-->
+    <plurals name="top10_snaps_plural">
+        <item quantity="zero">pt</item>
+        <item quantity="one">pt</item>
+        <item quantity="other">pts</item>
+    </plurals>
+    <string name="top10_snaps_plural">{0,choice,0#pt|1#pt|1&lt;pts}</string>
+
     <!--Profile-->
     <plurals name="profile_share_plural">
         <item quantity="zero">Share</item>
@@ -116,10 +137,5 @@
     <string name="title_activity_see_all">SeeAllActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
-    <!--See All-->
-    <string name="see_all_photos">PHOTO</string>
-    <string name="see_all_videos">VIDEOS</string>
-    <string name="see_all_all">ALL</string>
 
 </resources>

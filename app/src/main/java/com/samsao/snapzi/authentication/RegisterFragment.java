@@ -202,10 +202,8 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
         mApiService.register(mUserName, mPassword, mEmail, mFirstName, mLastName, mBirthday, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
-                // TODO string resources
                 KeyboardUtil.hideKeyboard(getActivity());
-                Toast.makeText(getActivity(), "Registration Success!", Toast.LENGTH_SHORT).show();
-                // TODO retrieve account info and add them to preferences
+                Toast.makeText(getActivity(), SnapziApplication.getContext().getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
                 mUserManager.login(getUserName(), getPassword());
                 saveUserInPreferences(mUserName, mPassword, mEmail, mFirstName, mLastName, mBirthday);
                 getActivity().setResult(Activity.RESULT_OK);
@@ -214,7 +212,6 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resources
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 AuthenticationActivity.start(getActivity());
                 getActivity().finish();

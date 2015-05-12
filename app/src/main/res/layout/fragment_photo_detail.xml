@@ -86,19 +86,22 @@
             <TextView
                 android:id="@+id/activity_photo_detail_social_network_facebook"
                 style="@style/CircleTextViewSmall"
-                android:text="&#xf09a;"/>
+                android:text="&#xf09a;"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/activity_photo_detail_social_network_twitter"
                 style="@style/CircleTextViewSmall"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                android:text="&#xf099;"/>
+                android:text="&#xf099;"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/activity_photo_detail_social_network_google_plus"
                 style="@style/CircleTextViewSmall"
                 android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                android:text="&#xf0d5;"/>
+                android:text="&#xf0d5;"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
