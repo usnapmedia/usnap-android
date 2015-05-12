@@ -14,13 +14,13 @@ import com.samsao.snapzi.util.StringUtil;
  * @author jfcartier
  * @since 15-04-07
  */
-public abstract class ToolOptionColorPicker extends ToolOption implements Parcelable {
+public abstract class ToolOptionColorPicker extends ToolOption implements Parcelable, ToolColorPickerDialogFragment.Listener {
 
     @ParcelableThisPlease
     public int mColor;
-
     private ToolCallback mToolCallback;
     private MaterialDialog mColorPickerDialog;
+    //private ToolColorPickerDialogFragment mColorPickerDialog;
     private ColorPicker mColorPicker;
 
     @Override
@@ -55,6 +55,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
             @Override
             public void onSelected() {
                 getColorPickerDialog().show();
+                //getColorPickerDialog().show(getFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
             }
 
             @Override
@@ -110,12 +111,27 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         return mColorPickerDialog;
     }
 
+//    public ToolColorPickerDialogFragment getColorPickerDialog() {
+//        if (mColorPickerDialog == null) {
+//            mColorPickerDialog = ToolColorPickerDialogFragment.newInstance(this);
+//        }
+//        return mColorPickerDialog;
+//    }
+
     public int getColor() {
         return mColor;
     }
 
     public void setColor(int color) {
         mColor = color;
+    }
+
+    public ToolCallback getToolCallback() {
+        return mToolCallback;
+    }
+
+    public ColorPicker getColorPicker() {
+        return mColorPicker;
     }
 
     @Override
