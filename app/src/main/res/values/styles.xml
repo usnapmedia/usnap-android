@@ -13,7 +13,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColor">@color/dark_gray</item>
-        <item name="android:windowBackground">@color/light_gray</item>
+        <item name="android:windowBackground">@color/tw__solid_white</item>
         <item name="android:textSize">@dimen/font_size_medium</item>
         <item name="android:dialogTheme">@style/AppTheme.DialogTheme</item>
     </style>

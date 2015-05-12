@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/activity_contest_page_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_gray"/>
+
+        <ImageView
+            android:id="@+id/activity_contest_page_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/activity_contest_page_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/font_size_extra_large"
+                android:paddingBottom="@dimen/elements_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/activity_contest_page_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/elements_half_vertical_margin"
+                android:textColor="@color/blue"/>
+
+            <TextView
+                android:id="@+id/activity_contest_page_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/elements_vertical_margin"
+                android:text="@string/fragment_contest_page_prize"
+                android:textSize="@dimen/font_size_large"/>
+
+            <TextView
+                android:id="@+id/activity_contest_page_prize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/elements_half_vertical_margin"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/activity_contest_page_rules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/elements_vertical_margin"
+            android:background="@drawable/bg_section"
+            android:text="@string/activity_contest_page_contest_rules"
+            android:textSize="@dimen/font_size_large"
+            android:textColor="@color/blue"/>
+    </LinearLayout>
+</ScrollView>

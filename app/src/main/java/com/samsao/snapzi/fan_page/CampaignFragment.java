@@ -21,6 +21,7 @@ import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.TopCampaign;
 import com.samsao.snapzi.api.entity.TopCampaignList;
 import com.samsao.snapzi.camera.SelectMediaActivity;
+import com.samsao.snapzi.contest_page.ContestActivity;
 import com.samsao.snapzi.seeall.SeeAllActivity;
 import com.squareup.picasso.Picasso;
 
@@ -85,10 +86,14 @@ public class CampaignFragment extends Fragment {
         if (!TextUtils.isEmpty(mCampaign.getBannerImgUrl())) {
             Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mBannerImage);
         }
-
         getTopSnaps();
         getLiveFeed();
         return view;
+    }
+
+    @OnClick(R.id.fragment_campaign_banner)
+    public void gotoContestPage() {
+        ContestActivity.start(mCampaign, getActivity());
     }
 
     @Override

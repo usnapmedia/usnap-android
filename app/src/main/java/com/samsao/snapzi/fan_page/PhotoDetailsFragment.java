@@ -52,7 +52,7 @@ public class PhotoDetailsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment LoginFragment.
+     * @return A new instance of fragment PhotoDetailsFragment.
      */
     public static PhotoDetailsFragment newInstance() {
         PhotoDetailsFragment fragment = new PhotoDetailsFragment();

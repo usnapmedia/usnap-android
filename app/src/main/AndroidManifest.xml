@@ -52,6 +52,10 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".contest_page.ContestActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".profile.ProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />

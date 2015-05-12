@@ -64,7 +64,7 @@
     <string name="action_undo">Undo</string>
 
     <!--Campaigns-->
-    <string name="top_10">TOP 10</string>
+    <string name="top_10">Top 10</string>
     <string name="latest_uploads">Latest uploads</string>
     <string name="see_all">See all</string>
     <plurals name="likes_plural">
@@ -73,6 +73,11 @@
         <item quantity="other">%d pts</item>
     </plurals>
     <string name="enter_contest">Enter contest</string>
+
+    <!--Contest Page-->
+    <string name="Contest">Contest</string>
+    <string name="fragment_contest_page_prize">Prize</string>
+    <string name="activity_contest_page_contest_rules">Contest Rules</string>
 
     <!--See All-->
     <string name="error_fetching_top_10_snaps">Error fetching top 10 snaps</string>
