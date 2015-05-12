@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -387,8 +388,15 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
      * @param linearLayout
      */
     public void enableSocialNetworkBtn(LinearLayout linearLayout) {
-        //noinspection deprecation
-        linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            linearLayout.setBackground(getActivity().getDrawable(R.drawable.sel_app_btn));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            //noinspection deprecation
+            linearLayout.setBackground(getResources().getDrawable(R.drawable.sel_app_btn));
+        } else {
+            //noinspection deprecation
+            linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
+        }
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
             ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
         }
@@ -400,8 +408,15 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
      * @param linearLayout
      */
     public void disableSocialNetworkBtn(LinearLayout linearLayout) {
-        //noinspection deprecation
-        linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            linearLayout.setBackground(getActivity().getDrawable(R.drawable.sel_app_btn_disabled));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            //noinspection deprecation
+            linearLayout.setBackground(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
+        } else {
+            //noinspection deprecation
+            linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
+        }
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
             ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
         }
