@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(MainActivity.this, "Error fetching campaigns: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                // TODO string resource
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Campaigns: " + error.getMessage());
                 finish();
             }

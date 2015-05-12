@@ -138,7 +138,7 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
             }
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), SnapziApplication.getContext().getString(R.string.fail_to_retrieve_user_info), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

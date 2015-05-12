@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
@@ -137,6 +138,7 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Top Campaign Data: " + error.getMessage());
             }
         });
@@ -215,6 +217,7 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Latest Uploads Data: " + error.getMessage());
             }
         });

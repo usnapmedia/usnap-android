@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImage;
 import com.samsao.snapzi.api.entity.FeedImageList;
@@ -55,8 +54,6 @@ public class SeeAllFragment extends Fragment {
     private GridLayoutManager mGridLayoutManager;
     private Listener mListener;
 
-    String mErrorFetchingTop10Snaps;
-
     public SeeAllFragment() {
     }
 
@@ -69,7 +66,6 @@ public class SeeAllFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mErrorFetchingTop10Snaps = SnapziApplication.getContext().getString(R.string.error_fetching_top_10_snaps);
         setupData();
     }
 
@@ -222,7 +218,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), mErrorFetchingTop10Snaps, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -237,10 +233,9 @@ public class SeeAllFragment extends Fragment {
             public void success(FeedImageList feedImageList, Response response) {
                 SeeAllFragment.this.setLatestUploadsAdapterData(feedImageList.getResponse());
             }
-            //TODO update error message(mErrorFetchingTop10Snaps)
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), mErrorFetchingTop10Snaps, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -258,8 +253,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO update error message(mErrorFetchingTop10Snaps)
-                Toast.makeText(getActivity(), mErrorFetchingTop10Snaps, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -277,8 +271,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO update error message(mErrorFetchingTop10Snaps)
-                Toast.makeText(getActivity(), mErrorFetchingTop10Snaps, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -296,8 +289,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO update error message(mErrorFetchingTop10Snaps)
-                Toast.makeText(getActivity(), mErrorFetchingTop10Snaps, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
@@ -315,8 +307,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO update error message(mErrorFetchingTop10Snaps)
-                Toast.makeText(getActivity(), mErrorFetchingTop10Snaps, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
