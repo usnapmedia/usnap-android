@@ -64,7 +64,7 @@ public class FanPageActivity extends AppCompatActivity {
 
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
-        mTabs.setBackgroundColor(getResources().getColor(R.color.transparent));
+        mTabs.setBackgroundColor(getResources().getColor(R.color.white_alpha));
         mTabs.setIndicatorColor(getResources().getColor(R.color.blue));
         mTabs.setTextColor(getResources().getColor(R.color.blue));
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
