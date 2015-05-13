@@ -41,6 +41,7 @@
     <dimen name="fragment_select_media_latest_image_size">60dp</dimen>
 
     <!--Campaign-->
+    <dimen name="viewpager_tabs_height">42dp</dimen>
     <dimen name="fragment_campaign_banner_height">192dp</dimen>
     <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
 

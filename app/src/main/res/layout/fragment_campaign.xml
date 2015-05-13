@@ -41,7 +41,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_weight="1"
                 android:text="@string/top_10"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textSize="@dimen/font_size_large"
                 app:typeFace="GothamHTF-Book.ttf"/>
 
@@ -75,7 +75,7 @@
                 layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_horizontal_margin"
+                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"/>
 
             <include
@@ -83,7 +83,7 @@
                 layout="@layout/view_fragment_campaign_cardview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_horizontal_margin"
+                android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -101,7 +101,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_weight="1"
                 android:text="@string/latest_uploads"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textSize="@dimen/font_size_large"
                 app:typeFace="GothamHTF-Book.ttf"/>
 
@@ -117,34 +117,71 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/elements_vertical_margin"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <include
-                android:id="@+id/view_fragment_campaign_latest_uploads_card_1"
-                layout="@layout/view_fragment_campaign_cardview"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:orientation="horizontal">
 
-            <include
-                android:id="@+id/view_fragment_campaign_latest_uploads_card_2"
-                layout="@layout/view_fragment_campaign_cardview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                android:layout_weight="1"/>
+                <include
+                    android:id="@+id/view_fragment_campaign_latest_uploads_card_1"
+                    layout="@layout/view_fragment_campaign_cardview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
 
-            <include
-                android:id="@+id/view_fragment_campaign_latest_uploads_card_3"
-                layout="@layout/view_fragment_campaign_cardview"
-                android:layout_width="0dp"
+                <include
+                    android:id="@+id/view_fragment_campaign_latest_uploads_card_2"
+                    layout="@layout/view_fragment_campaign_cardview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1"/>
+
+                <include
+                    android:id="@+id/view_fragment_campaign_latest_uploads_card_3"
+                    layout="@layout/view_fragment_campaign_cardview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/elements_horizontal_margin"
-                android:layout_weight="1"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/elements_vertical_margin">
+
+                <include
+                    android:id="@+id/view_fragment_campaign_latest_uploads_card_4"
+                    layout="@layout/view_fragment_campaign_cardview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <include
+                    android:id="@+id/view_fragment_campaign_latest_uploads_card_5"
+                    layout="@layout/view_fragment_campaign_cardview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1"/>
+
+                <include
+                    android:id="@+id/view_fragment_campaign_latest_uploads_card_6"
+                    layout="@layout/view_fragment_campaign_cardview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
         </LinearLayout>
 

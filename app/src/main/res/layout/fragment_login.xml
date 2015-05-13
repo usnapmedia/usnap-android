@@ -10,12 +10,12 @@
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true">
 
-    <LinearLayout style="@style/AuthenticationLinearLayout"
-                  android:background="@drawable/bg_section_bottom_border">
+    <LinearLayout style="@style/AuthenticationLinearLayout">
 
         <com.rengwuxian.materialedittext.MaterialEditText
             style="@style/LoginEditText"
             android:inputType="textNoSuggestions"
+            android:textAllCaps="false"
             android:id="@+id/fragment_login_user_name"
             android:hint="@string/username"/>
 
@@ -24,6 +24,7 @@
             android:inputType="textPassword"
             android:fontFamily="sans-serif"
             android:id="@+id/fragment_login_password"
+            android:textAllCaps="false"
             android:hint="@string/password"/>
 
     </LinearLayout>
@@ -41,6 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="6"
+                android:textAllCaps="true"
                 android:text="@string/action_login"
                 app:typeFace="GothamHTF-Book.ttf"/>
 

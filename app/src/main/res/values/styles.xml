@@ -13,7 +13,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColor">@color/dark_gray</item>
-        <item name="android:windowBackground">@color/tw__solid_white</item>
+        <item name="android:windowBackground">@android:color/white</item>
         <item name="android:textSize">@dimen/font_size_medium</item>
         <item name="android:dialogTheme">@style/AppTheme.DialogTheme</item>
     </style>
@@ -32,9 +32,10 @@
 
     <style name="PagerSlidingTabStrip">
         <item name="pstsDividerColor">@android:color/white</item>
-        <item name="pstsUnderlineColor">@android:color/white</item>
+        <item name="pstsUnderlineColor">@color/blue</item>
         <item name="pstsUnderlineHeight">0dp</item>
         <item name="pstsIndicatorHeight">2dp</item>
+
     </style>
 
     <!--styles for register/login-->
@@ -97,6 +98,16 @@
     </style>
 
     <style name="AppSmallButton" parent="AppSmallButtonBase">
+
+    </style>
+
+    <style name="ButtonAlt">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/elements_half_vertical_margin</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
     </style>
 
     <style name="CircleTextViewMedium">
