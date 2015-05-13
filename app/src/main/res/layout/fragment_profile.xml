@@ -186,7 +186,6 @@
         android:id="@+id/fragment_profile_top_campaigns_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_gray"
         android:visibility="gone" />
 
     <!--User feed container-->
@@ -194,7 +193,6 @@
         android:id="@+id/fragment_profile_my_feed_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_gray"
         android:padding="@dimen/elements_quarter_vertical_margin"
         android:visibility="gone" />
 
