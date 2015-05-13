@@ -14,7 +14,16 @@
             android:id="@+id/activity_contest_page_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dark_gray"/>
+            android:background="@color/dark_gray">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:adjustViewBounds="true"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/white_logo" />
+
+        </android.support.v7.widget.Toolbar>
 
         <com.samsao.snapzi.fan_page.view.AspectRatioImageView
             android:id="@+id/activity_contest_page_imageView"

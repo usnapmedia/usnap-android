@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
+import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Campaign;
+import com.samsao.snapzi.camera.SelectMediaActivity;
+import com.samsao.snapzi.profile.ProfileActivity;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -45,6 +49,12 @@ public class ContestActivity extends AppCompatActivity implements ContestFragmen
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_fan_page, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -53,6 +63,12 @@ public class ContestActivity extends AppCompatActivity implements ContestFragmen
                 } else {
                     finish();
                 }
+                return true;
+            case R.id.activity_fan_page_menu_profile:
+                ProfileActivity.start(ContestActivity.this);
+                return true;
+            case R.id.activity_fan_page_menu_camera:
+                SelectMediaActivity.start(this, null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

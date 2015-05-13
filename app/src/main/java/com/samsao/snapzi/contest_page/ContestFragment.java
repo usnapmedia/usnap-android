@@ -11,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Campaign;
 import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
-import com.samsao.snapzi.util.StringUtil;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -24,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * @author jingsilu
@@ -45,19 +46,8 @@ public class ContestFragment extends Fragment {
     public TextView mDescription;
     @InjectView(R.id.activity_contest_page_prize)
     public TextView mPrize;
-    @InjectView(R.id.activity_contest_page_rules)
-    public TextView mRules;
 
     private Listener mListener;
-    private Integer mCampaignId;
-    private String mCampaignBannerUrl;
-    private String mCampaignTitle;
-    private String mCampaignDescription;
-    private String mCampaignStartDate;
-    private String mCampaignEndDate;
-    private String mCampaignPrize;
-    private String mContestRules;
-    private String mDateString;
 
     /**
      * Use this factory method to create a new instance of
@@ -75,30 +65,16 @@ public class ContestFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Campaign campaign = mListener.getCampaign();
-        mCampaignId = campaign.getId();
-        mCampaignBannerUrl = campaign.getBannerImgUrl();
-        mCampaignTitle = campaign.getName();
-        mCampaignDescription = campaign.getDescription();
-        mCampaignStartDate = campaign.getStartDate();
-        mCampaignEndDate = campaign.getEndDate();
-        mCampaignPrize = campaign.getPrize();
-        mContestRules = campaign.getRules();
-        mDateFormat = DateTimeFormat.forPattern("dd MMMM");
-        mDateString = composeDate(mCampaignStartDate, mCampaignEndDate);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contest_page, container, false);
         ButterKnife.inject(this, view);
-        Picasso.with(getActivity()).load(mCampaignBannerUrl).into(mImageView);
-        mTitle.setText(mCampaignTitle);
-        mDescription.setText(mCampaignDescription);
-        mDate.setText(mDateString);
-        mPrize.setText(mCampaignPrize);
+        Picasso.with(getActivity()).load(mListener.getCampaign().getBannerImgUrl()).into(mImageView);
+        mTitle.setText(mListener.getCampaign().getName());
+        mDescription.setText(mListener.getCampaign().getDescription());
+        mDateFormat = DateTimeFormat.forPattern("dd MMMM");
+        String dateString = composeDate(mListener.getCampaign().getStartDate(), mListener.getCampaign().getEndDate());
+        mDate.setText(dateString);
+        mPrize.setText(mListener.getCampaign().getPrize());
 
         setupToolbar();
         return view;
@@ -138,8 +114,7 @@ public class ContestFragment extends Fragment {
             mListener.setSupportActionBar(mToolbar);
         }
         mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mListener.getSupportActionBar().setDisplayShowTitleEnabled(true);
-        mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.Contest));
+        mListener.getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     /**
@@ -155,6 +130,11 @@ public class ContestFragment extends Fragment {
         return mDateFormat.print(mStartDate) + " - " + mDateFormat.print(mEndDate);
     }
 
+    @OnClick(R.id.activity_contest_page_rules)
+    public void showRules() {
+        // TODO
+        Toast.makeText(getActivity(), "TODO: show rules", Toast.LENGTH_SHORT).show();
+    }
 
     public interface Listener {
         Campaign getCampaign();
