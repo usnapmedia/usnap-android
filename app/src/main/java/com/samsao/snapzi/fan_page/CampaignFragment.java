@@ -58,6 +58,12 @@ public class CampaignFragment extends Fragment {
     public CardView mLatestUploadsCardView2;
     @InjectView(R.id.view_fragment_campaign_latest_uploads_card_3)
     public CardView mLatestUploadsCardView3;
+    @InjectView(R.id.view_fragment_campaign_latest_uploads_card_4)
+    public CardView mLatestUploadsCardView4;
+    @InjectView(R.id.view_fragment_campaign_latest_uploads_card_5)
+    public CardView mLatestUploadsCardView5;
+    @InjectView(R.id.view_fragment_campaign_latest_uploads_card_6)
+    public CardView mLatestUploadsCardView6;
 
     @Icicle
     public Campaign mCampaign;
@@ -199,6 +205,9 @@ public class CampaignFragment extends Fragment {
                     mLatestUploadsCardView1.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView2.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView4.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
                 try {
                     image = feedImages.get(1);
@@ -206,12 +215,39 @@ public class CampaignFragment extends Fragment {
                 } catch (IndexOutOfBoundsException e) {
                     mLatestUploadsCardView2.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView4.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
                 try {
                     image = feedImages.get(2);
                     setLatestUploadCard(image, mLatestUploadsCardView3);
                 } catch (IndexOutOfBoundsException e) {
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView4.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
+                }
+                try {
+                    image = feedImages.get(3);
+                    setLatestUploadCard(image, mLatestUploadsCardView4);
+                } catch (IndexOutOfBoundsException e) {
+                    mLatestUploadsCardView4.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
+                }
+                try {
+                    image = feedImages.get(4);
+                    setLatestUploadCard(image, mLatestUploadsCardView4);
+                } catch (IndexOutOfBoundsException e) {
+                    mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
+                    mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
+                }
+                try {
+                    image = feedImages.get(5);
+                    setLatestUploadCard(image, mLatestUploadsCardView4);
+                } catch (IndexOutOfBoundsException e) {
+                    mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
             }
 

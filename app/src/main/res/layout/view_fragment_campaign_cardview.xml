@@ -7,7 +7,8 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
-                  android:padding="@dimen/elements_vertical_margin">
+                  android:padding="@dimen/elements_half_vertical_margin"
+                  android:background="@android:color/white">
 
         <com.samsao.snapzi.fan_page.view.SquareImageView
             android:id="@+id/view_top_campaign_img_view_id"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_size_small"
             android:text="345 pts"
-            android:textColor="@color/medium_gray"/>
+            android:textColor="@color/blue"/>
 
     </LinearLayout>
 

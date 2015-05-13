@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/fragment_settings_text_view_padding"
             android:text="@string/fragment_settings_personal"
+            android:textAllCaps="false"
             app:typeFace="GothamHTF-Book.ttf"/>
 
         <LinearLayout
@@ -106,13 +107,7 @@
 
                 </LinearLayout>
 
-            <com.ivankocijan.magicviews.views.MagicButton
-                android:id="@+id/fragment_settings_save_btn"
-                style="@style/AppButton"
-                android:layout_gravity="bottom"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:text="@string/fragment_settings_save_settings"
-                app:typeFace="GothamHTF-Book.ttf"/>
+
 
         </LinearLayout>
 
@@ -122,6 +117,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/fragment_settings_text_view_padding"
             android:text="@string/fragment_settings_social"
+            android:textAllCaps="false"
             app:typeFace="GothamHTF-Book.ttf"/>
 
         <LinearLayout
@@ -274,6 +270,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/fragment_settings_text_view_padding"
             android:text="@string/fragment_settings_support"
+            android:textAllCaps="false"
             app:typeFace="GothamHTF-Book.ttf"/>
 
         <LinearLayout
@@ -286,15 +283,9 @@
             android:background="@drawable/bg_section"
             android:orientation="vertical">
 
-            <com.ivankocijan.magicviews.views.MagicButton
-                android:id="@+id/fragment_settings_help_center_btn"
-                style="@style/AppButtonAlt"
-                android:text="@string/fragment_settings_help_center"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -305,12 +296,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-
                     <com.ivankocijan.magicviews.views.MagicButton
                         android:id="@+id/fragment_settings_report_a_problem_btn"
                         style="@style/AppButtonAlt"
+                        android:textAllCaps="true"
                         android:text="@string/fragment_settings_report_a_problem"/>
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -321,16 +311,31 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                     android:layout_weight="1">
-
                     <com.ivankocijan.magicviews.views.MagicButton
-                        android:id="@+id/fragment_settings_log_out_btn"
-                        style="@style/AppButton"
-                        android:text="@string/fragment_settings_log_out"
-                        android:textColor="@android:color/white" />
-
+                        android:id="@+id/fragment_settings_help_center_btn"
+                        style="@style/AppButtonAlt"
+                        android:textAllCaps="true"
+                        android:text="@string/fragment_settings_help_center"/>
                 </LinearLayout>
 
-            </LinearLayout>>
+            </LinearLayout>
+
+            <com.ivankocijan.magicviews.views.MagicButton
+                android:id="@+id/fragment_settings_save_btn"
+                style="@style/AppButton"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/elements_vertical_margin"
+                android:textAllCaps="true"
+                android:text="@string/fragment_settings_save_settings"
+                app:typeFace="GothamHTF-Book.ttf"/>
+
+            <com.ivankocijan.magicviews.views.MagicButton
+                android:id="@+id/fragment_settings_log_out_btn"
+                style="@style/ButtonAlt"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/elements_vertical_margin"
+                android:textAllCaps="true"
+                android:text="@string/fragment_settings_log_out" />
 
         </LinearLayout>
 

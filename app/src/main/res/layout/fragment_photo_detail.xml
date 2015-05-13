@@ -48,7 +48,8 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="2 Days ago"
-                android:textColor="?colorPrimary"/>
+                android:textColor="?colorPrimary"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

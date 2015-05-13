@@ -19,29 +19,34 @@
                 android:id="@+id/fragment_register_first_name"
                 style="@style/LoginEditText"
                 android:inputType="textPersonName"
+                android:textAllCaps="false"
                 android:hint="@string/first_name"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/fragment_register_last_name"
                 style="@style/LoginEditText"
                 android:inputType="textPersonName"
+                android:textAllCaps="false"
                 android:hint="@string/last_name"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/fragment_register_email"
                 style="@style/LoginEditText"
+                android:textAllCaps="false"
                 android:hint="@string/email"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/fragment_register_user_name"
                 style="@style/LoginEditText"
                 android:inputType="textNoSuggestions"
+                android:textAllCaps="false"
                 android:hint="@string/username"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/fragment_register_password"
                 style="@style/LoginEditText"
                 android:inputType="textPassword"
+                android:textAllCaps="false"
                 android:fontFamily="sans-serif"
                 android:hint="@string/password"/>
 
@@ -52,6 +57,7 @@
                 android:cursorVisible="false"
                 android:inputType="text"
                 android:focusable="false"
+                android:textAllCaps="false"
                 android:hint="@string/birthday"/>
 
         </LinearLayout>
@@ -69,6 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="6"
+                android:textAllCaps="true"
                 android:text="@string/action_signup"
                 app:typeFace="GothamHTF-Book.ttf"/>
 
