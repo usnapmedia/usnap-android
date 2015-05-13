@@ -112,6 +112,12 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
     /**
      * Remember the current tab position and refresh data according to see_all_mode
      * @param position

@@ -10,8 +10,7 @@
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true">
 
-    <LinearLayout style="@style/AuthenticationLinearLayout"
-                  android:background="@drawable/bg_section_bottom_border">
+    <LinearLayout style="@style/AuthenticationLinearLayout">
 
         <com.rengwuxian.materialedittext.MaterialEditText
             style="@style/LoginEditText"

@@ -32,7 +32,6 @@
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:background="@drawable/bg_section"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true">
 
@@ -127,7 +126,6 @@
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:background="@drawable/bg_section"
             android:orientation="vertical">
 
             <LinearLayout
@@ -280,7 +278,6 @@
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:background="@drawable/bg_section"
             android:orientation="vertical">
 
             <LinearLayout
