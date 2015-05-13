@@ -41,7 +41,6 @@ public class FanPageActivity extends AppCompatActivity {
 
     private CampaignAdapter mCampaignAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

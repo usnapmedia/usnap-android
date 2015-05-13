@@ -27,6 +27,10 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
     // mode to know what images to fetch
     @Icicle
     public int mMode;
+    @Icicle
+    public int mCurrentTabPosition;
+    @Icicle
+    public Integer mCampaignId;
 
     @InjectView(R.id.activity_seeall_toolbar)
     public Toolbar mToolbar;
@@ -36,12 +40,6 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
 
     @InjectView(R.id.activity_seeall_view_pager)
     public ViewPager mViewPager;
-
-    @Icicle
-    public int mCurrentTabPosition;
-
-    @Icicle
-    public Integer mCampaignId;
 
     private SeeAllAdapter mSeeAllAdapter;
 
@@ -72,10 +70,10 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
 
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
-        mTabs.setBackgroundColor(getResources().getColor(R.color.primary));
-        mTabs.setIndicatorColorResource(android.R.color.white);
-        mTabs.setDividerColorResource(android.R.color.white);
-        mTabs.setTextColorResource(android.R.color.white);
+        mTabs.setBackgroundColor(getResources().getColor(R.color.transparent));
+        mTabs.setIndicatorColor(getResources().getColor(R.color.blue));
+        mTabs.setTextColor(getResources().getColor(R.color.blue));
+
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

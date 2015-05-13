@@ -24,14 +24,12 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import icepick.Icicle;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
 public class SeeAllFragment extends Fragment {
-    public static String FRAGMENT_TAG = "com.samsao.snapzi.seeall.SeeAllFragment.FRAGMENT_TAG";
     private final static int SEE_ALL_PHOTOS = 0;
     private final static int SEE_ALL_VIDEOS = 1;
     private final static int SEE_ALL_ALL = 2;
@@ -43,9 +41,6 @@ public class SeeAllFragment extends Fragment {
     // TODO inject me
     private ApiService mApiService = new ApiService();
 
-    @Icicle
-    public int mSeeAllMode;
-
     @InjectView(R.id.fragment_see_all_recycler_view)
     public RecyclerView mRecyclerView;
 
@@ -53,6 +48,7 @@ public class SeeAllFragment extends Fragment {
     private SeeAllTop10Adapter mSeeAllTop10Adapter;
     private GridLayoutManager mGridLayoutManager;
     private Listener mListener;
+    private int mSeeAllMode;
 
     public SeeAllFragment() {
     }
@@ -64,16 +60,13 @@ public class SeeAllFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupData();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_see_all, container, false);
         ButterKnife.inject(this, view);
+
+        setupData();
+
         mGridLayoutManager = new GridLayoutManager(getActivity(), 3);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -125,7 +118,9 @@ public class SeeAllFragment extends Fragment {
      */
     public void setLatestUploadsAdapterData(List<FeedImage> list) {
         mSeeAllLatestUploadsAdapter = new SeeAllLatestUploadsAdapter(getActivity());
-        mRecyclerView.setAdapter(mSeeAllLatestUploadsAdapter);
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(mSeeAllLatestUploadsAdapter);
+        }
         mSeeAllLatestUploadsAdapter.setFeedImages(list);
     }
 
@@ -136,7 +131,9 @@ public class SeeAllFragment extends Fragment {
      */
     public void setTop10AdapterData(List<TopCampaign> list) {
         mSeeAllTop10Adapter = new SeeAllTop10Adapter(getActivity());
-        mRecyclerView.setAdapter(mSeeAllTop10Adapter);
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(mSeeAllTop10Adapter);
+        }
         mSeeAllTop10Adapter.setTopCampaigns(list);
     }
 
@@ -218,6 +215,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                SeeAllFragment.this.setTop10AdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -235,6 +233,7 @@ public class SeeAllFragment extends Fragment {
             }
             @Override
             public void failure(RetrofitError error) {
+                SeeAllFragment.this.setLatestUploadsAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -253,6 +252,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                SeeAllFragment.this.setTop10AdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -271,6 +271,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                SeeAllFragment.this.setLatestUploadsAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -289,6 +290,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                SeeAllFragment.this.setTop10AdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -307,6 +309,7 @@ public class SeeAllFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
+                SeeAllFragment.this.setLatestUploadsAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }

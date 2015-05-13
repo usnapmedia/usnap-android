@@ -238,14 +238,14 @@ public class CampaignFragment extends Fragment {
                 }
                 try {
                     image = feedImages.get(4);
-                    setLatestUploadCard(image, mLatestUploadsCardView4);
+                    setLatestUploadCard(image, mLatestUploadsCardView5);
                 } catch (IndexOutOfBoundsException e) {
                     mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
                 try {
                     image = feedImages.get(5);
-                    setLatestUploadCard(image, mLatestUploadsCardView4);
+                    setLatestUploadCard(image, mLatestUploadsCardView6);
                 } catch (IndexOutOfBoundsException e) {
                     mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }

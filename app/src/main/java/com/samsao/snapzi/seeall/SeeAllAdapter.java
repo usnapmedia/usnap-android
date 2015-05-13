@@ -110,7 +110,7 @@ public class SeeAllAdapter extends FragmentStatePagerAdapter{
     }
 
     /**
-     * Refreshes the photos
+     * Refreshes all
      */
     public void refreshAll() {
         if (mSeeAllAllFragment != null) {
