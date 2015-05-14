@@ -31,11 +31,11 @@
 
 
     <style name="PagerSlidingTabStrip">
-        <item name="pstsDividerColor">@android:color/white</item>
-        <item name="pstsUnderlineColor">@color/blue</item>
+        <item name="pstsDividerColor">@android:color/transparent</item>
+        <item name="pstsUnderlineColor">@color/primary</item>
         <item name="pstsUnderlineHeight">0dp</item>
         <item name="pstsIndicatorHeight">2dp</item>
-
+        <item name="pstsIndicatorColor">@color/primary</item>
     </style>
 
     <!--styles for register/login-->
@@ -99,15 +99,6 @@
 
     <style name="AppSmallButton" parent="AppSmallButtonBase">
 
-    </style>
-
-    <style name="ButtonAlt">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">@dimen/elements_half_vertical_margin</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@color/blue</item>
-        <item name="android:textSize">@dimen/font_size_small</item>
     </style>
 
     <style name="CircleTextViewMedium">

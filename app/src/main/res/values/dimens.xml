@@ -3,9 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="font_size_small">14sp</dimen>
-    <dimen name="font_size_medium">15sp</dimen>
-    <dimen name="font_size_large">20sp</dimen>
+    <dimen name="font_size_small">12sp</dimen>
+    <dimen name="font_size_medium">14sp</dimen>
+    <dimen name="font_size_large">18sp</dimen>
     <dimen name="font_size_extra_large">24sp</dimen>
 
     <dimen name="elements_quarter_vertical_margin">3dp</dimen>
@@ -31,24 +31,18 @@
     <dimen name="photo_edit_stroke_size_medium">40dp</dimen>
     <dimen name="photo_edit_stroke_size_large">50dp</dimen>
 
-
     <!-- Live feed -->
     <dimen name="live_feed_layout_height">72dp</dimen>
     <dimen name="live_feed_imageView_layout_size">60dp</dimen>
 
     <!-- Latest image-->
     <dimen name="fragment_select_media_latest_image">72dp</dimen>
-    <dimen name="fragment_select_media_latest_image_size">60dp</dimen>
 
     <!--Campaign-->
     <dimen name="viewpager_tabs_height">42dp</dimen>
-    <dimen name="fragment_campaign_banner_height">192dp</dimen>
-    <dimen name="top_campaign_imageView_layout_size">80dp</dimen>
 
     <!--Profile-->
     <dimen name="fragment_profile_user_info_container_height">144dp</dimen>
     <dimen name="fragment_profile_top_campaign_item_image_size">100dp</dimen>
-    <!--Settings-->
-    <dimen name="fragment_settings_text_view_padding">10dp</dimen>
 
 </resources>

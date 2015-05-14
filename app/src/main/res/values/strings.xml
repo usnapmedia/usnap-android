@@ -73,7 +73,6 @@
     <string name="enter_contest">Enter contest</string>
 
     <!--Contest Page-->
-    <string name="Contest">Contest</string>
     <string name="fragment_contest_page_prize">Prize</string>
     <string name="activity_contest_page_contest_rules">Contest Rules</string>
 
