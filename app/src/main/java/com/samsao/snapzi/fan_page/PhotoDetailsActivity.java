@@ -90,7 +90,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
      */
     public static void start(FeedImage image, Context context) {
         Intent intent = new Intent(context, PhotoDetailsActivity.class);
-        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getUrl());
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getWatermarkUrl());
         if (!TextUtils.isEmpty(image.getText())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
         }
@@ -108,7 +108,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
      */
     public static void start(TopCampaign campaign, Context context) {
         Intent intent = new Intent(context, PhotoDetailsActivity.class);
-        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getUrl());
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getWatermarkUrl());
         if (!TextUtils.isEmpty(campaign.getText())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
         }

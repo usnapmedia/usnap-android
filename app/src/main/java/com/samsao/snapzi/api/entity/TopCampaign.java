@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "email",
         "username",
         "url",
+        "watermark_url",
         "thumb_url",
         "text",
         "fb_likes",
@@ -28,6 +29,8 @@ public class TopCampaign {
     private String username;
     @JsonProperty("url")
     private String url;
+    @JsonProperty("watermark_url")
+    private String watermarkUrl;
     @JsonProperty("thumb_url")
     private String thumbUrl;
     @JsonProperty("text")
@@ -165,5 +168,13 @@ public class TopCampaign {
     @JsonProperty("usnap_score")
     public void setUsnapScore(Integer usnapScore) {
         this.usnapScore = usnapScore;
+    }
+
+    public String getWatermarkUrl() {
+        return watermarkUrl;
+    }
+
+    public void setWatermarkUrl(String watermarkUrl) {
+        this.watermarkUrl = watermarkUrl;
     }
 }

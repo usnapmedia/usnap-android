@@ -1,14 +1,8 @@
 package com.samsao.snapzi.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author jingsilu
@@ -19,6 +13,7 @@ import java.util.Map;
         "email",
         "username",
         "url",
+        "watermark_url",
         "thumb_url",
         "text",
         "fb_likes",
@@ -33,6 +28,8 @@ public class FeedImage {
     private String username;
     @JsonProperty("url")
     private String url;
+    @JsonProperty("watermark_url")
+    private String watermarkUrl;
     @JsonProperty("thumb_url")
     private Object thumbUrl;
     @JsonProperty("text")
@@ -42,9 +39,7 @@ public class FeedImage {
     @JsonProperty("campaign_id")
     private String campaignId;
     @JsonProperty("usnap_score")
-    private Object usnapScore;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Integer usnapScore;
 
     /**
      *
@@ -192,7 +187,7 @@ public class FeedImage {
      * The usnapScore
      */
     @JsonProperty("usnap_score")
-    public Object getUsnapScore() {
+    public Integer getUsnapScore() {
         return usnapScore;
     }
 
@@ -202,18 +197,15 @@ public class FeedImage {
      * The usnap_score
      */
     @JsonProperty("usnap_score")
-    public void setUsnapScore(Object usnapScore) {
+    public void setUsnapScore(Integer usnapScore) {
         this.usnapScore = usnapScore;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public String getWatermarkUrl() {
+        return watermarkUrl;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public void setWatermarkUrl(String watermarkUrl) {
+        this.watermarkUrl = watermarkUrl;
     }
-
 }
