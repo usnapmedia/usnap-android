@@ -73,11 +73,11 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     }
 
     public interface SimpleCameraCallback {
-        public void onCameraPreviewReady();
+        void onCameraPreviewReady();
 
-        public void onCameraPreviewFailed();
+        void onCameraPreviewFailed();
 
-        public void onPictureReady(Bitmap image);
+        void onPictureReady(Bitmap image);
     }
 
     /**
@@ -457,7 +457,20 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
         android.hardware.Camera.CameraInfo info =
                 new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(mCameraId, info);
+        try {
+            android.hardware.Camera.getCameraInfo(mCameraId, info);
+        } catch (Exception e) {
+            // this orientation does not work, try another one
+            if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+            } else {
+                mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+            }
+            info = new android.hardware.Camera.CameraInfo();
+            android.hardware.Camera.getCameraInfo(mCameraId, info);
+            mCameraBuiltInOrientationOffset = info.orientation;
+            return this;
+        }
         mCameraBuiltInOrientationOffset = info.orientation;
 
         return this;
@@ -502,7 +515,6 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             // Set a CamcorderProfile to 720p quality or lower of not available
             if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
                 mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
-
             } else {
                 mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
             }
