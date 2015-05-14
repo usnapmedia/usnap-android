@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Campaign;
 import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
+import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -134,6 +135,12 @@ public class ContestFragment extends Fragment {
     public void showRules() {
         // TODO
         Toast.makeText(getActivity(), "TODO: show rules", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.fragment_contest_btn)
+    public void enterContest() {
+        SelectMediaActivity.start(getActivity(), mListener.getCampaign().getId());
+        getActivity().finish();
     }
 
     public interface Listener {

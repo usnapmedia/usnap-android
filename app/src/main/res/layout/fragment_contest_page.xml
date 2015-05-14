@@ -95,5 +95,14 @@
             android:textColor="@color/blue"
             app:typeFace="GothamHTF-Book.ttf"/>
 
+        <com.ivankocijan.magicviews.views.MagicButton
+            android:id="@+id/fragment_contest_btn"
+            style="@style/AppButton"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/elements_vertical_margin"
+            android:text="@string/enter_contest"
+            app:typeFace="GothamHTF-Book.ttf"/>
+
     </LinearLayout>
 </ScrollView>
