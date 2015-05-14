@@ -101,9 +101,6 @@ public class FanPageActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
             case R.id.activity_fan_page_menu_profile:
                 ProfileActivity.start(FanPageActivity.this);
                 return true;
@@ -122,7 +119,7 @@ public class FanPageActivity extends AppCompatActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
