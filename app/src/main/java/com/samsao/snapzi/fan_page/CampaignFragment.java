@@ -92,10 +92,12 @@ public class CampaignFragment extends Fragment {
         if (!TextUtils.isEmpty(mCampaign.getBannerImgUrl())) {
             Picasso.with(getActivity()).load(mCampaign.getBannerImgUrl()).into(mBannerImage);
         }
+
         getTopSnaps();
         getLiveFeed();
         return view;
     }
+
 
     @OnClick(R.id.fragment_campaign_banner)
     public void gotoContestPage() {
@@ -124,8 +126,12 @@ public class CampaignFragment extends Fragment {
                 List<TopCampaign> topCampaigns = topCampaignList.getResponse();
                 TopCampaign campaign;
                 try {
-                    campaign = topCampaigns.get(0);
-                    setTopSnapCard(campaign, mTop10CardView1);
+                    if (mTop10CardView1 != null) {
+                        campaign = topCampaigns.get(0);
+                        setTopSnapCard(campaign, mTop10CardView1);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     // TODO hide layout
                     mTop10CardView1.setVisibility(View.INVISIBLE);
@@ -133,15 +139,23 @@ public class CampaignFragment extends Fragment {
                     mTop10CardView3.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    campaign = topCampaigns.get(1);
-                    setTopSnapCard(campaign, mTop10CardView2);
+                    if (mTop10CardView2 != null) {
+                        campaign = topCampaigns.get(1);
+                        setTopSnapCard(campaign, mTop10CardView2);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mTop10CardView2.setVisibility(View.INVISIBLE);
                     mTop10CardView3.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    campaign = topCampaigns.get(2);
-                    setTopSnapCard(campaign, mTop10CardView3);
+                    if (mTop10CardView3 != null) {
+                        campaign = topCampaigns.get(2);
+                        setTopSnapCard(campaign, mTop10CardView3);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mTop10CardView3.setVisibility(View.INVISIBLE);
                 }
@@ -154,6 +168,11 @@ public class CampaignFragment extends Fragment {
             }
         });
     }
+
+    /**
+     * A helper class that gets GothamHTF-Book font
+     * @return fontText
+     */
 
     private Typeface getFont() {
         Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
@@ -203,8 +222,12 @@ public class CampaignFragment extends Fragment {
                 List<FeedImage> feedImages = latestUploadsList.getResponse();
                 FeedImage image;
                 try {
-                    image = feedImages.get(0);
-                    setLatestUploadCard(image, mLatestUploadsCardView1);
+                    if (mLatestUploadsCardView1 != null) {
+                        image = feedImages.get(0);
+                        setLatestUploadCard(image, mLatestUploadsCardView1);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     // TODO hide layout
                     mLatestUploadsCardView1.setVisibility(View.INVISIBLE);
@@ -216,7 +239,11 @@ public class CampaignFragment extends Fragment {
                 }
                 try {
                     image = feedImages.get(1);
-                    setLatestUploadCard(image, mLatestUploadsCardView2);
+                    if (mLatestUploadsCardView2 != null) {
+                        setLatestUploadCard(image, mLatestUploadsCardView2);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mLatestUploadsCardView2.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
@@ -226,7 +253,11 @@ public class CampaignFragment extends Fragment {
                 }
                 try {
                     image = feedImages.get(2);
-                    setLatestUploadCard(image, mLatestUploadsCardView3);
+                    if (mLatestUploadsCardView3 != null) {
+                        setLatestUploadCard(image, mLatestUploadsCardView3);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mLatestUploadsCardView3.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView4.setVisibility(View.INVISIBLE);
@@ -234,23 +265,35 @@ public class CampaignFragment extends Fragment {
                     mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    image = feedImages.get(3);
-                    setLatestUploadCard(image, mLatestUploadsCardView4);
+                    if (mLatestUploadsCardView4 != null) {
+                        image = feedImages.get(3);
+                        setLatestUploadCard(image, mLatestUploadsCardView4);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mLatestUploadsCardView4.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    image = feedImages.get(4);
-                    setLatestUploadCard(image, mLatestUploadsCardView5);
+                    if (mLatestUploadsCardView5 != null) {
+                        image = feedImages.get(4);
+                        setLatestUploadCard(image, mLatestUploadsCardView5);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mLatestUploadsCardView5.setVisibility(View.INVISIBLE);
                     mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
                 try {
-                    image = feedImages.get(5);
-                    setLatestUploadCard(image, mLatestUploadsCardView6);
+                    if (mLatestUploadsCardView6 != null) {
+                        image = feedImages.get(5);
+                        setLatestUploadCard(image, mLatestUploadsCardView6);
+                    } else {
+                        return;
+                    }
                 } catch (Exception e) {
                     mLatestUploadsCardView6.setVisibility(View.INVISIBLE);
                 }
@@ -295,6 +338,19 @@ public class CampaignFragment extends Fragment {
             }
         });
     }
+
+    /**
+     * Refresh all
+     */
+    public void refreshAll() {
+        getTopSnaps();
+        getLiveFeed();
+    }
+
+    /**
+     * Set mCampaign
+     * @param campaign
+     */
 
     public void setCampaign(Campaign campaign) {
         mCampaign = campaign;

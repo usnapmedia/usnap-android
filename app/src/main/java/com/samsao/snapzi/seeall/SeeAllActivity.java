@@ -118,7 +118,6 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
      * Remember the current tab position and refresh data according to see_all_mode
      * @param position
      */
-
     private void refresh(int position) {
         mCurrentTabPosition = position;
         switch (position) {
@@ -136,6 +135,10 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         }
     }
 
+    /**
+     * A helper class that gets GothamHTF-Book font
+     * @return fontText
+     */
     private Typeface getFont() {
         Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
         return fontText;

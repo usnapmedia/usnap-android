@@ -39,6 +39,9 @@ public class FanPageActivity extends AppCompatActivity {
     @Icicle
     public CampaignList mCampaigns;
 
+    @Icicle
+    public int mCurrentTabPosition;
+
     private CampaignAdapter mCampaignAdapter;
 
     @Override
@@ -48,13 +51,12 @@ public class FanPageActivity extends AppCompatActivity {
         ButterKnife.inject(this);
         setupToolbar();
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            mCampaigns = intent.getParcelableExtra(EXTRA_CAMPAIGNS);
-        }
-
-        // restore saved state
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            if (intent != null) {
+                mCampaigns = intent.getParcelableExtra(EXTRA_CAMPAIGNS);
+            }
+        } else {
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
 
@@ -68,10 +70,12 @@ public class FanPageActivity extends AppCompatActivity {
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                refresh(position);
             }
 
             @Override
             public void onPageSelected(int position) {
+                refresh(position);
             }
 
             @Override
@@ -81,6 +85,10 @@ public class FanPageActivity extends AppCompatActivity {
         mTabs.setTypeface(getFont(), 0);
     }
 
+    /**
+     * A helper class that gets GothamHTF-Book font
+     * @return fontText
+     */
     private Typeface getFont() {
         Typeface fontText = Typeface.createFromAsset(SnapziApplication.getContext().getAssets(), "fonts/GothamHTF-Book.ttf");
         return fontText;
@@ -90,6 +98,22 @@ public class FanPageActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh(mCurrentTabPosition);
+    }
+
+    /**
+     * Remember the current tab position and refresh data according to see_all_mode
+     * @param position
+     */
+
+    private void refresh(int position) {
+        mCurrentTabPosition = position;
+        mCampaignAdapter.refreshAll();
     }
 
     @Override

@@ -165,7 +165,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Timber.e("Error Fetching Images! "+error.getMessage());
             }
         });
