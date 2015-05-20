@@ -66,17 +66,15 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
         mCameraPreviewAspectRatio = 0.0f;
 
         // restore saved state
-        if (savedInstanceState != null) {
-            Icepick.restoreInstanceState(this, savedInstanceState);
-        }
-
-        if (mSelectMediaFragment == null) {
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
             mSelectMediaFragment = SelectMediaFragment.newInstance();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, mSelectMediaFragment).commit();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, mSelectMediaFragment, SelectMediaFragment.SELECT_MEDIA_FRAGMENT_TAG).commit();
+        } else {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+            mSelectMediaFragment = (SelectMediaFragment) getFragmentManager().findFragmentByTag(SelectMediaFragment.SELECT_MEDIA_FRAGMENT_TAG);
         }
-
-        Intent intent = getIntent();
-        mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
     }
 
     @Override

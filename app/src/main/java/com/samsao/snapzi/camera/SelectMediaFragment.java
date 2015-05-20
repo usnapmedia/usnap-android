@@ -56,6 +56,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
      */
     private final String LOG_TAG = getClass().getSimpleName();
     private static final int URI_LOADER = 0;
+    public static final String SELECT_MEDIA_FRAGMENT_TAG = "com.samsao.snapzi.camera.SELECT_MEDIA_FRAGMENT_TAG";
     private final String PICK_MEDIA_DIALOG_FRAGMENT_TAG = "camera.SelectMediaFragment.PICK_MEDIA_DIALOG_FRAGMENT_TAG";
     private final String SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG = "camera.SelectMediaFragment.SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG";
 
