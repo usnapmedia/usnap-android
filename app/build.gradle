@@ -35,7 +35,7 @@ android {
     buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "com.samsao.snapzi"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode System.env.BUILD_NUMBER ? "$System.env.BUILD_NUMBER".toInteger() : 999999
         versionName computeVersionName()

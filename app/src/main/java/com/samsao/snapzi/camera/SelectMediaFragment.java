@@ -20,14 +20,16 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
-import com.samsao.snapzi.camera.view.SquareCameraFrameLayout;
 import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
@@ -83,7 +85,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
-    public SquareCameraFrameLayout mCameraPreviewContainer;
+    public FrameLayout mCameraPreviewContainer;
     private CameraPreview mCameraPreview;
 
     @InjectView(R.id.fragment_select_media_flash_setup_button)
@@ -133,6 +135,17 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         setupButtons();
         initLiveFeed();
         getLoaderManager().initLoader(URI_LOADER, null, this);
+
+        mCameraPreviewContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (mCameraPreviewContainer.getViewTreeObserver().isAlive()) {
+                    int width = mCameraPreviewContainer.getWidth();
+                    mCameraPreviewContainer.setLayoutParams(new LinearLayout.LayoutParams(width, width));
+                    mCameraPreviewContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
         initializeCamera();
         return view;
     }
@@ -478,6 +491,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
      * Initialize camera
      */
     public void initializeCamera() {
+
         if (mCameraPreview == null) {
             mCameraPreview = CameraPreview.getNewInstance(getActivity())
                     .setLayoutMode(CameraPreview.LayoutMode.CENTER_CROP)

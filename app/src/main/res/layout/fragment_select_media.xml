@@ -3,17 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context="com.samsao.snapzi.camera.SelectMediaFragment">
 
-    <!--com.samsao.snapzi.camera.view.SquareCameraFrameLayout-->
-
-    <com.samsao.snapzi.camera.view.SquareCameraFrameLayout
-        android:id="@+id/fragment_select_media_camera_preview_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_dark" />
-
     <LinearLayout
+        android:id="@+id/fragment_select_media_livefeed_cameraContainer_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
@@ -27,11 +21,24 @@
             android:background="@color/black_alpha"
             android:padding="@dimen/elements_half_vertical_margin" />
 
+        <!--Camera Preview-->
+        <FrameLayout
+            android:id="@+id/fragment_select_media_camera_preview_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <!--Camera top controls-->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/elements_vertical_margin">
+            android:layout_marginTop="@dimen/select_media_camera_top_control_btn_top_margin">
 
             <ImageView
                 android:id="@+id/fragment_select_media_flash_setup_button"

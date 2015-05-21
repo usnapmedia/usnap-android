@@ -23,6 +23,7 @@
 
     <!--Select Media-->
     <dimen name="select_media_btn_size">72dp</dimen>
+    <dimen name="select_media_camera_top_control_btn_top_margin">80dp</dimen>
 
     <!-- Photo edit -->
     <dimen name="photo_edit_menu_size">96dp</dimen>
