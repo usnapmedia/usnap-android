@@ -5,11 +5,13 @@
     android:layout_height="match_parent"
     tools:context="com.samsao.snapzi.camera.SelectMediaFragment">
 
-    <FrameLayout
+    <!--com.samsao.snapzi.camera.view.SquareCameraFrameLayout-->
+
+    <com.samsao.snapzi.camera.view.SquareCameraFrameLayout
         android:id="@+id/fragment_select_media_camera_preview_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark" />
 
     <LinearLayout
         android:layout_width="match_parent"

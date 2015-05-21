@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +27,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.FeedImageList;
+import com.samsao.snapzi.camera.view.SquareCameraFrameLayout;
 import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
@@ -83,7 +83,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
 
     @InjectView(R.id.fragment_select_media_camera_preview_container)
-    public FrameLayout mCameraPreviewContainer;
+    public SquareCameraFrameLayout mCameraPreviewContainer;
     private CameraPreview mCameraPreview;
 
     @InjectView(R.id.fragment_select_media_flash_setup_button)
@@ -133,6 +133,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         setupButtons();
         initLiveFeed();
         getLoaderManager().initLoader(URI_LOADER, null, this);
+        initializeCamera();
         return view;
     }
 
