@@ -7,6 +7,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -150,8 +151,18 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         return view;
     }
 
-    public void initLiveFeed() {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            //rotate mImageView
+            mImageView.animate().rotation(100f);
+            mImageView.animate().setDuration(100);
+        }
+    }
 
+    public void initLiveFeed() {
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override

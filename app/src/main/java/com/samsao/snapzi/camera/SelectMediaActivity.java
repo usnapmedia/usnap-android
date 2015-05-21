@@ -3,6 +3,8 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -74,6 +76,16 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
         } else {
             Icepick.restoreInstanceState(this, savedInstanceState);
             mSelectMediaFragment = (SelectMediaFragment) getFragmentManager().findFragmentByTag(SelectMediaFragment.SELECT_MEDIA_FRAGMENT_TAG);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
