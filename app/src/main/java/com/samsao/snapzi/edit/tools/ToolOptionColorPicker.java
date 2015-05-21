@@ -1,9 +1,8 @@
 package com.samsao.snapzi.edit.tools;
 
+import android.app.FragmentManager;
 import android.os.Parcelable;
-import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
@@ -19,8 +18,8 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
     @ParcelableThisPlease
     public int mColor;
     private ToolCallback mToolCallback;
-    private MaterialDialog mColorPickerDialog;
-    //private ToolColorPickerDialogFragment mColorPickerDialog;
+    //private MaterialDialog mColorPickerDialog;
+    private ToolColorPickerDialogFragment mColorPickerDialog;
     private ColorPicker mColorPicker;
 
     @Override
@@ -34,6 +33,10 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         return this;
     }
 
+    private FragmentManager getMyFragmentManager() {
+        FragmentManager fragmentManager = mTool.getToolFragment().getFragmentManager();
+        return fragmentManager;
+    }
     /**
      * We need to override this method because this option can't be selected
      *
@@ -54,8 +57,8 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
             @Override
             public void onSelected() {
-                getColorPickerDialog().show();
-                //getColorPickerDialog().show(getFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
+                //getColorPickerDialog().show();
+                getColorPickerDialog().show(getMyFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
             }
 
             @Override
@@ -90,33 +93,34 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
      *
      * @return
      */
-    public MaterialDialog getColorPickerDialog() {
-        if (mColorPickerDialog == null) {
-            mColorPickerDialog = new MaterialDialog.Builder(mTool.getToolFragment().getActivity())
-                    .customView(R.layout.dialog_color_picker, false)
-                    .positiveText(StringUtil.getAppFontString(android.R.string.ok))
-                    .negativeText(StringUtil.getAppFontString(android.R.string.cancel))
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            mColor = mColorPicker.getColor();
-                            mToolCallback.onColorSelected(mColor);
-                        }
-                    })
-                    .build();
-            View view = mColorPickerDialog.getCustomView();
-            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
-        }
-        mColorPicker.setOldCenterColor(mColor);
-        return mColorPickerDialog;
-    }
-
-//    public ToolColorPickerDialogFragment getColorPickerDialog() {
+//    public MaterialDialog getColorPickerDialog() {
+//
 //        if (mColorPickerDialog == null) {
-//            mColorPickerDialog = ToolColorPickerDialogFragment.newInstance(this);
+//            mColorPickerDialog = new MaterialDialog.Builder(mTool.getToolFragment().getActivity())
+//                    .customView(R.layout.dialog_color_picker, false)
+//                    .positiveText(StringUtil.getAppFontString(android.R.string.ok))
+//                    .negativeText(StringUtil.getAppFontString(android.R.string.cancel))
+//                    .callback(new MaterialDialog.ButtonCallback() {
+//                        @Override
+//                        public void onPositive(MaterialDialog dialog) {
+//                            mColor = mColorPicker.getColor();
+//                            mToolCallback.onColorSelected(mColor);
+//                        }
+//                    })
+//                    .build();
+//            View view = mColorPickerDialog.getCustomView();
+//            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
 //        }
+//        mColorPicker.setOldCenterColor(mColor);
 //        return mColorPickerDialog;
 //    }
+
+    public ToolColorPickerDialogFragment getColorPickerDialog() {
+        if (mColorPickerDialog == null) {
+            mColorPickerDialog = ToolColorPickerDialogFragment.newInstance(this);
+        }
+        return mColorPickerDialog;
+    }
 
     public int getColor() {
         return mColor;
