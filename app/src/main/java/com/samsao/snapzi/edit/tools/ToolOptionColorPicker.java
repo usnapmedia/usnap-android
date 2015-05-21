@@ -18,7 +18,6 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
     @ParcelableThisPlease
     public int mColor;
     private ToolCallback mToolCallback;
-    //private MaterialDialog mColorPickerDialog;
     private ToolColorPickerDialogFragment mColorPickerDialog;
     private ColorPicker mColorPicker;
 
@@ -57,7 +56,6 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
             @Override
             public void onSelected() {
-                //getColorPickerDialog().show();
                 getColorPickerDialog().show(getMyFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
             }
 
@@ -89,32 +87,10 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
     }
 
     /**
-     * Get color picker dialog
+     * Get color picker dialogFragment
      *
      * @return
      */
-//    public MaterialDialog getColorPickerDialog() {
-//
-//        if (mColorPickerDialog == null) {
-//            mColorPickerDialog = new MaterialDialog.Builder(mTool.getToolFragment().getActivity())
-//                    .customView(R.layout.dialog_color_picker, false)
-//                    .positiveText(StringUtil.getAppFontString(android.R.string.ok))
-//                    .negativeText(StringUtil.getAppFontString(android.R.string.cancel))
-//                    .callback(new MaterialDialog.ButtonCallback() {
-//                        @Override
-//                        public void onPositive(MaterialDialog dialog) {
-//                            mColor = mColorPicker.getColor();
-//                            mToolCallback.onColorSelected(mColor);
-//                        }
-//                    })
-//                    .build();
-//            View view = mColorPickerDialog.getCustomView();
-//            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
-//        }
-//        mColorPicker.setOldCenterColor(mColor);
-//        return mColorPickerDialog;
-//    }
-
     public ToolColorPickerDialogFragment getColorPickerDialog() {
         if (mColorPickerDialog == null) {
             mColorPickerDialog = ToolColorPickerDialogFragment.newInstance(this);
