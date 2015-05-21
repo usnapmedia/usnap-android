@@ -1,9 +1,8 @@
 package com.samsao.snapzi.edit.tools;
 
+import android.app.FragmentManager;
 import android.os.Parcelable;
-import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.samsao.snapzi.R;
@@ -14,13 +13,12 @@ import com.samsao.snapzi.util.StringUtil;
  * @author jfcartier
  * @since 15-04-07
  */
-public abstract class ToolOptionColorPicker extends ToolOption implements Parcelable {
+public abstract class ToolOptionColorPicker extends ToolOption implements Parcelable, ToolColorPickerDialogFragment.Listener {
 
     @ParcelableThisPlease
     public int mColor;
-
     private ToolCallback mToolCallback;
-    private MaterialDialog mColorPickerDialog;
+    private ToolColorPickerDialogFragment mColorPickerDialog;
     private ColorPicker mColorPicker;
 
     @Override
@@ -34,6 +32,10 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
         return this;
     }
 
+    private FragmentManager getMyFragmentManager() {
+        FragmentManager fragmentManager = mTool.getToolFragment().getFragmentManager();
+        return fragmentManager;
+    }
     /**
      * We need to override this method because this option can't be selected
      *
@@ -54,7 +56,7 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
             @Override
             public void onSelected() {
-                getColorPickerDialog().show();
+                getColorPickerDialog().show(getMyFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
             }
 
             @Override
@@ -85,28 +87,14 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
     }
 
     /**
-     * Get color picker dialog
+     * Get color picker dialogFragment
      *
      * @return
      */
-    public MaterialDialog getColorPickerDialog() {
+    public ToolColorPickerDialogFragment getColorPickerDialog() {
         if (mColorPickerDialog == null) {
-            mColorPickerDialog = new MaterialDialog.Builder(mTool.getToolFragment().getActivity())
-                    .customView(R.layout.dialog_color_picker, false)
-                    .positiveText(StringUtil.getAppFontString(android.R.string.ok))
-                    .negativeText(StringUtil.getAppFontString(android.R.string.cancel))
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            mColor = mColorPicker.getColor();
-                            mToolCallback.onColorSelected(mColor);
-                        }
-                    })
-                    .build();
-            View view = mColorPickerDialog.getCustomView();
-            mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
+            mColorPickerDialog = ToolColorPickerDialogFragment.newInstance(this);
         }
-        mColorPicker.setOldCenterColor(mColor);
         return mColorPickerDialog;
     }
 
@@ -116,6 +104,14 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
     public void setColor(int color) {
         mColor = color;
+    }
+
+    public ToolCallback getToolCallback() {
+        return mToolCallback;
+    }
+
+    public ColorPicker getColorPicker() {
+        return mColorPicker;
     }
 
     @Override
