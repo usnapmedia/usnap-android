@@ -7,7 +7,6 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -22,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +35,6 @@ import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
 import com.samsao.snapzi.util.PhotoUtil;
-import com.samsao.snapzi.util.WindowUtil;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -101,6 +100,8 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     @InjectView(R.id.fragment_select_media_capture_media_button)
     public ProgressButton mCaptureMediaButton;
 
+
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -147,20 +148,12 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
                 }
             }
         });
-        initializeCamera();
+
+//        initializeCamera();
         return view;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            //rotate mImageView
-            mImageView.animate().rotation(100f);
-            mImageView.animate().setDuration(100);
-        }
-    }
+
 
     public void initLiveFeed() {
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -196,6 +189,48 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         });
     }
 
+    /**
+     * Helper class that rotates the views when the screen is rotated
+     */
+    public void onOrientationChange(SelectMediaActivity.ScreenOrientation oldOrientation, SelectMediaActivity.ScreenOrientation newOrientation) {
+        mFlashSetupButton.animate().cancel();
+        mFlipCameraButton.animate().cancel();
+        mImageView.animate().cancel();
+
+        int angle = 0;
+        switch (newOrientation) {
+            case PORTRAIT:
+                break;
+            case REVERSED_LANDSCAPE:
+                angle = 270;
+                break;
+            case LANDSCAPE:
+                angle = 90;
+                break;
+            case REVERSED_PORTRAIT:
+                angle = 180;
+                break;
+        }
+
+        // animate the buttons and image from gallery
+        int duration = 140;
+        mFlashSetupButton.animate().rotation(angle).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+        mFlipCameraButton.animate().rotation(angle).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+        mImageView.animate().rotation(angle).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+
+        // animate the visible views in the live feed
+        int start = mLayoutManager.findFirstVisibleItemPosition();
+        int end = mLayoutManager.findLastVisibleItemPosition();
+        for (int i = start; i <= end; i++) {
+            if (mRecyclerView.getChildAt(i) != null) {
+                mRecyclerView.getChildAt(i).animate().rotation(angle).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+            }
+        }
+
+        // rotate the upcoming view in the live feed
+        mLiveFeedAdapter.setRotationAngle(angle);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -205,7 +240,6 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     @Override
     public void onResume() {
         super.onResume();
-
         // Don't start camera preview if an image is being saved
         if (!PhotoUtil.isSaveImageInProgress()) {
             initializeCamera();
@@ -271,13 +305,13 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         mCaptureMediaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WindowUtil.lockScreenOrientation(getActivity());
+//                WindowUtil.lockScreenOrientation(getActivity());
                 if (!mIsCapturingMedia) {
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO) {
                         triggerCapturingMediaState(true);
                         mCameraPreview.takePicture();
                     } else {
-                        WindowUtil.unlockScreenOrientation(getActivity());
+//                        WindowUtil.unlockScreenOrientation(getActivity());
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
@@ -289,7 +323,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         mCaptureMediaButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                WindowUtil.lockScreenOrientation(getActivity());
+//                WindowUtil.lockScreenOrientation(getActivity());
                 if (!mIsCapturingMedia) {
                     // Verifying if there's enough space to store the new video
                     if (CameraHelper.getAvailableDiskSpace(getActivity()) >= SelectMediaActivity.MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO) {
@@ -298,13 +332,13 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
                         } else {
                             // Start recording didn't work, release the camera
                             mCameraPreview.stopRecording();
-                            WindowUtil.unlockScreenOrientation(getActivity());
+//                            WindowUtil.unlockScreenOrientation(getActivity());
                             Toast.makeText(getActivity(),
                                     getResources().getString(R.string.error_unable_to_start_video_recording),
                                     Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        WindowUtil.unlockScreenOrientation(getActivity());
+//                        WindowUtil.unlockScreenOrientation(getActivity());
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.error_not_enough_available_space),
                                 Toast.LENGTH_LONG).show();
@@ -455,14 +489,14 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     private void triggerCapturingMediaState(boolean isCapturingMedia) {
         if (isCapturingMedia) {
             mIsCapturingMedia = true;
-            WindowUtil.lockScreenOrientation(getActivity());
+//            WindowUtil.lockScreenOrientation(getActivity());
 
             // inform the user that recording has started
             hideAllSettingsButtons();
         } else {
             mCaptureMediaButton.setProgress(0.0f);
             mVideoCountdown.setVisibility(View.GONE);
-            WindowUtil.unlockScreenOrientation(getActivity());
+//            WindowUtil.unlockScreenOrientation(getActivity());
             mIsCapturingMedia = mIsCapturingVideo = false;
         }
         setFlashButtonVisibility(isCapturingMedia);

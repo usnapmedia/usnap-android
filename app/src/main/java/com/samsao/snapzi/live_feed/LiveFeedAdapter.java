@@ -23,10 +23,12 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
     private Context mContext;
     private List<FeedImage> mImageLiveFeedList;
+    private int mRotationAngle;
 
     public LiveFeedAdapter(Context context) {
         mContext = context;
         mImageLiveFeedList = null;
+        mRotationAngle = 0;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
     @Override
     public void onBindViewHolder(LiveFeedViewHolder liveFeedViewHolder, int position) {
         FeedImage imgLiveFeed = mImageLiveFeedList.get(position);
-        liveFeedViewHolder.setup(imgLiveFeed);
+        liveFeedViewHolder.setup(imgLiveFeed, mRotationAngle);
     }
 
     @Override
@@ -55,6 +57,9 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
         notifyDataSetChanged();
     }
 
+    public void setRotationAngle(int rotationAngle) {
+        mRotationAngle = rotationAngle;
+    }
 
     public class LiveFeedViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImgIcon;
@@ -65,7 +70,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
         }
 
-        public void setup(final FeedImage image) {
+        public void setup(final FeedImage image, int angle) {
             // TODO add an error image and a placeholder
             Picasso.with(mContext).load(image.getUrl()).into(mImgIcon);
             mImgIcon.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +79,11 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
                     PhotoDetailsActivity.start(image, mContext);
                 }
             });
+            rotateImageView(angle);
+        }
+
+        public void rotateImageView(int angle) {
+            mImgIcon.setRotation(angle);
         }
     }
 }

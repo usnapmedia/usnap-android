@@ -3,13 +3,13 @@ package com.samsao.snapzi.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.OrientationEventListener;
 import android.widget.Toast;
 
 import com.samsao.snapzi.R;
@@ -58,6 +58,14 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     @Icicle
     public Integer mCampaignId;
 
+    private OrientationEventListener mOrientationListener;
+
+    @Icicle
+    public ScreenOrientation mScreenOrientation;
+
+    public enum ScreenOrientation {
+        REVERSED_LANDSCAPE, LANDSCAPE, PORTRAIT, REVERSED_PORTRAIT
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,20 +81,32 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
             mCampaignId = intent.getIntExtra(EXTRA_CAMPAIGN_ID, FanPageActivity.NO_CAMPAIGN_ID);
             mSelectMediaFragment = SelectMediaFragment.newInstance();
             getFragmentManager().beginTransaction().replace(android.R.id.content, mSelectMediaFragment, SelectMediaFragment.SELECT_MEDIA_FRAGMENT_TAG).commit();
+
+            mScreenOrientation = ScreenOrientation.PORTRAIT;
         } else {
             Icepick.restoreInstanceState(this, savedInstanceState);
             mSelectMediaFragment = (SelectMediaFragment) getFragmentManager().findFragmentByTag(SelectMediaFragment.SELECT_MEDIA_FRAGMENT_TAG);
         }
-    }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        mOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+            ScreenOrientation newScreenOrientation;
+            public void onOrientationChanged(int orientation) {
+                if (orientation >= 300 || orientation <= 60) {
+                    newScreenOrientation = ScreenOrientation.PORTRAIT;
+                } else if (orientation > 60 && orientation <= 140) {
+                    newScreenOrientation = ScreenOrientation.REVERSED_LANDSCAPE;
+                } else if (orientation > 140 && orientation <= 240) {
+                    newScreenOrientation = ScreenOrientation.REVERSED_PORTRAIT;
+                } else {
+                    newScreenOrientation = ScreenOrientation.LANDSCAPE;
+                }
+                if (newScreenOrientation != mScreenOrientation) {
+                    mSelectMediaFragment.onOrientationChange(mScreenOrientation, newScreenOrientation);
+                }
+                mScreenOrientation = newScreenOrientation;
+            }
+        };
+
     }
 
     @Override
@@ -95,6 +115,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
         if (PhotoUtil.isSaveImageInProgress() && mSelectMediaFragment != null) {
             mSelectMediaFragment.showSavingImageProgressDialog();
         }
+        mOrientationListener.enable();
     }
 
     @Override
@@ -103,13 +124,13 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
         if (mSelectMediaFragment != null) {
             mSelectMediaFragment.dismissSavingImageProgressDialog();
         }
+        mOrientationListener.disable();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
-
     }
 
     @Override
