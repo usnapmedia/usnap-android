@@ -192,7 +192,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     /**
      * Helper class that rotates the views when the screen is rotated
      */
-    public void onOrientationChange(SelectMediaActivity.ScreenOrientation oldOrientation, SelectMediaActivity.ScreenOrientation newOrientation) {
+    public void onOrientationChange(SelectMediaActivity.ScreenOrientation newOrientation) {
         mFlashSetupButton.animate().cancel();
         mFlipCameraButton.animate().cancel();
         mImageView.animate().cancel();
@@ -221,10 +221,14 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
         // animate the visible views in the live feed
         int start = mLayoutManager.findFirstVisibleItemPosition();
         int end = mLayoutManager.findLastVisibleItemPosition();
+
+        //reset the child position and make it start from 0
+        if (start != 0) {
+            end -= start;
+            start = 0;
+        }
         for (int i = start; i <= end; i++) {
-            if (mRecyclerView.getChildAt(i) != null) {
-                mRecyclerView.getChildAt(i).animate().rotation(angle).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
-            }
+            mRecyclerView.getChildAt(i).animate().rotation(angle).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
         }
 
         // rotate the upcoming view in the live feed

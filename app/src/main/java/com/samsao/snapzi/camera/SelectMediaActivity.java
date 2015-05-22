@@ -101,7 +101,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
                     newScreenOrientation = ScreenOrientation.LANDSCAPE;
                 }
                 if (newScreenOrientation != mScreenOrientation) {
-                    mSelectMediaFragment.onOrientationChange(mScreenOrientation, newScreenOrientation);
+                    mSelectMediaFragment.onOrientationChange(newScreenOrientation);
                 }
                 mScreenOrientation = newScreenOrientation;
             }
