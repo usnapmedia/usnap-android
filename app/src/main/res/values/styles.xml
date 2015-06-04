@@ -54,8 +54,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="met_baseColor">?colorAccent</item>
-        <item name="met_primaryColor">?colorAccent</item>
+        <item name="met_baseColor">@color/accent</item>
+        <item name="met_primaryColor">@color/accent</item>
         <item name="met_floatingLabel">highlight</item>
         <item name="met_floatingLabelAnimating">true</item>
         <item name="met_textColor">@color/dark_gray</item>
