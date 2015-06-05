@@ -68,6 +68,8 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     @InjectView(R.id.fragment_settings_birthday_editText)
     public MaterialEditText mBirthday;
 
+    @InjectView(R.id.fragment_settings_information_layout)
+    public LinearLayout mInformationLayout;
     @InjectView(R.id.fragment_settings_letter_tile_container)
     public FrameLayout mLetterTileContainer;
     @InjectView(R.id.fragment_settings_letter_tile_background)
@@ -316,6 +318,8 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         if (!TextUtils.isEmpty(birthday)) {
             mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
         }
+        KeyboardUtil.hideKeyboard(getActivity());
+        mInformationLayout.requestFocus();
         //TODO update user info at backend
     }
 
