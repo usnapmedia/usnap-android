@@ -155,8 +155,7 @@ public class FanPageActivity extends AppCompatActivity {
      */
     public static void start(Context context, CampaignList campaigns) {
         Intent intent = new Intent(context, FanPageActivity.class);
-        // FIXME
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(EXTRA_CAMPAIGNS, campaigns);
         context.startActivity(intent);
     }

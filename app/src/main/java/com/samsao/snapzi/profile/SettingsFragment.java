@@ -29,7 +29,10 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
+import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.social.OnGooglePlusLoginListener;
 import com.samsao.snapzi.social.SocialNetworkFragment;
 import com.samsao.snapzi.util.KeyboardUtil;
@@ -54,6 +57,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * @author jingsilu
@@ -63,6 +68,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.SettingsFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
 
     // TODO inject me
+    private ApiService mApiService = new ApiService();
     private PreferenceManager mPreferenceManager = new PreferenceManager();
     private UserManager mUserManager = new UserManager(mPreferenceManager);
 
@@ -345,11 +351,19 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     @OnClick(R.id.fragment_settings_log_out_btn)
     public void logout() {
         mUserManager.logout();
-        //We must remove the text before set hint.
-        mName.setText("");
-        mBirthday.setText("");
-        mName.setHint("Name");
-        mBirthday.setHint("Birthday");
+        // TODO load the campaigns in the FanPage Activity
+        mApiService.getCampaigns(new retrofit.Callback<CampaignList>() {
+            @Override
+            public void success(CampaignList campaignList, Response response) {
+                FanPageActivity.start(getActivity(), campaignList);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        getActivity().finish();
     }
 
     /**
