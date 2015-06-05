@@ -1,5 +1,6 @@
 package com.samsao.snapzi.authentication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -20,6 +21,8 @@ import icepick.Icepick;
 
 
 public class AuthenticationActivity extends AppCompatActivity {
+    public final static int REQ_CODE = 35343;
+
     @InjectView(R.id.activity_authentication_toolbar)
     public Toolbar mToolbar;
 
@@ -79,6 +82,8 @@ public class AuthenticationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                Intent data = new Intent();
+                setResult(Activity.RESULT_CANCELED, data);
                 finish();
                 return true;
             default:
@@ -112,5 +117,11 @@ public class AuthenticationActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-
+    /**
+     * Helper method to start this activity for result
+     */
+    public static void startForResult(Activity activity) {
+        Intent intent = new Intent(activity, AuthenticationActivity.class);
+        activity.startActivityForResult(intent, REQ_CODE);
+    }
 }
