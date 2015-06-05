@@ -91,6 +91,7 @@
     <string name="top10_snaps_plural">{0,choice,0#pt|1#pt|1&lt;pts}</string>
 
     <!--Profile-->
+    <string name="profile">Profile</string>
     <plurals name="profile_share_plural">
         <item quantity="zero">Share</item>
         <item quantity="one">Share</item>
@@ -111,12 +112,10 @@
     <string name="fragment_settings_help_center">Help Center</string>
     <string name="fragment_settings_report_a_problem">Report a problem</string>
     <string name="fragment_settings_log_out">Logout</string>
+    <string name="fragment_settings_email_intent_chooser">Contact uSnap...</string>
 
     <!--Photo details-->
     <string name="photo">Photo</string>
-
-    <!--Profile-->
-    <string name="profile">Profile</string>
 
     <!--Errors-->
     <string name="error_empty_username">username is required</string>
@@ -136,8 +135,6 @@
     <string name="error_unable_to_start_video_recording">Unable to start video recording</string>
     <string name="error_video_capture_failed">Video capture didn\'t work, please try again</string>
     <string name="error_not_enough_available_space">Memory full, please free up some disk space and try again.</string>
-    <string name="title_activity_see_all">SeeAllActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="error_no_email_client">There is no email client installed.</string>
 
 </resources>

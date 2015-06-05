@@ -82,7 +82,7 @@
 
         <activity
             android:name=".seeall.SeeAllActivity"
-            android:label="@string/title_activity_see_all" >
+            android:label="@string/app_name" >
         </activity>
     </application>
 

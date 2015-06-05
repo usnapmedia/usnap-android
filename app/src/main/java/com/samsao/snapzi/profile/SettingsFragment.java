@@ -5,7 +5,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,6 +49,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,7 +59,7 @@ import butterknife.OnClick;
  * @author jingsilu
  * @since 2015-05-05
  */
-public class SettingsFragment extends SocialNetworkFragment implements DatePickerDialog.OnDateSetListener  {
+public class SettingsFragment extends SocialNetworkFragment implements DatePickerDialog.OnDateSetListener {
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.SettingsFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
 
     // TODO inject me
@@ -93,6 +97,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         SettingsFragment settingsFragment = new SettingsFragment();
         return settingsFragment;
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,7 +127,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
                     DateTime birthDayDate = dateTimeFormatter.parseDateTime(date);
                     DatePickerFragment.newInstance(SettingsFragment.this,
                             birthDayDate.getYear(),
-                            birthDayDate.getMonthOfYear()-1,
+                            birthDayDate.getMonthOfYear() - 1,
                             birthDayDate.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
 
                 } catch (IllegalArgumentException e) {
@@ -274,7 +279,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     /**
      * Setup the date picker for birthday
      */
-    public void setupDatePicker(){
+    public void setupDatePicker() {
         Long birthdayLong = mUserManager.getBirthday();
         if (birthdayLong != null) {
             String birthday = CustomJsonDateTimeDeserializer.getDateFormatter().print(birthdayLong);
@@ -325,14 +330,16 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     @OnClick(R.id.fragment_settings_help_center_btn)
     public void helpCenter() {
-        //TODO help center
-        Toast.makeText(getActivity(),"TODO help center",Toast.LENGTH_SHORT).show();
+        writeEmail("help@usnap.com",
+                "test subject",
+                "test body");
     }
 
     @OnClick(R.id.fragment_settings_report_a_problem_btn)
     public void reportAProblem() {
-        //TODO report a problem
-        Toast.makeText(getActivity(), "TODO report a problem", Toast.LENGTH_SHORT).show();
+        writeEmail("report@usnap.com",
+                "test subject",
+                "test body");
     }
 
     @OnClick(R.id.fragment_settings_log_out_btn)
@@ -403,7 +410,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
             linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn));
         }
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) linearLayout.getChildAt(i)).setTextColor(getResources().getColor(android.R.color.white));
         }
     }
 
@@ -423,7 +430,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
             linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sel_app_btn_disabled));
         }
         for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            ((TextView)linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
+            ((TextView) linearLayout.getChildAt(i)).setTextColor(getResources().getColor(R.color.medium_gray));
         }
     }
 
@@ -462,6 +469,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     public interface Listener {
         ActionBar getSupportActionBar();
+
         void setSupportActionBar(Toolbar toolbar);
     }
 
@@ -469,6 +477,40 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         DateTime dateTime = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
         mBirthday.setText(CustomJsonDateTimeDeserializer.getDateFormatter().print(dateTime));
+    }
+
+    /**
+     * Opens the email client with the given email address
+     *
+     * @param address
+     * @param subject
+     * @param body
+     */
+    protected void writeEmail(String address, String subject, String body) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND, Uri.fromParts("mailto", address, null));
+        emailIntent.setType("message/rfc822");
+
+        List<ResolveInfo> resInfo = getActivity().getPackageManager().queryIntentActivities(emailIntent, 0);
+        if (!resInfo.isEmpty()) {
+            for (ResolveInfo info : resInfo) {
+                if (info.activityInfo.packageName.toLowerCase().contains("gmail") ||
+                        info.activityInfo.name.toLowerCase().contains("gmail") ||
+                        info.activityInfo.packageName.toLowerCase().contains("mail") ||
+                        info.activityInfo.name.toLowerCase().contains("mail")) {
+
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{address});
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+                    emailIntent.setPackage(info.activityInfo.packageName);
+                    emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+                    startActivity(emailIntent);
+                    return;
+                }
+            }
+            Toast.makeText(getActivity(), getString(R.string.error_no_email_client), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.error_no_email_client), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
