@@ -291,5 +291,13 @@ public class ApiService {
         mApiService.getUserInfo(callback);
     }
 
+    /**
+     * Reports an image on the backend
+     * @param imageId
+     * @param callback
+     */
+    public void reportImage(String imageId, Callback<Response> callback) {
+        mApiService.reportImage(imageId, mUserManager.getUsername(), "joey1234", callback);
+    }
 }
 

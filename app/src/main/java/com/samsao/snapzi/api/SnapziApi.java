@@ -70,4 +70,10 @@ public interface SnapziApi {
                @Part("campaign_id") Integer campaignId,
                Callback<Response> callback);
 
+    @FormUrlEncoded
+    @POST("/feed/report")
+    void reportImage(@Field("image_id") String imageId,
+                     @Field("username") String username,
+                     @Field("api_key") String apiKey,
+                     Callback<Response> callback);
 }
