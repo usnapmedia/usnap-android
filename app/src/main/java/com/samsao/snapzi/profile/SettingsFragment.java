@@ -313,9 +313,10 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         String name = mName.getText().toString();
         String birthday = mBirthday.getText().toString();
         mUserManager.setUsername(name);
-        mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
+        if (!TextUtils.isEmpty(birthday)) {
+            mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
+        }
         //TODO update user info at backend
-
     }
 
     @OnClick(R.id.fragment_settings_help_center_btn)
@@ -327,7 +328,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     @OnClick(R.id.fragment_settings_report_a_problem_btn)
     public void reportAProblem() {
         //TODO report a problem
-        Toast.makeText(getActivity(),"TODO report a problem",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "TODO report a problem", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fragment_settings_log_out_btn)
