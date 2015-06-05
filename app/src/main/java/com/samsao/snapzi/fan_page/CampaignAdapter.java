@@ -49,10 +49,10 @@ public class CampaignAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
-        try {
+        if (position > (mFragments.size() - 1)) {
+            mFragments.add(new WeakReference<>((CampaignFragment) fragment));
+        } else {
             mFragments.set(position, new WeakReference<>((CampaignFragment) fragment));
-        } catch (IndexOutOfBoundsException e) {
-            mFragments.add(position, new WeakReference<>((CampaignFragment) fragment));
         }
         return fragment;
     }
