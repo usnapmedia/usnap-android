@@ -13,7 +13,6 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.CampaignList;
-import com.samsao.snapzi.camera.SelectMediaActivity;
 import com.samsao.snapzi.profile.ProfileActivity;
 
 import butterknife.ButterKnife;
@@ -110,7 +109,6 @@ public class FanPageActivity extends AppCompatActivity {
      * Remember the current tab position and refresh data according to see_all_mode
      * @param position
      */
-
     private void refresh(int position) {
         mCurrentTabPosition = position;
         mCampaignAdapter.refreshAll();
@@ -129,7 +127,10 @@ public class FanPageActivity extends AppCompatActivity {
                 ProfileActivity.start(FanPageActivity.this);
                 return true;
             case R.id.activity_fan_page_menu_camera:
-                SelectMediaActivity.start(this, null);
+                CampaignFragment fragment = mCampaignAdapter.getFragmentAt(mCurrentTabPosition);
+                if (fragment != null) {
+                    fragment.enterContest();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
