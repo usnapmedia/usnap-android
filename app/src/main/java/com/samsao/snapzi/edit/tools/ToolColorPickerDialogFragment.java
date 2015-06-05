@@ -37,10 +37,11 @@ public class ToolColorPickerDialogFragment extends DialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.dialog_color_picker, null);
+        mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
+        mColorPicker.setOldCenterColor(mColor);
         builder.setView(view);
         builder.setPositiveButton(StringUtil.getAppFontString(android.R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                mColorPicker = mListener.getColorPicker();
                 mColor = mColorPicker.getColor();
                 mToolCallback = mListener.getToolCallback();
                 mToolCallback.onColorSelected(mColor);
@@ -48,10 +49,9 @@ public class ToolColorPickerDialogFragment extends DialogFragment {
         });
         builder.setNegativeButton(StringUtil.getAppFontString(android.R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {}
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
         });
-        mColorPicker = (ColorPicker) view.findViewById(R.id.picker);
-        mColorPicker.setOldCenterColor(mColor);
         return builder.create();
     }
 
@@ -64,7 +64,7 @@ public class ToolColorPickerDialogFragment extends DialogFragment {
         mListener = listener;
     }
 
-    public static interface Listener {
+    public interface Listener {
         ToolOptionColorPicker.ToolCallback getToolCallback();
         ColorPicker getColorPicker();
         void setColor(int color);
