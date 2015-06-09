@@ -14,17 +14,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
-import com.samsao.snapzi.util.StringUtil;
+import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.Response;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
 
 
-public class PhotoDetailsFragment extends Fragment {
+public class PhotoDetailsFragment extends Fragment implements ReportImageDialogFragment.Listener {
     public final static String PHOTO_DETAILS_FRAGMENT_TAG = "com.samsao.snapzi.fan_page.PhotoDetailsFragment.PHOTO_DETAILS_FRAGMENT_TAG";
 
     @InjectView(R.id.activity_photo_detail_first_letter_id)
@@ -47,6 +52,8 @@ public class PhotoDetailsFragment extends Fragment {
     public TextView mGooglePlusTextView;
 
     private Listener mListener;
+    // TODO inject me
+    private ApiService mApiService = new ApiService();
 
     /**
      * Use this factory method to create a new instance of
@@ -136,8 +143,27 @@ public class PhotoDetailsFragment extends Fragment {
             mListener.setSupportActionBar(mToolbar);
         }
         mListener.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mListener.getSupportActionBar().setDisplayShowTitleEnabled(true);
-        mListener.getSupportActionBar().setTitle(StringUtil.getAppFontString(R.string.photo));
+        mListener.getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    @OnClick(R.id.activity_photo_detail_report)
+    public void reportImage() {
+        ReportImageDialogFragment.newInstance(this).show(getFragmentManager(), "REPORT");
+    }
+
+    @Override
+    public void onReportImageConfirmation() {
+        mApiService.reportImage("1", new Callback<Response>() {
+            @Override
+            public void success(com.samsao.snapzi.api.entity.Response response, retrofit.client.Response response2) {
+                Toast.makeText(getActivity(), getString(R.string.success_report_image), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public interface Listener {

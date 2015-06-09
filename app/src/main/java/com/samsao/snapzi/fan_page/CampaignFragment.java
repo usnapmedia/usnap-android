@@ -1,6 +1,5 @@
 package com.samsao.snapzi.fan_page;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -369,7 +368,6 @@ public class CampaignFragment extends Fragment {
 
     @OnClick(R.id.fragment_campaign_contest_btn)
     public void enterContest() {
-        Activity activity = getActivity();
         SelectMediaActivity.start(getActivity(), mCampaign.getId());
     }
 

@@ -9,7 +9,7 @@
           app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/activity_fan_page_menu_camera"
-          android:title="@string/photo"
+          android:title="@string/enter_contest"
           android:icon="@drawable/ic_camera_alt_white_24dp"
           app:showAsAction="ifRoom"/>
 </menu>

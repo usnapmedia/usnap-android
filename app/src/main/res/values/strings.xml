@@ -44,7 +44,6 @@
         <item quantity="other">%d characters</item>
     </plurals>
 
-
     <!--Preferences-->
     <string name="preferences">Preferences</string>
 
@@ -115,7 +114,9 @@
     <string name="fragment_settings_email_intent_chooser">Contact uSnap...</string>
 
     <!--Photo details-->
-    <string name="photo">Photo</string>
+    <string name="report_image">Report image</string>
+    <string name="confirm_report_image">Report this image?</string>
+    <string name="success_report_image">Thanks for reporting this image</string>
 
     <!--Errors-->
     <string name="error_empty_username">username is required</string>
