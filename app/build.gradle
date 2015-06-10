@@ -68,7 +68,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            ext.betaDistributionGroupAliases="snapzi-android"
+            ext.betaDistributionGroupAliases="usnap-android"
             shrinkResources true
         }
         debugRelease.initWith(buildTypes.release)
