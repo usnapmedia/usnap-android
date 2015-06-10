@@ -241,7 +241,7 @@ public class EditFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching Images! "+ error.getMessage());
+                Timber.e("Error Fetching Images! " + error.getMessage());
             }
         });
     }
@@ -556,20 +556,20 @@ public class EditFragment extends Fragment {
         PhotoUtil.saveImage(finalImage, imageDestinationPath, new SaveImageCallback() {
             @Override
             public void onSuccess(String imageDestinationPath) {
-                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                if (getActivity() != null) {
+                    Intent intent = new Intent(getActivity(), ShareActivity.class);
+                    intent.putExtra(ShareActivity.EXTRA_IMAGE_PATH, imageDestinationPath); // Keep image in both cases
+                    intent.putExtra(ShareActivity.EXTRA_CAMPAIGN_ID, mCampaignId);
+                    if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+                        intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_IMAGE);
+                    } else {
+                        intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_VIDEO);
+                        intent.putExtra(ShareActivity.EXTRA_VIDEO_PATH, mListener.getMediaPath());
+                    }
 
-                intent.putExtra(ShareActivity.EXTRA_IMAGE_PATH, imageDestinationPath); // Keep image in both cases
-                intent.putExtra(ShareActivity.EXTRA_CAMPAIGN_ID, mCampaignId);
-                if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
-                    intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_IMAGE);
-                } else {
-                    intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_VIDEO);
-                    intent.putExtra(ShareActivity.EXTRA_VIDEO_PATH, mListener.getMediaPath());
+                    // TODO stop loading screen
+                    startActivity(intent);
                 }
-
-                // TODO stop loading screen
-
-                startActivity(intent);
             }
 
             @Override

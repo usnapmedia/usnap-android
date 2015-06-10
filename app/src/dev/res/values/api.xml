@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="api_endpoint">http://d.tanios.ca/usnap/api/v1</string>
+    <string name="api_endpoint">http://api-stage.usnap.com/v1</string>
     <string name="api_key">joey1234</string>
 </resources>
