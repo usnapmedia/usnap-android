@@ -136,7 +136,6 @@ dependencies {
     compile 'jp.wasabeef:picasso-transformations:1.0.2@aar'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.2.3@aar'
     compile 'me.panavtec:drawableview:0.5.0'
-    compile 'com.afollestad:material-dialogs:0.6.5.2'
     compile 'com.larswerkman:HoloColorPicker:1.5'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.retrofit:converter-jackson:1.9.0'
