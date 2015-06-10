@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">uSnap-DEV</string>
+    <string name="app_name">uSnap (Neomedia)</string>
     <string name="facebook_app_id" translatable="false">465899996898725</string>
     <string name="facebook_app_namespace" translatable="false">usnap-poster</string>
     <string name="twitter_api_key" translatable="false">xWN8D23Qr6E0gJJFpthMXjbKX</string>

@@ -162,8 +162,10 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching Top Campaign Data: " + error.getMessage());
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Timber.e("Error Fetching Top Campaign Data: " + error.getMessage());
+                }
             }
         });
     }

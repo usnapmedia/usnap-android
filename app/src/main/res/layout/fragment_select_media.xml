@@ -80,6 +80,7 @@
             android:layout_gravity="center"
             android:visibility="invisible"
             app:radius="48dp"
+            app:progress_ring_color="@color/primary"
             tools:visibility="visible" />
 
         <LinearLayout

@@ -70,7 +70,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
 
         // Bind the tabs to the ViewPager
         mTabs.setViewPager(mViewPager);
-        mTabs.setTextColor(getResources().getColor(R.color.blue));
+        mTabs.setTextColor(getResources().getColor(R.color.primary));
 
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

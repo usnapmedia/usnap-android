@@ -58,7 +58,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAllCaps="true"
-                android:textColor="@color/blue"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/font_size_medium"
                 app:typeFace="GothamHTF-Book.ttf"
                 tools:text="32 Shares"/>

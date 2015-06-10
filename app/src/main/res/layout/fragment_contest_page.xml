@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:textColor="@color/blue"
+                android:textColor="@color/primary"
                 app:typeFace="GothamHTF-Book.ttf"/>
 
             <com.ivankocijan.magicviews.views.MagicTextView
@@ -92,7 +92,7 @@
             android:paddingBottom="@dimen/elements_vertical_margin"
             android:text="@string/activity_contest_page_contest_rules"
             android:textSize="@dimen/font_size_large"
-            android:textColor="@color/blue"
+            android:textColor="@color/primary"
             app:typeFace="GothamHTF-Book.ttf"/>
 
         <com.ivankocijan.magicviews.views.MagicButton

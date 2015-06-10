@@ -75,7 +75,7 @@
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/elements_vertical_margin"
                 android:singleLine="true"
-                android:textColor="@color/primary_light"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/font_size_small"
                 tools:text="132 characters"
                 app:typeFace="GothamHTF-Book.ttf" />

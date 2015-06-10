@@ -96,17 +96,21 @@ android {
 
     productFlavors {
         prod {
-            buildConfigField "String", "ENV", "\"prod\""
         }
 
         dev {
-            buildConfigField "String", "ENV", "\"dev\""
             versionName computeVersionName() + "-DEV"
         }
+
+        neomedia {
+            applicationId "com.samsao.usnap.neomedia"
+        }
+
     }
 
     sourceSets {
         dev.setRoot('src/dev')
+        neomedia.setRoot('src/neomedia')
     }
 }
 
