@@ -18,10 +18,13 @@ import icepick.Icicle;
  * @since 2015-04-30
  */
 public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDetailsFragment.Listener {
+    public final static String EXTRA_PHOTO_ID= "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_ID";
     public final static String EXTRA_PHOTO_PATH = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_PATH";
     public final static String EXTRA_PHOTO_TEXT = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_TEXT";
     public final static String EXTRA_PHOTO_USERNAME = "com.samsao.snapzi.fan_page.PhotoDetailActivity.EXTRA_PHOTO_USERNAME";
 
+    @Icicle
+    public Integer mId;
     @Icicle
     public String mPhotoPath;
     @Icicle
@@ -37,6 +40,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
         if (savedInstanceState == null) {
             Intent intent = getIntent();
             if (intent != null) {
+                mId = intent.getIntExtra(EXTRA_PHOTO_ID, -1);
                 mPhotoPath = intent.getStringExtra(EXTRA_PHOTO_PATH);
                 mText = intent.getStringExtra(EXTRA_PHOTO_TEXT);
                 mUsername = intent.getStringExtra(EXTRA_PHOTO_USERNAME);
@@ -70,14 +74,22 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
         }
     }
 
+    @Override
+    public Integer getId() {
+        return mId;
+    }
+
+    @Override
     public String getPhotoPath() {
         return mPhotoPath;
     }
 
+    @Override
     public String getText() {
         return mText;
     }
 
+    @Override
     public String getUsername() {
         return mUsername;
     }
@@ -90,6 +102,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
      */
     public static void start(FeedImage image, Context context) {
         Intent intent = new Intent(context, PhotoDetailsActivity.class);
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_ID, image.getId());
         intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getWatermarkUrl());
         if (!TextUtils.isEmpty(image.getText())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
@@ -108,6 +121,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
      */
     public static void start(TopCampaign campaign, Context context) {
         Intent intent = new Intent(context, PhotoDetailsActivity.class);
+        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_ID, campaign.getId());
         intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getWatermarkUrl());
         if (!TextUtils.isEmpty(campaign.getText())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());

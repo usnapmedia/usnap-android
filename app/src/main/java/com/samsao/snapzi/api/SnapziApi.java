@@ -72,8 +72,7 @@ public interface SnapziApi {
 
     @FormUrlEncoded
     @POST("/feed/report")
-    void reportImage(@Field("image_id") String imageId,
+    void reportImage(@Field("image_id") Integer imageId,
                      @Field("username") String username,
-                     @Field("api_key") String apiKey,
                      Callback<Response> callback);
 }

@@ -200,8 +200,6 @@ public class CampaignFragment extends Fragment {
             //likesCountTextView.setText(getResources().getQuantityString(R.plurals.likes_plural, campaign.getFbLikes(), campaign.getFbLikes()));
             likesCountTextView.setText(fbLikes + " " + MessageFormat.format(fbCount, fbLikes));
         }
-        nameTextView.setTypeface(getFont());
-        likesCountTextView.setTypeface(getFont());
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,8 +298,10 @@ public class CampaignFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching Latest Uploads Data: " + error.getMessage());
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Timber.e("Error Fetching Latest Uploads Data: " + error.getMessage());
+                }
             }
         });
     }
@@ -326,10 +326,6 @@ public class CampaignFragment extends Fragment {
             String fbCount = getActivity().getResources().getString(R.string.top10_snaps_plural);
             likesCountTextView.setText(fbLikes + " " + MessageFormat.format(fbCount, fbLikes));
         }
-
-        nameTextView.setTypeface(getFont());
-        likesCountTextView.setTypeface(getFont());
-
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -99,6 +99,7 @@ public class ApiService {
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override
                     public void intercept(RequestFacade request) {
+                        request.addHeader("api_key", getApiKey());
                         if (mUserManager.isLogged()) {
                             try {
                                 request.addHeader("Authorization", getAuthenticationHeader());
@@ -200,6 +201,10 @@ public class ApiService {
         return "Basic " + Base64.encodeToString(String.format("%s:%s", username, password).getBytes(), Base64.NO_WRAP);
     }
 
+    private String getApiKey() {
+        return SnapziApplication.getContext().getString(R.string.api_key);
+    }
+
     /**
      * Login
      *
@@ -296,8 +301,8 @@ public class ApiService {
      * @param imageId
      * @param callback
      */
-    public void reportImage(String imageId, Callback<Response> callback) {
-        mApiService.reportImage(imageId, mUserManager.getUsername(), "joey1234", callback);
+    public void reportImage(Integer imageId, Callback<Response> callback) {
+        mApiService.reportImage(imageId, mUserManager.getUsername(), callback);
     }
 }
 

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     style="@style/AppCardView"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
@@ -16,22 +17,24 @@
             android:layout_height="1dp"
             android:scaleType="centerCrop" />
 
-        <TextView
+        <com.ivankocijan.magicviews.views.MagicTextView
             android:id="@+id/view_top_campaign_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sleiman Tanios"
             android:textSize="@dimen/font_size_small"
             android:singleLine="true"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            app:typeFace="GothamHTF-Book.ttf"/>
 
-        <TextView
+        <com.ivankocijan.magicviews.views.MagicTextView
             android:id="@+id/view_top_campaign_likes_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_size_small"
             android:text="345 pts"
-            android:textColor="@color/blue"/>
+            android:textColor="@color/blue"
+            app:typeFace="GothamHTF-Book.ttf"/>
 
     </LinearLayout>
 

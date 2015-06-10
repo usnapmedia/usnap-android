@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+        "id",
         "email",
         "username",
         "url",
@@ -21,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "usnap_score"
 })
 public class FeedImage {
-
+    @JsonProperty("id")
+    private Integer id;
     @JsonProperty("email")
     private String email;
     @JsonProperty("username")
@@ -31,7 +33,7 @@ public class FeedImage {
     @JsonProperty("watermark_url")
     private String watermarkUrl;
     @JsonProperty("thumb_url")
-    private Object thumbUrl;
+    private String thumbUrl;
     @JsonProperty("text")
     private String text;
     @JsonProperty("fb_likes")
@@ -40,6 +42,14 @@ public class FeedImage {
     private String campaignId;
     @JsonProperty("usnap_score")
     private Integer usnapScore;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     /**
      *
@@ -107,7 +117,7 @@ public class FeedImage {
      * The thumbUrl
      */
     @JsonProperty("thumb_url")
-    public Object getThumbUrl() {
+    public String getThumbUrl() {
         return thumbUrl;
     }
 
@@ -117,7 +127,7 @@ public class FeedImage {
      * The thumb_url
      */
     @JsonProperty("thumb_url")
-    public void setThumbUrl(Object thumbUrl) {
+    public void setThumbUrl(String thumbUrl) {
         this.thumbUrl = thumbUrl;
     }
 

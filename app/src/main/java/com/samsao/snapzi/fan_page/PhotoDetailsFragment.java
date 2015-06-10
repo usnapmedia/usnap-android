@@ -153,7 +153,7 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
 
     @Override
     public void onReportImageConfirmation() {
-        mApiService.reportImage("1", new Callback<Response>() {
+        mApiService.reportImage(mListener.getId(), new Callback<Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, retrofit.client.Response response2) {
                 Toast.makeText(getActivity(), getString(R.string.success_report_image), Toast.LENGTH_SHORT).show();
@@ -167,6 +167,8 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     }
 
     public interface Listener {
+        Integer getId();
+
         String getPhotoPath();
 
         String getText();

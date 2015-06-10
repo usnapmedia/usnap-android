@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+        "id",
         "email",
         "username",
         "url",
@@ -23,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 
 public class TopCampaign {
+    @JsonProperty("id")
+    private Integer id;
     @JsonProperty("email")
     private String email;
     @JsonProperty("username")
@@ -41,6 +44,14 @@ public class TopCampaign {
     private String campaignId;
     @JsonProperty("usnap_score")
     private Integer usnapScore;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     /**
      * @return The email
