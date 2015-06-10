@@ -19,7 +19,6 @@ import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.mime.TypedFile;
-import retrofit.mime.TypedString;
 
 /**
  * @author jfcartier
@@ -61,14 +60,26 @@ public interface SnapziApi {
 
     @Multipart
     @POST("/share")
-    void share(@Part("image_data") TypedFile image,
-               @Part("text") TypedString text,
-               @Part("fb") TypedString fbToken,
-               @Part("tw_key") TypedString twitterToken,
-               @Part("tw_secret") TypedString twitterSecret,
-               @Part("gp") TypedString googlePlusToken,
-               @Part("campaign_id") Integer campaignId,
-               Callback<Response> callback);
+    void sharePicture(@Part("image_data") TypedFile image,
+                      @Part("text") String text,
+                      @Part("fb") String fbToken,
+                      @Part("tw_key") String twitterToken,
+                      @Part("tw_secret") String twitterSecret,
+                      @Part("gp") String googlePlusToken,
+                      @Part("campaign_id") Integer campaignId,
+                      Callback<Response> callback);
+
+    @Multipart
+    @POST("/share/video")
+    void shareVideo(@Part("image_data") TypedFile image,
+                    @Part("video_data") TypedFile video,
+                    @Part("text") String text,
+                    @Part("fb") String fbToken,
+                    @Part("tw_key") String twitterToken,
+                    @Part("tw_secret") String twitterSecret,
+                    @Part("gp") String googlePlusToken,
+                    @Part("campaign_id") Integer campaignId,
+                    Callback<Response> callback);
 
     @FormUrlEncoded
     @POST("/feed/report")

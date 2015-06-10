@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -82,9 +83,6 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     private Listener mListener;
     private ProgressDialogFragment mProgressDialogFragment;
     private ShareLoginDialogFragment mShareLoginDialogFragment;
-    private String mImagePath;
-    private String mCommentText;
-    private Integer mCampaignId;
 
     // TODO inject me
     private ApiService mApiService = new ApiService();
@@ -177,7 +175,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public void onResume() {
         super.onResume();
 
-        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
+        if (!TextUtils.isEmpty(mListener.getVideoPath())) {
             // load the video
             if (mVideoPreview == null) {
                 mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
@@ -190,7 +188,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     @Override
     public void onPause() {
         super.onPause();
-        if (mListener.getMediaType().equals(ShareActivity.TYPE_VIDEO)) {
+        if (!TextUtils.isEmpty(mListener.getVideoPath())) {
             mVideoContainer.removeView(mVideoPreview);
             mVideoPreview = null;
         }
@@ -208,7 +206,6 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
         try {
             mListener = (Listener) activity;
-            mCampaignId = mListener.getCampaignId();
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -457,12 +454,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
      * When the share button is clicked
      */
     public void onShareBtnClick() {
-        mImagePath = mListener.getImagePath();
-        mCommentText = mCommentEditText.getText().toString();
-        mListener.setCommentText(mCommentText);
-
-        boolean isLogin = mUserManager.isLogged();
-        if (!isLogin) {
+        if (!mUserManager.isLogged()) {
             showLoginDialog();
         } else {
             share();
@@ -495,13 +487,12 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
      */
     public void share() {
         showProgressDialog();
-        // TODO add campaign ID
-        mApiService.sharePicture(mImagePath, mCommentText, mCampaignId, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+        retrofit.Callback<com.samsao.snapzi.api.entity.Response> callback = new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
                 dismissProgressDialog();
                 // TODO string resource
-                Toast.makeText(getActivity(), "Share picture success!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Share successful!", Toast.LENGTH_SHORT).show();
                 // TODO load the campaigns in the FanPage Activity
                 mApiService.getCampaigns(new retrofit.Callback<CampaignList>() {
                     @Override
@@ -522,9 +513,33 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             public void failure(RetrofitError error) {
                 dismissProgressDialog();
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Failure sharing picture: " + error.getMessage());
+                Timber.e("Failure sharing: " + error.getMessage());
             }
-        });
+        };
+        if (!TextUtils.isEmpty(mListener.getVideoPath())) {
+            shareVideo(callback);
+        } else {
+            sharePicture(callback);
+        }
+    }
+
+
+    /**
+     * Share a picture
+     *
+     * @param callback
+     */
+    public void sharePicture(retrofit.Callback<com.samsao.snapzi.api.entity.Response> callback) {
+        mApiService.sharePicture(mListener.getImagePath(), mCommentEditText.getText().toString(), mListener.getCampaignId(), callback);
+    }
+
+    /**
+     * Share a video
+     *
+     * @param callback
+     */
+    public void shareVideo(retrofit.Callback<com.samsao.snapzi.api.entity.Response> callback) {
+        mApiService.shareVideo(mListener.getImagePath(), mListener.getVideoPath(), mCommentEditText.getText().toString(), mListener.getCampaignId(), callback);
     }
 
     /**
@@ -574,13 +589,9 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
     public interface Listener {
         Integer getCampaignId();
 
-        String getMediaType();
-
         String getImagePath();
 
         String getVideoPath();
-
-        void setCommentText(String commentText);
 
         ActionBar getSupportActionBar();
 

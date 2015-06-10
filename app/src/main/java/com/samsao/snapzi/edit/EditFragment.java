@@ -2,7 +2,6 @@ package com.samsao.snapzi.edit;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -557,18 +556,12 @@ public class EditFragment extends Fragment {
             @Override
             public void onSuccess(String imageDestinationPath) {
                 if (getActivity() != null) {
-                    Intent intent = new Intent(getActivity(), ShareActivity.class);
-                    intent.putExtra(ShareActivity.EXTRA_IMAGE_PATH, imageDestinationPath); // Keep image in both cases
-                    intent.putExtra(ShareActivity.EXTRA_CAMPAIGN_ID, mCampaignId);
-                    if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
-                        intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_IMAGE);
-                    } else {
-                        intent.putExtra(ShareActivity.EXTRA_MEDIA_TYPE, ShareActivity.TYPE_VIDEO);
-                        intent.putExtra(ShareActivity.EXTRA_VIDEO_PATH, mListener.getMediaPath());
-                    }
-
                     // TODO stop loading screen
-                    startActivity(intent);
+                    if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
+                        ShareActivity.start(getActivity(), mCampaignId, imageDestinationPath, null);
+                    } else {
+                        ShareActivity.start(getActivity(), mCampaignId, imageDestinationPath, mListener.getMediaPath());
+                    }
                 }
             }
 

@@ -23,7 +23,6 @@ import com.samsao.snapzi.api.exception.MalformedUrlException;
 import com.samsao.snapzi.api.exception.NetworkTimeoutException;
 import com.samsao.snapzi.api.exception.RetrofitException;
 import com.samsao.snapzi.api.exception.UnauthorizedException;
-import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.util.PreferenceManager;
 import com.samsao.snapzi.util.UserManager;
 import com.squareup.okhttp.OkHttpClient;
@@ -44,7 +43,6 @@ import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.converter.JacksonConverter;
 import retrofit.mime.TypedFile;
-import retrofit.mime.TypedString;
 import timber.log.Timber;
 
 /**
@@ -265,16 +263,32 @@ public class ApiService {
      * @param callback
      */
     public void sharePicture(String imagePath, String text, Integer campaignId, Callback<Response> callback) {
-        //TODO add campaignId when sharing
-        if (campaignId.equals(FanPageActivity.NO_CAMPAIGN_ID)) {
-            campaignId = null;
-        }
-        mApiService.share(new TypedFile("application/octet-stream", new File(imagePath)),
-                new TypedString(text),
-                new TypedString(!TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : ""),
-                new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : ""),
-                new TypedString(!TextUtils.isEmpty(mUserManager.getTwitterSecret()) ? mUserManager.getTwitterSecret() : ""),
-                new TypedString(!TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : ""),
+        mApiService.sharePicture(new TypedFile("application/octet-stream", new File(imagePath)),
+                text,
+                !TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : "",
+                !TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : "",
+                !TextUtils.isEmpty(mUserManager.getTwitterSecret()) ? mUserManager.getTwitterSecret() : "",
+                !TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : "",
+                campaignId,
+                callback);
+    }
+
+    /**
+     * Share a video
+     *
+     * @param imagePath
+     * @param videoPath
+     * @param text
+     * @param callback
+     */
+    public void shareVideo(String imagePath, String videoPath, String text, Integer campaignId, Callback<Response> callback) {
+        mApiService.shareVideo(new TypedFile("application/octet-stream", new File(imagePath)),
+                new TypedFile("application/octet-stream", new File(videoPath)),
+                text,
+                !TextUtils.isEmpty(mUserManager.getFacebookAccessToken()) ? mUserManager.getFacebookAccessToken() : "",
+                !TextUtils.isEmpty(mUserManager.getTwitterAccessToken()) ? mUserManager.getTwitterAccessToken() : "",
+                !TextUtils.isEmpty(mUserManager.getTwitterSecret()) ? mUserManager.getTwitterSecret() : "",
+                !TextUtils.isEmpty(mUserManager.getGooglePlusAccessToken()) ? mUserManager.getGooglePlusAccessToken() : "",
                 campaignId,
                 callback);
     }
