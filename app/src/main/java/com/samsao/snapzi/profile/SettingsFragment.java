@@ -336,16 +336,14 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     @OnClick(R.id.fragment_settings_help_center_btn)
     public void helpCenter() {
-        writeEmail("help@usnap.com",
-                "test subject",
-                "test body");
+        writeEmail("support@usnap.com",
+                getString(R.string.fragment_settings_help_center) + " (Android)");
     }
 
     @OnClick(R.id.fragment_settings_report_a_problem_btn)
     public void reportAProblem() {
-        writeEmail("report@usnap.com",
-                "test subject",
-                "test body");
+        writeEmail("support@usnap.com",
+                getString(R.string.fragment_settings_report_a_problem) + " (Android)");
     }
 
     @OnClick(R.id.fragment_settings_log_out_btn)
@@ -498,9 +496,8 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
      *
      * @param address
      * @param subject
-     * @param body
      */
-    protected void writeEmail(String address, String subject, String body) {
+    protected void writeEmail(String address, String subject) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND, Uri.fromParts("mailto", address, null));
         emailIntent.setType("message/rfc822");
 
@@ -514,7 +511,6 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
                     emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{address});
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                    emailIntent.putExtra(Intent.EXTRA_TEXT, body);
                     emailIntent.setPackage(info.activityInfo.packageName);
                     emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                     startActivity(emailIntent);
