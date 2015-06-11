@@ -3,8 +3,10 @@ package com.samsao.snapzi.fan_page;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -15,14 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
-import com.samsao.snapzi.edit.VideoPreview;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.squareup.picasso.Picasso;
 
@@ -60,9 +63,8 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     public FrameLayout mImageVideoLayout;
     @InjectView(R.id.activity_photo_detail_report)
     public TextView mReportTextView;
-    @InjectView(R.id.activity_photo_detail_video_container)
-    public FrameLayout mVideoContainer;
-    private VideoPreview mVideoPreview;
+    @InjectView(R.id.activity_photo_detail_video)
+    public VideoView mVideoView;
 
     private Listener mListener;
     // TODO inject me
@@ -166,36 +168,17 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
 
         if (hasVideo()) {
             // load the video
-            if (mVideoPreview == null) {
-                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
-                mVideoPreview.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                    @Override
-                    public boolean onError(MediaPlayer mp, int what, int extra) {
-                        dismissProgressDialog();
-                        mImageVideoLayout.setVisibility(View.INVISIBLE);
-                        Toast.makeText(getActivity(), getString(R.string.error_playing_video), Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                mVideoPreview.addOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        dismissProgressDialog();
-                    }
-                });
-            }
-            mVideoContainer.addView(mVideoPreview);
             mImageView.setVisibility(View.GONE);
-            mVideoContainer.setVisibility(View.VISIBLE);
+            mVideoView.setVisibility(View.VISIBLE);
+            playVideo();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (!TextUtils.isEmpty(mListener.getVideoPath())) {
-            mVideoContainer.removeView(mVideoPreview);
-            mVideoPreview = null;
+        if (hasVideo()) {
+            mVideoView.stopPlayback();
         }
     }
 
@@ -268,6 +251,43 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
      */
     public boolean hasVideo() {
         return !TextUtils.isEmpty(mListener.getVideoPath());
+    }
+
+    /**
+     * Plays the video
+     */
+    private void playVideo() {
+        try {
+            getActivity().getWindow().setFormat(PixelFormat.TRANSLUCENT);
+            MediaController mediaController = new MediaController(getActivity());
+            mediaController.setAnchorView(mVideoView);
+
+            Uri video = Uri.parse(mListener.getVideoPath());
+            mVideoView.setMediaController(mediaController);
+            mVideoView.setVideoURI(video);
+            mVideoView.requestFocus();
+            mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                    dismissProgressDialog();
+                    mVideoView.start();
+                }
+            });
+            mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    dismissProgressDialog();
+                    mImageVideoLayout.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getActivity(), getString(R.string.error_playing_video), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+        }
+        catch(Exception e) {
+            dismissProgressDialog();
+            mImageVideoLayout.setVisibility(View.INVISIBLE);
+            Toast.makeText(getActivity(), getString(R.string.error_playing_video), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
