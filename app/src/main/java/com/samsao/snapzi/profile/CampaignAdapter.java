@@ -86,7 +86,9 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         }
 
         public void setup(final Campaign campaign) {
-            Picasso.with(mContext).load(campaign.getBannerImgUrl()).into(mImageView);
+            if (!TextUtils.isEmpty(campaign.getBannerImgUrl())) {
+                Picasso.with(mContext).load(campaign.getBannerImgUrl()).into(mImageView);
+            }
             setName(campaign.getName());
             // TODO get share count
             setShareCount(null);

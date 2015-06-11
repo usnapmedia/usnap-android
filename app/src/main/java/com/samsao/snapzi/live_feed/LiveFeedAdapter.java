@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.api.entity.FeedImage;
+import com.samsao.snapzi.api.entity.Snap;
 import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
 import com.squareup.picasso.Picasso;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFeedViewHolder> {
 
     private Context mContext;
-    private List<FeedImage> mImageLiveFeedList;
+    private List<Snap> mImageLiveFeedList;
 
     public LiveFeedAdapter(Context context) {
         mContext = context;
@@ -40,7 +40,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
     @Override
     public void onBindViewHolder(LiveFeedViewHolder liveFeedViewHolder, int position) {
-        FeedImage imgLiveFeed = mImageLiveFeedList.get(position);
+        Snap imgLiveFeed = mImageLiveFeedList.get(position);
         liveFeedViewHolder.setup(imgLiveFeed);
     }
 
@@ -50,7 +50,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
         return new LiveFeedViewHolder(mLiveFeedView);
     }
 
-    public void setImageLiveFeed(List<FeedImage> list) {
+    public void setImageLiveFeed(List<Snap> list) {
         mImageLiveFeedList = list;
         notifyDataSetChanged();
     }
@@ -65,7 +65,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
         }
 
-        public void setup(final FeedImage image) {
+        public void setup(final Snap image) {
             // TODO add an error image and a placeholder
             Picasso.with(mContext).load(image.getUrl()).into(mImgIcon);
             mImgIcon.setOnClickListener(new View.OnClickListener() {

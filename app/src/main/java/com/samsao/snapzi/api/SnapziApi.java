@@ -5,9 +5,8 @@
 package com.samsao.snapzi.api;
 
 import com.samsao.snapzi.api.entity.CampaignList;
-import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
-import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.api.entity.SnapList;
 import com.samsao.snapzi.api.entity.UserList;
 
 import retrofit.Callback;
@@ -44,16 +43,16 @@ public interface SnapziApi {
                Callback<Response> callback);
 
     @GET("/feed/live/{campaign_id}")
-    void getLiveFeed(@Path("campaign_id") Integer campaignId, Callback<FeedImageList> callback);
+    void getLiveFeed(@Path("campaign_id") Integer campaignId, Callback<SnapList> callback);
 
     @GET("/feed/live/me")
-    void getMyLiveFeed(Callback<FeedImageList> callback);
+    void getMyLiveFeed(Callback<SnapList> callback);
 
     @GET("/campaigns")
     void getCampaigns(Callback<CampaignList> callback);
 
     @GET("/feed/top/{campaign_id}")
-    void getTopCampaign(@Path("campaign_id") Integer campaignId, Callback<TopCampaignList> callback);
+    void getTopSnaps(@Path("campaign_id") Integer campaignId, Callback<SnapList> callback);
 
     @GET("/users/me")
     void getUserInfo(Callback<UserList> callback);

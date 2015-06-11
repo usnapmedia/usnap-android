@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * @author jingsilu
- * @since 2015-04-27
+ * @since 2015-04-17
  */
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
@@ -16,14 +15,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "username",
         "url",
         "watermark_url",
+        "video_url",
         "thumb_url",
         "text",
         "fb_likes",
         "campaign_id",
         "usnap_score"
 })
-
-public class TopCampaign {
+public class Snap {
     @JsonProperty("id")
     private Integer id;
     @JsonProperty("email")
@@ -34,6 +33,8 @@ public class TopCampaign {
     private String url;
     @JsonProperty("watermark_url")
     private String watermarkUrl;
+    @JsonProperty("video_url")
+    private String videoUrl;
     @JsonProperty("thumb_url")
     private String thumbUrl;
     @JsonProperty("text")
@@ -45,16 +46,20 @@ public class TopCampaign {
     @JsonProperty("usnap_score")
     private Integer usnapScore;
 
+    @JsonProperty("id")
     public Integer getId() {
         return id;
     }
 
+    @JsonProperty("id")
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * @return The email
+     *
+     * @return
+     * The email
      */
     @JsonProperty("email")
     public String getEmail() {
@@ -62,7 +67,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param email The email
+     *
+     * @param email
+     * The email
      */
     @JsonProperty("email")
     public void setEmail(String email) {
@@ -70,7 +77,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The username
+     *
+     * @return
+     * The username
      */
     @JsonProperty("username")
     public String getUsername() {
@@ -78,7 +87,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param username The username
+     *
+     * @param username
+     * The username
      */
     @JsonProperty("username")
     public void setUsername(String username) {
@@ -86,7 +97,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The url
+     *
+     * @return
+     * The url
      */
     @JsonProperty("url")
     public String getUrl() {
@@ -94,7 +107,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param url The url
+     *
+     * @param url
+     * The url
      */
     @JsonProperty("url")
     public void setUrl(String url) {
@@ -102,7 +117,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The thumbUrl
+     *
+     * @return
+     * The thumbUrl
      */
     @JsonProperty("thumb_url")
     public String getThumbUrl() {
@@ -110,7 +127,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param thumbUrl The thumb_url
+     *
+     * @param thumbUrl
+     * The thumb_url
      */
     @JsonProperty("thumb_url")
     public void setThumbUrl(String thumbUrl) {
@@ -118,7 +137,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The text
+     *
+     * @return
+     * The text
      */
     @JsonProperty("text")
     public String getText() {
@@ -126,7 +147,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param text The text
+     *
+     * @param text
+     * The text
      */
     @JsonProperty("text")
     public void setText(String text) {
@@ -134,7 +157,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The fbLikes
+     *
+     * @return
+     * The fbLikes
      */
     @JsonProperty("fb_likes")
     public Integer getFbLikes() {
@@ -142,7 +167,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param fbLikes The fb_likes
+     *
+     * @param fbLikes
+     * The fb_likes
      */
     @JsonProperty("fb_likes")
     public void setFbLikes(Integer fbLikes) {
@@ -150,7 +177,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The campaignId
+     *
+     * @return
+     * The campaignId
      */
     @JsonProperty("campaign_id")
     public String getCampaignId() {
@@ -158,7 +187,9 @@ public class TopCampaign {
     }
 
     /**
-     * @param campaignId The campaign_id
+     *
+     * @param campaignId
+     * The campaign_id
      */
     @JsonProperty("campaign_id")
     public void setCampaignId(String campaignId) {
@@ -166,7 +197,9 @@ public class TopCampaign {
     }
 
     /**
-     * @return The usnapScore
+     *
+     * @return
+     * The usnapScore
      */
     @JsonProperty("usnap_score")
     public Integer getUsnapScore() {
@@ -174,18 +207,32 @@ public class TopCampaign {
     }
 
     /**
-     * @param usnapScore The usnap_score
+     *
+     * @param usnapScore
+     * The usnap_score
      */
     @JsonProperty("usnap_score")
     public void setUsnapScore(Integer usnapScore) {
         this.usnapScore = usnapScore;
     }
 
+    @JsonProperty("watermark_url")
     public String getWatermarkUrl() {
         return watermarkUrl;
     }
 
+    @JsonProperty("watermark_url")
     public void setWatermarkUrl(String watermarkUrl) {
         this.watermarkUrl = watermarkUrl;
+    }
+
+    @JsonProperty("video_url")
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    @JsonProperty("video_url")
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 }

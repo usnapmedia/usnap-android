@@ -15,10 +15,8 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.FeedImage;
-import com.samsao.snapzi.api.entity.FeedImageList;
-import com.samsao.snapzi.api.entity.TopCampaign;
-import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.api.entity.Snap;
+import com.samsao.snapzi.api.entity.SnapList;
 
 import java.util.List;
 
@@ -34,7 +32,6 @@ public class SeeAllFragment extends Fragment {
     private final static int SEE_ALL_VIDEOS = 1;
     private final static int SEE_ALL_ALL = 2;
 
-    //TODO the two lists should be fetched from feed/top/photos and feed/top/videos
     private final static int SEE_ALL_TOP_10 = 0;
     private final static int SEE_ALL_LATEST = 1;
 
@@ -44,8 +41,7 @@ public class SeeAllFragment extends Fragment {
     @InjectView(R.id.fragment_see_all_recycler_view)
     public RecyclerView mRecyclerView;
 
-    private SeeAllLatestUploadsAdapter mSeeAllLatestUploadsAdapter;
-    private SeeAllTop10Adapter mSeeAllTop10Adapter;
+    private SeeAllSnapsAdapter mSeeAllSnapsAdapter;
     private GridLayoutManager mGridLayoutManager;
     private Listener mListener;
     private int mSeeAllMode;
@@ -116,25 +112,12 @@ public class SeeAllFragment extends Fragment {
      *
      * @param list
      */
-    public void setLatestUploadsAdapterData(List<FeedImage> list) {
-        mSeeAllLatestUploadsAdapter = new SeeAllLatestUploadsAdapter(getActivity());
+    public void setAdapterData(List<Snap> list) {
+        mSeeAllSnapsAdapter = new SeeAllSnapsAdapter(getActivity());
         if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(mSeeAllLatestUploadsAdapter);
+            mRecyclerView.setAdapter(mSeeAllSnapsAdapter);
         }
-        mSeeAllLatestUploadsAdapter.setFeedImages(list);
-    }
-
-    /**
-     * Set adapter data for top 10
-     *
-     * @param list
-     */
-    public void setTop10AdapterData(List<TopCampaign> list) {
-        mSeeAllTop10Adapter = new SeeAllTop10Adapter(getActivity());
-        if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(mSeeAllTop10Adapter);
-        }
-        mSeeAllTop10Adapter.setTopCampaigns(list);
+        mSeeAllSnapsAdapter.setSnaps(list);
     }
 
     /**
@@ -207,15 +190,15 @@ public class SeeAllFragment extends Fragment {
      * Get top 10 photos data from the backend
      */
     public void getTop10PhotosData() {
-        mApiService.getTopCampaign(mListener.getCampaignId(), new Callback<TopCampaignList>() {
+        mApiService.getTopSnaps(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
-            public void success(TopCampaignList topCampaignList, Response response) {
-                SeeAllFragment.this.setTop10AdapterData(topCampaignList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                SeeAllFragment.this.setAdapterData(snapList.getResponse());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setTop10AdapterData(null);
+                SeeAllFragment.this.setAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -226,14 +209,14 @@ public class SeeAllFragment extends Fragment {
      * Get latest photos data from the backend
      */
     public void getLastestPhotosData() {
-        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
-            public void success(FeedImageList feedImageList, Response response) {
-                SeeAllFragment.this.setLatestUploadsAdapterData(feedImageList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                SeeAllFragment.this.setAdapterData(snapList.getResponse());
             }
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setLatestUploadsAdapterData(null);
+                SeeAllFragment.this.setAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -244,15 +227,15 @@ public class SeeAllFragment extends Fragment {
      * Get top 10 video data from the backend
      */
     public void getTop10VideosData() {
-        mApiService.getTopCampaign(mListener.getCampaignId(), new Callback<TopCampaignList>() {
+        mApiService.getTopSnaps(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
-            public void success(TopCampaignList topCampaignList, Response response) {
-                SeeAllFragment.this.setTop10AdapterData(topCampaignList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                SeeAllFragment.this.setAdapterData(snapList.getResponse());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setTop10AdapterData(null);
+                SeeAllFragment.this.setAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -263,15 +246,15 @@ public class SeeAllFragment extends Fragment {
      * Get latest video data from the backend
      */
     public void getLastestVideosData() {
-        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
-            public void success(FeedImageList feedImageList, Response response) {
-                SeeAllFragment.this.setLatestUploadsAdapterData(feedImageList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                SeeAllFragment.this.setAdapterData(snapList.getResponse());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setLatestUploadsAdapterData(null);
+                SeeAllFragment.this.setAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -282,15 +265,15 @@ public class SeeAllFragment extends Fragment {
      * Get top 10 ALL data from the backend
      */
     public void getTop10AllData() {
-        mApiService.getTopCampaign(mListener.getCampaignId(), new Callback<TopCampaignList>() {
+        mApiService.getTopSnaps(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
-            public void success(TopCampaignList topCampaignList, Response response) {
-                SeeAllFragment.this.setTop10AdapterData(topCampaignList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                SeeAllFragment.this.setAdapterData(snapList.getResponse());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setTop10AdapterData(null);
+                SeeAllFragment.this.setAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
@@ -301,15 +284,15 @@ public class SeeAllFragment extends Fragment {
      * Get latest ALL data from the backend
      */
     public void getLastestAllData() {
-        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
-            public void success(FeedImageList feedImageList, Response response) {
-                SeeAllFragment.this.setLatestUploadsAdapterData(feedImageList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                SeeAllFragment.this.setAdapterData(snapList.getResponse());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setLatestUploadsAdapterData(null);
+                SeeAllFragment.this.setAdapterData(null);
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }

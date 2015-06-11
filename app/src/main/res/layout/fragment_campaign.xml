@@ -23,145 +23,55 @@
 
             <!--Top 10-->
             <LinearLayout
+                android:id="@+id/fragment_campaign_top_10_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.ivankocijan.magicviews.views.MagicTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:text="@string/top_10"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/font_size_large"
-                    app:typeFace="GothamHTF-Book.ttf"/>
-
-                <com.ivankocijan.magicviews.views.MagicButton
-                    android:id="@+id/fragment_campaign_see_all_top_10_btn"
-                    style="@style/AppSmallButton"
-                    android:layout_width="wrap_content"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:text="@string/see_all"
-                    app:typeFace="GothamHTF-Book.ttf"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:orientation="horizontal">
-
-                <include
-                    android:id="@+id/view_fragment_campaign_top_10_card_1"
-                    layout="@layout/view_fragment_campaign_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-
-                <include
-                    android:id="@+id/view_fragment_campaign_top_10_card_2"
-                    layout="@layout/view_fragment_campaign_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                    android:layout_weight="1"/>
-
-                <include
-                    android:id="@+id/view_fragment_campaign_top_10_card_3"
-                    layout="@layout/view_fragment_campaign_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:orientation="horizontal">
-
-                <com.ivankocijan.magicviews.views.MagicTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:text="@string/latest_uploads"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/font_size_large"
-                    app:typeFace="GothamHTF-Book.ttf"/>
-
-                <com.ivankocijan.magicviews.views.MagicButton
-                    android:id="@+id/fragment_campaign_see_all_latest_uploads_btn"
-                    style="@style/AppSmallButton"
-                    android:layout_width="wrap_content"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:text="@string/see_all"
-                    app:typeFace="GothamHTF-Book.ttf"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/elements_vertical_margin"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <include
-                        android:id="@+id/view_fragment_campaign_latest_uploads_card_1"
-                        layout="@layout/view_fragment_campaign_cardview"
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_weight="1"
+                        android:text="@string/top_10"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/font_size_large"
+                        app:typeFace="GothamHTF-Book.ttf"/>
 
-                    <include
-                        android:id="@+id/view_fragment_campaign_latest_uploads_card_2"
-                        layout="@layout/view_fragment_campaign_cardview"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                        android:layout_weight="1"/>
-
-                    <include
-                        android:id="@+id/view_fragment_campaign_latest_uploads_card_3"
-                        layout="@layout/view_fragment_campaign_cardview"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
-                        android:layout_weight="1"/>
+                    <com.ivankocijan.magicviews.views.MagicButton
+                        android:id="@+id/fragment_campaign_see_all_top_10_btn"
+                        style="@style/AppSmallButton"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:text="@string/see_all"
+                        app:typeFace="GothamHTF-Book.ttf"/>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="@dimen/elements_vertical_margin"
                     android:orientation="horizontal">
 
                     <include
-                        android:id="@+id/view_fragment_campaign_latest_uploads_card_4"
+                        android:id="@+id/view_fragment_campaign_top_10_card_1"
                         layout="@layout/view_fragment_campaign_cardview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"/>
 
                     <include
-                        android:id="@+id/view_fragment_campaign_latest_uploads_card_5"
+                        android:id="@+id/view_fragment_campaign_top_10_card_2"
                         layout="@layout/view_fragment_campaign_cardview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -169,14 +79,119 @@
                         android:layout_weight="1"/>
 
                     <include
-                        android:id="@+id/view_fragment_campaign_latest_uploads_card_6"
+                        android:id="@+id/view_fragment_campaign_top_10_card_3"
                         layout="@layout/view_fragment_campaign_cardview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                         android:layout_weight="1"/>
+
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fragment_campaign_latest_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="@dimen/elements_vertical_margin"
+                    android:orientation="horizontal">
+
+                    <com.ivankocijan.magicviews.views.MagicTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_weight="1"
+                        android:text="@string/latest_uploads"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/font_size_large"
+                        app:typeFace="GothamHTF-Book.ttf"/>
+
+                    <com.ivankocijan.magicviews.views.MagicButton
+                        android:id="@+id/fragment_campaign_see_all_latest_uploads_btn"
+                        style="@style/AppSmallButton"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:text="@string/see_all"
+                        app:typeFace="GothamHTF-Book.ttf"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/elements_vertical_margin"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <include
+                            android:id="@+id/view_fragment_campaign_latest_uploads_card_1"
+                            layout="@layout/view_fragment_campaign_cardview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+
+                        <include
+                            android:id="@+id/view_fragment_campaign_latest_uploads_card_2"
+                            layout="@layout/view_fragment_campaign_cardview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                            android:layout_weight="1"/>
+
+                        <include
+                            android:id="@+id/view_fragment_campaign_latest_uploads_card_3"
+                            layout="@layout/view_fragment_campaign_cardview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/elements_vertical_margin"
+                        android:orientation="horizontal">
+
+                        <include
+                            android:id="@+id/view_fragment_campaign_latest_uploads_card_4"
+                            layout="@layout/view_fragment_campaign_cardview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+
+                        <include
+                            android:id="@+id/view_fragment_campaign_latest_uploads_card_5"
+                            layout="@layout/view_fragment_campaign_cardview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                            android:layout_weight="1"/>
+
+                        <include
+                            android:id="@+id/view_fragment_campaign_latest_uploads_card_6"
+                            layout="@layout/view_fragment_campaign_cardview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -193,9 +208,9 @@
         <com.ivankocijan.magicviews.views.MagicButton
             android:id="@+id/fragment_campaign_contest_btn"
             style="@style/AppButton"
-            android:text="@string/enter_contest"
             android:layout_marginLeft="@dimen/elements_double_horizontal_margin"
             android:layout_marginRight="@dimen/elements_double_horizontal_margin"
+            android:text="@string/enter_contest"
             app:typeFace="GothamHTF-Book.ttf"/>
     </FrameLayout>
 

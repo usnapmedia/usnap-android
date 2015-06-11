@@ -12,9 +12,8 @@ import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.entity.CampaignList;
-import com.samsao.snapzi.api.entity.FeedImageList;
 import com.samsao.snapzi.api.entity.Response;
-import com.samsao.snapzi.api.entity.TopCampaignList;
+import com.samsao.snapzi.api.entity.SnapList;
 import com.samsao.snapzi.api.entity.UserList;
 import com.samsao.snapzi.api.exception.ApiException;
 import com.samsao.snapzi.api.exception.HostUnreachableException;
@@ -234,14 +233,14 @@ public class ApiService {
      *
      * @param callback
      */
-    public void getLiveFeed(Integer campaignId, Callback<FeedImageList> callback) {
+    public void getLiveFeed(Integer campaignId, Callback<SnapList> callback) {
         mApiService.getLiveFeed(campaignId, callback);
     }
 
     /**
      * Get the live feed of the user
      */
-    public void getMyLiveFeed(Callback<FeedImageList> callback) {
+    public void getMyLiveFeed(Callback<SnapList> callback) {
         //TODO pass user id to get live feed of the user
         mApiService.getMyLiveFeed(callback);
     }
@@ -294,12 +293,12 @@ public class ApiService {
     }
 
     /**
-     * Get the top campaign
+     * Get the top snaps
      *
      * @param callback
      */
-    public void getTopCampaign(Integer campaignId, Callback<TopCampaignList> callback) {
-        mApiService.getTopCampaign(campaignId, callback);
+    public void getTopSnaps(Integer campaignId, Callback<SnapList> callback) {
+        mApiService.getTopSnaps(campaignId, callback);
     }
 
     /**

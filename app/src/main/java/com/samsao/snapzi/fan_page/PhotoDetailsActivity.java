@@ -7,8 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-import com.samsao.snapzi.api.entity.FeedImage;
-import com.samsao.snapzi.api.entity.TopCampaign;
+import com.samsao.snapzi.api.entity.Snap;
 
 import icepick.Icepick;
 import icepick.Icicle;
@@ -110,36 +109,16 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
      * @param image
      * @param context
      */
-    public static void start(FeedImage image, Context context) {
+    public static void start(Snap image, Context context) {
         Intent intent = new Intent(context, PhotoDetailsActivity.class);
         intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_ID, image.getId());
         intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, image.getWatermarkUrl());
-//        intent.putExtra(PhotoDetailsActivity.EXTRA_VIDEO_PATH, image.getVideoUrl());
+        intent.putExtra(PhotoDetailsActivity.EXTRA_VIDEO_PATH, image.getVideoUrl());
         if (!TextUtils.isEmpty(image.getText())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
         }
         if (!TextUtils.isEmpty(image.getEmail())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
-        }
-        context.startActivity(intent);
-    }
-
-    /**
-     * Helper to start the activity
-     *
-     * @param campaign
-     * @param context
-     */
-    public static void start(TopCampaign campaign, Context context) {
-        Intent intent = new Intent(context, PhotoDetailsActivity.class);
-        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_ID, campaign.getId());
-        intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_PATH, campaign.getWatermarkUrl());
-//        intent.putExtra(PhotoDetailsActivity.EXTRA_VIDEO_PATH, campaign.getVideoUrl());
-        if (!TextUtils.isEmpty(campaign.getText())) {
-            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, campaign.getText().toString());
-        }
-        if (!TextUtils.isEmpty(campaign.getUsername())) {
-            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, campaign.getUsername());
         }
         context.startActivity(intent);
     }

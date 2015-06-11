@@ -1,16 +1,11 @@
 package com.samsao.snapzi.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author jingsilu
@@ -21,14 +16,12 @@ import java.util.Map;
         "count",
         "response"
 })
-public class FeedImageList {
+public class SnapList {
 
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("response")
-    private List<FeedImage> response = new ArrayList<>();
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<Snap> response = new ArrayList<>();
 
     /**
      * @return The count
@@ -50,7 +43,7 @@ public class FeedImageList {
      * @return The response
      */
     @JsonProperty("response")
-    public List<FeedImage> getResponse() {
+    public List<Snap> getResponse() {
         return response;
     }
 
@@ -58,18 +51,7 @@ public class FeedImageList {
      * @param response The response
      */
     @JsonProperty("response")
-    public void setResponse(List<FeedImage> response) {
+    public void setResponse(List<Snap> response) {
         this.response = response;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
 }

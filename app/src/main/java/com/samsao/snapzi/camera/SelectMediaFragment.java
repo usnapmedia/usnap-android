@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.FeedImageList;
+import com.samsao.snapzi.api.entity.SnapList;
 import com.samsao.snapzi.edit.EditActivity;
 import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.samsao.snapzi.live_feed.LiveFeedAdapter;
@@ -157,10 +157,10 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     }
 
     public void getFeedImage() {
-        mApiService.getLiveFeed(mCampaignId, new Callback<FeedImageList>() {
+        mApiService.getLiveFeed(mCampaignId, new Callback<SnapList>() {
             @Override
-            public void success(FeedImageList feedImageList, Response response) {
-                mLiveFeedAdapter.setImageLiveFeed(feedImageList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                mLiveFeedAdapter.setImageLiveFeed(snapList.getResponse());
             }
 
             @Override

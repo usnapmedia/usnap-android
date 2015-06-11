@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.CampaignList;
-import com.samsao.snapzi.api.entity.FeedImageList;
+import com.samsao.snapzi.api.entity.SnapList;
 import com.samsao.snapzi.util.PreferenceManager;
 
 import java.text.MessageFormat;
@@ -313,10 +313,10 @@ public class ProfileFragment extends Fragment {
     }
 
     public void getMyFeed() {
-        mApiService.getMyLiveFeed(new Callback<FeedImageList>() {
+        mApiService.getMyLiveFeed(new Callback<SnapList>() {
             @Override
-            public void success(FeedImageList feedImageList, Response response) {
-                mMyFeedImagesAdapter.setMyFeedImages(feedImageList.getResponse());
+            public void success(SnapList snapList, Response response) {
+                mMyFeedImagesAdapter.setMyFeedImages(snapList.getResponse());
             }
 
             @Override

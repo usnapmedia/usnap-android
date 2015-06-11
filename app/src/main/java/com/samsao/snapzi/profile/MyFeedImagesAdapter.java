@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.samsao.snapzi.R;
-import com.samsao.snapzi.api.entity.FeedImage;
+import com.samsao.snapzi.api.entity.Snap;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MyFeedImagesAdapter extends RecyclerView.Adapter<MyFeedImagesAdapter.MyFeedImagesViewHolder> {
     private Context mContext;
-    private List<FeedImage> mFeedImagesList;
+    private List<Snap> mFeedImagesList;
 
     public MyFeedImagesAdapter(Context context) {
         mContext = context;
@@ -37,8 +37,8 @@ public class MyFeedImagesAdapter extends RecyclerView.Adapter<MyFeedImagesAdapte
 
     @Override
     public void onBindViewHolder(MyFeedImagesViewHolder myFeedImagesViewHolder, int position) {
-        FeedImage feedImage = mFeedImagesList.get(position);
-        myFeedImagesViewHolder.setup(feedImage);
+        Snap snap = mFeedImagesList.get(position);
+        myFeedImagesViewHolder.setup(snap);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MyFeedImagesAdapter extends RecyclerView.Adapter<MyFeedImagesAdapte
         return new MyFeedImagesViewHolder(view);
     }
 
-    public void setMyFeedImages(List<FeedImage> feedImagesList) {
+    public void setMyFeedImages(List<Snap> feedImagesList) {
         mFeedImagesList = feedImagesList;
         notifyDataSetChanged();
     }
@@ -60,9 +60,9 @@ public class MyFeedImagesAdapter extends RecyclerView.Adapter<MyFeedImagesAdapte
             mImageView = (ImageView) view.findViewById(R.id.fragment_profile_my_feed_img_view_id);
         }
 
-        public void setup(final FeedImage feedImage) {
+        public void setup(final Snap snap) {
             // TODO add an error image and a placeholder
-            Picasso.with(mContext).load(feedImage.getUrl()).into(mImageView);
+            Picasso.with(mContext).load(snap.getUrl()).into(mImageView);
         }
     }
 }
