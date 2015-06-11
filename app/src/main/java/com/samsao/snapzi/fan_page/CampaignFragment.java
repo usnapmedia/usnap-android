@@ -270,7 +270,7 @@ public class CampaignFragment extends Fragment {
         final TextView nameTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_name);
         final TextView likesCountTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_likes_count);
 
-        Picasso.with(getActivity()).load(snap.getUrl()).into(imageView);
+        Picasso.with(getActivity()).load(snap.getThumbUrl()).into(imageView);
         if (!TextUtils.isEmpty(snap.getEmail())) {
             nameTextView.setText(snap.getEmail());
         }

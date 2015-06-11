@@ -22,6 +22,7 @@ import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
 import com.samsao.snapzi.edit.VideoPreview;
+import com.samsao.snapzi.edit.util.ProgressDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -31,8 +32,10 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 
 
-public class PhotoDetailsFragment extends Fragment implements ReportImageDialogFragment.Listener {
+public class PhotoDetailsFragment extends Fragment implements ReportImageDialogFragment.Listener,
+        ProgressDialogFragment.Listener {
     public final static String PHOTO_DETAILS_FRAGMENT_TAG = "com.samsao.snapzi.fan_page.PhotoDetailsFragment.PHOTO_DETAILS_FRAGMENT_TAG";
+    public final String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.fan_page.PhotoDetailsFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
 
     @InjectView(R.id.activity_photo_detail_first_letter_id)
     public TextView mFirstLetterTextView;
@@ -62,6 +65,8 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     // TODO inject me
     private ApiService mApiService = new ApiService();
 
+    private ProgressDialogFragment mProgressDialog;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -89,7 +94,20 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
             // set the right report button label
             mReportTextView.setText(getString(R.string.report_video));
         } else {
-            Picasso.with(getActivity()).load(mListener.getPhotoPath()).into(mImageView);
+            showProgressDialog();
+            Picasso.with(getActivity()).load(mListener.getPhotoPath()).into(mImageView, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    dismissProgressDialog();
+                }
+
+                @Override
+                public void onError() {
+                    dismissProgressDialog();
+                    Toast.makeText(getActivity(), getString(R.string.error_loading_image), Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+            });
         }
         // FIXME
         if (!TextUtils.isEmpty(mListener.getUsername())) {
@@ -203,11 +221,37 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     }
 
     /**
+     * Show ProgressDialog
+     */
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialogFragment.newInstance(this);
+        }
+
+        if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
+            mProgressDialog.show(getFragmentManager(), PROGRESS_DIALOG_FRAGMENT_TAG);
+        }
+    }
+
+    /**
+     * Hide ProgressDialog
+     */
+    public void dismissProgressDialog() {
+        mProgressDialog.dismiss();
+    }
+
+    /**
      * Returns true if the fragment is showing details for a video
+     *
      * @return
      */
     public boolean hasVideo() {
         return !TextUtils.isEmpty(mListener.getVideoPath());
+    }
+
+    @Override
+    public void onProgressDialogCancel() {
+
     }
 
     public interface Listener {

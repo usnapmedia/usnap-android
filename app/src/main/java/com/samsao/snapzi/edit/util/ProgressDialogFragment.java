@@ -27,17 +27,22 @@ public class ProgressDialogFragment extends DialogFragment {
     public static ProgressDialogFragment newInstance(Listener listener) {
         ProgressDialogFragment progressDialogFragment = new ProgressDialogFragment();
         progressDialogFragment.setListener(listener);
+        progressDialogFragment.setText(SnapziApplication.getContext().getString(R.string.loading));
         return progressDialogFragment;
     }
 
     public static ProgressDialogFragment newInstance(Listener listener, String text) {
-        ProgressDialogFragment progressDialogFragment = ProgressDialogFragment.newInstance(listener);
+        ProgressDialogFragment progressDialogFragment = new ProgressDialogFragment();
+        progressDialogFragment.setListener(listener);
         progressDialogFragment.setText(text);
         return progressDialogFragment;
     }
 
     public static ProgressDialogFragment newInstance(Listener listener, int resId) {
-        return ProgressDialogFragment.newInstance(listener, SnapziApplication.getContext().getString(resId));
+        ProgressDialogFragment progressDialogFragment = new ProgressDialogFragment();
+        progressDialogFragment.setListener(listener);
+        progressDialogFragment.setText(SnapziApplication.getContext().getString(resId));
+        return progressDialogFragment;
     }
 
     @Override

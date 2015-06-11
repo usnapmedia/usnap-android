@@ -348,6 +348,25 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
     @OnClick(R.id.fragment_settings_log_out_btn)
     public void logout() {
+        logoutFromFacebook(new OnLogoutListener() {
+            @Override
+            public void onLogout() {
+            }
+
+            @Override
+            public void onThinking() {
+            }
+
+            @Override
+            public void onException(Throwable throwable) {
+            }
+
+            @Override
+            public void onFail(String s) {
+            }
+        });
+        logoutFromTwitter();
+        logoutFromGooglePlus();
         mUserManager.logout();
         // TODO load the campaigns in the FanPage Activity
         mApiService.getCampaigns(new retrofit.Callback<CampaignList>() {

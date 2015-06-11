@@ -62,7 +62,7 @@ public class MyFeedImagesAdapter extends RecyclerView.Adapter<MyFeedImagesAdapte
 
         public void setup(final Snap snap) {
             // TODO add an error image and a placeholder
-            Picasso.with(mContext).load(snap.getUrl()).into(mImageView);
+            Picasso.with(mContext).load(snap.getThumbUrl()).into(mImageView);
         }
     }
 }

@@ -66,8 +66,7 @@ public class SeeAllSnapsAdapter extends RecyclerView.Adapter<SeeAllSnapsAdapter.
 
         public void setup(final Snap image) {
             // TODO add an error image and a placeholder
-            // TODO replace with thumbUrl
-            Picasso.with(mContext).load(image.getUrl()).into(mImageView);
+            Picasso.with(mContext).load(image.getThumbUrl()).into(mImageView);
             mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
