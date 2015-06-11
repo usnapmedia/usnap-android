@@ -41,7 +41,6 @@ import timber.log.Timber;
  * @since 2015-04-24
  */
 public class CampaignFragment extends Fragment {
-
     @InjectView(R.id.fragment_campaign_banner)
     public ImageView mBannerImage;
     @InjectView(R.id.fragment_campaign_top_10_layout)
@@ -302,7 +301,6 @@ public class CampaignFragment extends Fragment {
     public void setCampaign(Campaign campaign) {
         mCampaign = campaign;
     }
-
 
     @OnClick(R.id.fragment_campaign_see_all_top_10_btn)
     public void seeAllTop10() {

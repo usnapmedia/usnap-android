@@ -4,6 +4,7 @@ package com.samsao.snapzi.fan_page;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -35,7 +36,7 @@ import retrofit.RetrofitError;
 public class PhotoDetailsFragment extends Fragment implements ReportImageDialogFragment.Listener,
         ProgressDialogFragment.Listener {
     public final static String PHOTO_DETAILS_FRAGMENT_TAG = "com.samsao.snapzi.fan_page.PhotoDetailsFragment.PHOTO_DETAILS_FRAGMENT_TAG";
-    public final String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.fan_page.PhotoDetailsFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
+    private final String PROGRESS_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.fan_page.PhotoDetailsFragment.PROGRESS_DIALOG_FRAGMENT_TAG";
 
     @InjectView(R.id.activity_photo_detail_first_letter_id)
     public TextView mFirstLetterTextView;
@@ -55,6 +56,8 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     public TextView mTwitterTextView;
     @InjectView(R.id.activity_photo_detail_social_network_google_plus)
     public TextView mGooglePlusTextView;
+    @InjectView(R.id.activity_photo_detail_image_video_layout)
+    public FrameLayout mImageVideoLayout;
     @InjectView(R.id.activity_photo_detail_report)
     public TextView mReportTextView;
     @InjectView(R.id.activity_photo_detail_video_container)
@@ -90,11 +93,11 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
         ButterKnife.inject(this, view);
         setupToolbar();
 
+        showProgressDialog();
         if (hasVideo()) {
             // set the right report button label
             mReportTextView.setText(getString(R.string.report_video));
         } else {
-            showProgressDialog();
             Picasso.with(getActivity()).load(mListener.getPhotoPath()).into(mImageView, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
@@ -104,8 +107,8 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
                 @Override
                 public void onError() {
                     dismissProgressDialog();
+                    mImageVideoLayout.setVisibility(View.INVISIBLE);
                     Toast.makeText(getActivity(), getString(R.string.error_loading_image), Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
                 }
             });
         }
@@ -165,6 +168,21 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
             // load the video
             if (mVideoPreview == null) {
                 mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+                mVideoPreview.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        dismissProgressDialog();
+                        mImageVideoLayout.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getActivity(), getString(R.string.error_playing_video), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+                mVideoPreview.addOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        dismissProgressDialog();
+                    }
+                });
             }
             mVideoContainer.addView(mVideoPreview);
             mImageView.setVisibility(View.GONE);
@@ -226,6 +244,7 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = ProgressDialogFragment.newInstance(this);
+            mProgressDialog.setCancelable(false);
         }
 
         if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
@@ -237,7 +256,9 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
      * Hide ProgressDialog
      */
     public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     /**

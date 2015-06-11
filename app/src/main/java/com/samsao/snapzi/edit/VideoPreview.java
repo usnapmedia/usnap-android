@@ -20,14 +20,10 @@ import java.util.HashMap;
  */
 public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
 
-    /**
-     * Constants
-     */
-    private final String LOG_TAG = getClass().getSimpleName();
-
     private SurfaceHolder mHolder;
     private LayoutMode mLayoutMode;
     private String mVideoPath;
+    private MediaPlayer.OnPreparedListener mOnPreparedListener;
 
     public static enum LayoutMode {
         FitParent,
@@ -51,6 +47,7 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
         mHolder.addCallback(this);
 
         // deprecated setting, but required on Android versions prior to 3.0
+        //noinspection deprecation
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mLayoutMode = layoutMode;
@@ -64,6 +61,9 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
+                if (mOnPreparedListener != null) {
+                    mOnPreparedListener.onPrepared(mp);
+                }
             }
         });
     }
@@ -76,6 +76,14 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         resizeToFitParentView();
+    }
+
+    /**
+     * Adds an additionnal MediaPlayer.OnPreparedListener
+     * @param onPreparedListener
+     */
+    public void addOnPreparedListener(MediaPlayer.OnPreparedListener onPreparedListener) {
+        mOnPreparedListener = onPreparedListener;
     }
 
     /**

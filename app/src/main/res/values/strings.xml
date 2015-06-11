@@ -121,6 +121,7 @@
     <string name="success_report_image">Thanks for reporting this image</string>
     <string name="success_report_video">Thanks for reporting this video</string>
     <string name="error_loading_image">Image could not be loaded</string>
+    <string name="error_playing_video">Video could not be played</string>
 
     <!--Errors-->
     <string name="error_empty_username">username is required</string>
