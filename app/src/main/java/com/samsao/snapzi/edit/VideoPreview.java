@@ -103,7 +103,11 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
         // Get video size
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
         if (mVideoPath.startsWith("http")) {
-            metaRetriever.setDataSource(mVideoPath, new HashMap<String, String>());
+            try {
+                metaRetriever.setDataSource(mVideoPath, new HashMap<String, String>());
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             metaRetriever.setDataSource(mVideoPath);
         }
