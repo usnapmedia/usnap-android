@@ -115,8 +115,11 @@
 
     <!--Photo details-->
     <string name="report_image">Report image</string>
+    <string name="report_video">Report video</string>
     <string name="confirm_report_image">Report this image?</string>
+    <string name="confirm_report_video">Report this video?</string>
     <string name="success_report_image">Thanks for reporting this image</string>
+    <string name="success_report_video">Thanks for reporting this video</string>
 
     <!--Errors-->
     <string name="error_empty_username">username is required</string>

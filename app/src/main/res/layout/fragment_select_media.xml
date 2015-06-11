@@ -43,12 +43,13 @@
                 android:scaleType="center"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.ivankocijan.magicviews.views.MagicTextView
                 android:id="@+id/fragment_select_media_video_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@android:color/holo_red_dark" />
+                android:textColor="@android:color/holo_red_dark"
+                app:typeFace="GothamHTF-Book.ttf"/>
 
             <ImageView
                 android:id="@+id/fragment_select_media_flip_camera_button"

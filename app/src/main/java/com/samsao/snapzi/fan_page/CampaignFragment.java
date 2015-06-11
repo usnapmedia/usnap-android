@@ -94,7 +94,7 @@ public class CampaignFragment extends Fragment {
         }
 
         getTopSnaps();
-        getLiveFeed();
+        getLatestUploads();
         return view;
     }
 
@@ -214,7 +214,7 @@ public class CampaignFragment extends Fragment {
     /**
      * Get the latest uploads pictures from the backend
      */
-    private void getLiveFeed() {
+    private void getLatestUploads() {
         mApiService.getLiveFeed(mCampaign.getId(), new Callback<FeedImageList>() {
             @Override
             public void success(FeedImageList latestUploadsList, Response response) {
@@ -323,11 +323,10 @@ public class CampaignFragment extends Fragment {
         if (!TextUtils.isEmpty(image.getEmail())) {
             nameTextView.setText(image.getEmail());
         }
-        Integer fbLikes = image.getFbLikes();
-        if (fbLikes != null) {
-            String fbCount = getActivity().getResources().getString(R.string.top10_snaps_plural);
-            likesCountTextView.setText(fbLikes + " " + MessageFormat.format(fbCount, fbLikes));
-        }
+
+        int fbLikes = image.getFbLikes() == null ? 0 : image.getFbLikes();
+        String fbCount = getActivity().getResources().getString(R.string.top10_snaps_plural);
+        likesCountTextView.setText(Integer.toString(fbLikes) + " " + MessageFormat.format(fbCount, fbLikes));
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,7 +340,7 @@ public class CampaignFragment extends Fragment {
      */
     public void refreshAll() {
         getTopSnaps();
-        getLiveFeed();
+        getLatestUploads();
     }
 
     /**

@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.samsao.snapzi.R;
@@ -46,6 +48,7 @@ public class ProgressDialogFragment extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.dialog_fragment_progress, null);
         TextView textView = (TextView) view.findViewById(R.id.dialog_fragment_progress_text);
+        ((ProgressBar) view.findViewById(R.id.dialog_fragment_progress_progress)).getIndeterminateDrawable().setColorFilter(new LightingColorFilter(0xFF000000, getResources().getColor(R.color.primary)));
         if (!TextUtils.isEmpty(mText)) {
             textView.setText(mText);
         }

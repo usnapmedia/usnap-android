@@ -11,6 +11,8 @@ import android.widget.VideoView;
 
 import com.samsao.snapzi.camera.CameraHelper;
 
+import java.util.HashMap;
+
 
 /**
  * @author vlegault
@@ -100,7 +102,11 @@ public class VideoPreview extends VideoView implements SurfaceHolder.Callback {
 
         // Get video size
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
-        metaRetriever.setDataSource(mVideoPath);
+        if (mVideoPath.startsWith("http")) {
+            metaRetriever.setDataSource(mVideoPath, new HashMap<String, String>());
+        } else {
+            metaRetriever.setDataSource(mVideoPath);
+        }
         int videoWidth = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
         int videoHeight = Integer.valueOf(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
         metaRetriever.release();

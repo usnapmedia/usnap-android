@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Response;
+import com.samsao.snapzi.edit.VideoPreview;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -38,7 +40,7 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     public TextView mUserNameTextView;
     @InjectView(R.id.activity_photo_detail_time_id)
     public TextView mTimeTextView;
-    @InjectView(R.id.activity_photo_detail_image_view_id)
+    @InjectView(R.id.activity_photo_detail_image)
     public ImageView mImageView;
     @InjectView(R.id.activity_photo_detail_description_id)
     public TextView mDescriptionTextView;
@@ -50,6 +52,11 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     public TextView mTwitterTextView;
     @InjectView(R.id.activity_photo_detail_social_network_google_plus)
     public TextView mGooglePlusTextView;
+    @InjectView(R.id.activity_photo_detail_report)
+    public TextView mReportTextView;
+    @InjectView(R.id.activity_photo_detail_video_container)
+    public FrameLayout mVideoContainer;
+    private VideoPreview mVideoPreview;
 
     private Listener mListener;
     // TODO inject me
@@ -78,7 +85,12 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
         ButterKnife.inject(this, view);
         setupToolbar();
 
-        Picasso.with(getActivity()).load(mListener.getPhotoPath()).into(mImageView);
+        if (hasVideo()) {
+            // set the right report button label
+            mReportTextView.setText(getString(R.string.report_video));
+        } else {
+            Picasso.with(getActivity()).load(mListener.getPhotoPath()).into(mImageView);
+        }
         // FIXME
         if (!TextUtils.isEmpty(mListener.getUsername())) {
             mUserNameTextView.setText(mListener.getUsername());
@@ -128,6 +140,30 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (hasVideo()) {
+            // load the video
+            if (mVideoPreview == null) {
+                mVideoPreview = new VideoPreview(getActivity(), mListener.getVideoPath());
+            }
+            mVideoContainer.addView(mVideoPreview);
+            mImageView.setVisibility(View.GONE);
+            mVideoContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (!TextUtils.isEmpty(mListener.getVideoPath())) {
+            mVideoContainer.removeView(mVideoPreview);
+            mVideoPreview = null;
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -148,7 +184,7 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
 
     @OnClick(R.id.activity_photo_detail_report)
     public void reportImage() {
-        ReportImageDialogFragment.newInstance(this).show(getFragmentManager(), "REPORT");
+        ReportImageDialogFragment.newInstance(this, hasVideo() ? getString(R.string.confirm_report_video) : getString(R.string.confirm_report_image)).show(getFragmentManager(), "REPORT");
     }
 
     @Override
@@ -156,7 +192,7 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
         mApiService.reportImage(mListener.getId(), new Callback<Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, retrofit.client.Response response2) {
-                Toast.makeText(getActivity(), getString(R.string.success_report_image), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), hasVideo() ? getString(R.string.success_report_video) : getString(R.string.success_report_image), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -166,10 +202,20 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
         });
     }
 
+    /**
+     * Returns true if the fragment is showing details for a video
+     * @return
+     */
+    public boolean hasVideo() {
+        return !TextUtils.isEmpty(mListener.getVideoPath());
+    }
+
     public interface Listener {
         Integer getId();
 
         String getPhotoPath();
+
+        String getVideoPath();
 
         String getText();
 

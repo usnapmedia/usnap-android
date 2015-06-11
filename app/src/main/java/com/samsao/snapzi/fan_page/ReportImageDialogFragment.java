@@ -6,18 +6,18 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.samsao.snapzi.R;
-
 /**
  * @author jfcartier
  * @since 15-06-08
  */
 public class ReportImageDialogFragment extends DialogFragment {
 
+    private String mText;
     private Listener mListener;
 
-    public static ReportImageDialogFragment newInstance(Listener listener) {
+    public static ReportImageDialogFragment newInstance(Listener listener, String text) {
         ReportImageDialogFragment fragment = new ReportImageDialogFragment();
+        fragment.setText(text);
         fragment.setListener(listener);
         return fragment;
     }
@@ -26,7 +26,7 @@ public class ReportImageDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.confirm_report_image)
+        builder.setMessage(mText)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (mListener != null) {
@@ -41,6 +41,10 @@ public class ReportImageDialogFragment extends DialogFragment {
                 });
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    public void setText(String text) {
+        mText = text;
     }
 
     public void setListener(Listener listener) {
