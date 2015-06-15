@@ -179,7 +179,7 @@ public class CampaignFragment extends Fragment {
                 try {
                     if (mLatestUploadsCardView1 != null) {
                         image = snaps.get(0);
-                        setSnapCard(image, mLatestUploadsCardView1);
+                        setSnapCard(image, mLatestUploadsCardView1, true);
                     } else {
                         return;
                     }
@@ -189,7 +189,7 @@ public class CampaignFragment extends Fragment {
                 try {
                     image = snaps.get(1);
                     if (mLatestUploadsCardView2 != null) {
-                        setSnapCard(image, mLatestUploadsCardView2);
+                        setSnapCard(image, mLatestUploadsCardView2, true);
                     } else {
                         return;
                     }
@@ -203,7 +203,7 @@ public class CampaignFragment extends Fragment {
                 try {
                     image = snaps.get(2);
                     if (mLatestUploadsCardView3 != null) {
-                        setSnapCard(image, mLatestUploadsCardView3);
+                        setSnapCard(image, mLatestUploadsCardView3, true);
                     } else {
                         return;
                     }
@@ -216,7 +216,7 @@ public class CampaignFragment extends Fragment {
                 try {
                     if (mLatestUploadsCardView4 != null) {
                         image = snaps.get(3);
-                        setSnapCard(image, mLatestUploadsCardView4);
+                        setSnapCard(image, mLatestUploadsCardView4, true);
                     } else {
                         return;
                     }
@@ -228,7 +228,7 @@ public class CampaignFragment extends Fragment {
                 try {
                     if (mLatestUploadsCardView5 != null) {
                         image = snaps.get(4);
-                        setSnapCard(image, mLatestUploadsCardView5);
+                        setSnapCard(image, mLatestUploadsCardView5, true);
                     } else {
                         return;
                     }
@@ -239,7 +239,7 @@ public class CampaignFragment extends Fragment {
                 try {
                     if (mLatestUploadsCardView6 != null) {
                         image = snaps.get(5);
-                        setSnapCard(image, mLatestUploadsCardView6);
+                        setSnapCard(image, mLatestUploadsCardView6, true);
                     } else {
                         return;
                     }
@@ -264,7 +264,7 @@ public class CampaignFragment extends Fragment {
      * @param snap
      * @param cardView
      */
-    private void setSnapCard(final Snap snap, final CardView cardView) {
+    private void setSnapCard(final Snap snap, final CardView cardView, boolean hideText) {
         final ImageView imageView = (ImageView) cardView.findViewById(R.id.view_top_campaign_img_view_id);
         final TextView nameTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_name);
         final TextView likesCountTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_likes_count);
@@ -283,6 +283,19 @@ public class CampaignFragment extends Fragment {
                 PhotoDetailsActivity.start(snap, getActivity());
             }
         });
+
+        if (hideText) {
+            cardView.findViewById(R.id.view_top_campaign_text_layout).setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Shortcut
+     * @param snap
+     * @param cardView
+     */
+    private void setSnapCard(final Snap snap, final CardView cardView) {
+        setSnapCard(snap, cardView, false);
     }
 
     /**

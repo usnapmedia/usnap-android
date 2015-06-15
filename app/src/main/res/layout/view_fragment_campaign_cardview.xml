@@ -8,34 +8,41 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:padding="@dimen/elements_half_vertical_margin"
-                  android:background="@android:color/white">
+                  android:background="@android:color/white"
+                  android:orientation="vertical">
 
         <com.samsao.snapzi.fan_page.view.SquareImageView
             android:id="@+id/view_top_campaign_img_view_id"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"/>
 
-        <com.ivankocijan.magicviews.views.MagicTextView
-            android:id="@+id/view_top_campaign_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/view_top_campaign_text_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Sleiman Tanios"
-            android:textSize="@dimen/font_size_small"
-            android:singleLine="true"
-            android:ellipsize="end"
-            app:typeFace="GothamHTF-Book.ttf"/>
+            android:orientation="vertical">
 
-        <com.ivankocijan.magicviews.views.MagicTextView
-            android:id="@+id/view_top_campaign_likes_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_small"
-            tools:text="345 pts"
-            android:textColor="@color/primary"
-            app:typeFace="GothamHTF-Book.ttf"/>
+            <com.ivankocijan.magicviews.views.MagicTextView
+                android:id="@+id/view_top_campaign_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="@dimen/font_size_small"
+                app:typeFace="GothamHTF-Book.ttf"
+                tools:text="Sleiman Tanios"/>
+
+            <com.ivankocijan.magicviews.views.MagicTextView
+                android:id="@+id/view_top_campaign_likes_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/font_size_small"
+                app:typeFace="GothamHTF-Book.ttf"
+                tools:text="345 pts"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

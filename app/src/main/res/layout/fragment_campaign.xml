@@ -38,7 +38,7 @@
                     <com.ivankocijan.magicviews.views.MagicTextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                         android:layout_weight="1"
                         android:text="@string/top_10"
                         android:textAllCaps="false"
@@ -49,7 +49,7 @@
                         android:id="@+id/fragment_campaign_see_all_top_10_btn"
                         style="@style/AppSmallButton"
                         android:layout_width="wrap_content"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/elements_half_horizontal_margin"
                         android:text="@string/see_all"
                         app:typeFace="GothamHTF-Book.ttf"/>
 
@@ -58,8 +58,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_marginRight="@dimen/elements_half_horizontal_margin"
                     android:layout_marginTop="@dimen/elements_vertical_margin"
                     android:orientation="horizontal">
 
@@ -106,7 +106,7 @@
                     <com.ivankocijan.magicviews.views.MagicTextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
                         android:layout_weight="1"
                         android:text="@string/latest_uploads"
                         android:textAllCaps="false"
@@ -117,7 +117,7 @@
                         android:id="@+id/fragment_campaign_see_all_latest_uploads_btn"
                         style="@style/AppSmallButton"
                         android:layout_width="wrap_content"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/elements_half_horizontal_margin"
                         android:text="@string/see_all"
                         app:typeFace="GothamHTF-Book.ttf"/>
 
@@ -126,8 +126,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/elements_half_horizontal_margin"
+                    android:layout_marginRight="@dimen/elements_half_horizontal_margin"
                     android:layout_marginTop="@dimen/elements_vertical_margin"
                     android:orientation="vertical">
 
@@ -164,7 +164,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/elements_vertical_margin"
+                        android:layout_marginTop="@dimen/elements_half_horizontal_margin"
                         android:orientation="horizontal">
 
                         <include

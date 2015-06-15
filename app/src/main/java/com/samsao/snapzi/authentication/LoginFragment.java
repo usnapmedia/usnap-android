@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.Rule;
@@ -72,6 +77,17 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
 
         mMaterialEditTextUserName.setTypeface(getFont());
         mMaterialEditTextPassword.setTypeface(getFont());
+        mMaterialEditTextPassword.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            validate();
+                        }
+                        return false;
+                    }
+                });
+
         return v;
     }
 
