@@ -21,8 +21,8 @@ repositories {
  * Manually set the MAJOR, MINOR and PATCH version components here.
  */
 ext {
-    majorVersion = "0"
-    minorVersion = "1"
+    majorVersion = "1"
+    minorVersion = "0"
     patchVersion = "0"
 }
 
