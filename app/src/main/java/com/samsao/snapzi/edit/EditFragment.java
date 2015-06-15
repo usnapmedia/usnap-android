@@ -96,7 +96,6 @@ public class EditFragment extends Fragment {
     private LinearLayoutManager mMenuLayoutManager;
     private LinearLayoutManager mLiveFeedLayoutManager;
     private Listener mListener;
-    private Integer mCampaignId;
 
     private ToolDraw mToolDraw;
     private final ViewTreeObserver.OnGlobalLayoutListener mDrawAnnotationGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -231,7 +230,7 @@ public class EditFragment extends Fragment {
     }
 
     public void getFeedImage() {
-        mApiService.getLiveFeed(mCampaignId, new Callback<SnapList>() {
+        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
             public void success(SnapList snapList, Response response) {
                 mLiveFeedAdapter.setImageLiveFeed(snapList.getResponse());
@@ -267,7 +266,6 @@ public class EditFragment extends Fragment {
         super.onAttach(activity);
         try {
             mListener = (Listener) activity;
-            mCampaignId = mListener.getCampaignId();
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -558,9 +556,9 @@ public class EditFragment extends Fragment {
                 if (getActivity() != null) {
                     // TODO stop loading screen
                     if (mListener.getEditMode().equals(EditActivity.IMAGE_MODE)) {
-                        ShareActivity.start(getActivity(), mCampaignId, imageDestinationPath, null);
+                        ShareActivity.start(getActivity(), mListener.getCampaignId(), imageDestinationPath, null);
                     } else {
-                        ShareActivity.start(getActivity(), mCampaignId, imageDestinationPath, mListener.getMediaPath());
+                        ShareActivity.start(getActivity(), mListener.getCampaignId(), imageDestinationPath, mListener.getMediaPath());
                     }
                 }
             }

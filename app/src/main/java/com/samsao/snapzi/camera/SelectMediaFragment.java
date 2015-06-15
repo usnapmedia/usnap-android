@@ -70,7 +70,6 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     private ProgressDialogFragment mSavingImageProgressDialog;
 
     private Listener mListener;
-    private Integer mCampaignId;
 
     @InjectView(R.id.fragment_select_media_livefeed_recycler_view)
     public RecyclerView mRecyclerView;
@@ -157,7 +156,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     }
 
     public void getFeedImage() {
-        mApiService.getLiveFeed(mCampaignId, new Callback<SnapList>() {
+        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
             public void success(SnapList snapList, Response response) {
                 mLiveFeedAdapter.setImageLiveFeed(snapList.getResponse());
@@ -166,7 +165,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
             @Override
             public void failure(RetrofitError error) {
                 //Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching Images! "+error.getMessage());
+                Timber.e("Error Fetching Images! " + error.getMessage());
             }
         });
     }
@@ -200,9 +199,13 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mListener = (Listener) activity;
-        mCampaignId = mListener.getCampaignId();
-
+        try {
+            mListener = (Listener) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement SelectMediaFragment.Listener");
+        }
         try {
             mSelectMediaProvider = (SelectMediaProvider) activity;
         } catch (ClassCastException e) {
@@ -301,7 +304,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
                     hideAllSettingsButtons();
 
                     if (isVideoCaptureSuccessful) {
-                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(), mCampaignId);
+                        mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                     } else {
                         // Video capture didn't work
                         Toast.makeText(getActivity(),
@@ -330,7 +333,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
                 // stop recording and start video edit activity
                 boolean isVideoCaptureSuccessful = mCameraPreview.stopRecording();
                 if (isVideoCaptureSuccessful) {
-                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath(), mCampaignId);
+                    mSelectMediaProvider.startEditActivity(EditActivity.VIDEO_MODE, CameraHelper.getDefaultVideoFilePath());
                 } else {
                     // Video capture didn't work
                     Toast.makeText(getActivity(),
@@ -498,7 +501,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
 
                         @Override
                         public void onPictureReady(Bitmap image) {
-                            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath(), mCampaignId);
+                            mSelectMediaProvider.saveImageAndStartEditActivity(image, CameraHelper.getDefaultImageFilePath());
                         }
                     })
                     .into(mCameraPreviewContainer);

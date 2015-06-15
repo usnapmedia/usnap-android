@@ -1,6 +1,7 @@
 package com.samsao.snapzi.edit;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -35,8 +36,8 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
      * Constants
      */
     private final String LOG_TAG = getClass().getSimpleName();
-    public static final String EXTRA_EDIT_MODE = "com.samsao.snapzi.edit.EditActivity.EXTRA_EDIT_MODE";
-    public static final String EXTRA_MEDIA_PATH = "com.samsao.snapzi.edit.EditActivity.EXTRA_MEDIA_PATH";
+    private static final String EXTRA_EDIT_MODE = "com.samsao.snapzi.edit.EditActivity.EXTRA_EDIT_MODE";
+    private static final String EXTRA_MEDIA_PATH = "com.samsao.snapzi.edit.EditActivity.EXTRA_MEDIA_PATH";
     public static final String IMAGE_MODE = "com.samsao.snapzi.edit.EditActivity.IMAGE_MODE";
     public static final String VIDEO_MODE = "com.samsao.snapzi.edit.EditActivity.VIDEO_MODE";
 
@@ -273,5 +274,19 @@ public class EditActivity extends AppCompatActivity implements EditFragment.List
 
             }
         });
+    }
+
+    /**
+     * Helper to start this activity
+     * @param context
+     */
+    public static void start(Context context, String editMode, String mediaPath, Integer campaignId) {
+        Intent intent = new Intent(context, EditActivity.class);
+        intent.putExtra(EXTRA_EDIT_MODE, editMode);
+        intent.putExtra(EXTRA_MEDIA_PATH, mediaPath);
+        if (campaignId != null) {
+            intent.putExtra(EXTRA_CAMPAIGN_ID, campaignId);
+        }
+        context.startActivity(intent);
     }
 }
