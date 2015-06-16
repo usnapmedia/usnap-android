@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
@@ -160,7 +159,7 @@ public class CampaignFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 if (getActivity() != null) {
-                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     Timber.e("Error Fetching Top 10 snaps Data: " + error.getMessage());
                 }
             }
@@ -251,7 +250,7 @@ public class CampaignFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 if (getActivity() != null) {
-                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     Timber.e("Error Fetching Latest snaps data: " + error.getMessage());
                 }
             }
@@ -270,8 +269,8 @@ public class CampaignFragment extends Fragment {
         final TextView likesCountTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_likes_count);
 
         Picasso.with(getActivity()).load(snap.getThumbUrl()).into(imageView);
-        if (!TextUtils.isEmpty(snap.getEmail())) {
-            nameTextView.setText(snap.getEmail());
+        if (!TextUtils.isEmpty(snap.getUsername())) {
+            nameTextView.setText(snap.getUsername());
         }
 
         int fbLikes = snap.getFbLikes() == null ? 0 : snap.getFbLikes();

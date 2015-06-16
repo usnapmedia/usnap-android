@@ -117,8 +117,8 @@ public class PhotoDetailsActivity extends AppCompatActivity implements PhotoDeta
         if (!TextUtils.isEmpty(image.getText())) {
             intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_TEXT, image.getText().toString());
         }
-        if (!TextUtils.isEmpty(image.getEmail())) {
-            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getEmail());
+        if (!TextUtils.isEmpty(image.getUsername())) {
+            intent.putExtra(PhotoDetailsActivity.EXTRA_PHOTO_USERNAME, image.getUsername());
         }
         context.startActivity(intent);
     }
