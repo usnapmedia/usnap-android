@@ -315,7 +315,7 @@ public class ApiService {
      * @param callback
      */
     public void reportImage(Integer imageId, Callback<Response> callback) {
-        mApiService.reportImage(imageId, mUserManager.getUsername(), callback);
+        mApiService.reportImage(imageId, mUserManager.isLogged() ? mUserManager.getUsername() : "Not Logged In User", callback);
     }
 }
 
