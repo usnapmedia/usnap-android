@@ -185,7 +185,7 @@ public class ProfileFragment extends Fragment {
                 if (username != null && !username.isEmpty()) {
                     mLetterTileLetter.setText(preferenceManager.getUsername());
                 } else {
-                    mLetterTileLetter.setText("pelvish");
+                    mLetterTileLetter.setText("");
                 }
             }
         });

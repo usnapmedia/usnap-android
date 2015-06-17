@@ -3,6 +3,7 @@ package com.samsao.snapzi.api.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -22,6 +23,7 @@ import java.util.List;
         "count",
         "response"
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CampaignList implements Parcelable {
 
     @JsonProperty("count")

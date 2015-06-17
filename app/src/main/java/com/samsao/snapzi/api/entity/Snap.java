@@ -1,5 +1,6 @@
 package com.samsao.snapzi.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "campaign_id",
         "usnap_score"
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Snap {
     @JsonProperty("id")
     private Integer id;

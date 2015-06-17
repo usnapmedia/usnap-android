@@ -2,6 +2,8 @@ package com.samsao.snapzi.contest_page;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Campaign;
@@ -133,8 +134,10 @@ public class ContestFragment extends Fragment {
 
     @OnClick(R.id.activity_contest_page_rules)
     public void showRules() {
-        // TODO
-        Toast.makeText(getActivity(), "TODO: show rules", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(mListener.getCampaign().getRules()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        startActivity(intent);
     }
 
     @OnClick(R.id.fragment_contest_btn)

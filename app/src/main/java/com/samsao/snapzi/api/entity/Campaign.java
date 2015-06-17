@@ -3,6 +3,7 @@ package com.samsao.snapzi.api.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -26,6 +27,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
         "prize",
         "rules"
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Campaign implements Parcelable {
 
     @JsonProperty("id")
