@@ -99,6 +99,7 @@ android {
         }
 
         dev {
+            applicationId "com.usnap.usnap.dev"
             versionName computeVersionName() + "-DEV"
         }
 
