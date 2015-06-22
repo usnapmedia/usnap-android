@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,25 +14,19 @@ import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
-import com.samsao.snapzi.api.entity.Snap;
 import com.samsao.snapzi.api.entity.SnapList;
-
-import java.util.List;
+import com.samsao.snapzi.seeall.state.State;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
 public class SeeAllFragment extends Fragment {
-    private final static int SEE_ALL_PHOTOS = 0;
-    private final static int SEE_ALL_VIDEOS = 1;
-    private final static int SEE_ALL_ALL = 2;
-
-    private final static int SEE_ALL_TOP_10 = 0;
-    private final static int SEE_ALL_LATEST = 1;
 
     // TODO inject me
     private ApiService mApiService = new ApiService();
@@ -44,15 +37,23 @@ public class SeeAllFragment extends Fragment {
     private SeeAllSnapsAdapter mSeeAllSnapsAdapter;
     private GridLayoutManager mGridLayoutManager;
     private Listener mListener;
-    private int mSeeAllMode;
+
+    @Icicle
+    public State mState;
 
     public SeeAllFragment() {
     }
 
-    public static SeeAllFragment newInstance(int seeAllMode) {
+    public static SeeAllFragment newInstance(State state) {
         SeeAllFragment fragment = new SeeAllFragment();
-        fragment.mSeeAllMode = seeAllMode;
+        fragment.setState(state);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     @Override
@@ -61,8 +62,8 @@ public class SeeAllFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_see_all, container, false);
         ButterKnife.inject(this, view);
 
-        setupData();
-
+        mSeeAllSnapsAdapter = new SeeAllSnapsAdapter(getActivity());
+        mRecyclerView.setAdapter(mSeeAllSnapsAdapter);
         mGridLayoutManager = new GridLayoutManager(getActivity(), 3);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -75,6 +76,7 @@ public class SeeAllFragment extends Fragment {
         });
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
+        fetchData();
         return view;
     }
 
@@ -107,203 +109,36 @@ public class SeeAllFragment extends Fragment {
         }
     }
 
-    /**
-     * Set adapter data for latest uploads
-     *
-     * @param list
-     */
-    public void setAdapterData(List<Snap> list) {
-        mSeeAllSnapsAdapter = new SeeAllSnapsAdapter(getActivity());
-        if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(mSeeAllSnapsAdapter);
-        }
-        mSeeAllSnapsAdapter.setSnaps(list);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     /**
-     * Setup data for fragments according to the mode
+     * Fetch data
      */
-    public void setupData() {
-        if (mListener.getMode() == SEE_ALL_TOP_10) {
-            switch (mSeeAllMode) {
-                case SEE_ALL_PHOTOS:
-                    getTop10PhotosData();
-                    break;
-                case SEE_ALL_VIDEOS:
-                    getTop10VideosData();
-                    break;
-                default:
-                    getTop10AllData();
-                    break;
-            }
-
-        } else {
-            switch (mSeeAllMode) {
-                case SEE_ALL_PHOTOS:
-                    getLastestPhotosData();
-                    break;
-                case SEE_ALL_VIDEOS:
-                    getLastestVideosData();
-                    break;
-                default:
-                    getLastestAllData();
-                    break;
-            }
-
-        }
-    }
-
-    /**
-     * Refreshes the photos
-     */
-    public void refreshPhotos() {
-        if (mListener.getMode() == SEE_ALL_TOP_10) {
-            getTop10PhotosData();
-        } else {
-            getLastestPhotosData();
-        }
-    }
-
-    /**
-     * Refreshes the videos
-     */
-    public void refreshVideos() {
-        if (mListener.getMode() == SEE_ALL_TOP_10) {
-            getTop10VideosData();
-        } else {
-            getLastestVideosData();
-        }
-    }
-
-    /**
-     * Refreshes all
-     */
-    public void refreshAll() {
-        if (mListener.getMode() == SEE_ALL_TOP_10) {
-            getTop10AllData();
-        } else {
-            getLastestAllData();
-        }
-    }
-
-    /**
-     * Get top 10 photos data from the backend
-     */
-    public void getTop10PhotosData() {
-        mApiService.getTopSnaps(mListener.getCampaignId(), new Callback<SnapList>() {
+    public void fetchData() {
+        mState.fetchData(mApiService, mListener.getCampaignId(), new Callback<SnapList>() {
             @Override
             public void success(SnapList snapList, Response response) {
-                SeeAllFragment.this.setAdapterData(snapList.getResponse());
+                mSeeAllSnapsAdapter.setSnaps(snapList.getResponse());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                SeeAllFragment.this.setAdapterData(null);
+                mSeeAllSnapsAdapter.clear();
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         });
     }
 
-    /**
-     * Get latest photos data from the backend
-     */
-    public void getLastestPhotosData() {
-        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
-            @Override
-            public void success(SnapList snapList, Response response) {
-                SeeAllFragment.this.setAdapterData(snapList.getResponse());
-            }
-            @Override
-            public void failure(RetrofitError error) {
-                SeeAllFragment.this.setAdapterData(null);
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        });
-    }
-
-    /**
-     * Get top 10 video data from the backend
-     */
-    public void getTop10VideosData() {
-        mApiService.getTopSnaps(mListener.getCampaignId(), new Callback<SnapList>() {
-            @Override
-            public void success(SnapList snapList, Response response) {
-                SeeAllFragment.this.setAdapterData(snapList.getResponse());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                SeeAllFragment.this.setAdapterData(null);
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        });
-    }
-
-    /**
-     * Get latest video data from the backend
-     */
-    public void getLastestVideosData() {
-        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
-            @Override
-            public void success(SnapList snapList, Response response) {
-                SeeAllFragment.this.setAdapterData(snapList.getResponse());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                SeeAllFragment.this.setAdapterData(null);
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        });
-    }
-
-    /**
-     * Get top 10 ALL data from the backend
-     */
-    public void getTop10AllData() {
-        mApiService.getTopSnaps(mListener.getCampaignId(), new Callback<SnapList>() {
-            @Override
-            public void success(SnapList snapList, Response response) {
-                SeeAllFragment.this.setAdapterData(snapList.getResponse());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                SeeAllFragment.this.setAdapterData(null);
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        });
-    }
-
-    /**
-     * Get latest ALL data from the backend
-     */
-    public void getLastestAllData() {
-        mApiService.getLiveFeed(mListener.getCampaignId(), new Callback<SnapList>() {
-            @Override
-            public void success(SnapList snapList, Response response) {
-                SeeAllFragment.this.setAdapterData(snapList.getResponse());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                SeeAllFragment.this.setAdapterData(null);
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        });
+    public void setState(State state) {
+        mState = state;
     }
 
     public interface Listener {
-        ActionBar getSupportActionBar();
-
-        int getMode();
-
         Integer getCampaignId();
     }
 }

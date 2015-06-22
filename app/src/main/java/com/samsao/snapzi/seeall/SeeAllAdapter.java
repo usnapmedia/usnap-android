@@ -7,6 +7,12 @@ import android.view.ViewGroup;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
+import com.samsao.snapzi.seeall.state.StateLatestAll;
+import com.samsao.snapzi.seeall.state.StateLatestPhotos;
+import com.samsao.snapzi.seeall.state.StateLatestVideos;
+import com.samsao.snapzi.seeall.state.StateTop10All;
+import com.samsao.snapzi.seeall.state.StateTop10Photos;
+import com.samsao.snapzi.seeall.state.StateTop10Videos;
 
 import java.lang.ref.WeakReference;
 
@@ -15,9 +21,7 @@ import java.lang.ref.WeakReference;
  * @author jingsilu
  * @since 2015-05-07
  */
-public class SeeAllAdapter extends FragmentStatePagerAdapter{
-
-    private final static int NUM_SEE_ALL_MODE = 3;
+public class SeeAllAdapter extends FragmentStatePagerAdapter {
 
     public final static int FRAGMENT_SEE_ALL_PHOTOS = 0;
     public final static int FRAGMENT_SEE_ALL_VIDEOS = 1;
@@ -27,18 +31,42 @@ public class SeeAllAdapter extends FragmentStatePagerAdapter{
     private WeakReference<SeeAllFragment> mSeeAllVideosFragment;
     private WeakReference<SeeAllFragment> mSeeAllAllFragment;
 
-    public SeeAllAdapter(FragmentManager fragmentManager) {
+    private int mMode;
+
+    public SeeAllAdapter(FragmentManager fragmentManager, int mode) {
         super(fragmentManager);
+        mMode = mode;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return SeeAllFragment.newInstance(position);
+        switch (position) {
+            case FRAGMENT_SEE_ALL_PHOTOS:
+                if (mMode == SeeAllActivity.SEE_ALL_TOP_10) {
+                    return SeeAllFragment.newInstance(new StateTop10Photos());
+                } else {
+                    return SeeAllFragment.newInstance(new StateLatestPhotos());
+                }
+            case FRAGMENT_SEE_ALL_VIDEOS:
+                if (mMode == SeeAllActivity.SEE_ALL_TOP_10) {
+                    return SeeAllFragment.newInstance(new StateTop10Videos());
+                } else {
+                    return SeeAllFragment.newInstance(new StateLatestVideos());
+                }
+            case FRAGMENT_SEE_ALL_ALL:
+                if (mMode == SeeAllActivity.SEE_ALL_TOP_10) {
+                    return SeeAllFragment.newInstance(new StateTop10All());
+                } else {
+                    return SeeAllFragment.newInstance(new StateLatestAll());
+                }
+            default:
+                return null;
+        }
     }
 
     @Override
     public int getCount() {
-        return NUM_SEE_ALL_MODE;
+        return 3;
     }
 
     @Override
@@ -58,7 +86,7 @@ public class SeeAllAdapter extends FragmentStatePagerAdapter{
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
-        switch(position){
+        switch (position) {
             case FRAGMENT_SEE_ALL_PHOTOS:
                 mSeeAllPhotosFragment = new WeakReference<>((SeeAllFragment) fragment);
                 break;
@@ -74,50 +102,58 @@ public class SeeAllAdapter extends FragmentStatePagerAdapter{
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        switch(position){
+        switch (position) {
             case FRAGMENT_SEE_ALL_PHOTOS:
+                mSeeAllPhotosFragment.clear();
                 mSeeAllPhotosFragment = null;
+                break;
             case FRAGMENT_SEE_ALL_VIDEOS:
+                mSeeAllVideosFragment.clear();
                 mSeeAllVideosFragment = null;
+                break;
             case FRAGMENT_SEE_ALL_ALL:
+                mSeeAllAllFragment.clear();
                 mSeeAllAllFragment = null;
+                break;
+            default:
+                break;
         }
         super.destroyItem(container, position, object);
     }
 
     /**
-     * Refreshes the photos
+     * Refresh
+     *
+     * @param position
      */
-    public void refreshPhotos() {
-        if (mSeeAllPhotosFragment != null) {
-            SeeAllFragment seeAllPhotosFragment = mSeeAllPhotosFragment.get();
-            if (seeAllPhotosFragment != null) {
-                seeAllPhotosFragment.refreshPhotos();
-            }
-        }
-    }
-
-    /**
-     * Refreshes the videos
-     */
-    public void refreshVideos() {
-        if (mSeeAllVideosFragment != null) {
-            SeeAllFragment seeAllVideosFragment = mSeeAllVideosFragment.get();
-            if (seeAllVideosFragment != null) {
-                seeAllVideosFragment.refreshVideos();
-            }
-        }
-    }
-
-    /**
-     * Refreshes all
-     */
-    public void refreshAll() {
-        if (mSeeAllAllFragment != null) {
-            SeeAllFragment seeAllAllFragment = mSeeAllAllFragment.get();
-            if (seeAllAllFragment != null) {
-                seeAllAllFragment.refreshAll();
-            }
+    public void refresh(int position) {
+        switch (position) {
+            case FRAGMENT_SEE_ALL_PHOTOS:
+                if (mSeeAllPhotosFragment != null) {
+                    SeeAllFragment seeAllFragment = mSeeAllPhotosFragment.get();
+                    if (seeAllFragment != null) {
+                        seeAllFragment.fetchData();
+                    }
+                }
+                break;
+            case FRAGMENT_SEE_ALL_VIDEOS:
+                if (mSeeAllVideosFragment != null) {
+                    SeeAllFragment seeAllFragment = mSeeAllVideosFragment.get();
+                    if (seeAllFragment != null) {
+                        seeAllFragment.fetchData();
+                    }
+                }
+                break;
+            case FRAGMENT_SEE_ALL_ALL:
+                if (mSeeAllAllFragment != null) {
+                    SeeAllFragment seeAllFragment = mSeeAllAllFragment.get();
+                    if (seeAllFragment != null) {
+                        seeAllFragment.fetchData();
+                    }
+                }
+                break;
+            default:
+                break;
         }
     }
 }

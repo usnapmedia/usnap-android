@@ -59,9 +59,14 @@ public class CampaignAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        mFragments.get(position).clear();
-        mFragments.set(position, null);
-        super.destroyItem(container, position, object);
+        try {
+            mFragments.get(position).clear();
+            mFragments.set(position, null);
+        } catch (IndexOutOfBoundsException e) {
+
+        } finally {
+            super.destroyItem(container, position, object);
+        }
     }
 
     /**

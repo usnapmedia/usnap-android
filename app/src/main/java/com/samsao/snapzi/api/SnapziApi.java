@@ -17,6 +17,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
@@ -24,7 +25,6 @@ import retrofit.mime.TypedFile;
  * @since 2014-05-29
  */
 public interface SnapziApi {
-    // FIXME add api_key
     @FormUrlEncoded
     @POST("/register")
     void register(@Field("username") String username,
@@ -43,7 +43,9 @@ public interface SnapziApi {
                Callback<Response> callback);
 
     @GET("/feed/live/{campaign_id}")
-    void getLiveFeed(@Path("campaign_id") Integer campaignId, Callback<SnapList> callback);
+    void getLiveFeed(@Path("campaign_id") Integer campaignId,
+                     @Query("type") String filter,
+                     Callback<SnapList> callback);
 
     @GET("/feed/live/me")
     void getMyLiveFeed(Callback<SnapList> callback);
@@ -52,7 +54,9 @@ public interface SnapziApi {
     void getCampaigns(Callback<CampaignList> callback);
 
     @GET("/feed/top/{campaign_id}")
-    void getTopSnaps(@Path("campaign_id") Integer campaignId, Callback<SnapList> callback);
+    void getTopSnaps(@Path("campaign_id") Integer campaignId,
+                     @Query("type") String filter,
+                     Callback<SnapList> callback);
 
     @GET("/users/me")
     void getUserInfo(Callback<UserList> callback);

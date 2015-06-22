@@ -21,8 +21,8 @@ import icepick.Icicle;
 public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.Listener {
     private final static String EXTRA_MODE = "com.samsao.snapzi.seeall.SeeAllActivity.EXTRA_MODE";
     private final static String EXTRA_CAMPAIGN_ID = "com.samsao.snapzi.seeall.SeeAllActivity.EXTRA_CAMPAIGN_ID";
-    private final static int SEE_ALL_TOP_10 = 0;
-    private final static int SEE_ALL_LATEST = 1;
+    public final static int SEE_ALL_TOP_10 = 0;
+    public final static int SEE_ALL_LATEST = 1;
 
     // mode to know what images to fetch
     @Icicle
@@ -62,10 +62,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
             Icepick.restoreInstanceState(this, savedInstanceState);
         }
 
-        //TODO /feed/top/photos
-        //TODO /feed/top/videos
-
-        mSeeAllAdapter = new SeeAllAdapter(getFragmentManager());
+        mSeeAllAdapter = new SeeAllAdapter(getFragmentManager(), mMode);
         mViewPager.setAdapter(mSeeAllAdapter);
 
         // Bind the tabs to the ViewPager
@@ -75,7 +72,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                refresh(position);
+//                refresh(position);
             }
 
             @Override
@@ -120,19 +117,7 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
      */
     private void refresh(int position) {
         mCurrentTabPosition = position;
-        switch (position) {
-            case SeeAllAdapter.FRAGMENT_SEE_ALL_PHOTOS:
-                mSeeAllAdapter.refreshPhotos();
-                break;
-            case SeeAllAdapter.FRAGMENT_SEE_ALL_VIDEOS:
-                mSeeAllAdapter.refreshVideos();
-                break;
-            case SeeAllAdapter.FRAGMENT_SEE_ALL_ALL:
-                mSeeAllAdapter.refreshAll();
-                break;
-            default:
-                break;
-        }
+        mSeeAllAdapter.refresh(position);
     }
 
     /**
@@ -183,11 +168,6 @@ public class SeeAllActivity extends AppCompatActivity implements SeeAllFragment.
         }
         intent.putExtra(EXTRA_MODE, SEE_ALL_LATEST);
         context.startActivity(intent);
-    }
-
-    @Override
-    public int getMode() {
-        return mMode;
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -37,6 +38,7 @@ public class SnapziApplication extends Application {
             Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
         } else {
             Fabric.with(this, new Twitter(authConfig));
+            Timber.plant(new Timber.DebugTree());
         }
 
         // initialize the application context

@@ -54,7 +54,8 @@ public class ApiService {
     /**
      * Constants
      */
-    private final String LOG_TAG = getClass().getName();
+    public final static String FILTER_PHOTO = "image";
+    public final static String FILTER_VIDEO = "video";
 
     /**
      * Service to communicate with the API
@@ -231,17 +232,29 @@ public class ApiService {
     /**
      * Get the live feed images
      *
+     * @param campaignId
      * @param callback
      */
     public void getLiveFeed(Integer campaignId, Callback<SnapList> callback) {
-        mApiService.getLiveFeed(campaignId, callback);
+        Timber.d("fetching live feed without filters for campaign id = " + Integer.toString(campaignId));
+        mApiService.getLiveFeed(campaignId, null, callback);
+    }
+
+    /**
+     * Get the live feed images (filtered)
+     *
+     * @param campaignId
+     * @param callback
+     */
+    public void getLiveFeed(Integer campaignId, String filter, Callback<SnapList> callback) {
+        Timber.d("fetching live feed with " + filter + " filter for campaign id = " + Integer.toString(campaignId));
+        mApiService.getLiveFeed(campaignId, filter, callback);
     }
 
     /**
      * Get the live feed of the user
      */
     public void getMyLiveFeed(Callback<SnapList> callback) {
-        //TODO pass user id to get live feed of the user
         mApiService.getMyLiveFeed(callback);
     }
 
@@ -298,7 +311,18 @@ public class ApiService {
      * @param callback
      */
     public void getTopSnaps(Integer campaignId, Callback<SnapList> callback) {
-        mApiService.getTopSnaps(campaignId, callback);
+        Timber.d("fetching top snaps without filters for campaign id = " + Integer.toString(campaignId));
+        mApiService.getTopSnaps(campaignId, null, callback);
+    }
+
+    /**
+     * Get the top snaps (filtered)
+     *
+     * @param callback
+     */
+    public void getTopSnaps(Integer campaignId, String filter, Callback<SnapList> callback) {
+        Timber.d("fetching top snaps with " + filter + " filter for campaign id = " + Integer.toString(campaignId));
+        mApiService.getTopSnaps(campaignId, filter, callback);
     }
 
     /**

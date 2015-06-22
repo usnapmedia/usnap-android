@@ -55,6 +55,11 @@ public class SeeAllSnapsAdapter extends RecyclerView.Adapter<SeeAllSnapsAdapter.
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        mSnaps.clear();
+        mSnaps = null;
+    }
+
     public class SeeAllSnapsViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
 
