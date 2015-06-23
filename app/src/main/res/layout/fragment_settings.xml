@@ -74,48 +74,24 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:id="@+id/fragment_settings_name_editText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/white"
-                        android:gravity="top"
-                        android:hint="@string/fragment_settings_name_hint"
-                        android:imeOptions="actionDone"
-                        android:inputType="textFilter"
-                        android:maxLength="150"
-                        android:minLines="3"
-                        android:scrollbars="vertical"
                         android:textColor="@color/dark_gray"
-                        android:textColorHint="@color/text_hint"/>
+                        app:typeFace="GothamHTF-Book.ttf" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
+                    <com.ivankocijan.magicviews.views.MagicTextView
                         android:id="@+id/fragment_settings_birthday_editText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/white"
-                        android:focusableInTouchMode="false"
-                        android:gravity="top"
-                        android:hint="@string/fragment_settings_birthday_hint"
-                        android:imeOptions="actionDone"
-                        android:inputType="textFilter"
-                        android:maxLength="150"
-                        android:minLines="3"
-                        android:scrollbars="vertical"
+                        android:layout_marginTop="@dimen/elements_double_vertical_margin"
                         android:textColor="@color/dark_gray"
-                        android:textColorHint="@color/text_hint"/>
+                        app:typeFace="GothamHTF-Book.ttf" />
+
                 </LinearLayout>
 
             </LinearLayout>
-
-            <com.ivankocijan.magicviews.views.MagicButton
-                android:id="@+id/fragment_settings_save_btn"
-                style="@style/AppButton"
-                android:layout_gravity="bottom"
-                android:layout_marginTop="@dimen/elements_vertical_margin"
-                android:text="@string/fragment_settings_save_settings"
-                android:textAllCaps="true"
-                app:typeFace="GothamHTF-Book.ttf"/>
 
             <com.ivankocijan.magicviews.views.MagicTextView
                 android:layout_width="match_parent"
