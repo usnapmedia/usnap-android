@@ -90,8 +90,7 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
                 Picasso.with(mContext).load(campaign.getBannerImgUrl()).into(mImageView);
             }
             setName(campaign.getName());
-            // TODO get share count
-            setShareCount(null);
+            setShareCount(campaign.getMediaShared());
             setDescription(campaign.getDescription());
         }
 

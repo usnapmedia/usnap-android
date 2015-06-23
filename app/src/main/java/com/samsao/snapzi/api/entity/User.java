@@ -1,15 +1,10 @@
 package com.samsao.snapzi.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 
 /**
  * @author jingsilu
@@ -23,7 +18,9 @@ import java.util.Map;
         "first_name",
         "last_name",
         "dob",
-        "profile_pic"
+        "profile_pic",
+        "contribution",
+        "score"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
@@ -39,8 +36,10 @@ public class User {
     private String dob;
     @JsonProperty("profile_pic")
     private String profilePic;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @JsonProperty("contribution")
+    private Integer contribution;
+    @JsonProperty("score")
+    private Integer score;
 
     /**
      *
@@ -142,6 +141,14 @@ public class User {
         this.dob = dob;
     }
 
+    public Long getBirthdayLong() {
+        try {
+            return CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(getDob());
+        } catch (Exception e) {
+            return 0l;
+        }
+    }
+
     /**
      *
      * @return
@@ -162,13 +169,23 @@ public class User {
         this.profilePic = profilePic;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    @JsonProperty("contribution")
+    public Integer getContribution() {
+        return contribution;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    @JsonProperty("contribution")
+    public void setContribution(Integer contribution) {
+        this.contribution = contribution;
+    }
+
+    @JsonProperty("score")
+    public Integer getScore() {
+        return score;
+    }
+
+    @JsonProperty("score")
+    public void setScore(Integer score) {
+        this.score = score;
     }
 }

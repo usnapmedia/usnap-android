@@ -16,15 +16,18 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.CampaignList;
 import com.samsao.snapzi.api.entity.SnapList;
+import com.samsao.snapzi.api.entity.User;
+import com.samsao.snapzi.api.entity.UserList;
 import com.samsao.snapzi.util.PreferenceManager;
+import com.samsao.snapzi.util.UserManager;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -39,11 +42,6 @@ import timber.log.Timber;
  * @since 15-04-30
  */
 public class ProfileFragment extends Fragment {
-
-    /**
-     * Constants
-     */
-    private final String LOG_TAG = getClass().getSimpleName();
 
     private ProfileProvider mProfileProvider;
 
@@ -87,6 +85,9 @@ public class ProfileFragment extends Fragment {
     private MyFeedImagesAdapter mMyFeedImagesAdapter;
     private GridLayoutManager mGridLayoutManager;
     private ApiService mApiService = new ApiService();
+    private PreferenceManager mPreferenceManager = new PreferenceManager();
+    private UserManager mUserManager = new UserManager(mPreferenceManager);
+    private User mUser;
 
     /**
      * Use this factory method to create a new instance of
@@ -109,27 +110,15 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.inject(this, view);
-
-        // Setup toolbar
         mProfileProvider.setupToolbar(mToolbar);
+        mUser = mUserManager.getUser();
 
-        // Setup tile letter
-        setupTitleLetter();
-
-        // Setup share count
-        setupShareCount();
-
-        // Setup score count
-        setupScoreCount();
-
-        // Setup setting button
         setupSettingButton();
-
-        // Setup contests button
         setupContestsButton();
-
-        // Setup my feed button
         setupMyFeedButton();
+        setupTitleLetter();
+        setupShareCount();
+        setupScoreCount();
 
         mTopCampaignsContainer.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -140,7 +129,6 @@ public class ProfileFragment extends Fragment {
             }
         });
         showTopCampaigns();
-
         return view;
     }
 
@@ -163,6 +151,26 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mApiService.getUserInfo(new Callback<UserList>() {
+            @Override
+            public void success(UserList userList, retrofit.client.Response response) {
+                List<User> userInfo = userList.getResponse();
+                User user = userInfo.get(0);
+                mUserManager.saveUser(user);
+                setupShareCount();
+                setupScoreCount();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Timber.e("Error getting user's information: " + error.getClass().getName() + ": " + error.getMessage());
+            }
+        });
+    }
+
     /**
      * Setup title letter
      */
@@ -181,11 +189,11 @@ public class ProfileFragment extends Fragment {
                 PreferenceManager preferenceManager = new PreferenceManager();
                 mLetterTileLetter.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float) letterTileContainerShortestSideSize * 0.8f);
                 // FIXME remove null case or find a better logic
-                String username = preferenceManager.getUsername();
+                String username = mUserManager.getUsername();
                 if (username != null && !username.isEmpty()) {
                     mLetterTileLetter.setText(preferenceManager.getUsername());
                 } else {
-                    mLetterTileLetter.setText("");
+                    mLetterTileLetter.setText("pelvish");
                 }
             }
         });
@@ -195,8 +203,7 @@ public class ProfileFragment extends Fragment {
      * Setup share count
      */
     private void setupShareCount() {
-        //FIXME set real share count
-        int shareCount = (int) (Math.random() * 1000.0f);
+        Integer shareCount = mUser.getContribution();
         mShareCount.setText(String.valueOf(shareCount));
         String label = getResources().getString(R.string.profile_share_plural);
         mShareLabel.setText(MessageFormat.format(label, shareCount));
@@ -206,8 +213,7 @@ public class ProfileFragment extends Fragment {
      * Setup score count
      */
     private void setupScoreCount() {
-        //FIXME set real score
-        int score = (int) (Math.random() * 1000.0f);
+        int score = mUser.getScore();
         mScoreCount.setText(String.valueOf(score));
     }
 
@@ -306,8 +312,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching Top Campaign Data!");
+                Timber.e("Error fetching campaigns: " + error.getClass().getName() + ": " + error.getMessage());
             }
         });
     }
@@ -321,8 +326,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching My Live Feed Data!");
+                Timber.e("Error fetching my feed: " + error.getClass().getName() + ": " + error.getMessage());
             }
         });
     }

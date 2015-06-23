@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
@@ -26,6 +25,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
+import com.samsao.snapzi.api.entity.User;
 import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 import com.samsao.snapzi.util.KeyboardUtil;
 import com.samsao.snapzi.util.PreferenceManager;
@@ -42,6 +42,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * @author jingsilu
@@ -82,15 +83,7 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
     private DateTime mBirthDayDate;
     // TODO inject me
     private UserManager mUserManager = new UserManager(new PreferenceManager());
-
     private final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "com.samsao.snapzi.authentication.view.LoginFragment.DATE_PICKER_DIALOG_FRAGMENT_TAG";
-
-    private String mUserName;
-    private String mPassword;
-    private String mEmail;
-    private String mFirstName;
-    private String mLastName;
-    private String mBirthday;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -192,29 +185,26 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
 
     @Override
     public void onValidationSucceeded() {
-        mUserName = getUserName();
-        mPassword = getPassword();
-        mEmail = getEmail();
-        mFirstName = getFirstName();
-        mLastName = getLastName();
-        mBirthday = getBirthday();
-
-        mApiService.register(mUserName, mPassword, mEmail, mFirstName, mLastName, mBirthday, new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
+        mApiService.register(getUserName(), getPassword(), getEmail(), getFirstName(), getLastName(), getBirthday(), new retrofit.Callback<com.samsao.snapzi.api.entity.Response>() {
             @Override
             public void success(com.samsao.snapzi.api.entity.Response response, Response response2) {
                 KeyboardUtil.hideKeyboard(getActivity());
-                Toast.makeText(getActivity(), SnapziApplication.getContext().getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), SnapziApplication.getContext().getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
                 mUserManager.login(getUserName(), getPassword());
-                saveUserInPreferences(mUserName, mPassword, mEmail, mFirstName, mLastName, mBirthday);
+                User user = new User();
+                user.setFirstName(getFirstName());
+                user.setLastName(getLastName());
+                user.setEmail(getEmail());
+                user.setDob(getBirthday());
+
+                saveUserInPreferences(getUserName(), getPassword(), user);
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                AuthenticationActivity.start(getActivity());
-                getActivity().finish();
+                Timber.e("Error registering: " + error.getClass().getName() + ": " + error.getMessage());
             }
         });
     }
@@ -223,19 +213,13 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
      * Save user information into User Preferences(right after registration success)
      * @param userName
      * @param password
-     * @param email
-     * @param firstName
-     * @param lastName
-     * @param birthday
+     * @param user
      */
 
-    private void saveUserInPreferences(String userName, String password, String email, String firstName, String lastName, String birthday) {
+    private void saveUserInPreferences(String userName, String password, User user) {
         mUserManager.setUsername(userName);
         mUserManager.setPassword(password);
-        mUserManager.setEmail(email);
-        mUserManager.setFirstName(firstName);
-        mUserManager.setLastName(lastName);
-        mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
+        mUserManager.saveUser(user);
     }
 
     @Override

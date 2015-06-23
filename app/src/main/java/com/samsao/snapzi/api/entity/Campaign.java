@@ -25,7 +25,9 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
         "start_date",
         "end_date",
         "prize",
-        "rules"
+        "rules",
+        "participants",
+        "media_shared"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Campaign implements Parcelable {
@@ -52,6 +54,10 @@ public class Campaign implements Parcelable {
     public String prize;
     @JsonProperty("rules")
     public String rules;
+    @JsonProperty("participants")
+    public Integer participants;
+    @JsonProperty("media_shared")
+    public Integer mediaShared;
 
     /**
      * @return The id
@@ -197,6 +203,25 @@ public class Campaign implements Parcelable {
         this.rules = rules;
     }
 
+    @JsonProperty("participants")
+    public Integer getParticipants() {
+        return participants;
+    }
+
+    @JsonProperty("participants")
+    public void setParticipants(Integer participants) {
+        this.participants = participants;
+    }
+
+    @JsonProperty("media_shared")
+    public Integer getMediaShared() {
+        return mediaShared;
+    }
+
+    @JsonProperty("media_shared")
+    public void setMediaShared(Integer mediaShared) {
+        this.mediaShared = mediaShared;
+    }
 
     @Override
     public int describeContents() {

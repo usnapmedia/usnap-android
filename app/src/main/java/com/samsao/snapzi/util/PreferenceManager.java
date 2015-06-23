@@ -31,8 +31,8 @@ public class PreferenceManager {
     private final String LASTNAME_KEY = "com.samsao.snapzi.util.LASTNAME_KEY";
     private final String EMAIL_KEY = "com.samsao.snapzi.util.EMAIL_KEY";
     private final String BIRTHDAY_KEY = "com.samsao.snapzi.util.BIRTHDAY_LONG_KEY";
-
-    private final long DEFAULT_BIRTHDAY = 0;
+    private final String CONTRIBUTION_KEY = "com.samsao.snapzi.util.CONTRIBUTION_KEY";
+    private final String SCORE_KEY = "com.samsao.snapzi.util.SCORE_KEY";
 
     private SharedPreferences mSharedPreferences;
 
@@ -350,13 +350,8 @@ public class PreferenceManager {
      *
      * @return
      */
-    public Long getBirthday() {
-        long birthday = getLong(BIRTHDAY_KEY, DEFAULT_BIRTHDAY);
-        if (birthday == DEFAULT_BIRTHDAY) {
-            return null;
-        } else {
-            return birthday;
-        }
+    public String getBirthday() {
+        return getString(BIRTHDAY_KEY, null);
     }
 
     /**
@@ -364,8 +359,8 @@ public class PreferenceManager {
      *
      * @param birthday
      */
-    public void setBirthday(long birthday) {
-        putLong(BIRTHDAY_KEY, birthday).apply();
+    public void setBirthday(String birthday) {
+        putString(BIRTHDAY_KEY, birthday).apply();
     }
 
     /**
@@ -373,5 +368,55 @@ public class PreferenceManager {
      */
     public void removeBirthday() {
         getEditor().remove(BIRTHDAY_KEY).apply();
+    }
+
+    /**
+     * Get contribution
+     *
+     * @return
+     */
+    public Integer getContribution() {
+        return getInt(CONTRIBUTION_KEY, 0);
+    }
+
+    /**
+     * Set Email
+     *
+     * @param contribution
+     */
+    public void setContribution(Integer contribution) {
+        putInt(CONTRIBUTION_KEY, contribution).apply();
+    }
+
+    /**
+     * Remove Contribution
+     */
+    public void removeContribution() {
+        getEditor().remove(CONTRIBUTION_KEY).apply();
+    }
+
+    /**
+     * Get Score
+     *
+     * @return
+     */
+    public Integer getScore() {
+        return getInt(SCORE_KEY, 0);
+    }
+
+    /**
+     * Set Score
+     *
+     * @param contribution
+     */
+    public void setScore(Integer contribution) {
+        putInt(SCORE_KEY, contribution).apply();
+    }
+
+    /**
+     * Remove Score
+     */
+    public void removeScore() {
+        getEditor().remove(SCORE_KEY).apply();
     }
 }

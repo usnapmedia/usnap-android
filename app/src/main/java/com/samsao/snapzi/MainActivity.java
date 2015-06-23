@@ -2,7 +2,6 @@ package com.samsao.snapzi;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.CampaignList;
@@ -32,9 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO string resource
-                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Error Fetching Campaigns: " + error.getMessage());
+                Timber.e("Error Fetching Campaigns: " + error.getClass().getName() + ": " + error.getMessage());
                 finish();
             }
         });

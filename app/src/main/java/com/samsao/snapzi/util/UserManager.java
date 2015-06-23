@@ -2,6 +2,8 @@ package com.samsao.snapzi.util;
 
 import android.text.TextUtils;
 
+import com.samsao.snapzi.api.entity.User;
+
 /**
  * @author jfcartier
  * @since 15-03-16
@@ -132,7 +134,7 @@ public class UserManager {
     /**
      * Clear the username in preferences
      */
-    public void removeUsername() {
+    private void removeUsername() {
         mPreferenceManager.removeUsername();
     }
 
@@ -166,7 +168,7 @@ public class UserManager {
      *
      * @return
      */
-    public String getFirstName() {
+    private String getFirstName() {
         return mPreferenceManager.getFirstName();
     }
 
@@ -175,14 +177,14 @@ public class UserManager {
      *
      * @param firstname
      */
-    public void setFirstName(String firstname) {
+    private void setFirstName(String firstname) {
         mPreferenceManager.setFirstName(firstname);
     }
 
     /**
      * Clear the FirstName in preferences
      */
-    public void removeFirstName() {
+    private void removeFirstName() {
         mPreferenceManager.removeFirstName();
     }
 
@@ -191,7 +193,7 @@ public class UserManager {
      *
      * @return
      */
-    public String getLastName() {
+    private String getLastName() {
         return mPreferenceManager.getLastName();
     }
 
@@ -200,14 +202,14 @@ public class UserManager {
      *
      * @param lastName
      */
-    public void setLastName(String lastName) {
+    private void setLastName(String lastName) {
         mPreferenceManager.setLastName(lastName);
     }
 
     /**
      * Clear the LastName in preferences
      */
-    public void removeLastName() {
+    private void removeLastName() {
         mPreferenceManager.removeLastName();
     }
 
@@ -216,7 +218,7 @@ public class UserManager {
      *
      * @return
      */
-    public String getEmail() {
+    private String getEmail() {
         return mPreferenceManager.getEmail();
     }
 
@@ -225,14 +227,14 @@ public class UserManager {
      *
      * @param email
      */
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         mPreferenceManager.setEmail(email);
     }
 
     /**
      * Clear the Email in preferences
      */
-    public void removeEmail() {
+    private void removeEmail() {
         mPreferenceManager.removeEmail();
     }
 
@@ -241,7 +243,7 @@ public class UserManager {
      *
      * @return
      */
-    public Long getBirthday() {
+    private String getBirthday() {
         return mPreferenceManager.getBirthday();
     }
 
@@ -250,15 +252,94 @@ public class UserManager {
      *
      * @param birthday
      */
-    public void setBirthday(long birthday) {
+    private void setBirthday(String birthday) {
         mPreferenceManager.setBirthday(birthday);
     }
 
     /**
      * Clear the Birthday in preferences
      */
-    public void removeBirthday() {
+    private void removeBirthday() {
         mPreferenceManager.removeBirthday();
+    }
+
+    /**
+     * Returns the Contribution
+     *
+     * @return
+     */
+    private Integer getContribution() {
+        return mPreferenceManager.getContribution();
+    }
+
+    /**
+     * Set the Contribution in preferences
+     *
+     * @param contribution
+     */
+    private void setContribution(Integer contribution) {
+        mPreferenceManager.setContribution(contribution);
+    }
+
+    /**
+     * Clear the Contribution in preferences
+     */
+    private void removeContribution() {
+        mPreferenceManager.removeContribution();
+    }
+
+    /**
+     * Returns the Score
+     *
+     * @return
+     */
+    private Integer getScore() {
+        return mPreferenceManager.getScore();
+    }
+
+    /**
+     * Set the Score in preferences
+     *
+     * @param score
+     */
+    private void setScore(Integer score) {
+        mPreferenceManager.setScore(score);
+    }
+
+    /**
+     * Clear the Score in preferences
+     */
+    private void removeScore() {
+        mPreferenceManager.removeScore();
+    }
+
+    public void saveUser(User user) {
+        setFirstName(user.getFirstName());
+        setLastName(user.getLastName());
+        setEmail(user.getEmail());
+        setBirthday(user.getDob());
+        setContribution(user.getContribution());
+        setScore(user.getScore());
+    }
+
+    public User getUser() {
+        User user = new User();
+        user.setFirstName(getFirstName());
+        user.setLastName(getLastName());
+        user.setEmail(getEmail());
+        user.setDob(getBirthday());
+        user.setContribution(getContribution());
+        user.setScore(getScore());
+        return user;
+    }
+
+    private void removeUser() {
+        removeBirthday();
+        removeEmail();
+        removeFirstName();
+        removeLastName();
+        removeContribution();
+        removeScore();
     }
 
     /**
@@ -280,12 +361,9 @@ public class UserManager {
      * Logs the user out
      */
     public void logout() {
+        removeUser();
         removeUsername();
         removePassword();
-        removeBirthday();
-        removeEmail();
-        removeFirstName();
-        removeLastName();
         removeFacebookAccessToken();
         removeGooglePlusAccessToken();
         removeTwitterAccessToken();

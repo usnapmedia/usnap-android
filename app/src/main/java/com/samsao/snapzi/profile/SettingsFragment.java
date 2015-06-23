@@ -31,6 +31,7 @@ import com.samsao.snapzi.R;
 import com.samsao.snapzi.SnapziApplication;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.CampaignList;
+import com.samsao.snapzi.api.entity.User;
 import com.samsao.snapzi.api.util.CustomJsonDateTimeDeserializer;
 import com.samsao.snapzi.fan_page.FanPageActivity;
 import com.samsao.snapzi.social.OnGooglePlusLoginListener;
@@ -59,6 +60,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * @author jingsilu
@@ -98,6 +100,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
     public Toolbar mToolbar;
 
     private Listener mListener;
+    private User mUser;
 
     public static SettingsFragment newInstance() {
         SettingsFragment settingsFragment = new SettingsFragment();
@@ -113,6 +116,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
         mName.setTypeface(getFont());
         //TODO first name and last name
+        mUser = mUserManager.getUser();
         String name = mUserManager.getUsername();
         mName.setText(name);
 
@@ -286,7 +290,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
      * Setup the date picker for birthday
      */
     public void setupDatePicker() {
-        Long birthdayLong = mUserManager.getBirthday();
+        Long birthdayLong = mUser.getBirthdayLong();
         if (birthdayLong != null) {
             String birthday = CustomJsonDateTimeDeserializer.getDateFormatter().print(birthdayLong);
             mBirthday.setText(birthday);
@@ -327,8 +331,9 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
         String birthday = mBirthday.getText().toString();
         mUserManager.setUsername(name);
         if (!TextUtils.isEmpty(birthday)) {
-            mUserManager.setBirthday(CustomJsonDateTimeDeserializer.getDateFormatter().parseMillis(birthday));
+            mUser.setDob(birthday);
         }
+        mUserManager.saveUser(mUser);
         KeyboardUtil.hideKeyboard(getActivity());
         mInformationLayout.requestFocus();
         //TODO update user info at backend
@@ -377,7 +382,7 @@ public class SettingsFragment extends SocialNetworkFragment implements DatePicke
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Timber.e("Error fetching campaigns: " + error.getClass().getName() + ": " + error.getMessage());
             }
         });
         getActivity().finish();

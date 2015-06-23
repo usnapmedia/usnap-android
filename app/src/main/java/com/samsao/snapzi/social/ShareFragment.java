@@ -502,7 +502,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Timber.e("Error fetching campaigns: " + error.getClass().getName() + ": " + error.getMessage());
                         SelectMediaActivity.start(getActivity(), mListener.getCampaignId());
                     }
                 });
@@ -512,8 +512,7 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             @Override
             public void failure(RetrofitError error) {
                 dismissProgressDialog();
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                Timber.e("Failure sharing: " + error.getMessage());
+                Timber.e("Error sharing: " + error.getClass().getName() + ": " + error.getMessage());
             }
         };
         if (!TextUtils.isEmpty(mListener.getVideoPath())) {

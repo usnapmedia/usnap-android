@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
@@ -24,6 +23,7 @@ import icepick.Icicle;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 
 public class SeeAllFragment extends Fragment {
@@ -128,7 +128,7 @@ public class SeeAllFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 mSeeAllSnapsAdapter.clear();
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Timber.e("Error fetching snaps: " + error.getClass().getName() + ": " + error.getMessage());
                 getActivity().finish();
             }
         });

@@ -34,6 +34,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import timber.log.Timber;
 
 
 public class PhotoDetailsFragment extends Fragment implements ReportImageDialogFragment.Listener,
@@ -216,7 +217,7 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Timber.e("Error reporting image/video: " + error.getClass().getName() + ": " + error.getMessage());
             }
         });
     }
