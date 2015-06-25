@@ -30,7 +30,7 @@ public class PreferenceManager {
     private final String FIRSTNAME_KEY = "com.samsao.snapzi.util.FIRSTNAME_KEY";
     private final String LASTNAME_KEY = "com.samsao.snapzi.util.LASTNAME_KEY";
     private final String EMAIL_KEY = "com.samsao.snapzi.util.EMAIL_KEY";
-    private final String BIRTHDAY_KEY = "com.samsao.snapzi.util.BIRTHDAY_LONG_KEY";
+    private final String BIRTHDAY_KEY = "com.samsao.snapzi.util.BIRTHDAY_KEY";
     private final String CONTRIBUTION_KEY = "com.samsao.snapzi.util.CONTRIBUTION_KEY";
     private final String SCORE_KEY = "com.samsao.snapzi.util.SCORE_KEY";
 
