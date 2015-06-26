@@ -132,10 +132,12 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 DateTimeFormatter dateTimeFormatter = CustomJsonDateTimeDeserializer.getDateFormatter();
                 try {
                     mBirthDayDate = dateTimeFormatter.parseDateTime(date);
-                    DatePickerFragment.newInstance(RegisterFragment.this,
+                    DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(RegisterFragment.this,
                             mBirthDayDate.getYear(),
                             mBirthDayDate.getMonthOfYear(),
-                            mBirthDayDate.getDayOfMonth()).show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                            mBirthDayDate.getDayOfMonth());
+//                    datePickerFragment.show(getFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+                    getFragmentManager().beginTransaction().add(datePickerFragment, DATE_PICKER_DIALOG_FRAGMENT_TAG).commitAllowingStateLoss();
 
                 } catch (IllegalArgumentException e) {
                     // error in string format

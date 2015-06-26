@@ -204,7 +204,9 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
 
     @OnClick(R.id.activity_photo_detail_report)
     public void reportImage() {
-        ReportImageDialogFragment.newInstance(this, hasVideo() ? getString(R.string.confirm_report_video) : getString(R.string.confirm_report_image)).show(getFragmentManager(), "REPORT");
+        ReportImageDialogFragment reportImageDialogFragment = ReportImageDialogFragment.newInstance(this, hasVideo() ? getString(R.string.confirm_report_video) : getString(R.string.confirm_report_image));
+//        reportImageDialogFragment.show(getFragmentManager(), "REPORT");
+        getFragmentManager().beginTransaction().add(reportImageDialogFragment, "REPORT").commitAllowingStateLoss();
     }
 
     @Override
@@ -232,7 +234,8 @@ public class PhotoDetailsFragment extends Fragment implements ReportImageDialogF
         }
 
         if (getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
-            mProgressDialog.show(getFragmentManager(), PROGRESS_DIALOG_FRAGMENT_TAG);
+//            mProgressDialog.show(getFragmentManager(), PROGRESS_DIALOG_FRAGMENT_TAG);
+            getFragmentManager().beginTransaction().add(mProgressDialog, PROGRESS_DIALOG_FRAGMENT_TAG).commitAllowingStateLoss();
         }
     }
 

@@ -56,7 +56,8 @@ public abstract class ToolOptionColorPicker extends ToolOption implements Parcel
 
             @Override
             public void onSelected() {
-                getColorPickerDialog().show(getMyFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
+//                getColorPickerDialog().show(getMyFragmentManager(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG);
+                getMyFragmentManager().beginTransaction().add(getColorPickerDialog(), ToolColorPickerDialogFragment.ToolColorPickerDialogFragment_TAG).commitAllowingStateLoss();
             }
 
             @Override

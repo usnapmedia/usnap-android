@@ -3,7 +3,6 @@ package com.samsao.snapzi.edit.tools;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -53,11 +52,6 @@ public class ToolColorPickerDialogFragment extends DialogFragment {
             }
         });
         return builder.create();
-    }
-
-    @Override
-    public void show(FragmentManager manager, String tag) {
-        super.show(manager, tag);
     }
 
     public void setListener(Listener listener) {

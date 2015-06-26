@@ -469,7 +469,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
             mShareLoginDialogFragment = ShareLoginDialogFragment.newInstance(this);
         }
         if (getFragmentManager().findFragmentByTag(ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG) == null) {
-            mShareLoginDialogFragment.show(getFragmentManager(), ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG);
+//            mShareLoginDialogFragment.show(getFragmentManager(), ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG);
+            getFragmentManager().beginTransaction().add(mShareLoginDialogFragment, ShareLoginDialogFragment.PROMPT_LOGIN_DIALOG_FRAGMENT_TAG).commitAllowingStateLoss();
         }
     }
 
@@ -552,7 +553,8 @@ public class ShareFragment extends SocialNetworkFragment implements ProgressDial
         }
 
         if (getFragmentManager().findFragmentByTag(ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG) == null) {
-            mProgressDialogFragment.show(getFragmentManager(), ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG);
+//            mProgressDialogFragment.show(getFragmentManager(), ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG);
+            getFragmentManager().beginTransaction().add(mProgressDialogFragment, ProgressDialogFragment.PROGRESS_DIALOG_FRAGMENT_TAG).commitAllowingStateLoss();
         }
     }
 

@@ -548,7 +548,8 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
             mPickMediaDialogFragment = PickMediaDialogFragment.newInstance(this);
         }
         if (getFragmentManager().findFragmentByTag(PICK_MEDIA_DIALOG_FRAGMENT_TAG) == null) {
-            mPickMediaDialogFragment.show(getFragmentManager(), PICK_MEDIA_DIALOG_FRAGMENT_TAG);
+            getFragmentManager().beginTransaction().add(mPickMediaDialogFragment, PICK_MEDIA_DIALOG_FRAGMENT_TAG).commitAllowingStateLoss();
+//            mPickMediaDialogFragment.show(getFragmentManager(), PICK_MEDIA_DIALOG_FRAGMENT_TAG);
         }
     }
 
@@ -620,7 +621,8 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
             dismissPickMediaDialog();
             releaseCamera();
             hideAllButtons();
-            mSavingImageProgressDialog.show(getFragmentManager(), SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG);
+//            mSavingImageProgressDialog.show(getFragmentManager(), SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG);
+            getFragmentManager().beginTransaction().add(mSavingImageProgressDialog, SAVE_IMAGE_PROGRESS_DIALOG_FRAGMENT_TAG).commitAllowingStateLoss();
         }
     }
 
