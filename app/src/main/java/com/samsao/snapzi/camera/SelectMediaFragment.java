@@ -327,6 +327,7 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
             }
 
             public void onFinish() {
+                triggerCapturingVideo(false);
                 mCaptureMediaButton.setProgress(1.0f);
                 mVideoCountdown.setText(String.valueOf(0));
 
@@ -339,7 +340,6 @@ public class SelectMediaFragment extends Fragment implements PickMediaDialogFrag
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.error_video_capture_failed),
                             Toast.LENGTH_LONG).show();
-                    triggerCapturingVideo(false);
                 }
             }
         };
