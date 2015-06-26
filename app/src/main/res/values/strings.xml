@@ -61,7 +61,7 @@
     <string name="action_undo">Undo</string>
 
     <!--Campaigns-->
-    <string name="top_10">Top 20</string>
+    <string name="top_10">Top 25</string>
     <string name="latest_uploads">Latest uploads</string>
     <string name="see_all">See all</string>
     <plurals name="likes_plural">
