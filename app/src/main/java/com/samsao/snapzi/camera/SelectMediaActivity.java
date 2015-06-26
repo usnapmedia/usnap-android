@@ -34,7 +34,7 @@ public class SelectMediaActivity extends AppCompatActivity implements SelectMedi
     private final String LOG_TAG = getClass().getSimpleName();
     public final static int RESULT_IMAGE_LOADED_FROM_GALLERY = 8401;
     public final static int RESULT_VIDEO_LOADED_FROM_GALLERY = 8402;
-    public final static int MAXIMUM_VIDEO_DURATION_MS = 30000; // 30 seconds
+    public final static int MAXIMUM_VIDEO_DURATION_MS = 15000; // 15 seconds
     public final static int COUNTDOWN_INTERVAL_MS = 84;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_PHOTO = 20;
     public final static int MINIMUM_AVAILABLE_SPACE_IN_MEGABYTES_TO_CAPTURE_VIDEO = 120;
