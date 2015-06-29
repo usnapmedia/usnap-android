@@ -198,6 +198,8 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                 user.setLastName(getLastName());
                 user.setEmail(getEmail());
                 user.setDob(getBirthday());
+                user.setContribution(0);
+                user.setScore(0);
 
                 saveUserInPreferences(getUserName(), getPassword(), user);
                 getActivity().setResult(Activity.RESULT_OK);
