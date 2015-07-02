@@ -16,7 +16,9 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
+import android.view.ScaleGestureDetector;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.WindowManager;
@@ -32,7 +34,7 @@ import java.util.List;
  * @author vlegault
  * @since 15-03-17
  */
-public class CameraPreview extends TextureView implements TextureView.SurfaceTextureListener {
+public class CameraPreview extends TextureView implements TextureView.SurfaceTextureListener, ScaleGestureDetector.OnScaleGestureListener {
 
     /**
      * Constants
@@ -45,15 +47,20 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     private static CameraPreview mCameraPreviewInstance;
     private Camera mCamera;
+    ScaleGestureDetector mScaleGestureDetector;
 
     private LayoutMode mLayoutMode;
     private FrameLayout mCameraPreviewContainer;
 
     private int mCameraId;
+    private boolean mIsPinchGestureAvalaible = false;
     private int mCameraBuiltInOrientationOffset = 0;
     private int mLastPreviewOrientation = 0;
     private int mOrientationWhenPictureTaken = 0;
     private float mAspectRatioWhenPictureTaken = 1.0f;
+    private int mInitialCameraZoomLevel = 1;
+    private float mInitialSpan = 0.0f;
+    private int mCameraMaximumZoomLevel = 1;
 
     private OrientationEventListener mOrientationListener;
     private SimpleCameraCallback mSimpleCameraCallback;
@@ -107,6 +114,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             if (null != mSimpleCameraCallback) {
                 mSimpleCameraCallback.onPictureReady(image);
             }
+            mIsPinchGestureAvalaible = true;
         }
     };
 
@@ -130,8 +138,10 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         setLayoutMode(DEFAULT_LAYOUT_MODE);
         setCameraId(DEFAULT_CAMERA_ID);
         setMaximumVideoDuration_ms(DEFAULT_MAXIMUM_VIDEO_DURATION_MS);
-    }
 
+        // Pinch gesture detection
+        mScaleGestureDetector = new ScaleGestureDetector(this.getContext(), this);
+    }
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
@@ -151,6 +161,49 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mScaleGestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        if (mCamera != null && mIsPinchGestureAvalaible == true) {
+            int newZoomLevel;
+            int spanDelta = (int) detector.getCurrentSpan() - (int) mInitialSpan;
+
+            newZoomLevel = mInitialCameraZoomLevel + spanDelta / 10;
+
+            if (newZoomLevel < 1) {
+                newZoomLevel = 1;
+                mInitialCameraZoomLevel = 1;
+                mInitialSpan = detector.getCurrentSpan();
+            } else if (newZoomLevel > mCameraMaximumZoomLevel) {
+                newZoomLevel = mCameraMaximumZoomLevel;
+                mInitialCameraZoomLevel = mCameraMaximumZoomLevel;
+                mInitialSpan = detector.getCurrentSpan();
+            }
+            Camera.Parameters cameraParams = mCamera.getParameters();
+            cameraParams.setZoom(newZoomLevel);
+            mCamera.setParameters(cameraParams);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        Camera.Parameters cameraParams = mCamera.getParameters();
+        mInitialCameraZoomLevel = cameraParams.getZoom();
+        mInitialSpan = detector.getCurrentSpan();
+        return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        // nothing
     }
 
     /**
@@ -188,10 +241,12 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             if (prepareCamera()) {
                 if (null != mSimpleCameraCallback) {
                     mOrientationListener.enable();
+                    mIsPinchGestureAvalaible = true;
                     mSimpleCameraCallback.onCameraPreviewReady();
                 }
             } else {
                 if (null != mSimpleCameraCallback) {
+                    mIsPinchGestureAvalaible = false;
                     mSimpleCameraCallback.onCameraPreviewFailed();
                 }
                 Log.e(LOG_TAG, "Unable to prepare camera");
@@ -273,6 +328,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         // Setting up optimal picture size & resolution based on camera preview aspect ratio
         List<Size> supportedPreviewSizes = cameraParams.getSupportedPreviewSizes();
         List<Size> supportedPictureSizes = cameraParams.getSupportedPictureSizes();
+        mCameraMaximumZoomLevel = cameraParams.getMaxZoom();
         Size optimalPictureSize = CameraHelper.getOptimalPictureSize(supportedPreviewSizes, mCamcorderProfile.videoFrameWidth, mCamcorderProfile.videoFrameHeight);
         Size cameraPictureSize = CameraHelper.determinePictureSize(supportedPictureSizes, optimalPictureSize);
         cameraParams.setPictureSize(cameraPictureSize.width, cameraPictureSize.height);
@@ -299,6 +355,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
     }
 
     public void takePicture() {
+        mIsPinchGestureAvalaible = false;
         mCamera.autoFocus(new Camera.AutoFocusCallback() {
             @Override
             public void onAutoFocus(boolean b, Camera camera) {
@@ -317,6 +374,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         mMediaRecorder = new MediaRecorder();
 
         // Unlock and set camera to MediaRecorder
+        mIsPinchGestureAvalaible = false;
         mCamera.unlock();
         mMediaRecorder.setCamera(mCamera);
 
@@ -391,12 +449,15 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
         if (mCamera != null) {
             mCamera.lock();
         }
+
+        mIsPinchGestureAvalaible = true;
     }
 
     /**
      * Release camera for other applications.
      */
     private void releaseCamera() {
+        mIsPinchGestureAvalaible = false;
         if (mCamera != null) {
             mCamera.stopPreview();
             mCamera.release();
@@ -518,6 +579,7 @@ public class CameraPreview extends TextureView implements TextureView.SurfaceTex
             } else {
                 mCamcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
             }
+
 
             // Add view to container
             mCameraPreviewContainer.removeAllViews();
