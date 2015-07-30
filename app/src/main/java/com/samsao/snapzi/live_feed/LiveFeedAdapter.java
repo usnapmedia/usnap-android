@@ -67,7 +67,7 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
 
         public void setup(final Snap image) {
             // TODO add an error image and a placeholder
-            Picasso.with(mContext).load(image.getThumbUrl()).into(mImgIcon);
+            Picasso.with(mContext).load(image.getThumbnail(300, 300)).into(mImgIcon);
             mImgIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

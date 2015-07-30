@@ -2,6 +2,7 @@ package com.samsao.snapzi.seeall;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import com.samsao.snapzi.api.entity.Snap;
 import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.List;
+
+import timber.log.Timber;
 
 
 /**
@@ -70,8 +74,11 @@ public class SeeAllSnapsAdapter extends RecyclerView.Adapter<SeeAllSnapsAdapter.
         }
 
         public void setup(final Snap image) {
-            // TODO add an error image and a placeholder
-            Picasso.with(mContext).load(image.getThumbUrl()).into(mImageView);
+            Picasso.with(mContext).setIndicatorsEnabled(true);
+            String url = image.getThumbnail(300,300);
+
+            //Timber.d(mImageView.getMeasuredWidth() + " " + mImageView.getMeasuredWidth());
+            Picasso.with(mContext).load(url).into(mImageView);
             mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

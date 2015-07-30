@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "url",
         "watermark_url",
         "video_url",
-        "thumb_url",
+        "cloud_url",
         "text",
         "fb_likes",
         "campaign_id",
@@ -37,8 +37,8 @@ public class Snap {
     private String watermarkUrl;
     @JsonProperty("video_url")
     private String videoUrl;
-    @JsonProperty("thumb_url")
-    private String thumbUrl;
+    @JsonProperty("cloud_url")
+    private String cloudUrl;
     @JsonProperty("text")
     private String text;
     @JsonProperty("fb_likes")
@@ -123,19 +123,26 @@ public class Snap {
      * @return
      * The thumbUrl
      */
-    @JsonProperty("thumb_url")
-    public String getThumbUrl() {
-        return thumbUrl;
+    @JsonProperty("cloud_url")
+    public String getCloudUrl() {
+        return cloudUrl;
     }
 
+    public String getThumbnail(int width, int height) {
+        String url = this.getCloudUrl();
+        if (url.indexOf(".mp4") != -1) {
+            url = url.replaceAll(".mp4", ".jpg");
+        }
+        return url.replaceAll("upload/", "upload/w_" + width + ",h_" + height + ",c_fill,g_face/");
+    }
     /**
      *
-     * @param thumbUrl
-     * The thumb_url
+     * @param cloudUrl
+     * The cloud_url
      */
-    @JsonProperty("thumb_url")
-    public void setThumbUrl(String thumbUrl) {
-        this.thumbUrl = thumbUrl;
+    @JsonProperty("cloud_url")
+    public void setCloudUrl(String cloudUrl) {
+        this.cloudUrl = cloudUrl;
     }
 
     /**
