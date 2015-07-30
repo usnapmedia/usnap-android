@@ -23,7 +23,7 @@ repositories {
 ext {
     majorVersion = "1"
     minorVersion = "0"
-    patchVersion = "0"
+    patchVersion = "1"
 }
 
 def computeVersionName() {
@@ -37,7 +37,7 @@ android {
         applicationId "com.usnap.usnap"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode System.env.BUILD_NUMBER ? "$System.env.BUILD_NUMBER".toInteger() : 0
+        versionCode System.env.BUILD_NUMBER ? "$System.env.BUILD_NUMBER".toInteger() + 169 : 0
         versionName computeVersionName()
         buildConfigField "String", "PROD", "\"prod\""
         buildConfigField "String", "DEV", "\"dev\""
