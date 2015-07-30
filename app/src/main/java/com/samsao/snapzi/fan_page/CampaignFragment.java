@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.ApiService;
 import com.samsao.snapzi.api.entity.Campaign;
@@ -268,7 +269,10 @@ public class CampaignFragment extends Fragment {
         final TextView nameTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_name);
         final TextView likesCountTextView = (TextView) cardView.findViewById(R.id.view_top_campaign_likes_count);
 
-        Picasso.with(getActivity()).load(snap.getThumbnail(300,300)).into(imageView);
+        if (BuildConfig.DEBUG) {
+            Picasso.with(getActivity()).setIndicatorsEnabled(true);
+        }
+        Picasso.with(getActivity()).load(snap.getThumbnail(imageView.getMeasuredWidth(),imageView.getMeasuredHeight())).into(imageView);
         if (!TextUtils.isEmpty(snap.getUsername())) {
             nameTextView.setText(snap.getUsername());
         }

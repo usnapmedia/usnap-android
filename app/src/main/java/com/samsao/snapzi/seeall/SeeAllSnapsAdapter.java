@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Snap;
 import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
@@ -74,8 +75,10 @@ public class SeeAllSnapsAdapter extends RecyclerView.Adapter<SeeAllSnapsAdapter.
         }
 
         public void setup(final Snap image) {
-            Picasso.with(mContext).setIndicatorsEnabled(true);
-            String url = image.getThumbnail(300,300);
+            if (BuildConfig.DEBUG) {
+                Picasso.with(mContext).setIndicatorsEnabled(true);
+            }
+            String url = image.getThumbnail(mImageView.getMeasuredWidth(),mImageView.getMeasuredHeight());
 
             //Timber.d(mImageView.getMeasuredWidth() + " " + mImageView.getMeasuredWidth());
             Picasso.with(mContext).load(url).into(mImageView);

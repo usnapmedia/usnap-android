@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Snap;
 import com.samsao.snapzi.fan_page.PhotoDetailsActivity;
@@ -66,8 +67,10 @@ public class LiveFeedAdapter extends RecyclerView.Adapter<LiveFeedAdapter.LiveFe
         }
 
         public void setup(final Snap image) {
-            // TODO add an error image and a placeholder
-            Picasso.with(mContext).load(image.getThumbnail(300, 300)).into(mImgIcon);
+            if (BuildConfig.DEBUG) {
+                Picasso.with(mContext).setIndicatorsEnabled(true);
+            }
+            Picasso.with(mContext).load(image.getThumbnail(mImgIcon.getMeasuredWidth(), mImgIcon.getMeasuredHeight())).into(mImgIcon);
             mImgIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

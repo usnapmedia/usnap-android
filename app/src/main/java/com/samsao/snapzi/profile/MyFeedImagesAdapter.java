@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.samsao.snapzi.BuildConfig;
 import com.samsao.snapzi.R;
 import com.samsao.snapzi.api.entity.Snap;
 import com.squareup.picasso.Picasso;
@@ -61,8 +62,10 @@ public class MyFeedImagesAdapter extends RecyclerView.Adapter<MyFeedImagesAdapte
         }
 
         public void setup(final Snap snap) {
-            // TODO add an error image and a placeholder
-            Picasso.with(mContext).load(snap.getThumbnail(300, 300)).into(mImageView);
+            if (BuildConfig.DEBUG) {
+                Picasso.with(mContext).setIndicatorsEnabled(true);
+            }
+            Picasso.with(mContext).load(snap.getThumbnail(mImageView.getMeasuredWidth(), mImageView.getMeasuredHeight())).into(mImageView);
         }
     }
 }

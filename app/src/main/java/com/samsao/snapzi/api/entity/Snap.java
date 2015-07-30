@@ -133,7 +133,7 @@ public class Snap {
         if (url.indexOf(".mp4") != -1) {
             url = url.replaceAll(".mp4", ".jpg");
         }
-        return url.replaceAll("upload/", "upload/w_" + width + ",h_" + height + ",c_fill,g_face/");
+        return url.replaceAll("upload/", "upload/w_" + (width>0?width:300) + ",h_" + (height>0?height:300) + ",c_fill,g_face/");
     }
     /**
      *
