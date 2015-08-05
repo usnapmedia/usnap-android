@@ -107,11 +107,15 @@ android {
             applicationId "com.usnap.neomedia"
         }
 
+        liberal {
+            applicationId "com.usnap.liberal"
+        }
     }
 
     sourceSets {
         dev.setRoot('src/dev')
         neomedia.setRoot('src/neomedia')
+        liberal.setRoot('src/liberal')
     }
 }
 

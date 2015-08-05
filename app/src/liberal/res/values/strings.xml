@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Liberal</string>
+    <string name="facebook_app_id" translatable="false">702889569857409</string>
+    <string name="facebook_app_namespace" translatable="false">Liberal</string>
+    <string name="twitter_api_key" translatable="false">TQAZ27uQLXoKcRcpMuFLZA3HI</string>
+    <string name="twitter_api_secret" translatable="false">Rd4jFcvO5EMlvQFUrLizWZGOSiLDpOKwpy9BZDMbhH6Hmp6vc4</string>
+</resources>
